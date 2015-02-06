@@ -1,0 +1,27 @@
+name: SkyWarsReloaded
+main: com.walrusone.skywars.SkyWarsReloaded
+version: 0.1
+
+depend: [Vault]
+softdepend: [SpectatorPlus]
+
+commands:
+   swr:
+      description: This is the main plugin command.
+      usage: /<command> [args]
+permissions:
+  swr.*:
+    description: Gives access to all swr commands
+    children:
+      swr.play: true
+      swr.maps: true
+      swr.signs: true
+  swr.play:
+    description: Gives access to the swr join and quit commands
+    default: true
+  swr.maps:
+    description: Allows the user to create, edit, save and register maps using swr create, edit, save and register commands.
+    default: op
+  swr.signs:
+    description: Allows the user to create and destory swr signs.
+    default: op

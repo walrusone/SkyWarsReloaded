@@ -1,0 +1,39 @@
+#Default Config
+#gameVariables: 
+#  minPlayers: 6			//number of players needed before queue players are teleported to lobby
+#  numberOfSpawns: 8		//number of spawns per map (maps will only load if they contain this number of spawn points (ie beacons))
+#  allowSpectating: false   //if SpectatorPlus is installed, setting this to true will put players in spectator mode when they lose all their lives. 
+#  usingEconomy: false      //if set to true, the amounts listed in pointsPerKill and pointsPerWin will be added to players balance for kills and wins. pointsLostPerDeath will be subtracted from balance on death.
+#  lives: 5					//number of lives each player gets per gets
+#  powerUpLength: 15        //number of seconds that powerups last
+#  pointsPerKill: 2			//number of score points players receive per kill or lose per death.
+#  pointsPerWin: 10			//number of score points players recieve per win.
+#spawn:						//use setspawn command to set a spawn point where people are teleported when leaving a game. If no spawn is set, they will be teleported to their previous location.
+#sqldatabase:
+#  enabled: false			//enable to store stats in a SQL database
+#  saveInterval: 5			//time in minutes between SQL database updates - how often the plugin sends player stats to the database
+#  hostname: localhost		//hostname of the SQL database
+#  port: 3306				//port of the SQL database
+#  database: database		//database being used
+#  username: username      	//username for login to the SQL database
+#  password: password		//password for login to the SQL database
+#resaveDefaultMaps: false	//When set to true the plugin will reload the maps that came with the plugin.
+
+gameVariables: 
+  minPlayers: 6
+  numberOfSpawns: 8
+  allowSpectating: false
+  useEconomy: false
+  pointsPerKill: 2
+  pointsLostPerDeath: 1
+  pointsPerWin: 10
+spawn:
+sqldatabase:
+  enabled: false
+  saveInterval: 5
+  hostname: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+resaveDefaultMaps: true
