@@ -12,10 +12,6 @@ public class SaveDefaultMaps {
 		ArrayList<String> maps = new ArrayList<String>();
         maps.add("lobby.zip");
         maps.add("caves.zip");
-        maps.add("hotandcold.zip");
-        maps.add("mushrooms.zip");
-        maps.add("nightmare.zip");
-        maps.add("planetarium.zip");
         for (String map: maps) {
         	SkyWarsReloaded.get().saveResource(map, true);
             String input = new File(SkyWarsReloaded.get().getDataFolder(), map).toString();

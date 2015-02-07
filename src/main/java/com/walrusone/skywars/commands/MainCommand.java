@@ -24,6 +24,9 @@ public class MainCommand implements CommandExecutor {
         subCommandMap.put("setspawn", new SetSpawnCommand());
         subCommandMap.put("reload", new ReloadCommand());
         subCommandMap.put("kit", new KitCommand());
+        subCommandMap.put("stats", new StatsCommand());
+        subCommandMap.put("delete", new DeleteMapCommand());
+        subCommandMap.put("unregister", new UnregisterMapCommand());
     }
 
     @Override

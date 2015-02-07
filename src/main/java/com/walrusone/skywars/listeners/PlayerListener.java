@@ -32,6 +32,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void snowballDamage(EntityDamageByEntityEvent e) {
 		 Entity ent = e.getEntity();
+		 DamageCause dCause = e.getCause();
 		 if(ent instanceof Player) {
 			 GamePlayer target = SkyWarsReloaded.getPC().getPlayer((Player) ent);
 			 if (target.isPlaying()) {
@@ -45,7 +46,7 @@ public class PlayerListener implements Listener {
 								 e.setCancelled(true);
 								 target.getP().setHealth(20);
 								 target.setTagged(killer);
-								 target.getGame().onPlayerDeath(target);
+								 target.getGame().onPlayerDeath(target, dCause);
 								 return;
 							 } else {
 								 target.setTagged(killer);
@@ -60,7 +61,7 @@ public class PlayerListener implements Listener {
 								 e.setCancelled(true);
 								 target.getP().setHealth(20);
 								 target.setTagged(killer);
-								 target.getGame().onPlayerDeath(target);
+								 target.getGame().onPlayerDeath(target, dCause);
 								 return;
 							 } else {
 								 target.setTagged(killer);
@@ -75,7 +76,7 @@ public class PlayerListener implements Listener {
 								 e.setCancelled(true);
 								 target.getP().setHealth(20);
 								 target.setTagged(killer);
-								 target.getGame().onPlayerDeath(target);
+								 target.getGame().onPlayerDeath(target, dCause);
 								 return;
 							 } else {
 								 target.setTagged(killer);
@@ -90,7 +91,7 @@ public class PlayerListener implements Listener {
 								 e.setCancelled(true);
 								 target.getP().setHealth(20);
 								 target.setTagged(killer);
-								 target.getGame().onPlayerDeath(target);
+								 target.getGame().onPlayerDeath(target, dCause);
 								 return;
 							 } else {
 								 target.setTagged(killer);
@@ -104,7 +105,7 @@ public class PlayerListener implements Listener {
 						 e.setCancelled(true);
 						 target.getP().setHealth(20);
 						 target.setTagged(killer);
-						 target.getGame().onPlayerDeath(target);
+						 target.getGame().onPlayerDeath(target, dCause);
 						 return;
 					 } else {
 						 target.setTagged(killer);
@@ -118,6 +119,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(EntityDamageEvent e) {
 		Entity ent = e.getEntity(); 
+		DamageCause dCause = e.getCause();
 		if(ent instanceof Player) {
 			Player p = (Player) e.getEntity();
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(p);
@@ -129,7 +131,7 @@ public class PlayerListener implements Listener {
 					} else if (p.getHealth() <= e.getDamage() || e.getCause().equals(DamageCause.VOID)) {
 						e.setCancelled(true);
 						p.setHealth(20);
-						gPlayer.getGame().onPlayerDeath(gPlayer);
+						gPlayer.getGame().onPlayerDeath(gPlayer, dCause);
 					}
 				}
 			}
@@ -150,7 +152,7 @@ public class PlayerListener implements Listener {
 			Game game = gPlayer.getGame();
 			gPlayer.getGame().deletePlayer(gPlayer, true);
 			if (game.getState() == GameState.PLAYING || game.getState() == GameState.PREGAME) {
-				gPlayer.getGame().checkForWinner();
+				game.checkForWinner();
 			}
 		}
 		SkyWarsReloaded.getPC().removePlayer(e.getPlayer());

@@ -17,7 +17,7 @@ public class SetSpawnCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "Must be a player to set the spawn!");
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (SkyWarsReloaded.perms.has(player, "swr.maps")) {
+			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
 				hasPerm = true;
 			}
 		} else {
@@ -32,7 +32,7 @@ public class SetSpawnCommand implements CommandExecutor {
 					SkyWarsReloaded.get().getConfig().set("spawn.y", p.getLocation().getBlockY());
 					SkyWarsReloaded.get().getConfig().set("spawn.z", p.getLocation().getBlockZ());
 					SkyWarsReloaded.get().saveConfig();
-					p.sendMessage(ChatColor.GREEN + "Bounce Wars Spawn Set!");
+					p.sendMessage(ChatColor.GREEN + "SkyWars Spawn Set!");
 				}
 			
 			} else {

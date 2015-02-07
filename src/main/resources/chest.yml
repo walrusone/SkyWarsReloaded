@@ -1,5 +1,11 @@
-# The first value is the chance of the item appearing in a chest
-# The second value is the item this should be an Essentials item string
+# The first value is the chance of the item appearing in a chest (out of 100)
+# The second value is the item, this should be the material name (as found on http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html)
+# The third value is the quantity that will show up in the chest.
+# For wood, potions, wool, dirt, etc (Any item that has type data), you can use a : followed by the numerical data for the item you want. 
+# For example wood:2 would give you birch wood planks. You can find data values at: http://minecraft-ids.grahamedgecombe.com/
+# Potion data values can be found at: http://minecraft.gamepedia.com/Potion
+# Enchantments can be added using the enchantment name (written with no spaces) followed by a : and then the enchantment level number. http://minecraft.gamepedia.com/Enchanting/Levels
+
 items:
 # Random Stuff
 - 85 wood 6

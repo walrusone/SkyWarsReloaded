@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -100,7 +101,7 @@ public class Game {
 			SkyWarsReloaded.getKC().openKitMenu(name);
 			return;
 		} else if (gameState == GameState.WAITING && gPlayers.size() < minPlayers) {
-			name.getP().sendMessage(ChatColor.GREEN + "You have been added to the Game Queue. You will be teleported to Lobby enough players have joined!");
+			name.getP().sendMessage(ChatColor.GREEN + SkyWarsReloaded.get().getConfig().getString("messages.queue"));
 			return;
 		} else if (gameState == GameState.WAITING && gPlayers.size() >= minPlayers) {
 			MapController mc = SkyWarsReloaded.getMC();
@@ -129,7 +130,7 @@ public class Game {
 		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 			public void run() {
 			      for (GamePlayer gPlayer: gPlayers) {
-			    	  gPlayer.getP().sendMessage(ChatColor.GREEN + "Click a Sign to Vote for a Map!"); 	  
+			    	  gPlayer.getP().sendMessage(ChatColor.GREEN + SkyWarsReloaded.get().getConfig().getString("messages.votingStart")); 	  
 			      }
 			  }
 			}, 20);
@@ -137,7 +138,7 @@ public class Game {
 			public void run() {
 		    	  
 			      for (GamePlayer gPlayer: gPlayers) {
-			    	  gPlayer.getP().sendMessage(ChatColor.GREEN + "Voted has Ended! Game Starting!"); 	  
+			    	  gPlayer.getP().sendMessage(ChatColor.GREEN + SkyWarsReloaded.get().getConfig().getString("messages.votingEnd")); 	  
 			      }
 			      MapController mc = SkyWarsReloaded.getMC();
 			      mapName = getHighestVotes();
@@ -160,7 +161,7 @@ public class Game {
         	if (gPlayers.size() < minPlayers) {
         		for(GamePlayer gPlayer: gPlayers) {
         			if (count == 0) {
-        				gPlayer.getP().sendMessage(ChatColor.RED + "NEED MORE PLAYERS TO START GAME!");
+        				gPlayer.getP().sendMessage(ChatColor.RED + SkyWarsReloaded.get().getConfig().getString("messages.morePlayers"));
         				count++;
         			} else {
         				count++;
@@ -273,6 +274,7 @@ public class Game {
         }
     }
 	
+	@SuppressWarnings("deprecation")
 	public void deletePlayer(GamePlayer gplayer, boolean playerQuit) {
 		if (playerQuit) {
 			if ((System.currentTimeMillis() - gplayer.getTagged().getTime()) < 10000) {
@@ -281,12 +283,12 @@ public class Game {
 					killer.setKills(killer.getKills() + 1);
 					gplayer.setDeaths(gplayer.getDeaths() + 1);
 					for (GamePlayer gPlayer: gPlayers) {
-						gPlayer.getP().sendMessage(ChatColor.RED + "" + gplayer.getP().getName() + ChatColor.GREEN + " was Killed by " + ChatColor.BLUE + killer.getP().getName());
+						gPlayer.getP().sendMessage(ChatColor.RED + "" + gplayer.getP().getName() + ChatColor.GREEN + " " + SkyWarsReloaded.get().getConfig().getString("messages.death.quitWhileTagged") + " " + ChatColor.BLUE + killer.getP().getName());
 					}
 				}
 			} else {
 				for (GamePlayer gPlayer: gPlayers) {
-					gPlayer.getP().sendMessage(ChatColor.RED + "" + gplayer.getP().getName() + " has left the game!");
+					gPlayer.getP().sendMessage(ChatColor.RED + "" + gplayer.getP().getName() + " " + SkyWarsReloaded.get().getConfig().getString("messages.leftTheGame"));
 				}
 			}
 		}
@@ -299,12 +301,13 @@ public class Game {
 			} else {
 				gplayer.getP().teleport(gplayer.getRespawn());
 			}
+			gplayer.setSpectating(false);
 			gplayer.setPlaying(false);
 	  		gplayer.clearInventory();
 			gplayer.resetInventory();
+			gplayer.getP().updateInventory();
 			gplayer.resetGameMode();
 			gplayer.getP().setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
-			gplayer.setSpectating(false);
 		}
 		gplayer.setGame(null);
 		gPlayers.remove(gplayer);
@@ -502,7 +505,7 @@ public class Game {
 		gameState = gState;
 	}
 
-	public void onPlayerDeath(GamePlayer target) {
+	public void onPlayerDeath(GamePlayer target, DamageCause dCause) {
 		target.setLives(target.getLives() - 1);
 		Score score = objective.getScore(target.getP().getName());
 		score.setScore(target.getLives());
@@ -519,12 +522,12 @@ public class Game {
 				}
 				target.setTagged(target);
 				for (GamePlayer gPlayer: gPlayers) {
-					gPlayer.getP().sendMessage(ChatColor.RED + "" + target.getP().getName() + ChatColor.GREEN + " was Killed by " + ChatColor.BLUE + killer.getP().getName());
+					gPlayer.getP().sendMessage(ChatColor.RED + "" + target.getP().getName() + ChatColor.GREEN + getDeathMessage(dCause, true) + ChatColor.BLUE + " " + killer.getP().getName());
 				}
 			}
 		} else {
 			for (GamePlayer gPlayer: gPlayers) {
-				gPlayer.getP().sendMessage(ChatColor.RED + "" + target.getP().getName() + ChatColor.GREEN + " died due to unfortuate circumstances!");
+				gPlayer.getP().sendMessage(ChatColor.RED + "" + target.getP().getName() + ChatColor.GREEN + getDeathMessage(dCause, false));
 			}
 		}
 		playerEndGame(target);
@@ -537,8 +540,12 @@ public class Game {
 			if (allowSpectating) {
 				SkyWarsReloaded.getSpectate().setSpectating(target.getP(), true, true);
 				target.setSpectating(true);
-				target.getP().teleport(new Location(mapWorld, 0, 0, 0));
-				target.getP().sendMessage(ChatColor.GREEN + "You are now spectating. Type /swr quit to leave the game!");
+				double x = gameMap.getSpawns().get(1).getX()+0.5;
+				double y = gameMap.getSpawns().get(1).getY();
+				double z =  gameMap.getSpawns().get(1).getZ()+0.5;
+				Location location = new Location(mapWorld, x, y, z);
+				target.getP().teleport(location);
+				target.getP().sendMessage(ChatColor.GREEN + SkyWarsReloaded.get().getConfig().getString("messages.spectating"));
 			} else {
 				deletePlayer(target, false);
 			}
@@ -568,14 +575,14 @@ public class Game {
 					}
 					gPlayer.setGamesPlayed(gPlayer.getGamesPlayed() + 1);
 					for (GamePlayer gamePlayer: SkyWarsReloaded.getPC().getAll()) {
-						gamePlayer.getP().sendMessage(ChatColor.BLUE + "" + gPlayer.getP().getName() + ChatColor.GREEN + " has Won on the map " + ChatColor.BLUE + mapName);
+						gamePlayer.getP().sendMessage(ChatColor.BLUE + "" + gPlayer.getP().getName() + ChatColor.GREEN + " " + SkyWarsReloaded.get().getConfig().getString("messages.gameWon") + " " + ChatColor.BLUE + mapName);
 					}
 					if (allowSpectating) {
 						SkyWarsReloaded.getSpectate().setSpectating(gPlayer.getP(), true, true);
 						gPlayer.setSpectating(true);
-						gPlayer.getP().sendMessage(ChatColor.GREEN + "You are now spectating. Type /swr quit to leave the game!");
+						gPlayer.getP().sendMessage(ChatColor.GREEN + SkyWarsReloaded.get().getConfig().getString("messages.spectating"));
 						for (GamePlayer gamePlayer: gPlayers) {
-							gamePlayer.getP().sendMessage(ChatColor.BLUE + "Game is ending. You will be teleported to Spawn in 30 seconds!");
+							gamePlayer.getP().sendMessage(ChatColor.BLUE + SkyWarsReloaded.get().getConfig().getString("messages.gameEnding"));
 						}
 						SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 							public void run() {
@@ -593,6 +600,41 @@ public class Game {
 	
 	public GameMap getMap() {
 		return gameMap;
+	}
+	
+	private String getDeathMessage(DamageCause dCause, boolean withHelp) {
+		String first = "";
+		String second = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.secondPart");
+		
+		if (dCause.equals(DamageCause.BLOCK_EXPLOSION) || dCause.equals(DamageCause.ENTITY_EXPLOSION)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.explosion");
+		} else if (dCause.equals(DamageCause.DROWNING)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.drowning");
+		} else if (dCause.equals(DamageCause.FIRE) || dCause.equals(DamageCause.FIRE_TICK)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.fire");
+		} else if (dCause.equals(DamageCause.ENTITY_ATTACK)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.pvp");
+			second = "";
+		} else if (dCause.equals(DamageCause.FALLING_BLOCK)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.fallingBlock");
+		} else if (dCause.equals(DamageCause.LAVA)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.lava");
+		} else if (dCause.equals(DamageCause.PROJECTILE)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.projectile");
+			second = "";
+		} else if (dCause.equals(DamageCause.SUFFOCATION)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.suffocation");
+		} else if (dCause.equals(DamageCause.VOID)) {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.void");
+		} else {
+			first = " " + SkyWarsReloaded.get().getConfig().getString("messages.death.general");
+		}
+		
+		if (withHelp) {
+			return first + second;
+		} else {
+			return first + "!";
+		}
 	}
 
 }

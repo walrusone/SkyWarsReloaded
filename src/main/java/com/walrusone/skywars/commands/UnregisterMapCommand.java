@@ -1,7 +1,5 @@
 package com.walrusone.skywars.commands;
 
-import java.io.File;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 
-public class RegisterMapCommand implements CommandExecutor {
+public class UnregisterMapCommand implements CommandExecutor {
 
 	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -29,22 +27,17 @@ public class RegisterMapCommand implements CommandExecutor {
 			if (args.length == 2) {
 				String worldName = args[1].toLowerCase();
 				if (SkyWarsReloaded.getMC().mapExists(worldName)) {
-					File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
-					File newMap = new File (dataDirectory, worldName);
-					if (newMap.isDirectory()) {
-						if (SkyWarsReloaded.getMC().registerMap(worldName)) {
-							sender.sendMessage(ChatColor.RED + "The map " + worldName + " was successfully registered!");
-						} else {
-							sender.sendMessage(ChatColor.RED + "The map " + worldName + " could not be registered! See Console Log for Details");
-						}
+					if (SkyWarsReloaded.getMC().mapRegistered(worldName)) {
+						SkyWarsReloaded.getMC().removeMap(worldName);
+						sender.sendMessage(ChatColor.RED + "Map " + worldName + " was unregistered!");
 					} else {
-						sender.sendMessage(ChatColor.RED + "The map does not exist in the Maps directory! Have you saved the map?");
+						sender.sendMessage(ChatColor.RED + "The map is not registered!");
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "There is no map by that name! Create the map first!");
+					sender.sendMessage(ChatColor.RED + "The map does not Exist!");
 				}
 			}else {
-				sender.sendMessage(ChatColor.RED + "USAGE: /swr register <map name>");
+				sender.sendMessage(ChatColor.RED + "USAGE: /swr unregister <map name>");
 			}
 		} 
 		return true;

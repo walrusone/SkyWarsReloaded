@@ -43,9 +43,9 @@ public class DataStorage {
             fc.set("score", player.getScore());
             double killDeath = 0;
             if (player.getDeaths() != 0) {
-                killDeath = player.getKills()/player.getDeaths();
+                killDeath = ((double) player.getKills())/player.getDeaths();
             }
-            fc.set("killdeath", killDeath);
+            fc.set("killDeath", killDeath);
             fc.set("blocksPlaced", player.getBlocks());
             fc.save(playerFile);
             
@@ -79,7 +79,7 @@ public class DataStorage {
 	                    preparedStatement.setInt(5, player.getDeaths());
 	                    double killDeath = 0;
 	                    if (player.getDeaths() != 0) {
-    	                    killDeath = player.getKills()/player.getDeaths();
+	                    	killDeath = ((double) player.getKills())/player.getDeaths();
 	                    }
 	                    preparedStatement.setDouble(6, killDeath);
 	                    preparedStatement.setInt(7, player.getBlocks());
@@ -128,9 +128,9 @@ public class DataStorage {
                     fc.set("score", player.getScore());
                     double killDeath = 0;
                     if (player.getDeaths() != 0) {
-                        killDeath = player.getKills()/player.getDeaths();
+                    	killDeath = ((double) player.getKills())/player.getDeaths();
                     }
-                    fc.set("killdeath", killDeath);
+                    fc.set("killDeath", killDeath);
                     fc.set("blocksPlaced", player.getBlocks());
                     fc.save(playerFile);
                     
@@ -164,7 +164,7 @@ public class DataStorage {
         	                    preparedStatement.setInt(5, player.getDeaths());
         	                    double killDeath = 0;
         	                    if (player.getDeaths() != 0) {
-            	                    killDeath = player.getKills()/player.getDeaths();
+        	                    	killDeath = ((double) player.getKills())/player.getDeaths();
         	                    }
         	                    preparedStatement.setDouble(6, killDeath);
         	                    preparedStatement.setInt(7, player.getBlocks());

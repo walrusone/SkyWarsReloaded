@@ -1,16 +1,19 @@
 # The material this kit should have in the inventory menu
 icon: diamond_sword
-# The position the kit will hold in the inventory menu.
+# The position the kit will hold in the inventory menu starting from the top left and moving right. 
+# No two kits can use the same number. This value allows you to sort the kits however you want. 
 menuPostion: 0
-# Gives the player the permission to purchase this kit through economy(optional)
+# The cost of the kit (optional)
 cost: 15000000
-# Additional text added to the lores of the item in the inventory menu (optional)
+# Additional text added to the lores of the item in the inventory menu. You can use color codes at the start of each line. (optional)
 details:
 - '&aHello'
 - '&eHello'
 - '&dHello'
 - ' '
-# The items in this kit
+# The items in this kit. First item should be the material name (as found on http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html)
+# The second number is the quantity of the item that will be given. 
+# The third item and so on is for Enchantments. You can add multiple enchantments by putting a space between each one. 
 items:
 - diamond_sword 1 sharpness:5
 - diamond_helmet 1 protection:4

@@ -27,7 +27,7 @@ public class ListMapsCommand implements CommandExecutor {
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
-				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps (Green = registered, Red = unregistered):");
+				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps (" + ChatColor.GREEN + "Green = registered" + ChatColor.BLUE + ", " + ChatColor.RED + "Red = unregistered" + ChatColor.BLUE + ")");
 				ArrayList<String> maps = SkyWarsReloaded.getMC().getEditMaps();
 				for (String name: maps) {
 					if (SkyWarsReloaded.getMC().mapRegistered(name)) {

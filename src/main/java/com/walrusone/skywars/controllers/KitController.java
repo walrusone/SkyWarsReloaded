@@ -118,8 +118,11 @@ public class KitController {
 
                 if (isPurchaseAble(kit)) {
                     if (!hasFreePermission(event.getPlayer(), kit)) {
-                        if (!canPurchase(gamePlayer, kit)) {
-                            event.getPlayer().sendMessage("Not enough score to purchase this kit!");
+                    	if (!hasPermission(event.getPlayer(), kit)) {
+                            event.getPlayer().sendMessage("No permission to use this kit!");
+                            return;
+                    	} else if (!canPurchase(gamePlayer, kit)) {
+                            event.getPlayer().sendMessage("Not enough balance to purchase this kit!");
                             return;
                         }
                         SkyWarsReloaded.econ.withdrawPlayer(gamePlayer.getP(), kit.getCost());

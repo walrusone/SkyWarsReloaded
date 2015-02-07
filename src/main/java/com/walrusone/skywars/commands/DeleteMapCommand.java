@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 
-public class SaveMapCommand implements CommandExecutor {
+public class DeleteMapCommand implements CommandExecutor {
 	
 	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -34,35 +34,38 @@ public class SaveMapCommand implements CommandExecutor {
 					if (world.getName().equalsIgnoreCase(worldName)) {
 						World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 						for (Player player: editWorld.getPlayers()) {
-							String world2 = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-							int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
-							int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
-							int z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
-							Location spawn;
-							if (world != null ) {
-								spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world2), x, y, z);
-							} else {
-								spawn = SkyWarsReloaded.getPC().getPlayer(player).getRespawn();
-							}
-							player.teleport(spawn);
+							player.teleport(new Location(SkyWarsReloaded.get().getServer().getWorld("world"), -250, 64, -50));
 						}
 						editWorld.save();
 						SkyWarsReloaded.getWC().unloadWorld(worldName);
 						File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
 						File target = new File (dataDirectory, worldName);
 						File source = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
-						SkyWarsReloaded.getWC().copyWorld(source, target);
+						SkyWarsReloaded.getWC().deleteWorld(target);
 						SkyWarsReloaded.getWC().deleteWorld(source);
-						sender.sendMessage(ChatColor.RED + "The map " + worldName + " was saved!");
 						if (SkyWarsReloaded.getMC().mapRegistered(worldName)) {
-							sender.sendMessage(ChatColor.RED + "Reregister the map to have your changes updated!");
+							SkyWarsReloaded.getMC().removeMap(worldName);
 						}
+						if (SkyWarsReloaded.getMC().mapExists(worldName)) {
+							SkyWarsReloaded.getMC().removeEditMap(worldName);
+						}
+						sender.sendMessage(ChatColor.RED + "Map " + worldName + " was deleted!");
 						return true;
 					}
 				}
-				sender.sendMessage(ChatColor.RED + "The map " + worldName + " is not currently being edited!");
+				File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
+				File target = new File (dataDirectory, worldName);
+				SkyWarsReloaded.getWC().deleteWorld(target);
+				sender.sendMessage(ChatColor.RED + "Map " + worldName + " was deleted!");
+				if (SkyWarsReloaded.getMC().mapRegistered(worldName)) {
+					SkyWarsReloaded.getMC().removeMap(worldName);
+				}
+				if (SkyWarsReloaded.getMC().mapExists(worldName)) {
+					SkyWarsReloaded.getMC().removeEditMap(worldName);
+				}
+				return true;
 			} else {
-				sender.sendMessage(ChatColor.RED + "USAGE: /swr save <map name>");
+				sender.sendMessage(ChatColor.RED + "USAGE: /swr delete <map name>");
 			}
 		} 
 		return true;

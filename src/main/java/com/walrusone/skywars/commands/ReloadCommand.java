@@ -17,7 +17,7 @@ public class ReloadCommand implements CommandExecutor {
 			hasPerm = true;
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
-			if (SkyWarsReloaded.perms.has(player, "swr.maps")) {
+			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
 				hasPerm = true;
 			}
 		} else {

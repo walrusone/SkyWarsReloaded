@@ -19,6 +19,9 @@ permissions:
   swr.play:
     description: Gives access to the swr join and quit commands
     default: true
+  swr.admin:
+    description: Gives access to the swr setspawn and reload commands
+    default: op
   swr.maps:
     description: Allows the user to create, edit, save and register maps using swr create, edit, save and register commands.
     default: op

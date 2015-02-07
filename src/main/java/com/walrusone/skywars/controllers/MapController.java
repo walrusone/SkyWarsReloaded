@@ -28,14 +28,13 @@ public class MapController {
 		for (File map : maps.listFiles()) {
 			if (map.isDirectory()) {
 				registerMap(map.getName());
-				if (mapExists(map.getName().toLowerCase())) {
-					editMaps.add(map.getName().toLowerCase());
-				}
+				editMaps.add(map.getName().toLowerCase());
 			}
 		}
 	}
 	
-	public void registerMap(String name) {
+	public boolean registerMap(String name) {
+		boolean result;
 		WorldController wc = SkyWarsReloaded.getWC();
 		File source = new File(maps, name);
 		File target = new File(rootDirectory, name);
@@ -52,27 +51,31 @@ public class MapController {
 		  	if (!gameMap.containsSpawns()) {
 		  		if (name.equalsIgnoreCase("lobby")) {
 		  			SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have at least 1 Spawn Point!");
+		  			result = false;;
 		  		} else {
 		  			SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have " + SkyWarsReloaded.get().getConfig().getInt("gameVariables.numberOfSpawns") + " Spawn Points");
+		  			result = false;
 		  		}
 			} else {
 		  		mapList.put(name.toLowerCase(), gameMap);
 		  		SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
+		  		result = true;
 		  	}
 		} else {
 			SkyWarsReloaded.get().getLogger().info("Could Not Load Map: " + name);
-			wc.deleteWorld(target);
+			result = false;
 		}
 		wc.unloadWorld(name);
 		wc.deleteWorld(target);
+		return result;
 	}
 	
 	public GameMap getMap(String name){
 		return mapList.get(name);
 	}
 	
-	public GameMap removeMap(String name){
-		return mapList.remove(name);
+	public void removeMap(String name){
+		 mapList.remove(name);
 	}
 
 	public List<String> getMaps() {
@@ -81,6 +84,10 @@ public class MapController {
 	
 	public void addEditMap(String name) {
 		editMaps.add(name);
+	}
+	
+	public void removeEditMap(String name) {
+		editMaps.remove(name);
 	}
 	
 	public ArrayList<String> getEditMaps() {

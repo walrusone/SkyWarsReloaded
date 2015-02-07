@@ -37,3 +37,25 @@ sqldatabase:
   username: username
   password: password
 resaveDefaultMaps: true
+messages:
+  queue: You have been added to the Game Queue. You will be teleported to Lobby enough players have joined!
+  votingStart: Click a Sign to Vote for a Map!
+  votingEnd: Voted has Ended! Game Starting!
+  morePlayers: NEED MORE PLAYERS TO START GAME!
+  leftTheGame: has left the game!
+  spectating: You are now spectating. Type /swr quit to leave the game!
+  gameWon: has Won on the map
+  gameEnding: Game is ending. You will be teleported to Spawn in 30 seconds!
+  death:
+    quitWhileTagged: tried to run away! But he was killed by
+    explosion: was blown to pieces
+    drowning: swam with the fishes
+    fire: was burnt to a crisp
+    pvp: was utterly destroyed by
+    fallingBlock: was crushed
+    lava: took a bath in lava
+    projectile: was shot to death by
+    suffocation: had some trouble breathing
+    void: was taken by the darkness
+    general: died due to unforeseen circumstances
+    secondPart: with help from 
