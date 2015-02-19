@@ -1,7 +1,6 @@
 package com.walrusone.skywars.listeners;
 
 import com.google.common.collect.Maps;
-import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.IconMenu;
 
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public class IconMenuController implements Listener {
 
     public void create(Player player, String name, int size, IconMenu.OptionClickEventHandler handler) {
         destroy(player);
-        menu.put(player, new IconMenu(name, size, handler, SkyWarsReloaded.get()));
+        menu.put(player, new IconMenu(name, size, handler));
     }
 
     public void show(@Nonnull Player player) {

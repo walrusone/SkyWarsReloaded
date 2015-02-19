@@ -1,6 +1,6 @@
 package com.walrusone.skywars.commands;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class ListMapsCommand implements CommandExecutor {
 	
@@ -23,18 +24,14 @@ public class ListMapsCommand implements CommandExecutor {
 				hasPerm = true;
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
-				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps (" + ChatColor.GREEN + "Green = registered" + ChatColor.BLUE + ", " + ChatColor.RED + "Red = unregistered" + ChatColor.BLUE + ")");
-				ArrayList<String> maps = SkyWarsReloaded.getMC().getEditMaps();
+				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps");
+				CopyOnWriteArrayList<String> maps = SkyWarsReloaded.getMC().getMaps();
 				for (String name: maps) {
-					if (SkyWarsReloaded.getMC().mapRegistered(name)) {
-						sender.sendMessage(ChatColor.GREEN + name);
-					} else {
-						sender.sendMessage(ChatColor.RED + name);
-					}
+					sender.sendMessage(ChatColor.GREEN + name);
 				}
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr list");

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywars</groupId>
   <artifactId>SkyWarsReloaded</artifactId>
-  <version>V0.1</version>
+  <version>V0.9</version>
   <build>
     <plugins>
       <plugin>
@@ -54,6 +54,10 @@
       <id>vault-repo</id>
       <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
     </repository>
+    <repository>
+      <id>sk89q-repo</id>
+      <url>http://maven.sk89q.com/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -68,6 +72,19 @@
       <version>LATEST</version>
       <scope>system</scope>
       <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded/lib/SpectatorPlus-S2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q</groupId>
+      <artifactId>worldedit</artifactId>
+      <version>LATEST</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>craftbukkit</artifactId>
+      <version>LATEST</version>
+      <scope>system</scope>
+      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>

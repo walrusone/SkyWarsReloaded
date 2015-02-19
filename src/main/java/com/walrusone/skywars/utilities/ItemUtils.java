@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ItemUtils {
 
@@ -46,10 +48,67 @@ public class ItemUtils {
         }
         return itemStack;
     }
+    
+    public static PotionEffect parseEffect(List<String> effect) {
+        if (effect.size() < 2) {
+            return null;
+        }
+
+        PotionEffect potionEffect = null;
+
+        try {
+        	int length;
+        	int level;
+        	PotionEffectType pType = getPotionType(effect.get(0));
+           	if (Integer.parseInt(effect.get(1)) == -1) {
+        	   length = Integer.MAX_VALUE;
+           	} else {
+        	   length = 20 * Integer.parseInt(effect.get(1));
+           	}
+           	level = Integer.parseInt(effect.get(2));
+           	
+           	potionEffect = new PotionEffect(pType, length, level);
+
+        } catch (Exception ignored) {
+
+        }
+        return potionEffect;
+    }
+
+    
+    private static PotionEffectType getPotionType(String type) {
+    	switch (type.toLowerCase()) {
+    	case "speed": return PotionEffectType.SPEED;
+    	case "slowness": return PotionEffectType.SLOW;
+    	case "haste": return PotionEffectType.FAST_DIGGING;
+    	case "miningfatique": return PotionEffectType.SLOW_DIGGING;
+    	case "strength": return PotionEffectType.INCREASE_DAMAGE;
+    	case "instanthealth": return PotionEffectType.HEAL;
+    	case "instantdamage": return PotionEffectType.HARM;
+    	case "jumpboost": return PotionEffectType.JUMP;
+    	case "nausea": return PotionEffectType.CONFUSION;
+    	case "regeneration": return PotionEffectType.REGENERATION;
+    	case "resistance": return PotionEffectType.DAMAGE_RESISTANCE;
+    	case "fireresistance": return PotionEffectType.FIRE_RESISTANCE;
+    	case "waterbreathing": return PotionEffectType.WATER_BREATHING;
+    	case "invisibility": return PotionEffectType.INVISIBILITY;
+    	case "blindness": return PotionEffectType.BLINDNESS;
+    	case "nightvision": return PotionEffectType.NIGHT_VISION;
+    	case "hunger": return PotionEffectType.HUNGER;
+    	case "weakness": return PotionEffectType.WEAKNESS;
+    	case "poison": return PotionEffectType.POISON;
+    	case "wither": return PotionEffectType.WITHER;
+    	case "healthboost": return PotionEffectType.HEALTH_BOOST;
+    	case "absorption": return PotionEffectType.ABSORPTION;
+    	case "saturation": return PotionEffectType.SATURATION;
+    	default: return null;	
+    	}
+    }
 
     private static Enchantment getEnchant(String enchant) {
     	switch (enchant.toLowerCase()) {
     	case "protection": return Enchantment.PROTECTION_ENVIRONMENTAL;
+    	case "projectileprotection": return Enchantment.PROTECTION_PROJECTILE;
     	case "fireprotection": return Enchantment.PROTECTION_FIRE;
     	case "featherfall": return Enchantment.PROTECTION_FALL;
     	case "blastprotection": return Enchantment.PROTECTION_EXPLOSIONS;

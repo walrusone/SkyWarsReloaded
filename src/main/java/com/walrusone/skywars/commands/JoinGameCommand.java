@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class JoinGameCommand implements CommandExecutor {
 
@@ -16,14 +17,14 @@ public class JoinGameCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		boolean hasPerm = false;
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Must be a player to play a game!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (SkyWarsReloaded.perms.has(player, "swr.play")) {
 				hasPerm = true;
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
@@ -32,7 +33,12 @@ public class JoinGameCommand implements CommandExecutor {
 					GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player);
 					if (!SkyWarsReloaded.getGC().inGame(gPlayer)) {
 						Game game = SkyWarsReloaded.getGC().findGame();
-						game.addPlayer(gPlayer);
+	                    if (game != null) {
+	                        game.addPlayer(gPlayer);
+	                    } else {
+	                    	SkyWarsReloaded.getGC().addToQueue(gPlayer);
+	                    	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
+	                    }
 					} else {
 						sender.sendMessage(ChatColor.RED + "You cannot use this command in game!");
 					}

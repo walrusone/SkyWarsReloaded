@@ -31,6 +31,7 @@ public class GamePlayer {
 	private Tagged taggedBy;
 	private Location respawn;
 	private Game game = null;
+	private Game specGame = null;
 	
 	public GamePlayer (Player player) {
 		p = player;
@@ -57,10 +58,6 @@ public class GamePlayer {
 	public void resetInventory() {
 		p.getInventory().setContents(invMap.get(p.getName()));
 		p.getInventory().setArmorContents(armMap.get(p.getName()));
-	}
-	
-	public void giveKit() {
-
 	}
 	
 	public Boolean removeBoost() {
@@ -262,6 +259,14 @@ public class GamePlayer {
 	
 	public void setBlocks(int s) {
 		blocksPlaced = s;
+	}
+
+	public void setSpecGame(Game game) {
+		specGame = game;
+	}
+	
+	public Game getSpecGame() {
+		return specGame;
 	}
 	
 }

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class SetSpawnCommand implements CommandExecutor {
 	
@@ -14,14 +15,14 @@ public class SetSpawnCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		boolean hasPerm = false;
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Must be a player to set the spawn!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
 				hasPerm = true;
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
@@ -31,17 +32,17 @@ public class SetSpawnCommand implements CommandExecutor {
 					SkyWarsReloaded.get().getConfig().set("spawn.x", p.getLocation().getBlockX());
 					SkyWarsReloaded.get().getConfig().set("spawn.y", p.getLocation().getBlockY());
 					SkyWarsReloaded.get().getConfig().set("spawn.z", p.getLocation().getBlockZ());
+					SkyWarsReloaded.get().getConfig().set("spawn.yaw", p.getLocation().getYaw());
+					SkyWarsReloaded.get().getConfig().set("spawn.pitch", p.getLocation().getPitch());
 					SkyWarsReloaded.get().saveConfig();
-					p.sendMessage(ChatColor.GREEN + "SkyWars Spawn Set!");
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.spawnset"));
 				}
 			
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr setspawn");
 			}
 		
-		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
-		}
+		} 
 	return true;
 	}
 	

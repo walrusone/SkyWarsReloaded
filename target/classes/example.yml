@@ -20,3 +20,10 @@ items:
 - diamond_chestplate 1 protection:4
 - diamond_leggings 1 protection:4
 - diamond_boots 1 protection:4
+# The potion effects give with this kit. First item should be the potion effect name (as found on http://minecraft.gamepedia.com/Status_effect). No Spaces.
+# The second number is length of time (in seconds) the effect lasts (-1 is Infinite). 
+# The third item is the potion strength level.
+potionEffects:
+- strength -1 2
+- speed 30 1
+- fireresistance 300 3

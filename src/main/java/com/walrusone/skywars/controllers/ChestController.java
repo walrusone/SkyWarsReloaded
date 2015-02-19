@@ -11,7 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -20,9 +22,13 @@ public class ChestController {
 
     private final List<ChestItem> chestItemList = Lists.newArrayList();
     private final Random random = new Random();
+    private List<Integer> randomLoc = new ArrayList<Integer>();
 
     public ChestController() {
         load();
+        for (int i = 0; i < 27; i++) {
+        	randomLoc.add(i);
+        }
     }
 
     public void load() {
@@ -57,11 +63,11 @@ public class ChestController {
     public void populateChest(Chest chest) {
         Inventory inventory = chest.getBlockInventory();
         int added = 0;
+        Collections.shuffle(randomLoc);
 
         for (ChestItem chestItem : chestItemList) {
             if (random.nextInt(100) + 1 <= chestItem.getChance()) {
-                inventory.addItem(chestItem.getItem());
-
+                inventory.setItem(randomLoc.get(added), chestItem.getItem());
                 if (added++ > inventory.getSize()) {
                     break;
                 }

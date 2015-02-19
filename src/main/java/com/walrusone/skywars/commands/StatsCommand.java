@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GamePlayer;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class StatsCommand implements CommandExecutor {
 	private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
@@ -18,24 +19,24 @@ public class StatsCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		boolean hasPerm = false;
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Must be a player to play a game!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (SkyWarsReloaded.perms.has(player, "swr.play")) {
 				hasPerm = true;
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		}
 		if (hasPerm) {
-			int cooldownLength = 60;
+			int cooldownLength = SkyWarsReloaded.get().getConfig().getInt("gameVariables.statsCommandCooldown");
 			if (args.length == 1) {
 				if (sender instanceof Player) {
 					Player player = (Player) sender;
 					if(cooldown.containsKey(player)) {
 			            long secondsLeft = ((cooldown.get(player)/1000) + cooldownLength) - (System.currentTimeMillis()/1000);
 			            if(secondsLeft>0) {
-			                sender.sendMessage("You cant use that commands for another "+ secondsLeft +" seconds!");
+			            	sender.sendMessage(new Messaging.MessageFormatter().setVariable("timeleft", "" + secondsLeft).format("command.stats-cooldown"));
 			                return true;
 			            } 
 			        } 

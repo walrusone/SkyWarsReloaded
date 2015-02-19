@@ -1,14 +1,28 @@
 #Default Config
 #gameVariables: 
 #  minPlayers: 6			//number of players needed before queue players are teleported to lobby
-#  numberOfSpawns: 8		//number of spawns per map (maps will only load if they contain this number of spawn points (ie beacons))
 #  allowSpectating: false   //if SpectatorPlus is installed, setting this to true will put players in spectator mode when they lose all their lives. 
 #  usingEconomy: false      //if set to true, the amounts listed in pointsPerKill and pointsPerWin will be added to players balance for kills and wins. pointsLostPerDeath will be subtracted from balance on death.
-#  lives: 5					//number of lives each player gets per gets
-#  powerUpLength: 15        //number of seconds that powerups last
+#  noFallDamage: true		//if set to true, players will not be damaged when they fall in game. 
 #  pointsPerKill: 2			//number of score points players receive per kill or lose per death.
-#  pointsPerWin: 10			//number of score points players recieve per win.
+#  pointsPerWin: 10			//number of score points players receive per win.
+#  pointsLostPerDeath: 1	//number of score points players lose per death.
+#  pointsLostPerLeave: 1	//number of score points players lose if they leave a match mid-game.
+#  maxMapSize: 400			//maximum square size of the game map. The map should be centered around 0, 0, 0
+#  maxNumberOfGames: -1		//the maximum number of games that the plugin will allow at one time. -1 means no limit. If a player tries to join a game and the limit is already met, they are added to a queue and will join the next available game.  
+#  kitsEnabled: true		//set to false to disable kits.
+#  shopsEnabled: true       //when set to true, players can use the swr shop command to buy items in game. Shop is setup in the shop.yml.
+#  timeAfterGame: 10		//the amount of time after the game ends before all players are teleported to spawn. 
+#  statsCommandCooldown: 60	//the amount of cooldown before a player can reuse the stats command.
+#  directToLobby: true		//when enabled, players are sent directly to the lobby when joining a game. If disabled, players are placed in a queue and will be sent to the lobby when the minimum number of players needed is met. 
+#  giveSpectateItem: true	//when this is enabled, any player who has the spectate permission will be given a special item that allows them to spectate other games when they join.
+#  addScorePrefix: true		//when enabled, a players score will be put in front of any message they send. 
 #spawn:						//use setspawn command to set a spawn point where people are teleported when leaving a game. If no spawn is set, they will be teleported to their previous location.
+#commandWhiteList: 			//commands placed under the whitelist can be used by players ingame. 
+# - '/swr quit'
+# - '/swr kit'
+# - '/swr shop'
+# - '/swr'
 #sqldatabase:
 #  enabled: false			//enable to store stats in a SQL database
 #  saveInterval: 5			//time in minutes between SQL database updates - how often the plugin sends player stats to the database
@@ -18,16 +32,37 @@
 #  username: username      	//username for login to the SQL database
 #  password: password		//password for login to the SQL database
 #resaveDefaultMaps: false	//When set to true the plugin will reload the maps that came with the plugin.
+#bungeeMode:
+#  enabled: false			//When enabled, the plugin will work with the SkyWarsReloaded bungeeMode plugin. 
+#  name: test				//The name that will be given to names on this server - this will be required when setting up signs on the lobby server (It must be unique for each server).
+#  lobbyServer: lobby		//The name of the server (as found in bungeecord) where players will be sent when the game ends. 
 
 gameVariables: 
   minPlayers: 6
-  numberOfSpawns: 8
   allowSpectating: false
   useEconomy: false
+  noFallDamage: true
   pointsPerKill: 2
   pointsLostPerDeath: 1
+  pointsLostPerLeave: 1
   pointsPerWin: 10
+  maxMapSize: 200
+  mapsPerWorld: 100
+  maxNumberOfGames: -1
+  kitsEnabled: true
+  shopsEnabled: true
+  timeAfterGame: 10
+  statsCommandCooldown: 60
+  directToLobby: true
+  directToCages: false
+  giveSpectateItem: true
+  addScorePrefix: true
 spawn:
+commandWhitelist:
+- '/swr quit'
+- '/swr kit'
+- '/swr shop'
+- '/swr'
 sqldatabase:
   enabled: false
   saveInterval: 5
@@ -37,25 +72,7 @@ sqldatabase:
   username: username
   password: password
 resaveDefaultMaps: true
-messages:
-  queue: You have been added to the Game Queue. You will be teleported to Lobby enough players have joined!
-  votingStart: Click a Sign to Vote for a Map!
-  votingEnd: Voted has Ended! Game Starting!
-  morePlayers: NEED MORE PLAYERS TO START GAME!
-  leftTheGame: has left the game!
-  spectating: You are now spectating. Type /swr quit to leave the game!
-  gameWon: has Won on the map
-  gameEnding: Game is ending. You will be teleported to Spawn in 30 seconds!
-  death:
-    quitWhileTagged: tried to run away! But he was killed by
-    explosion: was blown to pieces
-    drowning: swam with the fishes
-    fire: was burnt to a crisp
-    pvp: was utterly destroyed by
-    fallingBlock: was crushed
-    lava: took a bath in lava
-    projectile: was shot to death by
-    suffocation: had some trouble breathing
-    void: was taken by the darkness
-    general: died due to unforeseen circumstances
-    secondPart: with help from 
+bungeeMode:
+  enabled: false
+  name: test
+  lobbyServer: lobby

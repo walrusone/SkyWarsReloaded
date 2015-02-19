@@ -1,6 +1,6 @@
 name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
-version: 0.1
+version: 0.9
 
 depend: [Vault]
 softdepend: [SpectatorPlus]
@@ -16,6 +16,7 @@ permissions:
       swr.play: true
       swr.maps: true
       swr.signs: true
+      swr.spectate: true
   swr.play:
     description: Gives access to the swr join and quit commands
     default: true
@@ -27,4 +28,7 @@ permissions:
     default: op
   swr.signs:
     description: Allows the user to create and destory swr signs.
+    default: op
+  swr.spectate:    
+    description: Allows the user to spectate games.
     default: op

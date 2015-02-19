@@ -7,14 +7,23 @@ import com.walrusone.skywars.game.Game.GameState;
 import com.walrusone.skywars.game.GameKit;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.IconMenu;
+import com.walrusone.skywars.utilities.Messaging;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +50,7 @@ public class KitController {
                 return;
             }
             SkyWarsReloaded.get().saveResource("example.yml", true);
-            SkyWarsReloaded.getWC().copyWorld(new File(dataDirectory, "example.yml"), new File(kitsDirectory, "example.yml"));
+            copyFiles(new File(dataDirectory, "example.yml"), new File(kitsDirectory, "example.yml"));
             File delete = new File(dataDirectory, "example.yml");
             delete.delete();
         }
@@ -64,6 +73,35 @@ public class KitController {
         }
     }
     
+    public void copyFiles(File source, File target){
+	    try {
+	        ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
+	        if(!ignore.contains(source.getName())) {
+	            if(source.isDirectory()) {
+	                if(!target.exists())
+	                target.mkdirs();
+	                String files[] = source.list();
+	                for (String file : files) {
+	                    File srcFile = new File(source, file);
+	                    File destFile = new File(target, file);
+	                    copyFiles(srcFile, destFile);
+	                }
+	            } else {
+	                InputStream in = new FileInputStream(source);
+	                OutputStream out = new FileOutputStream(target);
+	                byte[] buffer = new byte[1024];
+	                int length;
+	                while ((length = in.read(buffer)) > 0)
+	                    out.write(buffer, 0, length);
+	                in.close();
+	                out.close();
+	            }
+	        }
+	    } catch (IOException e) {
+	 
+	    }
+	}
+    
     public boolean hasPermission(Player player, GameKit kit) {
         return player.isOp() || SkyWarsReloaded.perms.has(player, premissionPrefix + kit.getName().toLowerCase());
     }
@@ -73,7 +111,11 @@ public class KitController {
     }
 
     public boolean isPurchaseAble(GameKit kit) {
-        return kit.getCost() > 0;
+        boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useEconomy");
+        if (economy) {
+            return kit.getCost() > 0;
+        }
+        return false;
     }
 
     public boolean canPurchase(GamePlayer gamePlayer, GameKit kit) {
@@ -84,6 +126,12 @@ public class KitController {
         for (ItemStack itemStack : kit.getItems()) {
             inventory.addItem(itemStack);
         }
+    }
+    
+    public void givePotionEffects(GamePlayer gamePlayer, GameKit kit) {
+    	for (PotionEffect pEffect: kit.getPotionEffects()) {
+    		gamePlayer.getP().addPotionEffect(pEffect);
+    	}
     }
 
     public GameKit getByName(String name) {
@@ -102,12 +150,12 @@ public class KitController {
             @Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 if (gamePlayer.isPlaying()) {
-                    event.getPlayer().sendMessage("You cannot select a kit in game!");
+                	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.can-not-pick-kit"));
                     return;
                 }
 
                 if (gamePlayer.getGame().getState() != GameState.INLOBBY) {
-                    event.getPlayer().sendMessage("You can not pick a kit at this time!");
+                	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.can-not-pick-kit"));
                     return;
                 }
 
@@ -116,29 +164,27 @@ public class KitController {
                     return;
                 }
 
-                if (isPurchaseAble(kit)) {
-                    if (!hasFreePermission(event.getPlayer(), kit)) {
-                    	if (!hasPermission(event.getPlayer(), kit)) {
-                            event.getPlayer().sendMessage("No permission to use this kit!");
-                            return;
-                    	} else if (!canPurchase(gamePlayer, kit)) {
-                            event.getPlayer().sendMessage("Not enough balance to purchase this kit!");
-                            return;
-                        }
-                        SkyWarsReloaded.econ.withdrawPlayer(gamePlayer.getP(), kit.getCost());
-                    }
-                } else if (!hasPermission(event.getPlayer(), kit)) {
-                    event.getPlayer().sendMessage("No permission to use this kit!");
-                    return;
+                if (!hasPermission(event.getPlayer(), kit) && !hasFreePermission(event.getPlayer(), kit)) {
+                	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-permission-kit"));
+                	return;
                 }
+
+                if (!hasFreePermission(event.getPlayer(), kit)) {
+                	if (!canPurchase(gamePlayer, kit)) {
+                    		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.not-enough-balance"));
+                            return;
+                	} else {
+                        SkyWarsReloaded.econ.withdrawPlayer(gamePlayer.getP(), kit.getCost());
+                	}
+                }    
 
                 event.setWillClose(true);
                 event.setWillDestroy(true);
 
                 gamePlayer.setSelectedKit(kit);
                 gamePlayer.setKitSelected(true);
-
-                event.getPlayer().sendMessage(ChatColor.BLUE + "" + kit.getName() + " Selected! Enjoy your kit!");
+                
+                event.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("kit", kit.getName()).format("game.enjoy-kit"));
             }
         });
 

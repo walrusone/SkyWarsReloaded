@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class ReloadCommand implements CommandExecutor {
 	
@@ -21,16 +22,14 @@ public class ReloadCommand implements CommandExecutor {
 				hasPerm = true;
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use that command!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
-				if (sender instanceof Player) {
 					SkyWarsReloaded.get().reloadConfig();
 					SkyWarsReloaded.getKC().load();
 					SkyWarsReloaded.getCC().load();
-					
-				}
+					sender.sendMessage(new Messaging.MessageFormatter().withPrefix().format("command.reload"));
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr reload");
 			}

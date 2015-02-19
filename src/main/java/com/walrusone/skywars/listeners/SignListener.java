@@ -18,6 +18,7 @@ import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.game.Game.GameState;
+import com.walrusone.skywars.utilities.Messaging;
 
 public class SignListener implements Listener {
 
@@ -73,7 +74,7 @@ public class SignListener implements Listener {
     				 Game game = gPlayer.getGame();
     				 if (game.getState() == GameState.INLOBBY && !game.votingStatus()) {
      					Sign s = (Sign) e.getClickedBlock().getState();
-     					String mapName = s.getLine(0);
+     					String mapName = ChatColor.stripColor(s.getLine(0).trim());
      					gPlayer.setVoted(mapName);
      					game.updateSigns();
      				}
@@ -83,7 +84,12 @@ public class SignListener implements Listener {
     				 String line3 = ChatColor.stripColor(s.getLine(2));
     				 if  (line1.equalsIgnoreCase("bounce1234567") && line3.equalsIgnoreCase("join") && (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.play"))) {
     					 Game game = SkyWarsReloaded.getGC().findGame(); 
-    					 game.addPlayer(gPlayer);
+    	                    if (game != null) {
+    	                        game.addPlayer(gPlayer);
+    	                    } else {
+    	                    	SkyWarsReloaded.getGC().addToQueue(gPlayer);
+    	                    	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
+    	                    }
     				 }
     			 }
     		 }

@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
+
+import com.walrusone.skywars.SkyWarsReloaded;
 
 // https://forums.bukkit.org/threads/icon-menu.108342/
 public class IconMenu {
@@ -13,15 +14,13 @@ public class IconMenu {
     private String name;
     private int size;
     private OptionClickEventHandler handler;
-    private Plugin plugin;
     private String[] optionNames;
     private ItemStack[] optionIcons;
 
-    public IconMenu(String name, int size, OptionClickEventHandler handler, Plugin plugin) {
+    public IconMenu(String name, int size, OptionClickEventHandler handler) {
         this.name = name;
         this.size = size;
         this.handler = handler;
-        this.plugin = plugin;
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
     }
@@ -44,7 +43,6 @@ public class IconMenu {
 
     public void destroy() {
         this.handler = null;
-        this.plugin = null;
         this.optionNames = null;
         this.optionIcons = null;
     }
@@ -67,7 +65,7 @@ public class IconMenu {
         if (clickEvent.willClose()) {
             final Player player = (Player) event.getWhoClicked();
 
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), new Runnable() {
                 @Override
                 public void run() {
                     player.closeInventory();
