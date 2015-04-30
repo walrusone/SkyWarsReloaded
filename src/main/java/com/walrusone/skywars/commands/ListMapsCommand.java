@@ -1,6 +1,6 @@
 package com.walrusone.skywars.commands;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -28,10 +28,14 @@ public class ListMapsCommand implements CommandExecutor {
 		}
 		if (hasPerm) {
 			if (args.length == 1) {
-				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps");
-				CopyOnWriteArrayList<String> maps = SkyWarsReloaded.getMC().getMaps();
+				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.UNDERLINE + "Maps (" + ChatColor.GREEN + "Green = registered" + ChatColor.BLUE + ", " + ChatColor.RED + "Red = unregistered" + ChatColor.BLUE + ")");
+				ArrayList<String> maps = SkyWarsReloaded.getMC().getEditMaps();
 				for (String name: maps) {
-					sender.sendMessage(ChatColor.GREEN + name);
+					if (SkyWarsReloaded.getMC().mapRegistered(name)) {
+						sender.sendMessage(ChatColor.GREEN + name);
+					} else {
+						sender.sendMessage(ChatColor.RED + name);
+					}
 				}
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr list");

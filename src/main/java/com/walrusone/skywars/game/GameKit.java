@@ -1,5 +1,7 @@
 package com.walrusone.skywars.game;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -13,12 +15,14 @@ import org.bukkit.potion.PotionEffect;
 import com.google.common.collect.Lists;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.ItemUtils;
+import com.walrusone.skywars.utilities.Messaging;
 
 import net.milkbowl.vault.item.Items;
 
 public class GameKit {
 
     private String name;
+    private String kitName;
     private int cost;
     private List<ItemStack> items = Lists.newArrayList();
     private List<PotionEffect> potionEffects = Lists.newArrayList();
@@ -27,7 +31,7 @@ public class GameKit {
     private int position;
     private List<String> lores;
 
-    public GameKit(String name, FileConfiguration storage) {
+    public GameKit(String name, FileConfiguration storage, File kit) {
         try {
         	this.name = name;
 
@@ -53,6 +57,17 @@ public class GameKit {
                 }
             }
 
+           if (storage.getString("kitName") != null) {
+           	 	kitName = storage.getString("kitName");
+           } else {
+           		kitName = name;
+           		storage.set("kitName", name);
+           	try {
+					storage.save(kit);
+				} catch (IOException e) {
+				}
+           }
+            
             cost = storage.getInt("cost", 0);
             position = storage.getInt("menuPostion");
 
@@ -72,8 +87,8 @@ public class GameKit {
                     lores.add(ChatColor.translateAlternateColorCodes('&', string));
                 }
             }
-
-            lores.add(ChatColor.DARK_BLUE + "Contents");
+            String contents = new Messaging.MessageFormatter().format("kits.contents");
+            lores.add(contents);
             for (ItemStack itemStack : items) {
             	String enchanted = "";
             	if (ItemUtils.isEnchanted(itemStack)) {
@@ -82,11 +97,13 @@ public class GameKit {
     			lores.add(ChatColor.YELLOW + enchanted + ChatColor.WHITE + "" + Items.itemByStack(itemStack).getName());
             }
             lores.add(ChatColor.DARK_BLUE + " ");
-            lores.add(ChatColor.DARK_BLUE + "Potion Effects");
+            String potions = new Messaging.MessageFormatter().format("kits.potion-effects");
+            lores.add(potions);
             for (PotionEffect potionEffect: potionEffects) {
                 lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
             }
         } catch (NullPointerException e) {
+        	e.printStackTrace();
         	SkyWarsReloaded.get().getLogger().info("There is an error in the kit: " + ChatColor.RED + name); 
         }
     	
@@ -102,6 +119,10 @@ public class GameKit {
 
     public String getName() {
         return name;
+    }
+    
+    public String getKitName() {
+    	return kitName;
     }
 
     public int getCost() {

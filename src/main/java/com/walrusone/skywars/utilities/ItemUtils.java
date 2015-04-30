@@ -119,6 +119,7 @@ public class ItemUtils {
     	case "baneofarthropods": return Enchantment.DAMAGE_ARTHROPODS;
     	case "knockback": return Enchantment.KNOCKBACK;
     	case "fireaspect": return Enchantment.FIRE_ASPECT;
+    	case "depthstrider": return Enchantment.DEPTH_STRIDER;
     	case "looting": return Enchantment.LOOT_BONUS_MOBS;
     	case "power": return Enchantment.ARROW_DAMAGE;
     	case "punch": return Enchantment.ARROW_KNOCKBACK;
@@ -129,6 +130,7 @@ public class ItemUtils {
     	case "unbreaking": return Enchantment.DURABILITY;
     	case "fortune": return Enchantment.LOOT_BONUS_BLOCKS;
     	case "luckofthesea": return Enchantment.LUCK;
+    	case "luck": return Enchantment.LUCK;
     	case "lure": return Enchantment.LURE;
     	case "thorns": return Enchantment.THORNS;
     	default: return null;	

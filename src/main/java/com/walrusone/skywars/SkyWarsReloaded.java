@@ -1,56 +1,60 @@
 package com.walrusone.skywars;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.logging.Logger;
 
-import javax.annotation.Nonnull;
-
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.mcstats.MetricsLite;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.pgcraft.spectatorplus.SpectateAPI;
-import com.pgcraft.spectatorplus.SpectatorMode;
-import com.pgcraft.spectatorplus.SpectatorPlus;
-import com.walrusone.skywars.bungee.BungeeSocket;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.walrusone.skywars.commands.MainCommand;
 import com.walrusone.skywars.controllers.ChestController;
 import com.walrusone.skywars.controllers.GameController;
 import com.walrusone.skywars.controllers.KitController;
 import com.walrusone.skywars.controllers.MapController;
 import com.walrusone.skywars.controllers.PlayerController;
+import com.walrusone.skywars.controllers.ScoreboardController;
 import com.walrusone.skywars.controllers.ShopController;
+import com.walrusone.skywars.controllers.SpectateController;
 import com.walrusone.skywars.controllers.WorldController;
 import com.walrusone.skywars.dataStorage.DataStorage;
 import com.walrusone.skywars.dataStorage.Database;
 import com.walrusone.skywars.game.Game;
-import com.walrusone.skywars.game.Game.GameState;
+import com.walrusone.skywars.game.GameMap;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.listeners.IconMenuController;
+import com.walrusone.skywars.listeners.PingListener;
 import com.walrusone.skywars.listeners.PlayerListener;
 import com.walrusone.skywars.listeners.SignListener;
+import com.walrusone.skywars.listeners.SpectatorListener;
 import com.walrusone.skywars.runnables.CheckForMinPlayers;
 import com.walrusone.skywars.runnables.SavePlayers;
 import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.LoggerFilter;
+import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.SaveDefaultMaps;
  
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
-    private static SkyWarsReloaded instance;
+	private static SkyWarsReloaded instance;
     private GameController gc;
     private MapController mc;
     private WorldController wc;
@@ -61,13 +65,16 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private KitController kc;
     private IconMenuController ic;
     private ShopController sc;
+    private SpectateController sp;
+    private ScoreboardController score;
+    private boolean finishedStartup;
     private static final Logger log = Logger.getLogger("Minecraft");
     public static Economy econ = null;
     public static Permission perms = null;
-    private SpectateAPI specAPI; 
-    private SpectatorPlus sp;
-    private boolean finishedEnable = false;
+    public static Chat chat = null;
     private boolean bungeeMode = false;
+    private boolean signJoinMode = false;
+    private MultiverseCore mv;
     
     public void onEnable() {
     	instance = this;
@@ -76,21 +83,21 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         saveDefaultConfig();
         saveConfig();
         reloadConfig();
-        getLogger().info("Skywars Reloaded Enabled");  
-        deleteIslandWorlds();
         
-    	bungeeMode = getConfig().getBoolean("bungeeMode.enabled");
+     	bungeeMode = getConfig().getBoolean("bungeeMode.enabled");
     	if (bungeeMode) {
     		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+    		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
     	}
-		
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
+   
+       	mv = (MultiverseCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        if (mv == null) {
+        		this.getLogger().info("Disabling SkyWarsReloaded: Multiverse-Core was not found");
+        		onDisable();
         }
+
+    	
         boolean sqlEnabled = getConfig().getBoolean("sqldatabase.enabled");
         if (sqlEnabled) {
         	try {
@@ -105,8 +112,49 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+        	Connection conn = db.getConnection();
+        	DatabaseMetaData metadata;
+			try {
+				metadata = conn.getMetaData();
+	        	ResultSet resultSet;
+	        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+	        	if(resultSet.next()) {
+	            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "playername");
+	            	if(!resultSet.next()) {
+	            		try {
+							db.addColumn("playername");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	            	}
+	        	}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				metadata = conn.getMetaData();
+	        	ResultSet resultSet;
+	        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+	        	if(resultSet.next()) {
+	            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "balance");
+	            	if(!resultSet.next()) {
+	            		try {
+							db.addColumn("balance");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	            	}
+	        	}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
-        boolean economy = this.getConfig().getBoolean("gameVariables.useEconomy");
+        
+        boolean economy = this.getConfig().getBoolean("gameVariables.useExternalEconomy");
         if (economy) {
             if (!setupEconomy() ) {
                 log.severe(String.format("[%s] - Disabling SkyWarsReloaded: No Economy Plugin Found!", getDescription().getName()));
@@ -116,27 +164,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         
         setupPermissions();
+        setupChat();
 
-        boolean allowSpectating = this.getConfig().getBoolean("gameVariables.allowSpectating");
-        if (allowSpectating) {
-        	sp = (SpectatorPlus) this.getServer().getPluginManager().getPlugin("SpectatorPlus");
-        	if (sp != null) {
-        		specAPI = sp.getAPI();
-        		specAPI.setSpectatorPlusMode(SpectatorMode.ARENA);
-        		specAPI.setTeleportToSpawnOnSpecChangeWithoutLobby(false, false);
-        		specAPI.setUseSpawnCommandToTeleport(false, false);
-        		specAPI.setBlockCommands(false, false);
-        		specAPI.setInspector(false, false);
-        		specAPI.setSpectatorsTools(false, false);
-        		specAPI.setArenaClock(false, false);
-        		specAPI.setCompass(true, true);
-        	} else {
-        		this.getLogger().info("Disabling SkyWarsReloaded: SpectatorPlus was not found");
-        		onDisable();
-        	}
-        }
-        
-    
         boolean saveDefaultMaps = getConfig().getBoolean("resaveDefaultMaps");
         if (saveDefaultMaps) {
             SaveDefaultMaps.saveDefaultMaps();
@@ -144,7 +173,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             saveConfig();
         }
         
-        getServer().getLogger().setFilter(new LoggerFilter());
+        if(getConfig().getBoolean("gameVariables.enableLogFilter")) {
+            getServer().getLogger().setFilter(new LoggerFilter());
+        }
+        new com.walrusone.skywars.utilities.Messaging(this);
         wc = new WorldController();
         mc = new MapController();
         gc = new GameController();
@@ -154,77 +186,112 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         kc = new KitController();
         ic = new IconMenuController();
         sc = new ShopController();
-        new com.walrusone.skywars.utilities.Messaging(this);
+        sp = new SpectateController();
+        score = new ScoreboardController();
         
-        if (bungeeMode) {
-        	int numGame = getConfig().getInt("gameVariables.maxNumberOfGames");
-        	if (numGame > 25 || numGame == -1) {
-        		numGame = 5;
-        	}
-        	for (int x = 0; x < numGame; x++) {
-        		Game game = gc.createGame();
-        		BungeeSocket.sendSignUpdate(game);
-        	}
-        }
         
-        finishedEnable = true;
         
         getCommand("swr").setExecutor(new MainCommand());
+        
+        getCommand("global").setExecutor(new CommandExecutor() {
+        	
+            @Override
+            public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            	boolean hasPerm = false;
+        		if (!(sender instanceof Player)) {
+        			hasPerm = true;
+        		} else if (sender instanceof Player) {
+        			Player player = (Player) sender;
+        			if (SkyWarsReloaded.perms.has(player, "swr.global")) {
+        				hasPerm = true;
+        			} else {
+            			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
+        			} 
+        		}
+        		if (hasPerm) {
+                    if (args.length == 0) {
+                        sender.sendMessage("\247cUsage: /" + label + " <message>");
+                        return true;
+                    }
+
+                    Player player = (Player) sender;
+                    StringBuilder messageBuilder = new StringBuilder();
+                    for (String arg : args) {
+                        messageBuilder.append(arg);
+                        messageBuilder.append(" ");
+                    }
+                    
+                    GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
+                	String name = player.getDisplayName();
+                	String prefix = SkyWarsReloaded.chat.getPlayerPrefix(player);
+                	String colorMessage = ChatColor.translateAlternateColorCodes('&', messageBuilder.toString());
+                 	String message = "";
+                	if (SkyWarsReloaded.perms.has(gPlayer.getP(), "swr.color")) {
+                    	message = colorMessage;
+                	} else {
+                		message = ChatColor.stripColor(colorMessage);
+                	}
+                	int scoreValue = gPlayer.getScore();
+                	String score;
+                	if (scoreValue < 0) {
+                        score = ChatColor.RED + "(" + gPlayer.getScore() + ")";
+                	} else {
+                		score = ChatColor.GREEN + "(+" + gPlayer.getScore() + ")";
+                	}
+            		Bukkit.broadcastMessage(new Messaging.MessageFormatter()
+            			.setVariable("score", score)
+            			.setVariable("prefix", prefix)
+            			.setVariable("player", name)
+            			.setVariable("message", message)
+            			.format("globalchat"));
+
+                    return true;
+                }
+				return true;
+        		}
+        });
         
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new SignListener(), this);
         Bukkit.getPluginManager().registerEvents(ic, this);
+        boolean allowSpectating = this.getConfig().getBoolean("gameVariables.allowSpectating");
+        if (allowSpectating) {
+        	Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
+        }
         
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new CheckForMinPlayers(), 20L, 20L);
         
         int saveInterval = getConfig().getInt("sqldatabase.saveInterval");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new SavePlayers(), 0, (1200 * saveInterval));
-    }
         
+        if (bungeeMode) {
+      		@SuppressWarnings("unused")
+			Game game = gc.createGame();
+        }
+        
+        signJoinMode = getConfig().getBoolean("signJoinMode");
+        if (signJoinMode) {
+        	gc.signJoinLoad();
+        }
+        finishedStartup = true;
+    } 
     
     public void onDisable() {
-    	if (finishedEnable) {
-        	gc.shutdown();
-        	pc.shutdown();
+    	if (finishedStartup) {
+           	gc.shutdown();
+            pc.shutdown();
+        	deleteWorlds();
     	}
-    	deleteIslandWorlds();
-        getLogger().info("SkyWarsReloaded Disabled");
         saveConfig();
-
     }
     
-    private void deleteIslandWorlds() {
-        // Worlds
-        File workingDirectory = new File(this.getServer().getWorldContainer().getAbsolutePath());
-        File[] contents = workingDirectory.listFiles();
-
-        if (contents != null) {
-            for (File file : contents) {
-                if (!file.isDirectory() || !file.getName().matches("island-\\d+")) {
-                    continue;
-                }
-                String name = file.getName();
-                this.getServer().unloadWorld(name, true);
-                
-                deleteFolder(file);
-            }
-        }
-
-        // WorldGuard
-        workingDirectory = new File(workingDirectory, "/plugins/WorldGuard/worlds/");
-        contents = workingDirectory.listFiles();
-
-        if (contents != null) {
-            for (File file : contents) {
-                if (!file.isDirectory() || !file.getName().matches("island-\\d+")) {
-                    continue;
-                }
-                deleteFolder(file);
-            }
-        }
+    private void deleteWorlds() {
+    	for (GameMap map: mc.getRegisteredMaps()) {
+    		mv.getMVWorldManager().deleteWorld(map.getName());
+    	}
     }
     
-    public static boolean deleteFolder(@Nonnull File file) {
+    public static boolean deleteFolder(File file) {
         if (file.exists()) {
             boolean result = true;
 
@@ -242,6 +309,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
 
         return false;
+    }
+    
+    public boolean loadingEnded() {
+    	return finishedStartup;
     }
     
     public static SkyWarsReloaded get() {
@@ -288,14 +359,18 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return instance.sc;
     }
     
-    public static SpectateAPI getSpectate() {
-        return instance.specAPI;
-    }
-    
-    public static SpectatorPlus getSP() {
+    public static SpectateController getSP() {
         return instance.sp;
     }
-
+    
+    public static MultiverseCore getMV() {
+        return instance.mv;
+    }
+    
+    public static ScoreboardController getScore() {
+    	return instance.score;
+    }
+    
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -314,68 +389,34 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return perms != null;
     }
     
+    private void setupChat() {
+        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
+        if (chatProvider != null) {
+            chat = chatProvider.getProvider();
+        }
+    }
+    
     @Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		if (!channel.equals("BungeeCord")) {
-			return;
-		}
-		ByteArrayDataInput in = ByteStreams.newDataInput(message);
-		String subchannel = in.readUTF();
-		System.out.println(subchannel);
-		if (subchannel.equals("SkyWarsReloadedPlayer")) {
-			short len = in.readShort();
-			byte[] msgbytes = new byte[len];
-			in.readFully(msgbytes);
+ 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+ 		if (!channel.equals("BungeeCord")) {
+ 			return;
+ 		}
+ 		ByteArrayDataInput in = ByteStreams.newDataInput(message);
+ 		String subchannel = in.readUTF();
+ 		
+ 		if (subchannel.equals("SkyWarsReloadedRequest")) { 
+ 			short len = in.readShort();
+ 			byte[] msgbytes = new byte[len];
+ 			in.readFully(msgbytes);
 
-			DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-			try {
-				final String playerData = msgin.readUTF();
-				final String gameName = playerData.split(":")[0];
-				final String uuid = playerData.split(":")[1];
-				final UUID uid = UUID.fromString(uuid);
-				final Game game = SkyWarsReloaded.getGC().getGameByName(gameName);
+				Game game = gc.getGame(1);
 				if (game != null) {
-					if (game.getState() != GameState.PREGAME && game.getState() != GameState.PLAYING && game.getState() != GameState.RESTARTING && !game.isFull()) {
-						SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-							public void run() {
-								Player p = Bukkit.getPlayer(uid);
-								if (!game.containsPlayer(p)) {
-									GamePlayer player = SkyWarsReloaded.getPC().getPlayer(p);
-									game.addPlayer(player);
-								}
-							}
-						}, 20);
-					} else {
-						Player p = Bukkit.getPlayer(uid);
-						BungeeUtil.connectToServer(p, SkyWarsReloaded.get().getConfig().getString("bungeeMode.lobbyServer"));
-					}
+						BungeeUtil.sendSignUpdateRequest(game);
 				} else {
 					System.out.println("Game " + game + " couldn't be found, please fix your setup.");
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (subchannel.equals("SkyWarsReloadedRequest")) { // Lobby requests sign data
-			short len = in.readShort();
-			byte[] msgbytes = new byte[len];
-			in.readFully(msgbytes);
-
-			DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-			try {
-				final String requestData = msgin.readUTF();
-				final String gameName = requestData.split(":")[0];
-				Game game = SkyWarsReloaded.getGC().getGameByName(gameName);
-				if (game != null) {
-						BungeeUtil.sendSignUpdateRequest(gameName, game);
-				} else {
-					System.out.println("Game " + game + " couldn't be found, please fix your setup.");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
+ 		}
+ 	}
 }
 
 

@@ -1,3 +1,5 @@
+#The name of the kit
+kitName: example
 # The material this kit should have in the inventory menu
 icon: diamond_sword
 # The position the kit will hold in the inventory menu starting from the top left and moving right. 

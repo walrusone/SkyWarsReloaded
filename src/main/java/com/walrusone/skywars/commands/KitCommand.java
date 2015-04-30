@@ -32,9 +32,9 @@ public class KitCommand implements CommandExecutor {
 				if (args.length == 1) {
 					if (sender instanceof Player) {
 						Player player = (Player) sender;
-						GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player);
-						if (gPlayer.getGame() != null) {
-							if (gPlayer.getGame().getState() == GameState.INLOBBY && !gPlayer.hasKitSelected()) {
+						GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
+						if (gPlayer.inGame()) {
+							if (gPlayer.getGame().getState() == GameState.PREGAME && !gPlayer.hasKitSelected()) {
 								SkyWarsReloaded.getKC().openKitMenu(gPlayer);
 							}
 						} else {

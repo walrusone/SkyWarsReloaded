@@ -18,13 +18,22 @@ public class MainCommand implements CommandExecutor {
     public MainCommand() {
         subCommandMap.put("join", new JoinGameCommand());
         subCommandMap.put("quit", new QuitGameCommand());
+        subCommandMap.put("create", new CreateMapCommand());
+        subCommandMap.put("edit", new EditMapCommand());
+        subCommandMap.put("save", new SaveMapCommand());
         subCommandMap.put("list", new ListMapsCommand());
+        subCommandMap.put("register", new RegisterMapCommand());
         subCommandMap.put("setspawn", new SetSpawnCommand());
         subCommandMap.put("reload", new ReloadCommand());
         subCommandMap.put("kit", new KitCommand());
         subCommandMap.put("stats", new StatsCommand());
+        subCommandMap.put("delete", new DeleteMapCommand());
+        subCommandMap.put("unregister", new UnregisterMapCommand());
         subCommandMap.put("spectate", new SpectateCommand());
         subCommandMap.put("shop", new ShopCommand());
+        subCommandMap.put("start", new StartCommand());
+        subCommandMap.put("games", new GamesCommand());
+        subCommandMap.put("endgame", new EndGameCommand());
     }
 
     @Override
@@ -34,11 +43,10 @@ public class MainCommand implements CommandExecutor {
             	String players = "join, quit, kit, stats";
             	String shop = " shop,";
             	String spectate = ", spectate";
-            	String admin = ", setspawn, reload";
-            	String maps = ", list";
+            	String admin = ", setspawn, reload, list";
             	String commands = "";
        			if (!(sender instanceof Player)) {
-        			commands = players + admin + maps;
+        			commands = players + admin;
         		} else if (sender instanceof Player) {
         			Player player = (Player) sender;
         			if (SkyWarsReloaded.perms.has(player, "swr.play")) {
@@ -52,9 +60,6 @@ public class MainCommand implements CommandExecutor {
         			}
         			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
         				commands = commands + admin;
-        			}
-        			if (SkyWarsReloaded.perms.has(player, "swr.maps")) {
-        				commands = commands + maps;
         			}
         		}
        			sender.sendMessage(ChatColor.RED + commands);

@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.UUID;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -125,7 +126,48 @@ public class Database {
 	            }
 	        }
 	    }
+	    
+	    public void addColumn(String name) throws IOException, SQLException {
+	        Statement statement = null;
+	        if (name.equalsIgnoreCase("playername")) {
+	        	try {
+		            connection.setAutoCommit(false);
+		            statement = connection.createStatement();
 
+	                String query = "ALTER TABLE " + "swreloaded_player" + " ADD " + name + " VARCHAR(60) AFTER uuid";
+	                statement.execute(query);
+
+		            connection.commit();
+
+		        } finally {
+		            connection.setAutoCommit(true);
+
+		            if (statement != null && !statement.isClosed()) {
+		                statement.close();
+		            }
+		        }
+	        }
+	        if (name.equalsIgnoreCase("balance")) {
+	        	try {
+		            connection.setAutoCommit(false);
+		            statement = connection.createStatement();
+
+	                String query = "ALTER TABLE " + "swreloaded_player" + " ADD " + name + " INT(6) AFTER score";
+	                statement.execute(query);
+
+		            connection.commit();
+
+		        } finally {
+		            connection.setAutoCommit(true);
+
+		            if (statement != null && !statement.isClosed()) {
+		                statement.close();
+		            }
+		        }
+	        }
+	    }
+
+	    
 	    public boolean doesPlayerExist(String uuid) {
 	        if (!checkConnection()) {
 	            return false;
@@ -172,22 +214,24 @@ public class Database {
 	        return count > 0;
 	    }
 
-	    public void createNewPlayer(String uuid) {
+	    public void createNewPlayer(String uid) {
 	        if (!checkConnection()) {
 	            return;
 	        }
 
+	        UUID uuid = UUID.fromString(uid);
 	        PreparedStatement preparedStatement = null;
 
 	        try {
 	            StringBuilder queryBuilder = new StringBuilder();
 	            queryBuilder.append("INSERT INTO `swreloaded_player` ");
-	            queryBuilder.append("(`player_id`, `uuid`, `first_seen`, `last_seen`) ");
+	            queryBuilder.append("(`player_id`, `uuid`, `playername`, `first_seen`, `last_seen`) ");
 	            queryBuilder.append("VALUES ");
-	            queryBuilder.append("(NULL, ?, NOW(), NOW());");
+	            queryBuilder.append("(NULL, ?, ?, NOW(), NOW());");
 
 	            preparedStatement = connection.prepareStatement(queryBuilder.toString());
-	            preparedStatement.setString(1, uuid);
+	            preparedStatement.setString(1, uid);
+	            preparedStatement.setString(2, SkyWarsReloaded.get().getServer().getPlayer(uuid).getName());
 	            preparedStatement.executeUpdate();
 
 	        } catch (final SQLException sqlException) {
@@ -202,4 +246,5 @@ public class Database {
 	            }
 	        }
 	    }
+	    
 }

@@ -29,8 +29,8 @@ public class SpectateCommand implements CommandExecutor {
 				if (args.length == 1) {
 					if (sender instanceof Player) {
 						Player player = (Player) sender;
-						GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player);
-						if (gPlayer.getGame() == null) {
+						GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
+						if (!gPlayer.inGame()) {
 								SkyWarsReloaded.getGC().openGameMenu(gPlayer);
 						} else {
 							sender.sendMessage(new Messaging.MessageFormatter().format("error.no-spectate-other-worlds"));

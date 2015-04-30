@@ -18,7 +18,8 @@ public class LoggerFilter implements Filter {
     			|| arg0.getMessage().contains("Mob Spawn Range") || arg0.getMessage().contains("Entity Activation") || arg0.getMessage().contains("Entity Tracking")
     			|| arg0.getMessage().contains("Alternative Hopper") || arg0.getMessage().contains("Hopper Transfer") || arg0.getMessage().contains("Random Lighting")
     			|| arg0.getMessage().contains("Structure Info") || arg0.getMessage().contains("Sending up to") || arg0.getMessage().contains("Max TNT")
-    			|| arg0.getMessage().contains("Preparing start region")) {
+    			|| arg0.getMessage().contains("Preparing start region") || arg0.getMessage().contains("unloaded from memory") || arg0.getMessage().contains("removed from config")
+    			|| arg0.getMessage().contains("was DELETED") || arg0.getMessage().contains("Loading World & Settings")) {
     		return false;
     	}
     	return true;

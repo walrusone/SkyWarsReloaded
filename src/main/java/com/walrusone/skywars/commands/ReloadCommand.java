@@ -27,8 +27,10 @@ public class ReloadCommand implements CommandExecutor {
 		if (hasPerm) {
 			if (args.length == 1) {
 					SkyWarsReloaded.get().reloadConfig();
+					SkyWarsReloaded.get().saveConfig();
 					SkyWarsReloaded.getKC().load();
 					SkyWarsReloaded.getCC().load();
+					SkyWarsReloaded.getSC().load();
 					sender.sendMessage(new Messaging.MessageFormatter().withPrefix().format("command.reload"));
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr reload");

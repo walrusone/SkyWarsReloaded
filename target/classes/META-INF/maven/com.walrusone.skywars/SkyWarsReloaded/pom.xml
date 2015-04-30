@@ -5,7 +5,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <version>V0.9</version>
+  <version>V2.1.6</version>
    <build>
       <plugins>
           <plugin>
@@ -17,39 +17,13 @@
                   <target>1.7</target>
               </configuration>
           </plugin>
-                      <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>org.mcstats.*:*</include>
-                        </includes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.mcstats</pattern>
-                            <shadedPattern>com.walrusone.skywars</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
       </plugins>
    </build>
    <repositories>
        <repository>
-           <id>bukkit-repo</id>
-           <url>http://repo.bukkit.org/content/groups/public/</url>
-       </repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+	   </repository>
        <repository>
            <id>Plugin Metrics</id>
            <url>http://repo.mcstats.org/content/repositories/public</url>
@@ -58,50 +32,25 @@
             <id>vault-repo</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
        </repository>
-               <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
-        </repository>
    </repositories>
    <dependencies>
-       <dependency>
-           <groupId>org.bukkit</groupId>
-           <artifactId>bukkit</artifactId>
-           <version>1.7.9-R0.3-SNAPSHOT</version>
-           <type>jar</type>
-           <scope>provided</scope>
-       </dependency>
-       <dependency>
-           <groupId>org.mcstats.bukkit</groupId>
-           <artifactId>metrics-lite</artifactId>
-           <version>R7</version>
-           <scope>compile</scope>
-       </dependency>
-       <dependency>
-            <groupId>com.pgcraft</groupId>
-            <artifactId>spectatorplus</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/SpectatorPlus-S2.0.jar</systemPath>
-        </dependency>
-                <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>LATEST</version>
-            <scope>compile</scope>
-        </dependency>
-            <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
-        </dependency>
+		<dependency>
+          <groupId>org.spigotmc</groupId>
+          <artifactId>spigot-api</artifactId>
+          <version>1.8.3-R0.1-SNAPSHOT</version>
+		</dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.onarandombox.MultiverseCore</groupId>
+            <artifactId>multiversecore</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Multiverse-Core-2.5.jar</systemPath>
         </dependency>
    </dependencies>
 </project>

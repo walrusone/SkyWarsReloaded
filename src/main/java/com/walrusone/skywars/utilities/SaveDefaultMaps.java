@@ -10,7 +10,6 @@ public class SaveDefaultMaps {
 
 	public static void saveDefaultMaps() {
 		ArrayList<String> maps = new ArrayList<String>();
-        maps.add("lobby.zip");
         maps.add("caves.zip");
         for (String map: maps) {
         	SkyWarsReloaded.get().saveResource(map, true);

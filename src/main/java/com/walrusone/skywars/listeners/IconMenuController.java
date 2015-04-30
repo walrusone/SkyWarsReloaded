@@ -1,6 +1,7 @@
 package com.walrusone.skywars.listeners;
 
 import com.google.common.collect.Maps;
+import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.IconMenu;
 
 import org.bukkit.entity.Player;
@@ -10,8 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -25,11 +24,13 @@ public class IconMenuController implements Listener {
     }
 
     public void create(Player player, String name, int size, IconMenu.OptionClickEventHandler handler) {
-        destroy(player);
-        menu.put(player, new IconMenu(name, size, handler));
+        if (player != null) {
+        	destroy(player);
+            menu.put(player, new IconMenu(name, size, handler));
+        }
     }
 
-    public void show(@Nonnull Player player) {
+    public void show(Player player) {
         if (menu.containsKey(player)) {
             menu.get(player).open(player);
         }
@@ -60,9 +61,13 @@ public class IconMenuController implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player && menu.containsKey(event.getWhoClicked())) {
-            menu.get(event.getWhoClicked()).onInventoryClick(event);
-        }
+            if (event.getWhoClicked() instanceof Player) {
+            	if (SkyWarsReloaded.getPC().getPlayer(((Player) event.getWhoClicked()).getUniqueId()).isSpectating() && !menu.containsKey(event.getWhoClicked())) {
+            		event.setCancelled(true);
+            	} else if (menu.containsKey(event.getWhoClicked())) {
+                    menu.get(event.getWhoClicked()).onInventoryClick(event);
+            	}
+            }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

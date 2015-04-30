@@ -26,8 +26,9 @@ public class BungeeUtil {
 		player.sendPluginMessage(SkyWarsReloaded.get(), "BungeeCord", stream.toByteArray());
 	}
 
-	public static void sendSignUpdateRequest(String name, Game game) {
+	public static void sendSignUpdateRequest(Game game) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		String name = SkyWarsReloaded.get().getConfig().getString("bungeeMode.bungeeServerName");
 		try {
 			out.writeUTF("Forward");
 			out.writeUTF("ALL");
@@ -35,7 +36,7 @@ public class BungeeUtil {
 
 			ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
 			DataOutputStream msgout = new DataOutputStream(msgbytes);
-			msgout.writeUTF(game.getBungeeName() + ":" + game.getState().toString() + ":" + Integer.toString(game.getPlayers().size()) + ":" + Integer.toString(game.getNumberOfSpawns()));
+			msgout.writeUTF(name + ":" + game.getState().toString() + ":" + Integer.toString(game.getPlayers().size()) + ":" + Integer.toString(game.getNumberOfSpawns()) + ":" + game.getMapName());
 
 			out.writeShort(msgbytes.toByteArray().length);
 			out.write(msgbytes.toByteArray());

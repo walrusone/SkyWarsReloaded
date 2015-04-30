@@ -40,7 +40,7 @@ public class StatsCommand implements CommandExecutor {
 			                return true;
 			            } 
 			        } 
-		            	GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player);
+		            	GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 		            	double kd = ((double) gPlayer.getKills())/gPlayer.getDeaths();
 		            	player.sendMessage(" ");
 		            	player.sendMessage(ChatColor.RED + player.getName() + "'s Stats");
@@ -54,7 +54,7 @@ public class StatsCommand implements CommandExecutor {
 		            	player.sendMessage(ChatColor.GREEN + "Blocks Placed: " + ChatColor.YELLOW + gPlayer.getBlocks());
 		            	cooldown.put(player, System.currentTimeMillis());
 					} else {
-						sender.sendMessage(ChatColor.RED + "You cannot use this command in game!");
+						sender.sendMessage(new Messaging.MessageFormatter().format("error.no-perm-in-game"));
 				}
 			} else {
 				sender.sendMessage(ChatColor.RED + "USAGE: /swr join");

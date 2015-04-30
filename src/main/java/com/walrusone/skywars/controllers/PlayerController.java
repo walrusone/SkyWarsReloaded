@@ -2,8 +2,7 @@ package com.walrusone.skywars.controllers;
 
 import java.util.Collection;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,30 +13,33 @@ import com.walrusone.skywars.game.GamePlayer;
 
 public class PlayerController {
 
-	private final Map<Player, GamePlayer> onlinePlayers = Maps.newHashMap();
+	private final Map<UUID, GamePlayer> onlinePlayers = Maps.newHashMap();
 	
 	public PlayerController() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
-            addPlayer(player);
+            addPlayer(player.getUniqueId());
         }
 	}
 	
-	public void addPlayer(@Nonnull Player p) {
-        GamePlayer gamePlayer = null;
-
-        if (!this.onlinePlayers.containsKey(p)) {
-            gamePlayer = new GamePlayer(p);
-            onlinePlayers.put(p, gamePlayer);
+	public void addPlayer(UUID uuid) {
+        if (!this.onlinePlayers.containsKey(uuid)) {
+            final GamePlayer gamePlayer = new GamePlayer(uuid);
+            onlinePlayers.put(uuid, gamePlayer);
+            SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+		        public void run() {
+		    		SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
+			        }
+			      }, 5);
         }
     }
 	
-    public void removePlayer(@Nonnull Player p) {
-    	SkyWarsReloaded.getDS().savePlayerAsync(onlinePlayers.get(p));
-        onlinePlayers.remove(p);
+    public void removePlayer(UUID uuid) {
+    	SkyWarsReloaded.getDS().savePlayerAsync(onlinePlayers.get(uuid));
+        onlinePlayers.remove(uuid);
     }
 
-    public GamePlayer getPlayer(@Nonnull Player p) {
-        return onlinePlayers.get(p);
+    public GamePlayer getPlayer(UUID uuid) {
+        return onlinePlayers.get(uuid);
     }
 
     public Collection<GamePlayer> getAll() {
@@ -56,5 +58,5 @@ public class PlayerController {
             SkyWarsReloaded.getDS().savePlayerAsync(gamePlayer);
         }
     }
-
+    
 }

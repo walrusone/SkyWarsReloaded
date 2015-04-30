@@ -55,9 +55,15 @@ public class IconMenu {
         event.setCancelled(true);
 
         int slot = event.getRawSlot();
-        if (!(slot >= 0 && slot < size && optionNames[slot] != null)) {
-            return;
+ 
+        try {
+            if (!(slot >= 0 && slot < size && optionNames[slot] != null)) {
+                return;
+            }
+        } catch (NullPointerException e) {
+        	return;
         }
+
 
         OptionClickEvent clickEvent = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionNames[slot]);
         handler.onOptionClick(clickEvent);
@@ -82,7 +88,7 @@ public class IconMenu {
         return this.name;
     }
 
-    public class OptionClickEvent {
+    public static class OptionClickEvent {
 
         private Player player;
         private int position;
