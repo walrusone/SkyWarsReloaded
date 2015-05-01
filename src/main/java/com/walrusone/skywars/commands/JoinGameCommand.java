@@ -47,15 +47,22 @@ public class JoinGameCommand implements CommandExecutor {
         					}
     			    	} else {
     			    		Game game = findGame();
-    			    		if (game != null && game.getState() == GameState.PREGAME) {
-    			                game.addPlayer(gPlayer);
+            	    		int i = 0;
+            	    		while (i < 3) {
+                        		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
+                	                game.addPlayer(gPlayer);
+                	                break;
+                	    		} else {
+                	    			i++;
+                	    			game = findGame();
+                	    		}
+            	    		}
     			    	}
     				}
     			} else {
     				sender.sendMessage(ChatColor.RED + "USAGE: /swr join");
     			}
     		} 
-    	}
     	return true;
     }
 
@@ -63,7 +70,7 @@ public class JoinGameCommand implements CommandExecutor {
 		Game game = null;
 		int highest = 0;
 		for (Game g: SkyWarsReloaded.getGC().getGames()) {
-			if (highest <= g.getPlayers().size() && g.getState() == GameState.PREGAME) {
+			if (highest <= g.getPlayers().size() && g.getState() == GameState.PREGAME && !g.isFull()) {
 				highest = g.getPlayers().size();
 				game = g;
 			}

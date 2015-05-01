@@ -197,8 +197,10 @@ public class GameController {
 		}
         signJoinGames.remove(Integer.valueOf(gameNumber));
         Game game = getGame(Integer.valueOf(gameNumber));
-        if (game.getState() != GameState.PLAYING) {
-        	game.endGame();
+        if (game != null) {
+            if (game.getState() != GameState.PLAYING) {
+            	game.endGame();
+            }
         }
 	}
 

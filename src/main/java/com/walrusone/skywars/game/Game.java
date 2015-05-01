@@ -670,14 +670,15 @@ public class Game {
 		target.setGame(-1);
 		if (allowSpectating) {
 			target.spectateMode(true, this);
-		} else {
-			deletePlayer(target, false, false);
-		}
+		} 
 		
 		if (target.getP() != null) {
 			target.getP().spigot().respawn();
+			if (!allowSpectating) {
+					deletePlayer(target, false, false);
+			}
 		}
-
+		
 		Score score = objective.getScore(new Messaging.MessageFormatter().format("game.scoreboard-players"));
 		score.setScore(getPlayers().size());
 		target.setDeaths(target.getDeaths() + 1);

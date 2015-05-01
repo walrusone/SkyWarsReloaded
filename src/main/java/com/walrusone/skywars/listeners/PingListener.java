@@ -17,10 +17,10 @@ public class PingListener implements Listener {
             	Game game = SkyWarsReloaded.getGC().getGame(1);
                 serverListPingEvent.setMotd(game.getState().toString() + ":" + game.getPlayers().size() + ":" + game.getNumberOfSpawns() + ":" + game.getMapName());
             } else {
-                serverListPingEvent.setMotd(SkyWarsReloaded.get().getConfig().getString("bungeeMode.name") + ":" + GameState.ENDING.toString() + ":" + 0 + ":" + 0 + ":" + "null");
+                serverListPingEvent.setMotd(GameState.ENDING.toString() + ":" + 0 + ":" + 0 + ":" + "null");
             }
 		} else {
-                serverListPingEvent.setMotd(SkyWarsReloaded.get().getConfig().getString("bungeeMode.name") + ":" + GameState.ENDING.toString() + ":" + 0 + ":" + 0 + ":" + "null");
+                serverListPingEvent.setMotd(GameState.ENDING.toString() + ":" + 0 + ":" + 0 + ":" + "null");
         }
     }
     

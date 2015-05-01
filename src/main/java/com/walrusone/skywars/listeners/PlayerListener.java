@@ -172,8 +172,10 @@ public class PlayerListener implements Listener {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 		        public void run() {
 		        	if (gPlayer.getP() != null) {
-						gPlayer.getP().teleport(gPlayer.getSpecGame().getSpawn());
 						gPlayer.spectateMode(true, gPlayer.getSpecGame());
+						gPlayer.getP().teleport(gPlayer.getSpecGame().getSpawn());
+						gPlayer.getP().setAllowFlight(true);
+						gPlayer.getP().setFlying(true);
 						gPlayer.getP().sendMessage(new Messaging.MessageFormatter().withPrefix().format("game.spectating"));
 		        	}
 		        }
@@ -288,8 +290,15 @@ public class PlayerListener implements Listener {
                 	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
                     if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
                 		Game game = findGame();
-        	    		if (game != null && game.getState() == GameState.PREGAME) {
-        	                game.addPlayer(gPlayer);
+        	    		int i = 0;
+        	    		while (i < 3) {
+                    		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
+            	                game.addPlayer(gPlayer);
+            	                break;
+            	    		} else {
+            	    			i++;
+            	    			game = findGame();
+            	    		}
         	    		}
                     }
             	}
@@ -346,7 +355,7 @@ public class PlayerListener implements Listener {
 		Game game = null;
 		int highest = 0;
 		for (Game g: SkyWarsReloaded.getGC().getGames()) {
-			if (highest <= g.getPlayers().size() && g.getState() == GameState.PREGAME) {
+			if (highest <= g.getPlayers().size() && g.getState() == GameState.PREGAME && !g.isFull()) {
 				highest = g.getPlayers().size();
 				game = g;
 			}

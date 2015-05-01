@@ -155,9 +155,16 @@ public class KitController {
 
     public void openKitMenu(final GamePlayer gamePlayer) {
         List<GameKit> availableKits = Lists.newArrayList(kitMap.values());
+        
+        int highestSlot = 0;
+        for (GameKit kit: availableKits) {
+        	if (kit.getPosition() > highestSlot) {
+        		highestSlot = kit.getPosition();
+        	}
+        }
 
         int rowCount = menuSlotsPerRow;
-        while (rowCount < availableKits.size() && rowCount < menuSize) {
+        while (rowCount < highestSlot && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
         }
 
