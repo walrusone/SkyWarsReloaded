@@ -6,10 +6,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.walrusone.menus.KitMenu;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game.GameState;
 import com.walrusone.skywars.game.GamePlayer;
+import com.walrusone.skywars.menus.KitMenu;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class KitCommand implements CommandExecutor {

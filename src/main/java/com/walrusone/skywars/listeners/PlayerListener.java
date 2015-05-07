@@ -40,14 +40,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import com.walrusone.menus.JoinMenu;
-import com.walrusone.menus.KitMenu;
-import com.walrusone.menus.MainMenu;
-import com.walrusone.menus.SpecGameMenu;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.game.Game.GameState;
+import com.walrusone.skywars.menus.JoinMenu;
+import com.walrusone.skywars.menus.KitMenu;
+import com.walrusone.skywars.menus.MainMenu;
+import com.walrusone.skywars.menus.SpecGameMenu;
 import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;

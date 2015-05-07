@@ -49,11 +49,11 @@ import org.bukkit.material.Gate;
 import org.bukkit.material.TrapDoor;
 import org.bukkit.util.Vector;
 
-import com.walrusone.menus.SpecPlayerMenu;
-import com.walrusone.menus.SpecShopMenu;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
+import com.walrusone.skywars.menus.SpecPlayerMenu;
+import com.walrusone.skywars.menus.SpecShopMenu;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
