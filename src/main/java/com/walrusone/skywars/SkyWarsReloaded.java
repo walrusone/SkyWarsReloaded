@@ -28,12 +28,12 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.walrusone.skywars.commands.MainCommand;
 import com.walrusone.skywars.controllers.ChestController;
 import com.walrusone.skywars.controllers.GameController;
+import com.walrusone.skywars.controllers.InventoryController;
 import com.walrusone.skywars.controllers.KitController;
 import com.walrusone.skywars.controllers.MapController;
 import com.walrusone.skywars.controllers.PlayerController;
 import com.walrusone.skywars.controllers.ScoreboardController;
 import com.walrusone.skywars.controllers.ShopController;
-import com.walrusone.skywars.controllers.SpectateController;
 import com.walrusone.skywars.controllers.WorldController;
 import com.walrusone.skywars.dataStorage.DataStorage;
 import com.walrusone.skywars.dataStorage.Database;
@@ -60,12 +60,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private WorldController wc;
     private DataStorage ds;
     private Database db;
+    private InventoryController invc;
     private PlayerController pc;
     private ChestController cc;
     private KitController kc;
     private IconMenuController ic;
     private ShopController sc;
-    private SpectateController sp;
     private ScoreboardController score;
     private boolean finishedStartup;
     private static final Logger log = Logger.getLogger("Minecraft");
@@ -182,11 +182,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         gc = new GameController();
         ds = new DataStorage();
         pc = new PlayerController();
+        invc = new InventoryController();
         cc = new ChestController();
         kc = new KitController();
         ic = new IconMenuController();
         sc = new ShopController();
-        sp = new SpectateController();
         score = new ScoreboardController();
         
         
@@ -223,13 +223,20 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     
                     GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
                 	String name = player.getDisplayName();
-                	String prefix = SkyWarsReloaded.chat.getPlayerPrefix(player);
+                	String prefix = "";
+                	if (SkyWarsReloaded.chat.getPlayerPrefix(gPlayer.getP()) != null) {
+                    	prefix = SkyWarsReloaded.chat.getPlayerPrefix(gPlayer.getP());
+                	}
                 	String colorMessage = ChatColor.translateAlternateColorCodes('&', messageBuilder.toString());
                  	String message = "";
                 	if (SkyWarsReloaded.perms.has(gPlayer.getP(), "swr.color")) {
                     	message = colorMessage;
                 	} else {
                 		message = ChatColor.stripColor(colorMessage);
+                		while (message.contains("&")) {
+                			message = ChatColor.translateAlternateColorCodes('&', message);
+                    		message = ChatColor.stripColor(message);
+                		}
                 	}
                 	int scoreValue = gPlayer.getScore();
                 	String score;
@@ -280,9 +287,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	if (finishedStartup) {
            	gc.shutdown();
             pc.shutdown();
+            invc.save();
         	deleteWorlds();
     	}
-        saveConfig();
     }
     
     private void deleteWorlds() {
@@ -358,9 +365,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public static ShopController getSC() {
         return instance.sc;
     }
-    
-    public static SpectateController getSP() {
-        return instance.sp;
+ 
+    public static InventoryController getInvC() {
+        return instance.invc;
     }
     
     public static MultiverseCore getMV() {

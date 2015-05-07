@@ -35,11 +35,17 @@ public class SignListener implements Listener {
             	Block b = w.getBlockAt(signLocation);
             	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
            			event.setCancelled(true);
-           			boolean added = SkyWarsReloaded.getGC().addSignJoinGame(signLocation, lines[1].toLowerCase());
-           			if (added) {
-           				event.getPlayer().sendMessage(ChatColor.GREEN + "Game Sign Succefully Added");
+           		   	String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+           			if (world != null) {
+               			boolean added = SkyWarsReloaded.getGC().addSignJoinGame(signLocation, lines[1].toLowerCase());
+               			if (added) {
+               				event.getPlayer().sendMessage(ChatColor.GREEN + "Game Sign Succefully Added");
+               			} else {
+               				event.getPlayer().sendMessage(ChatColor.GREEN + "There is no map with that Name");
+               			}
            			} else {
-           				event.getPlayer().sendMessage(ChatColor.GREEN + "There is no map with that Name");
+           				event.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+           				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
            			}
             	}
             } else {

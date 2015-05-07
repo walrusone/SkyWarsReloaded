@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,30 +18,23 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.game.Game.GameState;
-import com.walrusone.skywars.utilities.IconMenu;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class GameController {
 
-	private static final int menuSlotsPerRow = 9;
-	private static final int menuSize = 54;
-	private static final String menuName = new Messaging.MessageFormatter().format("menu.spectategame-menu-title");
 	private Map<Integer, Game> gameNumbers = Maps.newHashMap();
 	private Map<Integer, GameSign> signJoinGames = Maps.newHashMap();
 	private boolean shutdown = false;
 	private Queue<GamePlayer> waitingPlayers = new LinkedList<GamePlayer>();
 	private ItemStack exit;
-	private ItemStack opvote;
 	private ItemStack kit;
-	private ItemStack jumpVote;
-	private ItemStack timeVote;
+	private ItemStack options;
 	private int gameNumber = 0;
 	org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
 
@@ -59,23 +51,11 @@ public class GameController {
 		exitItemData.add(exitName);
 		exit = ItemUtils.parseItem(exitItemData);
 		
-		String opVoteItem = SkyWarsReloaded.get().getConfig().getString("gameItems.opChestVoteItem");
-		List<String> opVoteItemData = new LinkedList<String>(Arrays.asList(opVoteItem.split(" ")));
-		String opVoteName = "name:" + new Messaging.MessageFormatter().format("menu.chest-item-name");
-		opVoteItemData.add(opVoteName);
-		opvote = ItemUtils.parseItem(opVoteItemData);
-		
-		String timeVoteItem = SkyWarsReloaded.get().getConfig().getString("gameItems.timeVoteItem");
-		List<String> timeVoteItemData = new LinkedList<String>(Arrays.asList(timeVoteItem.split(" ")));
-		String timeVoteName = "name:" + new Messaging.MessageFormatter().format("menu.time-item-name");
-		timeVoteItemData.add(timeVoteName);
-		timeVote = ItemUtils.parseItem(timeVoteItemData);
-		
-		String jumpVoteItem = SkyWarsReloaded.get().getConfig().getString("gameItems.jumpVoteItem");
-		List<String> jumpVoteItemData = new LinkedList<String>(Arrays.asList(jumpVoteItem.split(" ")));
-		String jumpVoteName = "name:" + new Messaging.MessageFormatter().format("menu.jump-item-name");
-		jumpVoteItemData.add(jumpVoteName);
-		jumpVote = ItemUtils.parseItem(jumpVoteItemData);
+		String optionsItem = SkyWarsReloaded.get().getConfig().getString("gameItems.optionsItem");
+		List<String> optionsItemData = new LinkedList<String>(Arrays.asList(optionsItem.split(" ")));
+		String optionsName = "name:" + new Messaging.MessageFormatter().format("menu.options-item-name");
+		optionsItemData.add(optionsName);
+		options = ItemUtils.parseItem(optionsItemData);
 	}
 	
 	public Game findGame() {
@@ -213,28 +193,29 @@ public class GameController {
 	
 	public void updateSign(int gameNumber) {
 		GameSign gameSign = signJoinGames.get(gameNumber);
-		World world = SkyWarsReloaded.get().getServer().getWorld(gameSign.getWorld());
-		if (world != null) {
-			Block b = world.getBlockAt(gameSign.getX(), gameSign.getY(), gameSign.getZ());
-			if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
-				Sign s = (Sign) b.getState();
-				meteSign = (org.bukkit.material.Sign) b.getState().getData();
-				Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
-				String state = getStatusName(getGame(gameNumber));
-				setMaterial(getStatus(getGame(gameNumber)), attachedBlock);
-				int max = getGame(gameNumber).getNumberOfSpawns();
-				int count = getGame(gameNumber).getPlayers().size();
-				if (s != null) {
-					s.getBlock().getChunk().load();
-					s.setLine(0, new Messaging.MessageFormatter().format("signJoinSigns.line1"));
-					s.setLine(1, new Messaging.MessageFormatter().setVariable("mapName", gameSign.getName().toUpperCase()).format("signJoinSigns.line2"));
-					s.setLine(2, new Messaging.MessageFormatter().setVariable("gameStatus", state).format("signJoinSigns.line3"));
-					s.setLine(3, new Messaging.MessageFormatter().setVariable("count", "" + count).setVariable("max", "" + max).format("signJoinSigns.line4"));
-					s.update();
+		if (gameSign != null) {
+			World world = SkyWarsReloaded.get().getServer().getWorld(gameSign.getWorld());
+			if (world != null) {
+				Block b = world.getBlockAt(gameSign.getX(), gameSign.getY(), gameSign.getZ());
+				if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+					Sign s = (Sign) b.getState();
+					meteSign = (org.bukkit.material.Sign) b.getState().getData();
+					Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
+					String state = getStatusName(getGame(gameNumber));
+					setMaterial(getStatus(getGame(gameNumber)), attachedBlock);
+					int max = getGame(gameNumber).getNumberOfSpawns();
+					int count = getGame(gameNumber).getPlayers().size();
+					if (s != null) {
+						s.getBlock().getChunk().load();
+						s.setLine(0, new Messaging.MessageFormatter().format("signJoinSigns.line1"));
+						s.setLine(1, new Messaging.MessageFormatter().setVariable("mapName", gameSign.getName().toUpperCase()).format("signJoinSigns.line2"));
+						s.setLine(2, new Messaging.MessageFormatter().setVariable("gameStatus", state).format("signJoinSigns.line3"));
+						s.setLine(3, new Messaging.MessageFormatter().setVariable("count", "" + count).setVariable("max", "" + max).format("signJoinSigns.line4"));
+						s.update();
+					}
 				}
 			}
 		}
-
 	}
 	
 	public enum GameStatus {
@@ -270,15 +251,28 @@ public class GameController {
 	
 	@SuppressWarnings("deprecation")
 	private void setMaterial(GameStatus gs, Block attachedBlock) {
-		if (gs == GameStatus.JOINABLE) {
-			attachedBlock.setType(Material.WOOL);
-			attachedBlock.setData((byte) 5);
-		} else if (gs == GameStatus.FULL || gs == GameStatus.INPROGRESS) {
-			attachedBlock.setType(Material.WOOL);
-			attachedBlock.setData((byte) 14);
-		} else if (gs == GameStatus.RESTARTING) {
-			attachedBlock.setType(Material.WOOL);
-			attachedBlock.setData((byte) 11);
+		String material = SkyWarsReloaded.get().getConfig().getString("gameVariables.signJoinMaterial");
+		Material sMat;
+		if (material.equalsIgnoreCase("wool")) {
+			sMat = Material.WOOL;
+		} else if (material.equalsIgnoreCase("clay")) {
+			sMat = Material.STAINED_CLAY;
+		} else if (material.equalsIgnoreCase("glass")) {
+			sMat = Material.STAINED_GLASS;
+		} else {
+			sMat = null;
+		}
+		if (sMat != null) {
+			if (gs == GameStatus.JOINABLE) {
+				attachedBlock.setType(sMat);
+				attachedBlock.setData((byte) 5);
+			} else if (gs == GameStatus.FULL || gs == GameStatus.INPROGRESS) {
+				attachedBlock.setType(sMat);
+				attachedBlock.setData((byte) 14);
+			} else if (gs == GameStatus.RESTARTING) {
+				attachedBlock.setType(sMat);
+				attachedBlock.setData((byte) 11);
+			}
 		}
 	}
 	
@@ -332,84 +326,9 @@ public class GameController {
 		 return false;
 	 }
 	
-	    public void openGameMenu(final GamePlayer gamePlayer) {
-	        List<Game> availableGames = Lists.newArrayList(getGames());
 
-	        int rowCount = menuSlotsPerRow;
-	        while (rowCount < availableGames.size() && rowCount < menuSize) {
-	            rowCount += menuSlotsPerRow;
-	        }
+	    
 
-	        SkyWarsReloaded.getIC().create(gamePlayer.getP(), menuName, rowCount, new IconMenu.OptionClickEventHandler() {
-	            @Override
-	            public void onOptionClick(IconMenu.OptionClickEvent event) {
-	            	boolean allowSpectating = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating");
-	                if (!allowSpectating) {
-	                	return;
-	                }
-	                
-	                if (gamePlayer.inGame()) {
-	                	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-spectate-other-worlds"));
-	                    return;
-	                }
-
-	                Game game = getGame(Integer.parseInt(ChatColor.stripColor(event.getName())));
-	                if (game == null) {
-	                    return;
-	                }
-
-	                if (!SkyWarsReloaded.perms.has(gamePlayer.getP(), "swr.spectate")) {
-	                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-spectate-perm"));
-	                    return;
-	                }
-
-	                event.setWillClose(true);
-	                event.setWillDestroy(true);
-
-	                gamePlayer.saveGameMode();
-	                gamePlayer.saveInventory();
-	                if (gamePlayer.getP() != null) {
-		                gamePlayer.setRespawn(gamePlayer.getP().getLocation());
-		                gamePlayer.spectateMode(true, game);
-		                Location location = game.getSpawn();
-		                gamePlayer.getP().teleport(location);
-						gamePlayer.getP().setAllowFlight(true);
-						gamePlayer.getP().setFlying(true);
-	                }
-	            }
-	        });
-
-	        ArrayList<Game> games = SkyWarsReloaded.getGC().getGames();
-	        
-	        for (int iii = 0; iii < games.size(); iii++) {
-	            if (iii >= menuSize) {
-	                break;
-	            }
-
-	            Game game = games.get(iii);
-	            	            
-	            if (game.getState() == GameState.PREGAME || game.getState() == GameState.PLAYING) {
-		            List<String> loreList = Lists.newLinkedList();
-	                loreList.add(new Messaging.MessageFormatter().format("menu.spectate-game-header"));
-		            for (GamePlayer gPlayer: game.getPlayers()) {
-		            	if (gPlayer.getP() != null) {
-			            	loreList.add(ChatColor.WHITE + gPlayer.getP().getName());
-		            	}
-		            }
-		            if (gamePlayer.getP() != null) {
-			            SkyWarsReloaded.getIC().setOption(
-			                    gamePlayer.getP(),
-			                    iii,
-			                    new ItemStack(Material.DIAMOND_HELMET, 1),
-			                    String.valueOf(game.getGameNumber()),
-			                    loreList.toArray(new String[loreList.size()]));
-		            }
-	            }
-	        }
-	        if (gamePlayer.getP() != null) {
-		        SkyWarsReloaded.getIC().show(gamePlayer.getP());
-	        }
-	    }
 	    
 		public void addToQueue(GamePlayer gPlayer) {
 			if (!waitingPlayers.contains(gPlayer)) {
@@ -421,26 +340,14 @@ public class GameController {
 			return kit;
 		}
 		
+		public ItemStack getOptionsItem() {
+			return options;
+		}
+		
 		public ItemStack getExitItem() {
 			return exit;
 		}
 		
-		public ItemStack getOpVoteItem() {
-			return opvote;
-		}
-
-		public ItemStack getMapVoteItem() {
-			return jumpVote;
-		}
-
-		public ItemStack getTimeVoteItem() {
-			return timeVote;
-		}
-		
-		public ItemStack getJumpVoteItem() {
-			return jumpVote;
-		}
-	
 	private class GameSign {
 		private int x;
 		private int y;

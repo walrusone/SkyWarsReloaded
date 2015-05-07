@@ -108,16 +108,14 @@ public class GameMap {
 			MultiverseWorld mvworld = SkyWarsReloaded.getMV().getMVWorldManager().getMVWorld(mapName);
 			World world = SkyWarsReloaded.get().getServer().getWorld(mapName);
 		    world.setAutoSave(false);
+		    world.setThundering(false);
+		    world.setStorm(false);
 		    mvworld.setSpawnLocation(new Location(world, 2000, 0, 2000));
 			mvworld.setAllowAnimalSpawn(false);
 			mvworld.setAllowMonsterSpawn(false);
 			mvworld.setKeepSpawnInMemory(false);
 			mvworld.setDifficulty(Difficulty.NORMAL);
 			mvworld.setEnableWeather(false);
-			if (name.equals("lobby")) {
-				mvworld.setHunger(false);
-				mvworld.setPVPMode(false);
-			}
 		}
 		return loaded;
 	}

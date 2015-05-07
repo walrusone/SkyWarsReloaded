@@ -30,9 +30,19 @@ public class IconMenuController implements Listener {
         }
     }
 
+    public IconMenu getMenu(Player player) {
+    	return menu.get(player);
+    }
+    
     public void show(Player player) {
         if (menu.containsKey(player)) {
             menu.get(player).open(player);
+        }
+    }
+    
+    public void update(final Player player) {
+        if (menu.containsKey(player)) {
+            menu.get(player).update(player);
         }
     }
 
@@ -40,6 +50,13 @@ public class IconMenuController implements Listener {
         if (menu.containsKey(player)) {
             menu.get(player).setOption(position, icon, name, info);
         }
+    }
+    
+    public String[] getOptions(Player player) {
+        if (menu.containsKey(player)) {
+            return menu.get(player).getOptions();
+        }
+        return null;
     }
 
     public void destroy(Player player) {
@@ -73,7 +90,7 @@ public class IconMenuController implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getPlayer() instanceof Player && menu.containsKey(event.getPlayer())) {
-            destroy((Player) event.getPlayer());
+                destroy((Player) event.getPlayer());
         }
     }
 }

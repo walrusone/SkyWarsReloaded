@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.walrusone.menus.SpecGameMenu;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.Messaging;
@@ -31,7 +32,7 @@ public class SpectateCommand implements CommandExecutor {
 						Player player = (Player) sender;
 						GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 						if (!gPlayer.inGame()) {
-								SkyWarsReloaded.getGC().openGameMenu(gPlayer);
+							new SpecGameMenu(gPlayer);
 						} else {
 							sender.sendMessage(new Messaging.MessageFormatter().format("error.no-spectate-other-worlds"));
 						}

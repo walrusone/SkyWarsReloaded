@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import com.walrusone.skywars.SkyWarsReloaded;
@@ -39,6 +40,18 @@ public class IconMenu {
             }
         }
         player.openInventory(inventory);
+    }
+    
+    public void update(Player player) {
+    	InventoryView inventory = player.getOpenInventory();
+    	if (inventory != null) {
+            for (int iii = 0; iii < this.optionIcons.length; iii++) {
+                if (this.optionIcons[iii] != null) {
+                    inventory.setItem(iii, this.optionIcons[iii]);
+                }
+            }
+            player.updateInventory();
+    	}
     }
 
     public void destroy() {
@@ -86,6 +99,10 @@ public class IconMenu {
 
     public String getName() {
         return this.name;
+    }
+    
+    public String[] getOptions() {
+    	return optionNames;
     }
 
     public static class OptionClickEvent {

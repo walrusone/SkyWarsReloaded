@@ -49,6 +49,8 @@ import org.bukkit.material.Gate;
 import org.bukkit.material.TrapDoor;
 import org.bukkit.util.Vector;
 
+import com.walrusone.menus.SpecPlayerMenu;
+import com.walrusone.menus.SpecShopMenu;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
@@ -371,11 +373,11 @@ public class SpectatorListener implements Listener {
 		ItemStack item = e.getPlayer().getItemInHand();
 		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet())))) {
 			e.setCancelled(true);
-			SkyWarsReloaded.getSP().openPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
+			new SpecPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 		}
 		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(specShopItem.getData().getItemType()) &&  item.getEnchantments().keySet().equals(specShopItem.getEnchantments().keySet())))) {
 			e.setCancelled(true);
-			SkyWarsReloaded.getSC().openSpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
+			new SpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 		}
 		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet())))) {
 			e.setCancelled(true);

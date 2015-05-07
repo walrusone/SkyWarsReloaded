@@ -40,11 +40,7 @@ public class SaveMapCommand implements CommandExecutor {
 							int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
 							int z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
 							Location spawn;
-							if (world2 != null ) {
-								spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world2), x, y, z);
-							} else {
-								spawn = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getRespawn();
-							}
+							spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world2), x, y, z);
 							player.teleport(spawn);
 						}
 						editWorld.save();

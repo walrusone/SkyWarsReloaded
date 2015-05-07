@@ -63,21 +63,31 @@ gameVariables:
   opChestsEnabled: false
   timeVoteEnabled: false
   jumpVoteEnabled: false
+  highJumpValue: 2
+  superJumpValue: 4
+  godJumpValue: 8
   spectateShopEnabled: true
   enableLogFilter: true
   lobbyScoreBoardEnabled: false
   disableWinBroadcast: false
-  clearInventoryOnJoin: true
+  clearInventoryOnJoin: false
+  clearXPOnJoin: false
+  clearPotionEffectsOnJoin: false
+  signJoinMaterial: wool
 gameItems:
   giveSpectateItem: true
   spectateItemSlot: 0
+  giveJoinItem: true
+  joinItemSlot: 8
   spectateItem: compass 1 luck:1
+  joinItem: daylight_detector 1 luck:1
   exitGameItem: iron_door 1 luck:1
   kitMenuItem: storage_minecart 1 luck:1
-  opChestVoteItem: diamond 1 luck:1
   specStoreItem: anvil 1 luck:1
-  timeVoteItem: watch 1 luck:1
-  jumpVoteItem: diamond_boots 1 luck:1
+  opChestMenuItem: diamond 1
+  timeMenuItem: watch 1
+  jumpMenuItem: diamond_boots 1
+  optionsItem: cake 1 luck:1
 gameSounds:
   playerJoinLobby: SLIME_WALK2
   playerLeaveLobby: SLIME_ATTACK

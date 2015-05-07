@@ -21,7 +21,6 @@ public class CreateMapCommand implements CommandExecutor {
 		} else if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (SkyWarsReloaded.perms.has(player, "swr.maps")) {
-				SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).setRespawn(player.getLocation());
 				hasPerm = true;
 			}
 		} else {

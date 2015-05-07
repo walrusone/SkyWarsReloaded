@@ -16,7 +16,9 @@ public class JoinGameCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    		boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
+    	String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		if (world != null) {
+	  		boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
     		boolean hasPerm = false;
     		if (!(sender instanceof Player)) {
     			sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
@@ -63,7 +65,12 @@ public class JoinGameCommand implements CommandExecutor {
     				sender.sendMessage(ChatColor.RED + "USAGE: /swr join");
     			}
     		} 
-    	return true;
+    		return true;
+		} else {
+			sender.sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+			SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+			return true;
+		}
     }
 
     private Game findGame() {
