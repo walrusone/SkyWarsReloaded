@@ -46,6 +46,7 @@ gameVariables:
   allowSpectating: true
   useExternalEconomy: false
   noFallDamage: true
+  noFallDamageLobby: false
   pointsPerKill: 2
   pointsLostPerDeath: 1
   pointsLostPerLeave: 1
@@ -60,9 +61,13 @@ gameVariables:
   statsCommandCooldown: 60
   addScorePrefix: true
   useExternalChat: false
-  opChestsEnabled: false
-  timeVoteEnabled: false
-  jumpVoteEnabled: false
+  opChestsEnabled: true
+  timeVoteEnabled: true
+  jumpVoteEnabled: true
+  colorGlassEnabled: true
+  lobbyMenuEnabled: true
+  purchaseColorGlassEnabled: true
+  purchasePermanentKitsEnabled: true
   highJumpValue: 2
   superJumpValue: 4
   godJumpValue: 8
@@ -77,17 +82,22 @@ gameVariables:
 gameItems:
   giveSpectateItem: true
   spectateItemSlot: 0
+  giveLobbyMenuItem: true
+  lobbyMenuItemSlot: 4
   giveJoinItem: true
   joinItemSlot: 8
+  lobbyMenuItem: eye_of_ender 1 luck:1
   spectateItem: compass 1 luck:1
   joinItem: daylight_detector 1 luck:1
   exitGameItem: iron_door 1 luck:1
   kitMenuItem: storage_minecart 1 luck:1
+  kitPermMenuItem: storage_minecart 1
   specStoreItem: anvil 1 luck:1
   opChestMenuItem: diamond 1
   timeMenuItem: watch 1
   jumpMenuItem: diamond_boots 1
   optionsItem: cake 1 luck:1
+  glassMenuItem: stained_glass 1
 gameSounds:
   playerJoinLobby: SLIME_WALK2
   playerLeaveLobby: SLIME_ATTACK

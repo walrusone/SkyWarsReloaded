@@ -28,6 +28,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.walrusone.skywars.commands.MainCommand;
 import com.walrusone.skywars.controllers.ChestController;
 import com.walrusone.skywars.controllers.GameController;
+import com.walrusone.skywars.controllers.GlassController;
 import com.walrusone.skywars.controllers.InventoryController;
 import com.walrusone.skywars.controllers.KitController;
 import com.walrusone.skywars.controllers.MapController;
@@ -65,8 +66,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private ChestController cc;
     private KitController kc;
     private IconMenuController ic;
+    private GlassController glc;
     private ShopController sc;
     private ScoreboardController score;
+    private Messaging messaging;
     private boolean finishedStartup;
     private static final Logger log = Logger.getLogger("Minecraft");
     public static Economy econ = null;
@@ -100,58 +103,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	
         boolean sqlEnabled = getConfig().getBoolean("sqldatabase.enabled");
         if (sqlEnabled) {
-        	try {
-				db = new Database();
-			} catch (ClassNotFoundException | SQLException e) {
-				e.printStackTrace();
-			}
-        	try {
-				db.createTables();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-        	Connection conn = db.getConnection();
-        	DatabaseMetaData metadata;
-			try {
-				metadata = conn.getMetaData();
-	        	ResultSet resultSet;
-	        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
-	        	if(resultSet.next()) {
-	            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "playername");
-	            	if(!resultSet.next()) {
-	            		try {
-							db.addColumn("playername");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	            	}
-	        	}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				metadata = conn.getMetaData();
-	        	ResultSet resultSet;
-	        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
-	        	if(resultSet.next()) {
-	            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "balance");
-	            	if(!resultSet.next()) {
-	            		try {
-							db.addColumn("balance");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	            	}
-	        	}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	getSWRDatabase();
         }
         
         boolean economy = this.getConfig().getBoolean("gameVariables.useExternalEconomy");
@@ -176,7 +128,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if(getConfig().getBoolean("gameVariables.enableLogFilter")) {
             getServer().getLogger().setFilter(new LoggerFilter());
         }
-        new com.walrusone.skywars.utilities.Messaging(this);
+        messaging = new Messaging(this);
         wc = new WorldController();
         mc = new MapController();
         gc = new GameController();
@@ -187,9 +139,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         kc = new KitController();
         ic = new IconMenuController();
         sc = new ShopController();
+        glc = new GlassController();
         score = new ScoreboardController();
-        
-        
         
         getCommand("swr").setExecutor(new MainCommand());
         
@@ -283,13 +234,126 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         finishedStartup = true;
     } 
     
-    public void onDisable() {
+    private void getSWRDatabase() {
+    	try {
+			db = new Database();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+    	try {
+			db.createTables();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	Connection conn = db.getConnection();
+    	DatabaseMetaData metadata;
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "playername");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("playername");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "balance");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("balance");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "glasscolor");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("glasscolor");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
+	public void onDisable() {
     	if (finishedStartup) {
            	gc.shutdown();
             pc.shutdown();
             invc.save();
         	deleteWorlds();
     	}
+    }
+    
+    public void reload() {
+    	finishedStartup = false;
+		reloadConfig();
+		saveConfig();
+        gc.shutdown();
+        invc.save();
+        messaging = null;
+		messaging = new Messaging(this);
+		cc = null;
+        cc = new ChestController();
+        mc = null;
+        mc = new MapController();
+        kc = null;
+        kc = new KitController();
+        sc = null;
+        sc = new ShopController();
+        glc = null;
+        glc = new GlassController();
+        invc = null;
+        invc = new InventoryController();
+        db = null;
+        boolean sqlEnabled = getConfig().getBoolean("sqldatabase.enabled");
+        if (sqlEnabled) {
+        	getSWRDatabase();
+        }
+        gc = null;
+        gc = new GameController();
+        if (bungeeMode) {
+      		@SuppressWarnings("unused")
+			Game game = gc.createGame();
+        }
+        
+        signJoinMode = getConfig().getBoolean("signJoinMode");
+        if (signJoinMode) {
+        	gc.signJoinLoad();
+        }
+        finishedStartup = true;
     }
     
     private void deleteWorlds() {
@@ -334,6 +398,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return instance.wc;
     }
     
+    public static Messaging getMessaging() {
+        return instance.messaging;
+    }
+    
     public static MapController getMC() {
         return instance.mc;
     }
@@ -368,6 +436,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
  
     public static InventoryController getInvC() {
         return instance.invc;
+    }
+    
+    public static GlassController getGLC() {
+        return instance.glc;
     }
     
     public static MultiverseCore getMV() {

@@ -34,6 +34,8 @@ public class MainCommand implements CommandExecutor {
         subCommandMap.put("start", new StartCommand());
         subCommandMap.put("games", new GamesCommand());
         subCommandMap.put("endgame", new EndGameCommand());
+        subCommandMap.put("glassshop", new GlassShopCommand());
+        subCommandMap.put("permkitshop", new PermKitShopCommand());
     }
 
     @Override

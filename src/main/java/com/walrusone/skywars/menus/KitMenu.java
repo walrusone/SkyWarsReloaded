@@ -31,14 +31,14 @@ public class KitMenu {
         }
 
         int rowCount = menuSlotsPerRow;
-        while (rowCount < highestSlot && rowCount < menuSize) {
+        while (rowCount < (highestSlot + 1) && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
         }
 
         SkyWarsReloaded.getIC().create(gamePlayer.getP(), menuName, rowCount, new IconMenu.OptionClickEventHandler() {
             @Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
-                if (gamePlayer.inGame() && gamePlayer.getGame().getState() == GameState.PLAYING) {
+                if (!gamePlayer.inGame()) {
                 	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.can-not-pick-kit"));
                     return;
                 }
@@ -53,12 +53,12 @@ public class KitMenu {
                     return;
                 }
 
-                if (!hasPermission(event.getPlayer(), kit) && !hasFreePermission(event.getPlayer(), kit)) {
+                if (!hasPermission(event.getPlayer(), kit) && !hasFreePermission(gamePlayer, kit)) {
                 	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-permission-kit"));
                 	return;
                 }
 
-                if (!hasFreePermission(event.getPlayer(), kit)) {
+                if (!hasFreePermission(gamePlayer, kit)) {
                 	if (isPurchaseAble(kit)) {
                 		if (!canPurchase(gamePlayer, kit)) {
                     		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.not-enough-balance"));
@@ -88,23 +88,28 @@ public class KitMenu {
             List<String> loreList = Lists.newLinkedList();
             boolean canPurchase = false;
 
-            if (isPurchaseAble(kit)) {
-            	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
-            		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost() ? 'a' : 'c') + kit.getCost());
-            	} else {
-            		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getCost() ? 'a' : 'c') + kit.getCost());
-            	}
-                loreList.add(" ");
+            if (!hasFreePermission(gamePlayer, kit)) {
+                if (!hasPermission(gamePlayer.getP(), kit)) {
+                    loreList.add(new Messaging.MessageFormatter().format("menu.no-permission"));
+                    loreList.add(" ");
+                } else {
+                    if (isPurchaseAble(kit)) {
+                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+                    		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost() ? 'a' : 'c') + kit.getCost());
+                    	} else {
+                    		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getCost() ? 'a' : 'c') + kit.getCost());
+                    	}
+                        loreList.add(" ");
 
-                if (canPurchase(gamePlayer, kit)) {
-                    canPurchase = true;
+                        if (canPurchase(gamePlayer, kit)) {
+                            canPurchase = true;
+                        }
+
+                    }
                 }
-
-            } else if (!hasPermission(gamePlayer.getP(), kit)) {
-                loreList.add("No permission");
-                loreList.add(" ");
-
             } else {
+                loreList.add(new Messaging.MessageFormatter().format("menu.kit-free"));
+                loreList.add(" ");
                 canPurchase = true;
             }
 
@@ -125,8 +130,8 @@ public class KitMenu {
         return player.isOp() || SkyWarsReloaded.perms.has(player, premissionPrefix + kit.getName().toLowerCase());
     }
     
-    public boolean hasFreePermission(Player player, GameKit kit) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, premissionPrefix + "free." + kit.getName().toLowerCase());
+    public boolean hasFreePermission(GamePlayer player, GameKit kit) {
+        return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + "free." + kit.getName().toLowerCase()) || player.hasPerm(premissionPrefix + "free." + kit.getName().toLowerCase()));
     }
     
     public boolean isPurchaseAble(GameKit kit) {
@@ -139,9 +144,9 @@ public class KitMenu {
     public boolean canPurchase(GamePlayer gamePlayer, GameKit kit) {
     	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
     	if (economy) {
-            return kit.getCost() > 0 && (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost());
+            return (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost());
     	} else {
-    		return kit.getCost() > 0 && (gamePlayer.getBalance() >= kit.getCost());
+    		return (gamePlayer.getBalance() >= kit.getCost());
     	}
     }
     

@@ -5,8 +5,10 @@ icon: diamond_sword
 # The position the kit will hold in the inventory menu starting from the top left and moving right. 
 # No two kits can use the same number. This value allows you to sort the kits however you want. 
 menuPostion: 0
-# The cost of the kit (optional)
+# The cost to use the kit in one game. 
 cost: 15000000
+# The cost to permanent unlock the kit.
+permCost: 15000000
 # Additional text added to the lores of the item in the inventory menu. You can use color codes at the start of each line. (optional)
 details:
 - '&aHello'

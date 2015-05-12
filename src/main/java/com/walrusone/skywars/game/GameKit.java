@@ -23,6 +23,7 @@ public class GameKit {
 
     private String name;
     private String kitName;
+    private int permCost;
     private int cost;
     private List<ItemStack> items = Lists.newArrayList();
     private List<PotionEffect> potionEffects = Lists.newArrayList();
@@ -67,6 +68,17 @@ public class GameKit {
 				} catch (IOException e) {
 				}
            }
+           
+           if (storage.getString("permCost") != null) {
+          	 	permCost = storage.getInt("permCost");
+          } else {
+          		permCost = 1000000;
+          		storage.set("permCost", permCost);
+          	try {
+					storage.save(kit);
+				} catch (IOException e) {
+				}
+          }
             
             cost = storage.getInt("cost", 0);
             position = storage.getInt("menuPostion");
@@ -98,9 +110,11 @@ public class GameKit {
             }
             lores.add(ChatColor.DARK_BLUE + " ");
             String potions = new Messaging.MessageFormatter().format("kits.potion-effects");
-            lores.add(potions);
-            for (PotionEffect potionEffect: potionEffects) {
-                lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
+            if (potionEffects.size() > 1) {
+                lores.add(potions);
+                for (PotionEffect potionEffect: potionEffects) {
+                    lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
+                }
             }
         } catch (NullPointerException e) {
         	e.printStackTrace();
@@ -127,6 +141,10 @@ public class GameKit {
 
     public int getCost() {
         return cost;
+    }
+    
+    public int getPermCost() {
+    	return permCost;
     }
 
     public int getPosition() {

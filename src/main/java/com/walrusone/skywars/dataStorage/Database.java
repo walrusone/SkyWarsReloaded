@@ -165,6 +165,24 @@ public class Database {
 		            }
 		        }
 	        }
+	        if (name.equalsIgnoreCase("glasscolor")) {
+	        	try {
+		            connection.setAutoCommit(false);
+		            statement = connection.createStatement();
+
+	                String query = "ALTER TABLE " + "swreloaded_player" + " ADD " + name + " VARCHAR(60) AFTER blocksplaced";
+	                statement.execute(query);
+
+		            connection.commit();
+
+		        } finally {
+		            connection.setAutoCommit(true);
+
+		            if (statement != null && !statement.isClosed()) {
+		                statement.close();
+		            }
+		        }
+	        }
 	    }
 
 	    

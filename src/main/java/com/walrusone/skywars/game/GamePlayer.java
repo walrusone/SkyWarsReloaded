@@ -1,5 +1,6 @@
 package com.walrusone.skywars.game;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class GamePlayer {
 	private UUID uuid;
 	private boolean isSpectating = false;
 	private String name;
+	private String color;
 	private int wins;
 	private int kills;
 	private int deaths;
@@ -40,6 +42,8 @@ public class GamePlayer {
 	private ItemStack exit;
 	private ItemStack specShopItem;
 	private ItemStack spec;
+	private List<String> permissions = new ArrayList<String>();
+	private List<String> newPerms = new ArrayList<String>();
 	
 	public GamePlayer (UUID uuid) {
 		this.uuid = uuid;
@@ -234,9 +238,15 @@ public class GamePlayer {
 			        getP().removePotionEffect(effect.getType());
 				}
 				SkyWarsReloaded.getInvC().restoreInventory(getP());
+				getP().setFireTicks(0);
 				getP().teleport(location);
-				getP().setAllowFlight(false);
-				getP().setFlying(false);
+				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+					@Override
+					public void run() {
+						getP().setAllowFlight(false);
+						getP().setFlying(false);
+					}
+				}, 5);
 			}
 		}
 		
@@ -285,6 +295,40 @@ public class GamePlayer {
 
 	public int getTimeVote() {
 		return timeVote;
+	}
+
+	public void setGlass(String name2) {
+		color = name2;
+	}
+	
+	public String getGlass() {
+		return color;
+	}
+	
+	public List<String> getPerms() {
+		return permissions;
+	}
+	
+	public void addPerm(String perm) {
+		newPerms.add(perm);
+		permissions.add(perm);
+	}
+	
+	public List<String> getNewPerms() {
+		return newPerms;
+	}
+	
+	public boolean hasPerm(String perm) {
+		if (permissions.contains(perm)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void setPerms(List<String> perms) {
+		for (String perm: perms) {
+			permissions.add(perm);
+		}
 	}
 	
 }

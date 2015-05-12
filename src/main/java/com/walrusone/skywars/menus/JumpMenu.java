@@ -17,8 +17,8 @@ import com.walrusone.skywars.utilities.Messaging;
 
 public class JumpMenu {
 	
-	private static final int menuSlotsPerRow = 27;
-    private static final int menuSize = 27;
+	private static final int menuSlotsPerRow = 9;
+    private static final int menuSize = 36;
     private static final String jumpMenuName = new Messaging.MessageFormatter().format("menu.jump-menu-title");
 	private String voteForTimeSound;
 	
@@ -27,7 +27,7 @@ public class JumpMenu {
     	voteForTimeSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.timeVote");
     	
         int rowCount = menuSlotsPerRow;
-        while (rowCount < 8 && rowCount < menuSize) {
+        while (rowCount < 36 && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
         }
 
@@ -176,7 +176,7 @@ public class JumpMenu {
             List<String> loreList5 = Lists.newLinkedList();
             SkyWarsReloaded.getIC().setOption(
     	                    gamePlayer.getP(),
-    	                    26,
+    	                    35,
     	                    new ItemStack(Material.TORCH, 1),
     	                    new Messaging.MessageFormatter().format("menu.return-to-options"),
     	                    loreList5.toArray(new String[loreList5.size()]));     

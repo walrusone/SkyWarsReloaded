@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,6 +53,8 @@ public class DataStorage {
 	            }
 	            fc.set("killDeath", killDeath);
 	            fc.set("blocksPlaced", player.getBlocks());
+	            fc.set("permissions", player.getPerms());
+	            fc.set("glasscolor", player.getGlass());
 	            fc.save(playerFile);
 	            
 	        } catch (IOException ioException) {
@@ -58,6 +62,7 @@ public class DataStorage {
 	        }
 		} else {
             Database database = SkyWarsReloaded.getDB();
+            int playerId = 0;
 
             if (!database.checkConnection()) {
                 return;
@@ -67,29 +72,30 @@ public class DataStorage {
             PreparedStatement preparedStatement = null;
 
             try {
-                StringBuilder queryBuilder = new StringBuilder();
-                queryBuilder.append("UPDATE `swreloaded_player` SET ");
-                queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
-                queryBuilder.append("`games_won` = ?, `kills` = ?, ");
-                queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ? ");
-                queryBuilder.append("WHERE `uuid` = ?;");
+            	 StringBuilder queryBuilder = new StringBuilder();
+                 queryBuilder.append("UPDATE `swreloaded_player` SET ");
+                 queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
+                 queryBuilder.append("`games_won` = ?, `kills` = ?, ");
+                 queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ? ");
+                 queryBuilder.append("WHERE `uuid` = ?;");
 
-                preparedStatement = connection.prepareStatement(queryBuilder.toString());
-                preparedStatement.setString(1, player.getName());
-                preparedStatement.setInt(2, player.getScore());
-                preparedStatement.setInt(3, player.getGamesPlayed());
-                preparedStatement.setInt(4, player.getWins());
-                preparedStatement.setInt(5, player.getKills());
-                preparedStatement.setInt(6, player.getDeaths());
-                double killDeath = 0;
-                if (player.getDeaths() != 0) {
-                	killDeath = ((double) player.getKills())/player.getDeaths();
-                }
-                preparedStatement.setDouble(7, killDeath);
-                preparedStatement.setInt(8, player.getBlocks());
-                preparedStatement.setInt(9, player.getBalance());
-                preparedStatement.setString(10, player.getUUID().toString());
-                preparedStatement.executeUpdate();
+                 preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                 preparedStatement.setString(1, player.getName());
+                 preparedStatement.setInt(2, player.getScore());
+                 preparedStatement.setInt(3, player.getGamesPlayed());
+                 preparedStatement.setInt(4, player.getWins());
+                 preparedStatement.setInt(5, player.getKills());
+                 preparedStatement.setInt(6, player.getDeaths());
+                 double killDeath = 0;
+                 if (player.getDeaths() != 0) {
+                 	killDeath = ((double) player.getKills())/player.getDeaths();
+                 }
+                 preparedStatement.setDouble(7, killDeath);
+                 preparedStatement.setInt(8, player.getBlocks());
+                 preparedStatement.setInt(9, player.getBalance());
+                 preparedStatement.setString(10, player.getGlass());
+                 preparedStatement.setString(11, player.getUUID().toString());
+                 preparedStatement.executeUpdate();
 
             } catch (final SQLException sqlException) {
                 sqlException.printStackTrace();
@@ -102,8 +108,72 @@ public class DataStorage {
                     }
                 }
             }
+            
+            connection = database.getConnection();
+            preparedStatement = null;
+            ResultSet resultSet = null;
+                try {
+                    StringBuilder queryBuilder = new StringBuilder();
+                    queryBuilder.append("SELECT `player_id` ");
+                    queryBuilder.append("FROM `swreloaded_player` ");
+                    queryBuilder.append("WHERE `uuid` = ? ");
+                    queryBuilder.append("LIMIT 1;");
+
+                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                    preparedStatement.setString(1, player.getP().getUniqueId().toString());
+                    resultSet = preparedStatement.executeQuery();
+
+                    if (resultSet != null && resultSet.next()) {
+                        playerId = resultSet.getInt("player_id");
+                    }
+                } catch (final SQLException sqlException) {
+                    sqlException.printStackTrace();
+                } finally {
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (final SQLException ignored) {
+                        }
+                    }
+                    if (preparedStatement != null) {
+                        try {
+                            preparedStatement.close();
+                        } catch (final SQLException ignored) {
+                        }
+                    }
+                }
+        		if (player.getPerms().size() > 0) {
+        			connection = database.getConnection();
+                    preparedStatement = null;
+
+                    try {
+                    	for (String perm: player.getNewPerms()) {
+                    		StringBuilder queryBuilder = new StringBuilder();
+                            queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
+                            queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
+                            queryBuilder.append("SELECT (NULL, ?, ?, ?, ?) ");
+                            
+                            preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                            preparedStatement.setInt(1, playerId);
+                            preparedStatement.setString(2, player.getUUID().toString());
+                            preparedStatement.setString(3, player.getName());
+                            preparedStatement.setString(4, perm);
+                            preparedStatement.executeUpdate();
+                    	}
+                    } catch (final SQLException sqlException) {
+                        sqlException.printStackTrace();
+
+                    } finally {
+                        if (preparedStatement != null) {
+                            try {
+                                preparedStatement.close();
+                            } catch (final SQLException ignored) {
+                            }
+                        }
+                    }
+        		}
+            }
         }
-	}
 
 	public void savePlayerAsync(final GamePlayer player) {
 		Bukkit.getScheduler().runTaskAsynchronously(SkyWarsReloaded.get(), new Runnable() {
@@ -141,6 +211,8 @@ public class DataStorage {
         	            }
         	            fc.set("killDeath", killDeath);
         	            fc.set("blocksPlaced", player.getBlocks());
+        	            fc.set("permissions", player.getPerms());
+        	            fc.set("glasscolor", player.getGlass());
         	            fc.save(playerFile);
         	            
         	        } catch (IOException ioException) {
@@ -148,7 +220,8 @@ public class DataStorage {
         	        }
         		} else {
                     Database database = SkyWarsReloaded.getDB();
-
+                    int playerId = 0;
+                    
                     if (!database.checkConnection()) {
                         return;
                     }
@@ -161,7 +234,7 @@ public class DataStorage {
                         queryBuilder.append("UPDATE `swreloaded_player` SET ");
                         queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
                         queryBuilder.append("`games_won` = ?, `kills` = ?, ");
-                        queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ? ");
+                        queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ? ");
                         queryBuilder.append("WHERE `uuid` = ?;");
 
                         preparedStatement = connection.prepareStatement(queryBuilder.toString());
@@ -178,7 +251,8 @@ public class DataStorage {
                         preparedStatement.setDouble(7, killDeath);
                         preparedStatement.setInt(8, player.getBlocks());
                         preparedStatement.setInt(9, player.getBalance());
-                        preparedStatement.setString(10, player.getUUID().toString());
+                        preparedStatement.setString(10, player.getGlass());
+                        preparedStatement.setString(11, player.getUUID().toString());
                         preparedStatement.executeUpdate();
 
                     } catch (final SQLException sqlException) {
@@ -192,8 +266,72 @@ public class DataStorage {
                             }
                         }
                     }
+                    
+                    connection = database.getConnection();
+                    preparedStatement = null;
+                    ResultSet resultSet = null;
+                        try {
+                            StringBuilder queryBuilder = new StringBuilder();
+                            queryBuilder.append("SELECT `player_id` ");
+                            queryBuilder.append("FROM `swreloaded_player` ");
+                            queryBuilder.append("WHERE `uuid` = ? ");
+                            queryBuilder.append("LIMIT 1;");
+
+                            preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                            preparedStatement.setString(1, player.getUUID().toString());
+                            resultSet = preparedStatement.executeQuery();
+
+                            if (resultSet != null && resultSet.next()) {
+                                playerId = resultSet.getInt("player_id");
+                            }
+                        } catch (final SQLException sqlException) {
+                            sqlException.printStackTrace();
+                        } finally {
+                            if (resultSet != null) {
+                                try {
+                                    resultSet.close();
+                                } catch (final SQLException ignored) {
+                                }
+                            }
+                            if (preparedStatement != null) {
+                                try {
+                                    preparedStatement.close();
+                                } catch (final SQLException ignored) {
+                                }
+                            }
+                        }
+                		if (player.getPerms().size() > 0) {
+                			connection = database.getConnection();
+                            preparedStatement = null;
+
+                            try {
+                            	for (String perm: player.getNewPerms()) {
+                            		StringBuilder queryBuilder = new StringBuilder();
+                                    queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
+                                    queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
+                                    queryBuilder.append("VALUES (NULL, ?, ?, ?, ?) ");
+                                    
+                                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                                    preparedStatement.setInt(1, playerId);
+                                    preparedStatement.setString(2, player.getUUID().toString());
+                                    preparedStatement.setString(3, player.getName());
+                                    preparedStatement.setString(4, perm);
+                                    preparedStatement.executeUpdate();
+                            	}
+                            } catch (final SQLException sqlException) {
+                                sqlException.printStackTrace();
+
+                            } finally {
+                                if (preparedStatement != null) {
+                                    try {
+                                        preparedStatement.close();
+                                    } catch (final SQLException ignored) {
+                                    }
+                                }
+                            }
+                		}
+                    }
                 }
-            }
 		});
 	}
 	
@@ -219,7 +357,7 @@ public class DataStorage {
 
 	                    try {
 	                        StringBuilder queryBuilder = new StringBuilder();
-	                        queryBuilder.append("SELECT `score`, `games_played`, `games_won`, `kills`, `deaths`, `blocksplaced`, `balance` ");
+	                        queryBuilder.append("SELECT `score`, `games_played`, `games_won`, `kills`, `deaths`, `blocksplaced`, `balance`, `glasscolor` ");
 	                        queryBuilder.append("FROM `swreloaded_player` ");
 	                        queryBuilder.append("WHERE `uuid` = ? ");
 	                        queryBuilder.append("LIMIT 1;");
@@ -236,6 +374,11 @@ public class DataStorage {
 	                            player.setDeaths(resultSet.getInt("deaths"));
 	                            player.setBlocks(resultSet.getInt("blocksplaced"));
 	                            player.setBalance(resultSet.getInt("balance"));
+	                            if (resultSet.getString("glasscolor") != null) {
+		                            player.setGlass(resultSet.getString("glasscolor"));
+	                            } else {
+	                            	player.setGlass("normal");
+	                            }
 	                        }
 
 	                    } catch (final SQLException sqlException) {
@@ -257,7 +400,52 @@ public class DataStorage {
 	                        }
 	                    }
 	                }
-	            }
+	                
+	                database = SkyWarsReloaded.getDB();
+
+	                if (!database.checkConnection()) {
+	                    return;
+	                }
+
+	                    Connection connection = database.getConnection();
+	                    PreparedStatement preparedStatement = null;
+	                    ResultSet resultSet = null;
+
+	                    try {
+	                        StringBuilder queryBuilder = new StringBuilder();
+	                        queryBuilder.append("SELECT `permissions` ");
+	                        queryBuilder.append("FROM `swreloaded_permissions` ");
+	                        queryBuilder.append("WHERE `uuid` = ?;");
+
+	                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	                        preparedStatement.setString(1, player.getP().getUniqueId().toString());
+	                        resultSet = preparedStatement.executeQuery();
+
+	                        List<String> perms = new ArrayList<String>();
+	                        
+	                        while (resultSet != null && resultSet.next()) {
+	                            perms.add(resultSet.getString("permissions"));
+	                        }
+	                        player.setPerms(perms);
+	                    } catch (final SQLException sqlException) {
+	                        sqlException.printStackTrace();
+
+	                    } finally {
+	                        if (resultSet != null) {
+	                            try {
+	                                resultSet.close();
+	                            } catch (final SQLException ignored) {
+	                            }
+	                        }
+
+	                        if (preparedStatement != null) {
+	                            try {
+	                                preparedStatement.close();
+	                            } catch (final SQLException ignored) {
+	                            }
+	                        }
+	                    }
+	                }
 	        });
 		} else {
 			Bukkit.getScheduler().runTaskAsynchronously(SkyWarsReloaded.get(), new Runnable() {
@@ -287,7 +475,8 @@ public class DataStorage {
 	    	            player.setScore(fc.getInt("score"));
 	    	            player.setBlocks(fc.getInt("blocksPlaced"));
 	    	            player.setBalance(fc.getInt("balance"));
-
+	    	            player.setPerms(fc.getStringList("permissions"));
+	    	            player.setGlass(fc.getString("glasscolor"));
 	    	            
 	    	        } catch (IOException ioException) {
 	    	            System.out.println("Failed to load player " + player + ": " + ioException.getMessage());

@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 public final class Messaging {
 
-    private static Messaging instance;
     private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)(&|" + String.valueOf(ChatColor.COLOR_CHAR) + ")[0-9A-FK-OR]");
     private final FileConfiguration storage;
 
@@ -31,7 +30,6 @@ public final class Messaging {
 
         copyDefaults(storageFile);
         storage = YamlConfiguration.loadConfiguration(storageFile);
-        instance = this;
     }
 
     public static String stripColor(String input) {
@@ -81,8 +79,8 @@ public final class Messaging {
                 return "";
             }
 
-            if (getInstance().getMessage(message) != null) {
-                message = getInstance().getMessage(message);
+            if (SkyWarsReloaded.getMessaging().getMessage(message) != null) {
+                message = SkyWarsReloaded.getMessaging().getMessage(message);
             }
 
             Matcher matcher = PATTERN.matcher(message);
@@ -100,7 +98,7 @@ public final class Messaging {
             }
 
             if (prefix) {
-                message = getInstance().getPrefix() + message;
+                message = SkyWarsReloaded.getMessaging().getPrefix() + message;
             }
 
             return ChatColor.translateAlternateColorCodes('&', message);
@@ -123,7 +121,4 @@ public final class Messaging {
 		}
 	}
     
-    public static Messaging getInstance() {
-        return instance;
-    }
 }

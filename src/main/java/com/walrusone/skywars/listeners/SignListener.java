@@ -30,24 +30,30 @@ public class SignListener implements Listener {
         String[] lines = event.getLines();
         if (lines[0].equalsIgnoreCase("[swr]")) {
         	if (SkyWarsReloaded.perms.has(event.getPlayer(), "swr.signs")) {
-                Location signLocation = event.getBlock().getLocation();
-                World w = signLocation.getWorld();
-            	Block b = w.getBlockAt(signLocation);
-            	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
-           			event.setCancelled(true);
-           		   	String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-           			if (world != null) {
-               			boolean added = SkyWarsReloaded.getGC().addSignJoinGame(signLocation, lines[1].toLowerCase());
-               			if (added) {
-               				event.getPlayer().sendMessage(ChatColor.GREEN + "Game Sign Succefully Added");
+        		boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
+        		if (signJoinMode) {
+        			Location signLocation = event.getBlock().getLocation();
+                    World w = signLocation.getWorld();
+                	Block b = w.getBlockAt(signLocation);
+                	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
+               			event.setCancelled(true);
+               		   	String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+               			if (world != null) {
+                   			boolean added = SkyWarsReloaded.getGC().addSignJoinGame(signLocation, lines[1].toLowerCase());
+                   			if (added) {
+                   				event.getPlayer().sendMessage(ChatColor.GREEN + "Game Sign Succefully Added");
+                   			} else {
+                   				event.getPlayer().sendMessage(ChatColor.GREEN + "There is no map with that Name");
+                   			}
                			} else {
-               				event.getPlayer().sendMessage(ChatColor.GREEN + "There is no map with that Name");
+               				event.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+               				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
                			}
-           			} else {
-           				event.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-           				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-           			}
-            	}
+                	}
+        		} else {
+            		event.getPlayer().sendMessage(ChatColor.RED + "SIGN JOIN MODE IS NOT ENABLED");
+        			event.setCancelled(true);
+        		}
             } else {
             		event.getPlayer().sendMessage(ChatColor.RED + "YOU DO NOT HAVE PERMISSION TO CREATE SWR SIGNS");
         			event.setCancelled(true);
@@ -99,31 +105,36 @@ public class SignListener implements Listener {
     				 Sign s = (Sign) e.getClickedBlock().getState();
     				 String line1 = ChatColor.stripColor(s.getLine(0));
     				 if (line1.equalsIgnoreCase("skywars")) {
-    	            	 String world = s.getBlock().getWorld().getName().toString();
-    	         		 int x = s.getBlock().getX();
-    	         		 int y = s.getBlock().getY();
-    	         		 int z = s.getBlock().getZ();
-    	         		 File signJoinFile = new File(SkyWarsReloaded.get().getDataFolder(), "signJoinGames.yml");
-    	         		 if (signJoinFile.exists()) {
-    	         			FileConfiguration storage = YamlConfiguration.loadConfiguration(signJoinFile);
-    	                    for (String gameNumber : storage.getConfigurationSection("games.").getKeys(false)) {
-    	                    	String world1 = storage.getString("games." + gameNumber + ".world");
-    	                    	int x1 = storage.getInt("games." + gameNumber + ".x");
-    	                    	int y1 = storage.getInt("games." + gameNumber + ".y");
-    	                    	int z1 = storage.getInt("games." + gameNumber + ".z");
-    	                    	if (x1 == x && y1 == y && z1 == z && world.equalsIgnoreCase(world1)) {
-    	                    		if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.play")) {
-    	                    			Game game = SkyWarsReloaded.getGC().getGame(Integer.valueOf(gameNumber));
-    	                    			if (game != null) {
-        	                    			if (!game.isFull() && game.getState() == GameState.PREGAME) {
-        	                    				game.addPlayer(gPlayer);
-        	                    			}
-    	                    			}
-    	                    		}
-    	                    	}	
-    	                    }
-    	                  }
-    	             } 
+    		        		boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
+    		        		if (signJoinMode) {
+    	    	            	 String world = s.getBlock().getWorld().getName().toString();
+    	    	         		 int x = s.getBlock().getX();
+    	    	         		 int y = s.getBlock().getY();
+    	    	         		 int z = s.getBlock().getZ();
+    	    	         		 File signJoinFile = new File(SkyWarsReloaded.get().getDataFolder(), "signJoinGames.yml");
+    	    	         		 if (signJoinFile.exists()) {
+    	    	         			FileConfiguration storage = YamlConfiguration.loadConfiguration(signJoinFile);
+    	    	                    for (String gameNumber : storage.getConfigurationSection("games.").getKeys(false)) {
+    	    	                    	String world1 = storage.getString("games." + gameNumber + ".world");
+    	    	                    	int x1 = storage.getInt("games." + gameNumber + ".x");
+    	    	                    	int y1 = storage.getInt("games." + gameNumber + ".y");
+    	    	                    	int z1 = storage.getInt("games." + gameNumber + ".z");
+    	    	                    	if (x1 == x && y1 == y && z1 == z && world.equalsIgnoreCase(world1)) {
+    	    	                    		if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.play")) {
+    	    	                    			Game game = SkyWarsReloaded.getGC().getGame(Integer.valueOf(gameNumber));
+    	    	                    			if (game != null) {
+    	        	                    			if (!game.isFull() && game.getState() == GameState.PREGAME) {
+    	        	                    				game.addPlayer(gPlayer);
+    	        	                    			}
+    	    	                    			}
+    	    	                    		}
+    	    	                    	}	
+    	    	                    }
+    	    	                  }
+    	    	             } else {
+    	    	            		e.getPlayer().sendMessage(ChatColor.RED + "SIGN JOIN MODE IS NOT ENABLED");
+    	    	        }
+    		        }
     		 }
     	}
 	}

@@ -19,12 +19,13 @@ import com.walrusone.skywars.utilities.Messaging;
 
 public class MainMenu {
 
-    private static final int menuSlotsPerRow = 27;
-    private static final int menuSize = 27;
+    private static final int menuSlotsPerRow = 9;
+    private static final int menuSize = 36;
     private static final String optionsMenuName = new Messaging.MessageFormatter().format("menu.options-menu-title");
 	private ItemStack opChest;
 	private ItemStack timeVote;
 	private ItemStack jumpVote;
+	private ItemStack color;
     
 	public MainMenu(final GamePlayer gamePlayer) {
 
@@ -37,9 +38,12 @@ public class MainMenu {
 		String jumpVoteItem = SkyWarsReloaded.get().getConfig().getString("gameItems.jumpMenuItem");
 		List<String> jumpVoteItemData = new LinkedList<String>(Arrays.asList(jumpVoteItem.split(" ")));
 		jumpVote = ItemUtils.parseItem(jumpVoteItemData);
+		String colorItem = SkyWarsReloaded.get().getConfig().getString("gameItems.glassMenuItem");
+		List<String> colorItemData = new LinkedList<String>(Arrays.asList(colorItem.split(" ")));
+		color = ItemUtils.parseItem(colorItemData);
 		
-        int rowCount = menuSlotsPerRow;
-        while (rowCount < 8 && rowCount < menuSize) {
+		int rowCount = menuSlotsPerRow;
+        while (rowCount < 36 && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
         }
 
@@ -92,6 +96,19 @@ public class MainMenu {
                 	 else {
                  		return;
                  	}
+                } else if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.selectcolor-item-name"))))) {
+                	if (hasColorPermission(gamePlayer.getP())) {
+                    	gamePlayer.getP().closeInventory();
+                    	SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+    						@Override
+    						public void run() {
+    		                	new UseColorMenu(gamePlayer);
+    						}
+                    	}, 2);
+                	}
+                	 else {
+                 		return;
+                 	}
                 } else if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.exit-menu"))))) {
                     	gamePlayer.getP().closeInventory();
                 } else {
@@ -103,6 +120,7 @@ public class MainMenu {
         List<String> chestLore = Lists.newLinkedList();
         List<String> timeLore = Lists.newLinkedList();
         List<String> jumpLore = Lists.newLinkedList();
+        List<String> colorLore = Lists.newLinkedList();
         
         if (hasTimePermission(gamePlayer.getP())) {
         	timeLore.add("");
@@ -121,13 +139,19 @@ public class MainMenu {
         } else {
         	chestLore.add(new Messaging.MessageFormatter().format("error.no-permission-chest"));
         }
+        
+        if (hasColorPermission(gamePlayer.getP())) {
+        	colorLore.add("");
+        } else {
+        	colorLore.add(new Messaging.MessageFormatter().format("error.no-permission-color"));
+        }
 
     	if (gamePlayer.getP() != null && gamePlayer.inGame() && gamePlayer.getGame().getState() == GameState.PREGAME) {
     		boolean opEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.opChestsEnabled");
     		if (opEnabled) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    4,
+	                    3,
 	                    opChest,
 	                    new Messaging.MessageFormatter().format("menu.chest-item-name"),
 	                    chestLore.toArray(new String[chestLore.size()]));
@@ -137,7 +161,7 @@ public class MainMenu {
     		if (timeEnabled) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    6,
+	                    5,
 	                    timeVote,
 	                    new Messaging.MessageFormatter().format("menu.time-item-name"),
 	                    timeLore.toArray(new String[timeLore.size()]));
@@ -147,16 +171,26 @@ public class MainMenu {
     		if (jumpEnabled) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    2,
+   	                    1,
    	                    jumpVote,
    	                    new Messaging.MessageFormatter().format("menu.jump-item-name"),
    	                    jumpLore.toArray(new String[jumpLore.size()]));
     		}
     		
+    		boolean colorEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.colorGlassEnabled");
+    		if (colorEnabled) {
+    	           SkyWarsReloaded.getIC().setOption(
+   	                    gamePlayer.getP(),
+   	                    7,
+   	                    color,
+   	                    new Messaging.MessageFormatter().format("menu.selectcolor-item-name"),
+   	                    colorLore.toArray(new String[colorLore.size()]));
+    		}
+    		
             List<String> loreList5 = Lists.newLinkedList();
             SkyWarsReloaded.getIC().setOption(
     	                    gamePlayer.getP(),
-    	                    26,
+    	                    35,
     	                    new ItemStack(Material.TORCH, 1),
     	                    new Messaging.MessageFormatter().format("menu.exit-menu"),
     	                    loreList5.toArray(new String[loreList5.size()])); 
@@ -176,6 +210,10 @@ public class MainMenu {
     
     public boolean hasChestPermission(Player player) {
         return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.opchest");
+    }
+    
+    public boolean hasColorPermission(Player player) {
+        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.usecolor");
     }
 	
 }

@@ -71,15 +71,25 @@ public class ShopMenu {
 
             ShopItem shopItem = availableItems.get(iii);
             List<String> loreList = Lists.newLinkedList();
+            boolean canPurchase = false;
 
-            loreList.add("Cost: " + shopItem.getCost());
+            if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+        		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= shopItem.getCost() ? 'a' : 'c') + shopItem.getCost());
+        	} else {
+        		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= shopItem.getCost() ? 'a' : 'c') + shopItem.getCost());
+        	}
+            loreList.add(" ");
+
+            if (canPurchase(gamePlayer, shopItem)) {
+                canPurchase = true;
+            }
             
             if (gamePlayer.getP() != null) {
                 SkyWarsReloaded.getIC().setOption(
                         gamePlayer.getP(),
                         iii,
                         shopItem.getItem().clone(),
-                        Items.itemByStack(shopItem.getItem()).getName(),
+                        "\247r\247" + (canPurchase ? 'a' : 'c') + Items.itemByStack(shopItem.getItem()).getName(),
                         loreList.toArray(new String[loreList.size()]));
             }
          }

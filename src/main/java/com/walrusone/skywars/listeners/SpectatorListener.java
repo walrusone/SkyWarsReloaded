@@ -27,7 +27,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -98,7 +97,7 @@ public class SpectatorListener implements Listener {
 			boolean allowed = false; 
 			
 			for (Player target : SkyWarsReloaded.get().getServer().getOnlinePlayers()) {
-				if (target.getWorld().equals(e.getBlock().getWorld())) { 
+				if (target.getWorld().equals(e.getBlock().getWorld()) && SkyWarsReloaded.getPC().getPlayer(target.getUniqueId()).isSpectating()) { 
 					Location playerL = target.getLocation();
 					
 					if (playerL.getX() > blockL.getBlockX()-1 && playerL.getX() < blockL.getBlockX()+1) {
@@ -106,6 +105,8 @@ public class SpectatorListener implements Listener {
 							if (playerL.getY() > blockL.getBlockY()-2 && playerL.getY() < blockL.getBlockY()+1) {
 								if (SkyWarsReloaded.getPC().getPlayer(target.getUniqueId()).isSpectating()) {
 									allowed = true;
+									target.teleport(e.getBlock().getLocation().add(0, 5, 0), TeleportCause.PLUGIN);
+									target.sendMessage(new Messaging.MessageFormatter().withPrefix().format("spectate.teleport-from-block"));
 								} else {
 									allowed = false;
 									break;
@@ -117,32 +118,6 @@ public class SpectatorListener implements Listener {
 				}
 			}
 			e.setBuildable(allowed);
-		}
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST) 
-	protected void onBlockPlace(BlockPlaceEvent e) {
-		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
-		if (gPlayer.inGame()) {
-			Game game = gPlayer.getGame();
-			Location blockL = e.getBlock().getLocation();
-			
-			for (Player target : SkyWarsReloaded.get().getServer().getOnlinePlayers()) {
-				GamePlayer spectator = SkyWarsReloaded.getPC().getPlayer(target.getUniqueId());
-				if (spectator.isSpectating() && spectator.getSpecGame() == game) {
-					Location playerL = target.getLocation();
-
-					if (playerL.getX() > blockL.getBlockX()-1 && playerL.getX() < blockL.getBlockX()+1) { 
-						if (playerL.getZ() > blockL.getBlockZ()-1 && playerL.getZ() < blockL.getBlockZ()+1) { 
-							if (playerL.getY() > blockL.getBlockY()-2 && playerL.getY() < blockL.getBlockY()+1) { 
-								target.teleport(e.getPlayer(), TeleportCause.PLUGIN);
-								target.sendMessage(new Messaging.MessageFormatter().withPrefix().format("spectate.teleport-from-block"));
-							}
-						}
-					}
-					
-				}
-			}
 		}
 	}
 	

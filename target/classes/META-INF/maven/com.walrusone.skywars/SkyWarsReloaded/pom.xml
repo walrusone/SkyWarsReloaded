@@ -5,7 +5,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <version>V2.3.1</version>
+  <version>V2.4.1</version>
    <build>
       <plugins>
           <plugin>

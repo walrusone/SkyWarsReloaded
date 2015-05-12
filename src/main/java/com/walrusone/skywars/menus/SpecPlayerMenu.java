@@ -47,11 +47,6 @@ public class SpecPlayerMenu {
                     return;
                 }
                 
-                if (!SkyWarsReloaded.perms.has(gamePlayer.getP(), "swr.spectate")) {
-                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-spectate-perm"));
-                    return;
-                }
-
                 event.setWillClose(true);
                 event.setWillDestroy(true);
                 

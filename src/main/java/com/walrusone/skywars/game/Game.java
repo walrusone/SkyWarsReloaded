@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -37,6 +38,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.EmptyChest;
+import com.walrusone.skywars.utilities.GlassColor;
 import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.StringUtils;
 
@@ -172,7 +174,7 @@ public class Game {
 		}
 	}
 	
-	private void preparePlayerForLobby(GamePlayer gPlayer) {
+	private void preparePlayerForLobby(final GamePlayer gPlayer) {
 		Location location;
 		int spawn = getAvailableSpawn();
 		location = new Location(mapWorld, gameMap.getSpawns().get(spawn).getX()+0.5, gameMap.getSpawns().get(spawn).getY(), gameMap.getSpawns().get(spawn).getZ()+0.5);
@@ -212,6 +214,18 @@ public class Game {
 			.setVariable("player", gPlayer.getP().getName())
 			.format("game.lobby-join"));
 		playSound(joinLobbySound);
+		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+			@Override
+			public void run() {
+				String color = gPlayer.getGlass();
+				if (!color.equalsIgnoreCase("normal")) {
+					GlassColor colorGlass = SkyWarsReloaded.getGLC().getByName(color);
+					setGlass(colorGlass.getMaterial(), colorGlass.getData(), gPlayer);
+				} else {
+					setGlass(Material.GLASS, gPlayer);
+				}
+			}
+		}, 5);
 	}
 	
 	private int getAvailableSpawn() {
@@ -267,10 +281,18 @@ public class Game {
     					.setVariable("time", "" + preGameTimer)
     					.format("game.countdown"));
 				} else if (count > 0 && count < preGameTimer) {
-					sendGameMessage(new Messaging.MessageFormatter()
+					if ((preGameTimer - count) % 5 == 0) {
+						sendGameMessage(new Messaging.MessageFormatter()
     					.withPrefix()
     					.setVariable("time", "" + (preGameTimer - count))
     					.format("game.countdown-continue"));
+					} else if ((preGameTimer - count) < 5 ) {
+						sendGameMessage(new Messaging.MessageFormatter()
+    					.withPrefix()
+    					.setVariable("time", "" + (preGameTimer - count))
+    					.format("game.countdown-continue"));
+					}
+
 				} else if (count >= preGameTimer) {
 					startGame();
 				}
@@ -368,7 +390,22 @@ public class Game {
 				player.teleport(spawn);
 			}
 		}
-		deleteGame();
+		
+		for (Entity entity: mapWorld.getEntities()) {
+			if (entity != null) {
+				entity.remove();
+			}
+		}
+		if (!allowSpectating && !shutdown) {
+				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+					@Override
+					public void run() {
+						deleteGame();
+					}
+				}, 100);
+		} else {
+			deleteGame();
+		}
 	}
 		
 	private void getScoreBoard() {
@@ -502,6 +539,7 @@ public class Game {
 			for (PotionEffect effect : gplayer.getP().getActivePotionEffects()) {
 		        gplayer.getP().removePotionEffect(effect.getType());
 			}
+			gplayer.getP().setFireTicks(0);
 			gplayer.setGame(-1);
 		}
 	}
@@ -665,6 +703,10 @@ public class Game {
 				addBalance(killer, killTotal);
 				removeBalance(target, deathValue);
 				target.setTagged(target);
+				if (target.getP() != null) {
+					target.getP().sendMessage(getDeathMessage(dCause, true, target, killer));
+					target.getP().playSound(target.getP().getLocation(), Sound.valueOf(deathSound.toUpperCase()), 1, 1);
+				}
 				sendGameMessage(getDeathMessage(dCause, true, target, killer));
 				playSound(deathSound);
 			}
@@ -732,7 +774,6 @@ public class Game {
 				if (allowSpectating) {
 					if (gPlayer.getP() != null) {
 						gPlayer.spectateMode(true, this, gPlayer.getP().getLocation());
-						gPlayer.getP().sendMessage(new Messaging.MessageFormatter().withPrefix().format("game.spectating"));
 						sendGameMessage(new Messaging.MessageFormatter().withPrefix()
 								.setVariable("time", "" + SkyWarsReloaded.get().getConfig().getInt("gameVariables.timeAfterGame"))
 								.format("game.gameEnding"));
@@ -1090,30 +1131,111 @@ public class Game {
     } 
     
     public void respawnPlayer(Player paramPlayer) {
-    	  if (paramPlayer.isDead()) {
-    		  String bukkitversion = Bukkit.getServer().getClass().getPackage().getName().substring(23);
-    		  if (bukkitversion.equalsIgnoreCase("v1_8_R2")) {
-        		  ((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)paramPlayer).getHandle(), 0, false);
-    		  } else {
-    			  try {
-    		            String path = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-    		            Object nmsPlayer = paramPlayer.getClass().getMethod("getHandle").invoke(paramPlayer);
-    		            Object respawnEnum = Class.forName(path + ".EnumClientCommand").getEnumConstants()[0];
-    		            Constructor<?>[] constructors = Class.forName(path + ".PacketPlayInClientCommand").getConstructors();
-    		            for (Constructor<?> constructor : constructors) {
-    		                Class<?>[] args = constructor.getParameterTypes();
-    		                if (args.length == 1 && args[0] == respawnEnum.getClass()) {
-    		                    Object packet = Class.forName(path + ".PacketPlayInClientCommand").getConstructor(args).newInstance(respawnEnum);
-    		                    Object connection = nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
-    		                    connection.getClass().getMethod("a", packet.getClass()).invoke(connection, packet);
-    		                    break;
-    		                }
-    		            }
-    		        } catch (Throwable e) {
-    		            e.printStackTrace();
-    		        }
-    		  }
-    	  }
+    	if (paramPlayer != null) {
+    		if (paramPlayer.isDead()) {
+      		  String bukkitversion = Bukkit.getServer().getClass().getPackage().getName().substring(23);
+      		  if (bukkitversion.equalsIgnoreCase("v1_8_R2")) {
+          		  ((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)paramPlayer).getHandle(), 0, false);
+      		  } else {
+      			  try {
+      		            String path = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+      		            Object nmsPlayer = paramPlayer.getClass().getMethod("getHandle").invoke(paramPlayer);
+      		            Object respawnEnum = Class.forName(path + ".EnumClientCommand").getEnumConstants()[0];
+      		            Constructor<?>[] constructors = Class.forName(path + ".PacketPlayInClientCommand").getConstructors();
+      		            for (Constructor<?> constructor : constructors) {
+      		                Class<?>[] args = constructor.getParameterTypes();
+      		                if (args.length == 1 && args[0] == respawnEnum.getClass()) {
+      		                    Object packet = Class.forName(path + ".PacketPlayInClientCommand").getConstructor(args).newInstance(respawnEnum);
+      		                    Object connection = nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
+      		                    connection.getClass().getMethod("a", packet.getClass()).invoke(connection, packet);
+      		                    break;
+      		                }
+      		            }
+      		        } catch (Throwable e) {
+      		            e.printStackTrace();
+      		        }
+      		  }
+      	  }
     	}
+    }
+
+    public int getPlayerSpawn(GamePlayer gPlayer) {
+    	for (int spawn: availableSpawns.keySet()) {
+    		if (availableSpawns.get(spawn) == gPlayer) {
+    			return spawn;
+    		}
+    	}
+		return -1;
+    }
+    
+	public void setGlass(Material color, GamePlayer gPlayer) {
+		if (containsPlayer(gPlayer.getP()) && gameState == GameState.PREGAME) {
+			Material material = color;
+			
+			int spawn = getPlayerSpawn(gPlayer);
+			if (spawn != -1) {
+	            int x = gameMap.getSpawns().get(spawn).getBlockX();
+	            int y = gameMap.getSpawns().get(spawn).getBlockY();
+	            int z = gameMap.getSpawns().get(spawn).getBlockZ();
+
+	            mapWorld.getBlockAt(x, y, z).setType(material);
+	            mapWorld.getBlockAt(x, y + 1, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 1, z - 1).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 1, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 1, z).setType(material);
+	            mapWorld.getBlockAt(x, y + 2, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 2, z - 1).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 2, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 2, z).setType(material);
+	            mapWorld.getBlockAt(x, y + 3, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 3, z - 1).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 3, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 3, z).setType(material);
+	            mapWorld.getBlockAt(x, y + 4, z).setType(material);
+			}
+		}
+	}
    
+	@SuppressWarnings("deprecation")
+	public void setGlass(Material color, byte data, GamePlayer gPlayer) {
+		if (containsPlayer(gPlayer.getP()) && gameState == GameState.PREGAME) {
+			Material material = color;
+			
+			int spawn = getPlayerSpawn(gPlayer);
+			if (spawn != -1) {
+	            int x = gameMap.getSpawns().get(spawn).getBlockX();
+	            int y = gameMap.getSpawns().get(spawn).getBlockY();
+	            int z = gameMap.getSpawns().get(spawn).getBlockZ();
+
+	            mapWorld.getBlockAt(x, y, z).setType(material);
+	            mapWorld.getBlockAt(x, y, z).setData(data);
+	            mapWorld.getBlockAt(x, y + 1, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 1, z + 1).setData(data);
+	            mapWorld.getBlockAt(x, y + 1, z - 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 1, z - 1).setData(data);
+	            mapWorld.getBlockAt(x + 1, y + 1, z).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 1, z).setData(data);
+	            mapWorld.getBlockAt(x - 1, y + 1, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 1, z).setData(data);
+	            mapWorld.getBlockAt(x, y + 2, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 2, z + 1).setData(data);
+	            mapWorld.getBlockAt(x, y + 2, z - 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 2, z - 1).setData(data);
+	            mapWorld.getBlockAt(x + 1, y + 2, z).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 2, z).setData(data);
+	            mapWorld.getBlockAt(x - 1, y + 2, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 2, z).setData(data);
+	            mapWorld.getBlockAt(x, y + 3, z + 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 3, z + 1).setData(data);
+	            mapWorld.getBlockAt(x, y + 3, z - 1).setType(material);
+	            mapWorld.getBlockAt(x, y + 3, z - 1).setData(data);
+	            mapWorld.getBlockAt(x + 1, y + 3, z).setType(material);
+	            mapWorld.getBlockAt(x + 1, y + 3, z).setData(data);
+	            mapWorld.getBlockAt(x - 1, y + 3, z).setType(material);
+	            mapWorld.getBlockAt(x - 1, y + 3, z).setData(data);
+	            mapWorld.getBlockAt(x, y + 4, z).setType(material);
+	            mapWorld.getBlockAt(x, y + 4, z).setData(data);
+			}
+		}
+	}
 }
