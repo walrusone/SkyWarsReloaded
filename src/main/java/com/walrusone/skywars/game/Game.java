@@ -36,6 +36,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.walrusone.skywars.SkyWarsReloaded;
+import com.walrusone.skywars.api.GameEndEvent;
 import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.EmptyChest;
 import com.walrusone.skywars.utilities.GlassColor;
@@ -754,6 +755,7 @@ public class Game {
     			}
 				gPlayer.setScore(gPlayer.getScore() + winTotal);
 				addBalance(gPlayer, winTotal);
+				Bukkit.getServer().getPluginManager().callEvent(new GameEndEvent(gPlayer.getP(), mapName));
 				if (disableWinBroadcast) {
 						sendGameMessage(new Messaging.MessageFormatter().setVariable("player", gPlayer.getName())
 								.withPrefix()
