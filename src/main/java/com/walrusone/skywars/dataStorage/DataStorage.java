@@ -55,6 +55,8 @@ public class DataStorage {
 	            fc.set("blocksPlaced", player.getBlocks());
 	            fc.set("permissions", player.getPerms());
 	            fc.set("glasscolor", player.getGlass());
+	            fc.set("effect", player.getEffect());
+	            fc.set("traileffect", player.getProjEffect());
 	            fc.save(playerFile);
 	            
 	        } catch (IOException ioException) {
@@ -76,7 +78,7 @@ public class DataStorage {
                  queryBuilder.append("UPDATE `swreloaded_player` SET ");
                  queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
                  queryBuilder.append("`games_won` = ?, `kills` = ?, ");
-                 queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ? ");
+                 queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ?, `effect` = ?, `traileffect` = ? ");
                  queryBuilder.append("WHERE `uuid` = ?;");
 
                  preparedStatement = connection.prepareStatement(queryBuilder.toString());
@@ -94,7 +96,9 @@ public class DataStorage {
                  preparedStatement.setInt(8, player.getBlocks());
                  preparedStatement.setInt(9, player.getBalance());
                  preparedStatement.setString(10, player.getGlass());
-                 preparedStatement.setString(11, player.getUUID().toString());
+                 preparedStatement.setString(11, player.getEffect());
+                 preparedStatement.setString(12, player.getProjEffect());
+                 preparedStatement.setString(13, player.getUUID().toString());
                  preparedStatement.executeUpdate();
 
             } catch (final SQLException sqlException) {
@@ -147,18 +151,21 @@ public class DataStorage {
                     preparedStatement = null;
 
                     try {
-                    	for (String perm: player.getNewPerms()) {
-                    		StringBuilder queryBuilder = new StringBuilder();
-                            queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
-                            queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
-                            queryBuilder.append("SELECT (NULL, ?, ?, ?, ?) ");
-                            
-                            preparedStatement = connection.prepareStatement(queryBuilder.toString());
-                            preparedStatement.setInt(1, playerId);
-                            preparedStatement.setString(2, player.getUUID().toString());
-                            preparedStatement.setString(3, player.getName());
-                            preparedStatement.setString(4, perm);
-                            preparedStatement.executeUpdate();
+                    	if (player.getNewPerms().size() > 1) {
+                        	for (String perm: player.getNewPerms()) {
+                        		StringBuilder queryBuilder = new StringBuilder();
+                                queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
+                                queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
+                                queryBuilder.append("VALUES (NULL, ?, ?, ?, ?) ");
+                                
+                                preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                                preparedStatement.setInt(1, playerId);
+                                preparedStatement.setString(2, player.getUUID().toString());
+                                preparedStatement.setString(3, player.getName());
+                                preparedStatement.setString(4, perm);
+                                preparedStatement.executeUpdate();
+                        	}
+                        	player.clearNewPerms();
                     	}
                     } catch (final SQLException sqlException) {
                         sqlException.printStackTrace();
@@ -213,6 +220,8 @@ public class DataStorage {
         	            fc.set("blocksPlaced", player.getBlocks());
         	            fc.set("permissions", player.getPerms());
         	            fc.set("glasscolor", player.getGlass());
+        	            fc.set("effect", player.getEffect());
+        	            fc.set("traileffect", player.getProjEffect());
         	            fc.save(playerFile);
         	            
         	        } catch (IOException ioException) {
@@ -230,31 +239,32 @@ public class DataStorage {
                     PreparedStatement preparedStatement = null;
 
                     try {
-                        StringBuilder queryBuilder = new StringBuilder();
-                        queryBuilder.append("UPDATE `swreloaded_player` SET ");
-                        queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
-                        queryBuilder.append("`games_won` = ?, `kills` = ?, ");
-                        queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ? ");
-                        queryBuilder.append("WHERE `uuid` = ?;");
+                   	 StringBuilder queryBuilder = new StringBuilder();
+                     queryBuilder.append("UPDATE `swreloaded_player` SET ");
+                     queryBuilder.append("`playername` = ?, `score` = ?, `games_played` = ?, ");
+                     queryBuilder.append("`games_won` = ?, `kills` = ?, ");
+                     queryBuilder.append("`deaths` = ?, `killdeath` = ?, `blocksplaced` = ?, `last_seen` = NOW(), `balance` = ?, `glasscolor` = ?, `effect` = ?, `traileffect` = ? ");
+                     queryBuilder.append("WHERE `uuid` = ?;");
 
-                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
-                        preparedStatement.setString(1, player.getName());
-                        preparedStatement.setInt(2, player.getScore());
-                        preparedStatement.setInt(3, player.getGamesPlayed());
-                        preparedStatement.setInt(4, player.getWins());
-                        preparedStatement.setInt(5, player.getKills());
-                        preparedStatement.setInt(6, player.getDeaths());
-                        double killDeath = 0;
-                        if (player.getDeaths() != 0) {
-                        	killDeath = ((double) player.getKills())/player.getDeaths();
-                        }
-                        preparedStatement.setDouble(7, killDeath);
-                        preparedStatement.setInt(8, player.getBlocks());
-                        preparedStatement.setInt(9, player.getBalance());
-                        preparedStatement.setString(10, player.getGlass());
-                        preparedStatement.setString(11, player.getUUID().toString());
-                        preparedStatement.executeUpdate();
-
+                     preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                     preparedStatement.setString(1, player.getName());
+                     preparedStatement.setInt(2, player.getScore());
+                     preparedStatement.setInt(3, player.getGamesPlayed());
+                     preparedStatement.setInt(4, player.getWins());
+                     preparedStatement.setInt(5, player.getKills());
+                     preparedStatement.setInt(6, player.getDeaths());
+                     double killDeath = 0;
+                     if (player.getDeaths() != 0) {
+                     	killDeath = ((double) player.getKills())/player.getDeaths();
+                     }
+                     preparedStatement.setDouble(7, killDeath);
+                     preparedStatement.setInt(8, player.getBlocks());
+                     preparedStatement.setInt(9, player.getBalance());
+                     preparedStatement.setString(10, player.getGlass());
+                     preparedStatement.setString(11, player.getEffect());
+                     preparedStatement.setString(12, player.getProjEffect());
+                     preparedStatement.setString(13, player.getUUID().toString());
+                     preparedStatement.executeUpdate();
                     } catch (final SQLException sqlException) {
                         sqlException.printStackTrace();
 
@@ -305,18 +315,21 @@ public class DataStorage {
                             preparedStatement = null;
 
                             try {
-                            	for (String perm: player.getNewPerms()) {
-                            		StringBuilder queryBuilder = new StringBuilder();
-                                    queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
-                                    queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
-                                    queryBuilder.append("VALUES (NULL, ?, ?, ?, ?) ");
-                                    
-                                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
-                                    preparedStatement.setInt(1, playerId);
-                                    preparedStatement.setString(2, player.getUUID().toString());
-                                    preparedStatement.setString(3, player.getName());
-                                    preparedStatement.setString(4, perm);
-                                    preparedStatement.executeUpdate();
+                            	if (player.getNewPerms().size() > 1) {
+                                	for (String perm: player.getNewPerms()) {
+                                		StringBuilder queryBuilder = new StringBuilder();
+                                        queryBuilder.append("INSERT INTO `swreloaded_permissions` ");
+                                        queryBuilder.append("(`id`, `player_id`, `uuid`, `playername`, `permissions`) ");
+                                        queryBuilder.append("VALUES (NULL, ?, ?, ?, ?) ");
+                                        
+                                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                                        preparedStatement.setInt(1, playerId);
+                                        preparedStatement.setString(2, player.getUUID().toString());
+                                        preparedStatement.setString(3, player.getName());
+                                        preparedStatement.setString(4, perm);
+                                        preparedStatement.executeUpdate();
+                                	}
+                                	player.clearNewPerms();
                             	}
                             } catch (final SQLException sqlException) {
                                 sqlException.printStackTrace();
@@ -357,13 +370,13 @@ public class DataStorage {
 
 	                    try {
 	                        StringBuilder queryBuilder = new StringBuilder();
-	                        queryBuilder.append("SELECT `score`, `games_played`, `games_won`, `kills`, `deaths`, `blocksplaced`, `balance`, `glasscolor` ");
+	                        queryBuilder.append("SELECT `score`, `games_played`, `games_won`, `kills`, `deaths`, `blocksplaced`, `balance`, `glasscolor`, `effect`, `traileffect` ");
 	                        queryBuilder.append("FROM `swreloaded_player` ");
 	                        queryBuilder.append("WHERE `uuid` = ? ");
 	                        queryBuilder.append("LIMIT 1;");
 
 	                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
-	                        preparedStatement.setString(1, player.getP().getUniqueId().toString());
+	                        preparedStatement.setString(1, player.getUUID().toString());
 	                        resultSet = preparedStatement.executeQuery();
 
 	                        if (resultSet != null && resultSet.next()) {
@@ -379,6 +392,16 @@ public class DataStorage {
 	                            } else {
 	                            	player.setGlass("normal");
 	                            }
+	                            if (resultSet.getString("effect") != null) {
+		                            player.setEffect(resultSet.getString("effect"));
+	                            } else {
+	                            	player.setEffect("normal");
+	                            }
+	                            if (resultSet.getString("traileffect") != null) {
+		                            player.setProjEffect(resultSet.getString("traileffect"));
+	                            } else {
+	                            	player.setProjEffect("normal");
+	                            }  
 	                        }
 
 	                    } catch (final SQLException sqlException) {
@@ -476,8 +499,21 @@ public class DataStorage {
 	    	            player.setBlocks(fc.getInt("blocksPlaced"));
 	    	            player.setBalance(fc.getInt("balance"));
 	    	            player.setPerms(fc.getStringList("permissions"));
-	    	            player.setGlass(fc.getString("glasscolor"));
-	    	            
+                        if (fc.getString("glasscolor") != null) {
+                            player.setGlass(fc.getString("glasscolor"));
+                        } else {
+                        	player.setGlass("normal");
+                        }
+                        if (fc.getString("effect") != null) {
+                            player.setEffect(fc.getString("effect"));
+                        } else {
+                        	player.setEffect("normal");
+                        }
+                        if (fc.getString("traileffect") != null) {
+                            player.setProjEffect(fc.getString("traileffect"));
+                        } else {
+                        	player.setProjEffect("normal");
+                        }
 	    	        } catch (IOException ioException) {
 	    	            System.out.println("Failed to load player " + player + ": " + ioException.getMessage());
 	    	        }

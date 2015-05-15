@@ -16,6 +16,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -314,6 +315,13 @@ public class SpectatorListener implements Listener {
 		if (e.getTarget() != null && e.getTarget() instanceof Player && !e.getTarget().hasMetadata("NPC") && SkyWarsReloaded.getPC().getPlayer(((Player) e.getTarget()).getUniqueId()).isSpectating()) {
 			e.setCancelled(true);
 		}
+		if (e.getTarget() instanceof Player && SkyWarsReloaded.getPC().getPlayer(((Player) e.getTarget()).getUniqueId()).isSpectating()) {
+			if (e.getEntity() instanceof ExperienceOrb) {
+				repellExpOrb((Player) e.getTarget(), (ExperienceOrb) e.getEntity());
+				e.setCancelled(true);
+				e.setTarget(null);
+			}
+		}
 	}
 	
 	@EventHandler
@@ -345,145 +353,152 @@ public class SpectatorListener implements Listener {
 	
 	@EventHandler(priority=EventPriority.HIGH)
 	protected void onPlayerInteract(PlayerInteractEvent e) {
-		ItemStack item = e.getPlayer().getItemInHand();
-		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet())))) {
-			e.setCancelled(true);
-			new SpecPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
-		}
-		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(specShopItem.getData().getItemType()) &&  item.getEnchantments().keySet().equals(specShopItem.getEnchantments().keySet())))) {
-			e.setCancelled(true);
-			new SpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
-		}
-		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet())))) {
-			e.setCancelled(true);
-			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
-			if (gPlayer.inGame()) {
-				Game game = gPlayer.getGame();
-				game.deletePlayer(gPlayer, false, false);
-			} else {
-				Game game = gPlayer.getSpecGame();
-				game.removeSpectator(gPlayer);
+		Player player = e.getPlayer();
+		if (player != null) {
+			ItemStack item = player.getItemInHand();
+			if (item != null) {
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet())))) {
+					e.setCancelled(true);
+					new SpecPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
+				}
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(specShopItem.getData().getItemType()) &&  item.getEnchantments().keySet().equals(specShopItem.getEnchantments().keySet())))) {
+					e.setCancelled(true);
+					new SpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
+				}
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet())))) {
+					e.setCancelled(true);
+					GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
+					if (gPlayer.inGame()) {
+						Game game = gPlayer.getGame();
+						game.deletePlayer(gPlayer, false, false);
+					} else {
+						Game game = gPlayer.getSpecGame();
+						game.removeSpectator(gPlayer);
+					}
+				}
 			}
-		}
-
-		if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
-			e.setCancelled(true);
 			
-			if(e.hasBlock()) {
-				if(e.getClickedBlock().getState() instanceof InventoryHolder) {
-						Inventory original = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
-						Inventory copy = null;
-						
-						if(original.getType().equals(InventoryType.CHEST) && original.getSize() > 27) {
-							String title;
-							if (original.getTitle().startsWith("container.")) title = WordUtils.capitalizeFully(original.getType().toString());
-							else title = original.getTitle();
-							
-							copy = SkyWarsReloaded.get().getServer().createInventory(e.getPlayer(), original.getSize(), title);
-						}
-						else {
-							String title;
-							if (original.getTitle().startsWith("container.")) title = WordUtils.capitalizeFully(original.getType().toString());
-							else title = original.getTitle();
-							
-							copy = SkyWarsReloaded.get().getServer().createInventory(e.getPlayer(), original.getType(), title);
-						}
-						
-						copy.setContents(original.getContents());
-						e.getPlayer().openInventory(copy);
-				}
+			if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
+				e.setCancelled(true);
 				
-				else if(e.getClickedBlock().getType() == Material.WOODEN_DOOR
-						|| e.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK
-						|| e.getClickedBlock().getType() == Material.FENCE_GATE) {
-					
-					Player spectator = e.getPlayer();
-					Location doorLocation = e.getClickedBlock()
-					                             .getLocation()
-					                             .setDirection(spectator.getLocation().getDirection());
-					
-					int relativeHeight = 0;
-					if(e.getClickedBlock().getType() == Material.WOODEN_DOOR
-							|| e.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK) {
-						
-						Material belowBlockType = e.getClickedBlock()
-						                               .getLocation().add(0, -1, 0)
-						                               .getBlock().getType();
-						
-						if(belowBlockType == Material.WOODEN_DOOR || belowBlockType == Material.IRON_DOOR_BLOCK) {
-							relativeHeight = -1;
-						}
-					}
-					switch(e.getBlockFace()) {
-						case EAST:
-							spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
-							break;
-						case NORTH:
-							spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5), TeleportCause.PLUGIN);
-							break;
-						case SOUTH:
-							spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5), TeleportCause.PLUGIN);
-							break;
-						case WEST:
-							spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
-							break;
-						case UP:
-							if(e.getClickedBlock().getState().getData() instanceof Gate) {
-								Gate fenceGate = (Gate) e.getClickedBlock().getState().getData();
-								switch(fenceGate.getFacing()) {
-									case NORTH:
-									case SOUTH:
-										if(spectator.getLocation().getX() > doorLocation.getX()) {
-											spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
-										}
-										else {
-											spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
-										}
-										break;
-									case EAST:
-									case WEST:
-										if(spectator.getLocation().getZ() > doorLocation.getZ()) {
-											spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5), TeleportCause.PLUGIN);
-										}
-										else {
-											spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5), TeleportCause.PLUGIN);
-										}
-										break;
-									default:
-										break;
-								}
+				if(e.hasBlock()) {
+					if(e.getClickedBlock().getState() instanceof InventoryHolder) {
+							Inventory original = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
+							Inventory copy = null;
+							
+							if(original.getType().equals(InventoryType.CHEST) && original.getSize() > 27) {
+								String title;
+								if (original.getTitle().startsWith("container.")) title = WordUtils.capitalizeFully(original.getType().toString());
+								else title = original.getTitle();
+								
+								copy = SkyWarsReloaded.get().getServer().createInventory(e.getPlayer(), original.getSize(), title);
 							}
-							break;
+							else {
+								String title;
+								if (original.getTitle().startsWith("container.")) title = WordUtils.capitalizeFully(original.getType().toString());
+								else title = original.getTitle();
+								
+								copy = SkyWarsReloaded.get().getServer().createInventory(e.getPlayer(), original.getType(), title);
+							}
 							
-						default:
-							break;
+							copy.setContents(original.getContents());
+							e.getPlayer().openInventory(copy);
 					}
 					
-				}
-				
-				else if(e.getClickedBlock().getType() == Material.TRAP_DOOR) {
-					if(!((TrapDoor) e.getClickedBlock().getState().getData()).isOpen()) {
+					else if(e.getClickedBlock().getType() == Material.WOODEN_DOOR
+							|| e.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK
+							|| e.getClickedBlock().getType() == Material.FENCE_GATE) {
+						
 						Player spectator = e.getPlayer();
 						Location doorLocation = e.getClickedBlock()
 						                             .getLocation()
 						                             .setDirection(spectator.getLocation().getDirection());
 						
+						int relativeHeight = 0;
+						if(e.getClickedBlock().getType() == Material.WOODEN_DOOR
+								|| e.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK) {
+							
+							Material belowBlockType = e.getClickedBlock()
+							                               .getLocation().add(0, -1, 0)
+							                               .getBlock().getType();
+							
+							if(belowBlockType == Material.WOODEN_DOOR || belowBlockType == Material.IRON_DOOR_BLOCK) {
+								relativeHeight = -1;
+							}
+						}
 						switch(e.getBlockFace()) {
+							case EAST:
+								spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
+								break;
+							case NORTH:
+								spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5), TeleportCause.PLUGIN);
+								break;
+							case SOUTH:
+								spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5), TeleportCause.PLUGIN);
+								break;
+							case WEST:
+								spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
+								break;
 							case UP:
-								spectator.teleport(doorLocation.add(0.5, -1, 0.5), TeleportCause.PLUGIN);
+								if(e.getClickedBlock().getState().getData() instanceof Gate) {
+									Gate fenceGate = (Gate) e.getClickedBlock().getState().getData();
+									switch(fenceGate.getFacing()) {
+										case NORTH:
+										case SOUTH:
+											if(spectator.getLocation().getX() > doorLocation.getX()) {
+												spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
+											}
+											else {
+												spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5), TeleportCause.PLUGIN);
+											}
+											break;
+										case EAST:
+										case WEST:
+											if(spectator.getLocation().getZ() > doorLocation.getZ()) {
+												spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5), TeleportCause.PLUGIN);
+											}
+											else {
+												spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5), TeleportCause.PLUGIN);
+											}
+											break;
+										default:
+											break;
+									}
+								}
 								break;
-							
-							case DOWN:
-								spectator.teleport(doorLocation.add(0.5, 1, 0.5), TeleportCause.PLUGIN);
-								break;
-							
+								
 							default:
 								break;
+						}
+						
+					}
+					
+					else if(e.getClickedBlock().getType() == Material.TRAP_DOOR) {
+						if(!((TrapDoor) e.getClickedBlock().getState().getData()).isOpen()) {
+							Player spectator = e.getPlayer();
+							Location doorLocation = e.getClickedBlock()
+							                             .getLocation()
+							                             .setDirection(spectator.getLocation().getDirection());
+							
+							switch(e.getBlockFace()) {
+								case UP:
+									spectator.teleport(doorLocation.add(0.5, -1, 0.5), TeleportCause.PLUGIN);
+									break;
+								
+								case DOWN:
+									spectator.teleport(doorLocation.add(0.5, 1, 0.5), TeleportCause.PLUGIN);
+									break;
+								
+								default:
+									break;
+							}
 						}
 					}
 				}
 			}
 		}
+
+		
 	}
 	
 
@@ -499,6 +514,31 @@ public class SpectatorListener implements Listener {
 		if (e.getEntered() instanceof Player && SkyWarsReloaded.getPC().getPlayer(((Player) e.getEntered()).getUniqueId()).isSpectating()) {
 			e.setCancelled(true);
 		}
+	}
+	
+    final void repellExpOrb(final Player player, final ExperienceOrb orb) {
+		final Location pLoc = player.getLocation();
+		final Location oLoc = orb.getLocation();
+		final Vector dir = oLoc.toVector().subtract(pLoc.toVector());
+		final double dx = Math.abs(dir.getX());
+		final double dz = Math.abs(dir.getZ());
+		if ( (dx == 0.0) && (dz == 0.0)){
+			// Special case probably never happens
+			dir.setX(0.001);
+		}
+		if ((dx < 3.0) && (dz < 3.0)){
+			final Vector nDir = dir.normalize();
+			final Vector newV = nDir.clone().multiply(0.3);
+			newV.setY(0);
+			orb.setVelocity(newV);
+			if ((dx < 1.0) && (dz < 1.0)){
+				// maybe oLoc
+				orb.teleport(oLoc.clone().add(nDir.multiply(1.0)), TeleportCause.PLUGIN);
+			} 
+			if ((dx < 0.5) && (dz < 0.5)){
+				orb.remove();
+			} 
+		} 
 	}
 	
 }

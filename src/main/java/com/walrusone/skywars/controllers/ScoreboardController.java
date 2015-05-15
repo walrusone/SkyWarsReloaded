@@ -10,6 +10,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.walrusone.skywars.SkyWarsReloaded;
+import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class ScoreboardController {
@@ -18,12 +19,13 @@ public class ScoreboardController {
  
 	public void getScoreboard(Player player) {
 		if (player != null && enabled) {
+			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 			DecimalFormat df = new DecimalFormat("#.##");
 			String kd;
-			if (SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getDeaths() <= 0) {
+			if (gPlayer.getDeaths() <= 0) {
 				kd = df.format(0.00);
 			} else {
-				kd = df.format((double) SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getKills()/SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getDeaths());
+				kd = df.format((double) gPlayer.getKills()/gPlayer.getDeaths());
 			}
 	    	ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
 	        Scoreboard board = manager.getNewScoreboard();
@@ -34,20 +36,22 @@ public class ScoreboardController {
 	            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) SkyWarsReloaded.econ.getBalance(player))).format("scoreboard.money")); 
 	            moneyScore.setScore(6);
 	        } else {
-	            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getBalance())).format("scoreboard.money")); 
+	            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) gPlayer.getBalance())).format("scoreboard.money")); 
 	            moneyScore.setScore(6);
 	        }
-	        Score scoreScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getScore()).format("scoreboard.score"));
+	        Score scoreScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getScore()).format("scoreboard.score"));
 	        scoreScore.setScore(5);
-	        Score winsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getWins()).format("scoreboard.wins"));
+	        Score winsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getWins()).format("scoreboard.wins"));
 	        winsScore.setScore(4);
-	        Score killsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getKills()).format("scoreboard.kills"));
+	        Score killsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getKills()).format("scoreboard.kills"));
 	        killsScore.setScore(3);
-	        Score gamesScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).getGamesPlayed()).format("scoreboard.games-played"));
+	        Score gamesScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getGamesPlayed()).format("scoreboard.games-played"));
 	        gamesScore.setScore(2);
             Score kdScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", kd).format("scoreboard.kd")); 
             kdScore.setScore(1);
-	        player.setScoreboard(board); 
+            if (player != null) {
+    	        player.setScoreboard(board); 
+            }
 		}
     } 
 }

@@ -36,40 +36,25 @@ public class MainCommand implements CommandExecutor {
         subCommandMap.put("endgame", new EndGameCommand());
         subCommandMap.put("glassshop", new GlassShopCommand());
         subCommandMap.put("permkitshop", new PermKitShopCommand());
+        subCommandMap.put("particleshop", new ParticleShopCommand());
+        subCommandMap.put("trailshop", new TrailShopCommand());
+        subCommandMap.put("menu", new MenuGUICommand());
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         	if (args.length == 0) {
-            	sender.sendMessage(ChatColor.RED + "USAGE: /wb <subcommand>");
-            	String players = "join, quit, kit, stats";
-            	String shop = " shop,";
-            	String spectate = ", spectate";
-            	String admin = ", setspawn, reload, list";
-            	String commands = "";
-       			if (!(sender instanceof Player)) {
-        			commands = players + admin;
-        		} else if (sender instanceof Player) {
-        			Player player = (Player) sender;
-        			if (SkyWarsReloaded.perms.has(player, "swr.play")) {
-        				commands = commands + players;
-        			}
-        			if (SkyWarsReloaded.perms.has(player, "swr.shop")) {
-        				commands = commands + shop;
-        			}
-        			if (SkyWarsReloaded.perms.has(player, "swr.spectate")) {
-        				commands = commands + spectate;
-        			}
-        			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
-        				commands = commands + admin;
-        			}
-        		}
-       			sender.sendMessage(ChatColor.RED + commands);
+            	sender.sendMessage(ChatColor.RED + "USAGE: /swr <subcommand>");
+            	String commands = getSubCommandList(sender);
+            	sender.sendMessage(ChatColor.RED + commands);
        			return true;
         	} else {
                 String subCommandName = args[0].toLowerCase();
                 if (!subCommandMap.containsKey(subCommandName)) {
-                	return true;
+                	sender.sendMessage(ChatColor.RED + "USAGE: /swr <subcommand>");
+                	String commands = getSubCommandList(sender);
+                	sender.sendMessage(ChatColor.RED + commands);
+           			return true;
                 }
 
                 CommandExecutor subCommand = subCommandMap.get(subCommandName);
@@ -77,6 +62,57 @@ public class MainCommand implements CommandExecutor {
                 return subCommand.onCommand(sender, command, label, args);
         	}	
 	
+    }
+    
+    private String getSubCommandList(CommandSender sender) {
+    	String players = "join, quit, kit, stats, menu";
+    	String start = ", start";
+    	String shop = ", shop";
+    	String colorshop = ", glassshop";
+    	String permKitShop = ", permkitshop";
+    	String particleShop = ", particleshop";
+    	String trailShop = ", trailshop";
+    	String spectate = ", spectate";
+    	String admin = ", setspawn, reload, list, games, endgame";
+    	String maps = ", create, edit, save, delete, register, unregister";
+    	String commands = "";
+			if (!(sender instanceof Player)) {
+			commands = players + admin;
+		} else if (sender instanceof Player) {
+			Player player = (Player) sender;
+			if (SkyWarsReloaded.perms.has(player, "swr.play")) {
+				commands = commands + players;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.start")) {
+				commands = commands + start;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.shop") || SkyWarsReloaded.perms.has(player,  "swr.spectateshop")) {
+				commands = commands + shop;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.colorshop")) {
+				commands = commands + colorshop;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.permkits")) {
+				commands = commands + permKitShop;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.effectshop")) {
+				commands = commands + particleShop;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.projeffectshop")) {
+				commands = commands + trailShop;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.spectate")) {
+				commands = commands + spectate;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.admin")) {
+				commands = commands + admin;
+			}
+			if (SkyWarsReloaded.perms.has(player, "swr.maps")) {
+				commands = commands + maps;
+			}
+			commands = commands + ".";
+		}
+			return commands;
     }
 
 }

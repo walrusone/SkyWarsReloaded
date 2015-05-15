@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -53,6 +54,7 @@ import com.walrusone.skywars.menus.SpecGameMenu;
 import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
+import com.walrusone.skywars.utilities.ParticleEffect;
 
 public class PlayerListener implements Listener {
 	
@@ -100,21 +102,40 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onTeleportEvent(PlayerTeleportEvent e) {
+		final Player player = e.getPlayer();
 		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
 		String fromWorld = e.getFrom().getWorld().getName();
 		String toWorld = e.getTo().getWorld().getName();
 		if (!toWorld.equalsIgnoreCase(fromWorld) && world.equalsIgnoreCase(toWorld)) {
-			if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem")) {
-				if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.spectate")) {
-					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot"), spec);
+			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+				public void run() {
+					if (player != null) {
+						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem")) {
+							if (SkyWarsReloaded.perms.has(player, "swr.spectate")) {
+								player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot"), spec);
+							}
+						}
+						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem")) {
+								player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot"), join);
+						}
+						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
+							player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
+						}
+						SkyWarsReloaded.getScore().getScoreboard(player);
+					}
 				}
-			}
-			if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem")) {
-					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot"), join);
-			}
-			if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
-				e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
-			}
+			}, 3);
+		} else if (!toWorld.equalsIgnoreCase(fromWorld) && !world.equalsIgnoreCase(toWorld)) {
+			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+				public void run() {
+					player.getInventory().remove(spec);
+					player.getInventory().remove(join);
+					player.getInventory().remove(lobbyMenu);
+					if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
+						player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+					}
+				}
+			}, 3);
 		}
 	}
 	
@@ -250,8 +271,12 @@ public class PlayerListener implements Listener {
 				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
 					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
 				}
+			} else {
+				e.getPlayer().getInventory().remove(spec);
+				e.getPlayer().getInventory().remove(join);
+				e.getPlayer().getInventory().remove(lobbyMenu);
 			}
-		}
+		} 
 	}
 	
 	@EventHandler
@@ -262,7 +287,7 @@ public class PlayerListener implements Listener {
 		        public void run() {
 		        	if (gPlayer.getP() != null) {
 		        		if (gPlayer.getSpecGame() != null) {
-							gPlayer.spectateMode(true, gPlayer.getSpecGame(), gPlayer.getSpecGame().getSpawn());
+							gPlayer.spectateMode(true, gPlayer.getSpecGame(), gPlayer.getSpecGame().getSpawn(), false);
 							gPlayer.getP().sendMessage(new Messaging.MessageFormatter().withPrefix().format("game.spectating"));
 		        		}
 		        	}
@@ -282,6 +307,10 @@ public class PlayerListener implements Listener {
 				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
 					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
 				}
+			} else {
+				e.getPlayer().getInventory().remove(spec);
+				e.getPlayer().getInventory().remove(join);
+				e.getPlayer().getInventory().remove(lobbyMenu);
 			}
 		}
 	}
@@ -301,22 +330,6 @@ public class PlayerListener implements Listener {
 			game.removeSpectator(gPlayer);
 		}
 		SkyWarsReloaded.getPC().removePlayer(e.getPlayer().getUniqueId());
-	}
-	
-	@EventHandler (ignoreCancelled = true)
-	public void onPlayerKick(PlayerKickEvent e) {
-		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
-		if (gPlayer.inGame()) {
-			Game game = gPlayer.getGame();
-			gPlayer.getGame().deletePlayer(gPlayer, true, true);
-			if (game.getState() == GameState.PLAYING) {
-				game.checkForWinner();
-			}
-		}
-		if (gPlayer.isSpectating()) {
-			Game game = gPlayer.getSpecGame();
-			game.removeSpectator(gPlayer);
-		}
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -437,7 +450,8 @@ public class PlayerListener implements Listener {
 					e.setCancelled(true);
 					new JoinMenu(gPlayer);
 			}
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
+     	}  
+     	if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
 			if (gPlayer.inGame()) {
 				Game game = gPlayer.getGame();
 				if (game != null) {
@@ -447,7 +461,8 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
+     	} 
+     	if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
 			if (!gPlayer.inGame()) {
 				e.setCancelled(true);
 				new LobbyMainMenu(gPlayer);
@@ -681,5 +696,81 @@ public class PlayerListener implements Listener {
            		}
     		}
 		}
-    } 
+    }
+    
+    @EventHandler
+    public void onPlayerMoveEvent(PlayerMoveEvent event) {
+        final Player sender = event.getPlayer();
+        if (sender!= null) {
+        	GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(sender.getUniqueId());
+            if (gPlayer.inGame()) {
+            	String effect = gPlayer.getEffect();
+            	if (effect != null) {
+                    if (effect.equalsIgnoreCase("normal")) {
+                    } else if (effect.equalsIgnoreCase("flame")) {
+                        Random random = new Random();
+                        ParticleEffect.FLAME.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1, sender.getLocation(), 50);
+                    }  else if (effect.equalsIgnoreCase("smoke")) {
+                        Random random = new Random();
+                        ParticleEffect.SMOKE_LARGE.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("portal")) {
+                        Random random = new Random();
+                        ParticleEffect.PORTAL.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((140 - 80) + 80) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("heart")) {
+                        Random random = new Random();
+                        ParticleEffect.HEART.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("critical")) {
+                        Random random = new Random();
+                        ParticleEffect.CRIT.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 5) + 5) + 1, sender.getLocation(), 50);
+                    }  else if (effect.equalsIgnoreCase("water")) {
+                        Random random = new Random();
+                        ParticleEffect.WATER_SPLASH.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((14 - 8) + 8) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("redstone")) {
+                        Random random = new Random();
+                        ParticleEffect.REDSTONE.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("sparks")) {
+                        Random random = new Random();
+                        ParticleEffect.FIREWORKS_SPARK.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("lava_drip")) {
+                        Random random = new Random();
+                        ParticleEffect.DRIP_LAVA.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("lava")) {
+                        Random random = new Random();
+                        ParticleEffect.LAVA.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 4) + 4) + 1, sender.getLocation(), 50);
+                    }  else if (effect.equalsIgnoreCase("alphabet")) {
+                        Random random = new Random();
+                        ParticleEffect.ENCHANTMENT_TABLE.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("happy")) {
+                        Random random = new Random();
+                        ParticleEffect.VILLAGER_HAPPY.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 4) + 4) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("magic")) {
+                        Random random = new Random();
+                        ParticleEffect.SPELL_WITCH.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 7) + 7) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("music")) {
+                        Random random = new Random();
+                        ParticleEffect.NOTE.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 4) + 4) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("angry")) {
+                        Random random = new Random();
+                        ParticleEffect.VILLAGER_ANGRY.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((5 - 2) + 2) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("clouds")) {
+                        Random random = new Random();
+                        ParticleEffect.CLOUD.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("potion")) {
+                        Random random = new Random();
+                        ParticleEffect.SPELL.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("poison")) {
+                        Random random = new Random();
+                        ParticleEffect.SPELL_INSTANT.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("snow")) {
+                        Random random = new Random();
+                        ParticleEffect.SNOWBALL.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1, sender.getLocation(), 50);
+                    } else if (effect.equalsIgnoreCase("slime")) {
+                        Random random = new Random();
+                        ParticleEffect.SLIME.display(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1, sender.getLocation(), 50);
+                    }
+            	}
+            }
+        }
+    }
+    
 }

@@ -64,9 +64,9 @@ public class SpecGameMenu {
 	                SkyWarsReloaded.getInvC().add(gamePlayer.getP());
 	                Location location = game.getSpawn();
 	                if (game.getState() == GameState.PREGAME) {
-		                gamePlayer.spectateMode(true, game, location.add(0, 4, 0));
+		                gamePlayer.spectateMode(true, game, location.add(0, 4, 0), false);
 	                } else if (game.getState() == GameState.PLAYING) {
-	                	gamePlayer.spectateMode(true, game, location);
+	                	gamePlayer.spectateMode(true, game, location, false);
 	                }
 
                 }

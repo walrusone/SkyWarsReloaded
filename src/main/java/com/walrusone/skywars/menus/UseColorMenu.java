@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Lists;
@@ -145,10 +144,6 @@ public class UseColorMenu {
         if (gamePlayer.getP() != null) {
             SkyWarsReloaded.getIC().show(gamePlayer.getP());
         }
-    }
-    
-    public boolean hasPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.colorshop");
     }
     
     public boolean hasColorPermission(GamePlayer player, GlassColor color) {

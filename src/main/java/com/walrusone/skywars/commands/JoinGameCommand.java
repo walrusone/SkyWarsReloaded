@@ -16,8 +16,8 @@ public class JoinGameCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    	String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-		if (world != null) {
+    	String lobbyWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		if (lobbyWorld != null) {
 	  		boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
     		boolean hasPerm = false;
     		if (!(sender instanceof Player)) {
@@ -31,6 +31,11 @@ public class JoinGameCommand implements CommandExecutor {
     			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
     		}
     		if (hasPerm) {
+	        	String world = ((Player) sender).getWorld().getName();
+	    		if (!world.equalsIgnoreCase(lobbyWorld)) {
+	    			sender.sendMessage(ChatColor.RED + "YOU CAN ONLY JOIN GAMES IN THE LOBBY WORLD");
+	    			return true;
+	    		}
     			if (args.length == 1) {
     				if (sender instanceof Player) {
     					Player player = (Player) sender;

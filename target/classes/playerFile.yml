@@ -6,3 +6,6 @@ score: 0
 blocksPlaced: 0
 killDeath: 0.00
 permissions:
+glasscolor: normal
+effect: normal
+traileffect: normal

@@ -135,8 +135,8 @@ public class BuyColorMenu {
 			gamePlayer.getP().closeInventory();
 			return;
 		} else {
-	        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27));
 	        List<GlassColor> availableItems = SkyWarsReloaded.getGLC().getColorItems();
+	        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27));
 	        
 	        for (int iii = 0; iii < availableItems.size(); iii ++) {
 	            if (iii >= menuSize) {
@@ -145,43 +145,38 @@ public class BuyColorMenu {
 
 	            GlassColor glass = availableItems.get(iii);
 	            List<String> loreList = Lists.newLinkedList();
-	            boolean canPurchase = false;
-	            
-	            if (!gamePlayer.inGame()) {
-	                if (!hasColorPermission(gamePlayer, glass)) {
-	                	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
-	                		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= glass.getCost() ? 'a' : 'c') + glass.getCost());
-	                	} else {
-	                		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= glass.getCost() ? 'a' : 'c') + glass.getCost());
-	                	}
-	                    loreList.add(" ");
-
-	                    if (canPurchase(gamePlayer, glass)) {
-	                        canPurchase = true;
+	            if (glass.getCost() != -1) {
+	                if (!gamePlayer.inGame()) {
+	                    if (!hasColorPermission(gamePlayer, glass)) {
+	                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+	                    		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= glass.getCost() ? 'a' : 'c') + glass.getCost());
+	                    	} else {
+	                    		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= glass.getCost() ? 'a' : 'c') + glass.getCost());
+	                    	}
+	                        loreList.add(" ");
+	                    } else {
+	                    	loreList.add(new Messaging.MessageFormatter().format("menu.buycolor-purchased"));
+	                    }            
+	                    
+	                    if (gamePlayer.getP() != null) {
+	                        SkyWarsReloaded.getIC().setOption(
+	                                gamePlayer.getP(),
+	                                placement.get(iii),
+	                                glass.getItem().clone(),
+	                                glass.getName(),
+	                                loreList.toArray(new String[loreList.size()]));
 	                    }
-	                } else {
-	                	loreList.add(new Messaging.MessageFormatter().format("menu.buycolor-purchased"));
-	                }            
-	                
-	                if (gamePlayer.getP() != null) {
-	                    SkyWarsReloaded.getIC().setOption(
-	                            gamePlayer.getP(),
-	                            placement.get(iii),
-	                            glass.getItem().clone(),
-	                            "\247r\247" + (canPurchase ? 'a' : 'c') + glass.getName(),
-	                            loreList.toArray(new String[loreList.size()]));
 	                }
-	                
-	                List<String> loreList5 = Lists.newLinkedList();
-	                SkyWarsReloaded.getIC().setOption(
-	        	                    gamePlayer.getP(),
-	        	                    35,
-	        	                    new ItemStack(Material.TORCH, 1),
-	        	                    new Messaging.MessageFormatter().format("menu.return-to-lobbymenu"),
-	        	                    loreList5.toArray(new String[loreList5.size()]));  
 	            }
 	         }
 	        
+	        List<String> loreList5 = Lists.newLinkedList();
+	        SkyWarsReloaded.getIC().setOption(
+		                    gamePlayer.getP(),
+		                    35,
+		                    new ItemStack(Material.TORCH, 1),
+		                    new Messaging.MessageFormatter().format("menu.return-to-lobbymenu"),
+		                    loreList5.toArray(new String[loreList5.size()])); 
 	        if (gamePlayer.getP() != null) {
 		        SkyWarsReloaded.getIC().update(gamePlayer.getP());
 	        }

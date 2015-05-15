@@ -24,7 +24,7 @@ public class JumpMenu {
 	
     public JumpMenu(final GamePlayer gamePlayer) {
 
-    	voteForTimeSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.timeVote");
+    	voteForTimeSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.jumpVote");
     	
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {

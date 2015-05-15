@@ -183,6 +183,42 @@ public class Database {
 		            }
 		        }
 	        }
+	        if (name.equalsIgnoreCase("effect")) {
+	        	try {
+		            connection.setAutoCommit(false);
+		            statement = connection.createStatement();
+
+	                String query = "ALTER TABLE " + "swreloaded_player" + " ADD " + name + " VARCHAR(60) AFTER glasscolor";
+	                statement.execute(query);
+
+		            connection.commit();
+
+		        } finally {
+		            connection.setAutoCommit(true);
+
+		            if (statement != null && !statement.isClosed()) {
+		                statement.close();
+		            }
+		        }
+	        }
+	        if (name.equalsIgnoreCase("traileffect")) {
+	        	try {
+		            connection.setAutoCommit(false);
+		            statement = connection.createStatement();
+
+	                String query = "ALTER TABLE " + "swreloaded_player" + " ADD " + name + " VARCHAR(60) AFTER effect";
+	                statement.execute(query);
+
+		            connection.commit();
+
+		        } finally {
+		            connection.setAutoCommit(true);
+
+		            if (statement != null && !statement.isClosed()) {
+		                statement.close();
+		            }
+		        }
+	        }
 	    }
 
 	    

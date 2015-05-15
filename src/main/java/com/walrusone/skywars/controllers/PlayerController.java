@@ -27,9 +27,13 @@ public class PlayerController {
             onlinePlayers.put(uuid, gamePlayer);
             SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 		        public void run() {
-		    		SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
-			        }
-			      }, 5);
+		        	String world = gamePlayer.getP().getWorld().getName();
+		        	String lobbyWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		    		if (world.equalsIgnoreCase(lobbyWorld)) {
+			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
+		    		}
+			   }
+            }, 5);
         }
     }
 	

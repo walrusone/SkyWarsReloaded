@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,18 +112,23 @@ public class InventoryController {
     }
     
     public void restoreInventory(Player player) {
-    	if (playerExists(player.getUniqueId().toString())) {
-        	player.getInventory().clear();
-			player.getInventory().setHelmet(null);
-		    player.getInventory().setChestplate(null);
-		    player.getInventory().setLeggings(null);
-		    player.getInventory().setBoots(null);
-        	player.getInventory().setContents(inventories.get(player.getUniqueId().toString()).getContent());
-        	player.getInventory().setArmorContents(inventories.get(player.getUniqueId().toString()).getArmor());
-        	player.setLevel(inventories.get(player.getUniqueId().toString()).getLevel());
-        	player.setExp(inventories.get(player.getUniqueId().toString()).getExp());
-        	player.setGameMode(inventories.get(player.getUniqueId().toString()).getGameMode());
-        	inventories.remove(player.getUniqueId().toString());
+    	if (player != null) {
+        	if (playerExists(player.getUniqueId().toString())) {
+            	player.getInventory().clear();
+    			player.getInventory().setHelmet(null);
+    		    player.getInventory().setChestplate(null);
+    		    player.getInventory().setLeggings(null);
+    		    player.getInventory().setBoots(null);
+				for (PotionEffect effect : player.getActivePotionEffects()) {
+			        player.removePotionEffect(effect.getType());
+				}
+            	player.getInventory().setContents(inventories.get(player.getUniqueId().toString()).getContent());
+            	player.getInventory().setArmorContents(inventories.get(player.getUniqueId().toString()).getArmor());
+            	player.setLevel(inventories.get(player.getUniqueId().toString()).getLevel());
+            	player.setExp(inventories.get(player.getUniqueId().toString()).getExp());
+            	player.setGameMode(inventories.get(player.getUniqueId().toString()).getGameMode());
+            	inventories.remove(player.getUniqueId().toString());
+        	}
     	}
     }
 

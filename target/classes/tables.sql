@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS `swreloaded_player` (
   `killdeath`    DECIMAL(5,2) UNSIGNED NOT NULL DEFAULT 0,
   `blocksplaced` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `glasscolor`  VARCHAR(60)     NOT NULL DEFAULT 'normal',
+  `effect`  VARCHAR(60)     NOT NULL DEFAULT 'normal',
+  `traileffect`  VARCHAR(60)     NOT NULL DEFAULT 'normal',
   PRIMARY KEY (`player_id`),
   KEY (`uuid`)
 )

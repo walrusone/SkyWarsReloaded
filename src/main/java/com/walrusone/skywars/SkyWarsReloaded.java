@@ -32,7 +32,9 @@ import com.walrusone.skywars.controllers.GlassController;
 import com.walrusone.skywars.controllers.InventoryController;
 import com.walrusone.skywars.controllers.KitController;
 import com.walrusone.skywars.controllers.MapController;
+import com.walrusone.skywars.controllers.ParticleController;
 import com.walrusone.skywars.controllers.PlayerController;
+import com.walrusone.skywars.controllers.ProjectileController;
 import com.walrusone.skywars.controllers.ScoreboardController;
 import com.walrusone.skywars.controllers.ShopController;
 import com.walrusone.skywars.controllers.WorldController;
@@ -44,6 +46,7 @@ import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.listeners.IconMenuController;
 import com.walrusone.skywars.listeners.PingListener;
 import com.walrusone.skywars.listeners.PlayerListener;
+import com.walrusone.skywars.listeners.ProjectileListener;
 import com.walrusone.skywars.listeners.SignListener;
 import com.walrusone.skywars.listeners.SpectatorListener;
 import com.walrusone.skywars.runnables.CheckForMinPlayers;
@@ -63,10 +66,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private Database db;
     private InventoryController invc;
     private PlayerController pc;
+    private ProjectileController projc;
     private ChestController cc;
     private KitController kc;
     private IconMenuController ic;
     private GlassController glc;
+    private ParticleController pec;
     private ShopController sc;
     private ScoreboardController score;
     private Messaging messaging;
@@ -140,6 +145,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         ic = new IconMenuController();
         sc = new ShopController();
         glc = new GlassController();
+        pec = new ParticleController();
+		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.trailEffectsEnabled");
+		if (trailsEnabled) {
+	        Bukkit.getPluginManager().registerEvents(new ProjectileListener(), this);
+	        projc = new ProjectileController();
+		}
         score = new ScoreboardController();
         
         getCommand("swr").setExecutor(new MainCommand());
@@ -234,80 +245,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         finishedStartup = true;
     } 
     
-    private void getSWRDatabase() {
-    	try {
-			db = new Database();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-    	try {
-			db.createTables();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	Connection conn = db.getConnection();
-    	DatabaseMetaData metadata;
-		try {
-			metadata = conn.getMetaData();
-        	ResultSet resultSet;
-        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
-        	if(resultSet.next()) {
-            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "playername");
-            	if(!resultSet.next()) {
-            		try {
-						db.addColumn("playername");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-            	}
-        	}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			metadata = conn.getMetaData();
-        	ResultSet resultSet;
-        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
-        	if(resultSet.next()) {
-            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "balance");
-            	if(!resultSet.next()) {
-            		try {
-						db.addColumn("balance");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-            	}
-        	}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			metadata = conn.getMetaData();
-        	ResultSet resultSet;
-        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
-        	if(resultSet.next()) {
-            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "glasscolor");
-            	if(!resultSet.next()) {
-            		try {
-						db.addColumn("glasscolor");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-            	}
-        	}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
-
 	public void onDisable() {
     	if (finishedStartup) {
            	gc.shutdown();
@@ -335,6 +272,13 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         sc = new ShopController();
         glc = null;
         glc = new GlassController();
+        pec = null;
+        pec = new ParticleController();
+		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.trailEffectsEnabled");
+		if (trailsEnabled) {
+	        projc = null;
+	        projc = new ProjectileController();
+		}
         invc = null;
         invc = new InventoryController();
         db = null;
@@ -422,6 +366,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return instance.cc;
     }
     
+    public static ProjectileController getProjC() {
+        return instance.projc;
+    }
+    
     public static KitController getKC() {
         return instance.kc;
     }
@@ -440,6 +388,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public static GlassController getGLC() {
         return instance.glc;
+    }
+    
+    public static ParticleController getPEC() {
+        return instance.pec;
     }
     
     public static MultiverseCore getMV() {
@@ -496,6 +448,118 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 				}
  		}
  	}
+    
+    private void getSWRDatabase() {
+    	try {
+			db = new Database();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+    	try {
+			db.createTables();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	Connection conn = db.getConnection();
+    	DatabaseMetaData metadata;
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "playername");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("playername");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "balance");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("balance");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "glasscolor");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("glasscolor");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "effect");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("effect");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			metadata = conn.getMetaData();
+        	ResultSet resultSet;
+        	resultSet = metadata.getTables(null, null, "swreloaded_player", null);
+        	if(resultSet.next()) {
+            	resultSet = metadata.getColumns(null, null, "swreloaded_player", "traileffect");
+            	if(!resultSet.next()) {
+            		try {
+						db.addColumn("traileffect");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+        	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 
 

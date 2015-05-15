@@ -23,6 +23,8 @@ public class LobbyMainMenu {
     private static final String optionsMenuName = new Messaging.MessageFormatter().format("menu.lobbymenu-menu-title");
     private ItemStack kit;
 	private ItemStack color;
+	private ItemStack particle;
+	private ItemStack projEffect;
     
 	public LobbyMainMenu(final GamePlayer gamePlayer) {
 
@@ -32,6 +34,12 @@ public class LobbyMainMenu {
 		String colorItem = SkyWarsReloaded.get().getConfig().getString("gameItems.glassMenuItem");
 		List<String> colorItemData = new LinkedList<String>(Arrays.asList(colorItem.split(" ")));
 		color = ItemUtils.parseItem(colorItemData);
+		String particleItem = SkyWarsReloaded.get().getConfig().getString("gameItems.particleMenuItem");
+		List<String> particleItemData = new LinkedList<String>(Arrays.asList(particleItem.split(" ")));
+		particle = ItemUtils.parseItem(particleItemData);
+		String projEffectItem = SkyWarsReloaded.get().getConfig().getString("gameItems.trailEffectMenuItem");
+		List<String> projEffectItemData = new LinkedList<String>(Arrays.asList(projEffectItem.split(" ")));
+		projEffect = ItemUtils.parseItem(projEffectItemData);
 		
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
@@ -51,7 +59,7 @@ public class LobbyMainMenu {
                 event.setWillClose(false);
                 event.setWillDestroy(false);
                 
-                if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.permkit-menu-title"))))) {
+                if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.permkit-item-name"))))) {
                 	if (hasPermKitPermission(gamePlayer.getP())) {
                     	gamePlayer.getP().closeInventory();
                     	SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
@@ -75,6 +83,30 @@ public class LobbyMainMenu {
                 	}  else {
                 		return;
                 	}
+                } else if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.buyeffect-item-name"))))) {
+                	if (hasEffectPermission(gamePlayer.getP())) {
+                    	gamePlayer.getP().closeInventory();
+                    	SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+    						@Override
+    						public void run() {
+    		                	new BuyEffectMenu(gamePlayer);
+    						}
+                    	}, 2);
+                	}  else {
+                		return;
+                	}
+                } else if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.buyprojeffect-item-name"))))) {
+                	if (hasEffectPermission(gamePlayer.getP())) {
+                    	gamePlayer.getP().closeInventory();
+                    	SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+    						@Override
+    						public void run() {
+    		                	new BuyProjEffectMenu(gamePlayer);
+    						}
+                    	}, 2);
+                	}  else {
+                		return;
+                	}
                 } else if (option.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("menu.exit-lobby-menu"))))) {
                     	gamePlayer.getP().closeInventory();
                 } else {
@@ -92,7 +124,19 @@ public class LobbyMainMenu {
         List<String> colorLore = Lists.newLinkedList();
         if (hasColorPermission(gamePlayer.getP())) {
         } else {
-        	colorLore.add(new Messaging.MessageFormatter().format("error.no-permission-colorshop"));
+        	colorLore.add(new Messaging.MessageFormatter().format("error.no-permission-color-shop"));
+        }
+        
+        List<String> particleLore = Lists.newLinkedList();
+        if (hasEffectPermission(gamePlayer.getP())) {
+        } else {
+        	particleLore.add(new Messaging.MessageFormatter().format("error.no-permission-effect-shop"));
+        }
+        
+        List<String> projectEffectLore = Lists.newLinkedList();
+        if (hasProjEffectPermission(gamePlayer.getP())) {
+        } else {
+        	projectEffectLore.add(new Messaging.MessageFormatter().format("error.no-permission-projeffect-shop"));
         }
         
     	if (gamePlayer.getP() != null && !gamePlayer.inGame()) {
@@ -101,7 +145,7 @@ public class LobbyMainMenu {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
 	                    2,
-	                    kit,
+	                    kit.clone(),
 	                    new Messaging.MessageFormatter().format("menu.permkit-item-name"),
 	                    kitLore.toArray(new String[kitLore.size()]));
     		}
@@ -111,11 +155,31 @@ public class LobbyMainMenu {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
 	                    6,
-	                    color,
+	                    color.clone(),
 	                    new Messaging.MessageFormatter().format("menu.buycolor-item-name"),
 	                    colorLore.toArray(new String[colorLore.size()]));
     		}
+    		
+    		boolean particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseParticlesEnabled");
+    		if (particlesEnabled) {
+    	           SkyWarsReloaded.getIC().setOption(
+   	                    gamePlayer.getP(),
+   	                    20,
+   	                    particle.clone(),
+   	                    new Messaging.MessageFormatter().format("menu.buyeffect-item-name"),
+   	                    particleLore.toArray(new String[particleLore.size()]));
+    		}
             
+    		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseTrailEffectsEnabled");
+    		if (trailsEnabled) {
+    	           SkyWarsReloaded.getIC().setOption(
+   	                    gamePlayer.getP(),
+   	                    24,
+   	                    projEffect.clone(),
+   	                    new Messaging.MessageFormatter().format("menu.buyprojeffect-item-name"),
+   	                    projectEffectLore.toArray(new String[projectEffectLore.size()]));
+    		}
+    		
             List<String> loreList5 = Lists.newLinkedList();
             SkyWarsReloaded.getIC().setOption(
     	                    gamePlayer.getP(),
@@ -131,6 +195,14 @@ public class LobbyMainMenu {
     	}
     }
 	
+    public boolean hasEffectPermission(Player player) {
+        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.effectshop");
+    }
+    
+    public boolean hasProjEffectPermission(Player player) {
+        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.projeffectshop");
+    }
+    
     public boolean hasColorPermission(Player player) {
         return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.colorshop");
     }

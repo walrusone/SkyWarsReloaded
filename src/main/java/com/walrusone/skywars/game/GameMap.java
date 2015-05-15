@@ -110,11 +110,11 @@ public class GameMap {
 		    world.setAutoSave(false);
 		    world.setThundering(false);
 		    world.setStorm(false);
+		    world.setDifficulty(Difficulty.NORMAL);
 		    mvworld.setSpawnLocation(new Location(world, 2000, 0, 2000));
 			mvworld.setAllowAnimalSpawn(false);
 			mvworld.setAllowMonsterSpawn(false);
 			mvworld.setKeepSpawnInMemory(false);
-			mvworld.setDifficulty(Difficulty.NORMAL);
 			mvworld.setEnableWeather(false);
 		}
 		return loaded;

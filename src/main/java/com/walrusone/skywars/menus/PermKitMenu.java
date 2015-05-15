@@ -139,16 +139,16 @@ public class PermKitMenu {
                         "\247r\247" + (canPurchase ? 'a' : 'c') + kit.getKitName(),
                         loreList.toArray(new String[loreList.size()]));
             }
-            
-            List<String> loreList5 = Lists.newLinkedList();
-            SkyWarsReloaded.getIC().setOption(
-    	                    gamePlayer.getP(),
-    	                    53,
-    	                    new ItemStack(Material.TORCH, 1),
-    	                    new Messaging.MessageFormatter().format("menu.return-to-lobbymenu"),
-    	                    loreList5.toArray(new String[loreList5.size()]));  
         }
-
+        
+        List<String> loreList5 = Lists.newLinkedList();
+        SkyWarsReloaded.getIC().setOption(
+	                    gamePlayer.getP(),
+	                    53,
+	                    new ItemStack(Material.TORCH, 1),
+	                    new Messaging.MessageFormatter().format("menu.return-to-lobbymenu"),
+	                    loreList5.toArray(new String[loreList5.size()])); 
+        
         if (!gamePlayer.inGame()) {
             SkyWarsReloaded.getIC().show(gamePlayer.getP());
         }

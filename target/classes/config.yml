@@ -41,7 +41,8 @@
 #  lobbyServer: lobby		//The name of the server (as found in bungeecord) where players will be sent when the game ends. 
 
 signJoinMode: false
-gameVariables: 
+gameVariables:
+  playerNameScoreboard: false 
   minPercentPlayers: 50
   allowSpectating: true
   useExternalEconomy: false
@@ -53,6 +54,7 @@ gameVariables:
   pointsPerWin: 10
   vipMultiplier: 2
   preGameTimer: 20
+  resetPreGameTimerOnJoin: true
   maxMapSize: 200
   maxNumberOfGames: -1
   kitsEnabled: true
@@ -64,9 +66,15 @@ gameVariables:
   opChestsEnabled: true
   timeVoteEnabled: true
   jumpVoteEnabled: true
+  weatherVoteEnabled: true
   colorGlassEnabled: true
+  particlesEnabled: true
+  trailEffectsEnabled: true
   lobbyMenuEnabled: true
+  optionsMenuEnabled: true
   purchaseColorGlassEnabled: true
+  purchaseParticlesEnabled: true
+  purchaseTrailEffectsEnabled: true
   purchasePermanentKitsEnabled: true
   highJumpValue: 2
   superJumpValue: 4
@@ -95,7 +103,10 @@ gameItems:
   specStoreItem: anvil 1 luck:1
   opChestMenuItem: diamond 1
   timeMenuItem: watch 1
+  weatherMenuItem: glowstone 1
   jumpMenuItem: diamond_boots 1
+  particleMenuItem: pumpkin_seeds 1
+  trailEffectMenuItem: arrow 1
   optionsItem: cake 1 luck:1
   glassMenuItem: stained_glass 1
 gameSounds:
@@ -105,6 +116,8 @@ gameSounds:
   playerWin: FIREWORK_LARGE_BLAST
   opChestVote: CHEST_OPEN
   timeVote: FUSE
+  weatherVote: SPLASH
+  jumpVote: MAGMACUBE_JUMP
 spawn:
 commandWhitelist:
 - '/swr quit'
@@ -115,6 +128,7 @@ commandWhitelist:
 - '/g'
 spectatorWhitelist:
 - '/swr quit'
+- '/swr shop'
 sqldatabase:
   enabled: false
   saveInterval: 5

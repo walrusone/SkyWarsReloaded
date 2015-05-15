@@ -30,12 +30,12 @@ public class WorldController {
 		SkyWarsReloaded.getMV().getMVWorldManager().addWorld(name, Environment.NORMAL, null, null, null, "VoidWorld", false);
 		
 		World world = SkyWarsReloaded.get().getServer().getWorld(name);
+		world.setDifficulty(Difficulty.PEACEFUL);
 		MultiverseWorld mvworld = SkyWarsReloaded.getMV().getMVWorldManager().getMVWorld(name);
 		mvworld.setAllowAnimalSpawn(false);
 		mvworld.setAllowMonsterSpawn(false);
 		mvworld.setKeepSpawnInMemory(false);
 		mvworld.setSpawnLocation(new Location(world, 2000, 0, 2000));
-		mvworld.setDifficulty(Difficulty.NORMAL);
 		mvworld.setEnableWeather(false);
 
         world.setAutoSave(false);

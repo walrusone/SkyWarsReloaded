@@ -23,6 +23,8 @@ public class GamePlayer {
 	private boolean isSpectating = false;
 	private String name;
 	private String color;
+	private String effect;
+	private String projEffect;
 	private int wins;
 	private int kills;
 	private int deaths;
@@ -39,6 +41,7 @@ public class GamePlayer {
 	private int votedForOP = 0;
 	private int timeVote = 0;
 	private int jumpVote = 0;
+	private int weatherVote = 0;
 	private ItemStack exit;
 	private ItemStack specShopItem;
 	private ItemStack spec;
@@ -199,7 +202,7 @@ public class GamePlayer {
 		return inGame;
 	}
 
-	public void spectateMode(boolean state, Game game, Location location) {
+	public void spectateMode(boolean state, Game game, Location location, boolean shutdown) {
 		if (state) {
 			if (getP() != null) {
 				setSpectating(state);
@@ -212,14 +215,16 @@ public class GamePlayer {
 				getP().setFoodLevel(20);
 				getP().setScoreboard(game.getScoreboard());
 				getP().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
-				getP().getInventory().clear();
-				giveSpectateItems();
 				getP().teleport(location);
 				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 					@Override
 					public void run() {
-						getP().setAllowFlight(true);
-						getP().setFlying(true);
+						if (getP() != null) {
+							getP().setAllowFlight(true);
+							getP().setFlying(true);
+							getP().getInventory().clear();
+							giveSpectateItems();
+						}
 					}
 				}, 5);
 
@@ -237,16 +242,20 @@ public class GamePlayer {
 				for (PotionEffect effect : getP().getActivePotionEffects()) {
 			        getP().removePotionEffect(effect.getType());
 				}
-				SkyWarsReloaded.getInvC().restoreInventory(getP());
 				getP().setFireTicks(0);
 				getP().teleport(location);
-				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-					@Override
-					public void run() {
-						getP().setAllowFlight(false);
-						getP().setFlying(false);
-					}
-				}, 5);
+				if (!shutdown) {
+					SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+						@Override
+						public void run() {
+							if (getP() != null) {
+								getP().setAllowFlight(false);
+								getP().setFlying(false);
+								SkyWarsReloaded.getInvC().restoreInventory(getP());
+							}
+						}
+					}, 5);
+				}
 			}
 		}
 		
@@ -288,6 +297,14 @@ public class GamePlayer {
 	public void setJumpVote(int vote) {
 		jumpVote = vote;
 	}
+	
+	public int getWeatherVote() {
+		return weatherVote;
+	}
+	
+	public void setWeatherVote(int vote) {
+		weatherVote = vote;
+	}
 
 	public void setTimeVote(int i) {
 		timeVote = i;		
@@ -314,6 +331,11 @@ public class GamePlayer {
 		permissions.add(perm);
 	}
 	
+	public void clearNewPerms() {
+		newPerms = null;
+		newPerms = new ArrayList<String>();
+	}
+	
 	public List<String> getNewPerms() {
 		return newPerms;
 	}
@@ -329,6 +351,22 @@ public class GamePlayer {
 		for (String perm: perms) {
 			permissions.add(perm);
 		}
+	}
+
+	public String getEffect() {
+		return effect;
+	}
+	
+	public void setEffect(String effect) {
+		this.effect = effect;
+	}
+	
+	public String getProjEffect() {
+		return projEffect;
+	}
+	
+	public void setProjEffect(String effect) {
+		this.projEffect = effect;
 	}
 	
 }
