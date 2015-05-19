@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,6 +50,9 @@ public class Game {
     private List<GamePlayer> gPlayers = new ArrayList<GamePlayer>();
 	private List<GamePlayer> spectators = new ArrayList<GamePlayer>();
 	private int count = 0;
+	private boolean thunderStorm = false;
+	private int nextStrike = 5;
+	private int strikeCounter = 0;
 	private int sanityChecker = 0;
 	private int preGameTimer;
 	private GameState gameState;
@@ -82,6 +86,8 @@ public class Game {
 	private String joinLobbySound;
 	private String leaveLobbySound;
 	private Location specSpawn;
+	private int min;
+	private int max;
 	
 	public Game(int gameNumber, String map) {
 		this.gameNumber = gameNumber;
@@ -106,6 +112,9 @@ public class Game {
 		deathSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.playerDeath");
 		joinLobbySound = SkyWarsReloaded.get().getConfig().getString("gameSounds.playerJoinLobby");
 		leaveLobbySound = SkyWarsReloaded.get().getConfig().getString("gameSounds.playerLeaveLobby");
+		int size = SkyWarsReloaded.get().getConfig().getInt("gameVariables.maxMapSize")/2;
+		min = 0 - size;
+		max = 0 + size;
 		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
 		int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
 		int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
@@ -223,7 +232,11 @@ public class Game {
 					}
 					if (!color.equalsIgnoreCase("normal")) {
 						GlassColor colorGlass = SkyWarsReloaded.getGLC().getByName(color);
-						setGlass(colorGlass.getMaterial(), colorGlass.getData(), gPlayer);
+						if (colorGlass != null) {
+							setGlass(colorGlass.getMaterial(), colorGlass.getData(), gPlayer);
+						} else {
+							setGlass(Material.GLASS, gPlayer);
+						}
 					} else {
 						setGlass(Material.GLASS, gPlayer);
 					}
@@ -341,6 +354,28 @@ public class Game {
 				sanityChecker = 0;
 			}
 		}
+		
+		if(thunderStorm) {
+			if (strikeCounter == nextStrike) {
+				Random rand = new Random();
+				int hitPlayer = rand.nextInt((100 - 1) + 1) + 1;
+				if (hitPlayer <= SkyWarsReloaded.get().getConfig().getInt("gameVariables.lightningStrikeChance")) {
+					int size = gPlayers.size();
+					Player player = gPlayers.get(rand.nextInt((size - 1) + 1)).getP();
+					mapWorld.strikeLightning(player.getLocation());
+				} else {
+					int x = rand.nextInt((max - min) + 1) + min;
+					int z = rand.nextInt((max - min) + 1) + min;
+					int y = rand.nextInt((50 - 20) + 1) + 20;
+					mapWorld.strikeLightningEffect(new Location(mapWorld, x, y, z));
+				}
+				nextStrike = rand.nextInt((20 - 3) + 1) + 3;
+				strikeCounter = 0;
+			} else {
+				strikeCounter++;
+			}
+		}
+
 	}
 
 	public void startGame() {
@@ -1131,10 +1166,8 @@ public class Game {
 			world.setThundering(true);
 			world.setThunderDuration(Integer.MAX_VALUE);
 			world.setWeatherDuration(Integer.MAX_VALUE);
+			thunderStorm = true;
 		} else if (weather.equalsIgnoreCase("snow")) {
-			int size = SkyWarsReloaded.get().getConfig().getInt("gameVariables.maxMapSize")/2;
-			int min = 0 - size;
-			int max = 0 + size;
 			for (int x = min; x < max; x++) {
 				for (int z = min; z < max; z++) {
 					world.setBiome(x, z, Biome.ICE_PLAINS);

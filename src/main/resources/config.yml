@@ -68,6 +68,7 @@ gameVariables:
   timeVoteEnabled: true
   jumpVoteEnabled: true
   weatherVoteEnabled: true
+  lightningStrikeChance: 5
   colorGlassEnabled: true
   particlesEnabled: true
   trailEffectsEnabled: true
