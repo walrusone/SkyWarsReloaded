@@ -25,7 +25,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.walrusone.skywars.commands.MainCommand;
+import com.walrusone.skywars.commands.CmdManager;
 import com.walrusone.skywars.controllers.ChestController;
 import com.walrusone.skywars.controllers.GameController;
 import com.walrusone.skywars.controllers.GlassController;
@@ -153,7 +153,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 		}
         score = new ScoreboardController();
         
-        getCommand("swr").setExecutor(new MainCommand());
+        getCommand("swr").setExecutor(new CmdManager());
         
         getCommand("global").setExecutor(new CommandExecutor() {
         	
