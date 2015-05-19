@@ -379,49 +379,9 @@ public class PlayerListener implements Listener {
 		ItemStack item = e.getPlayer().getItemInHand();
         Player player = e.getPlayer();
         GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
-        if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
-        	String spawnWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-   			if (spawnWorld != null) {
-   				boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
-   		  		if (!signJoinMode) {
-   	            	String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-   	            	if (w != null) {
-   	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
-   	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
-   	                        Game game = SkyWarsReloaded.getGC().findGame();
-   	                        if (game != null) {
-   	                            game.addPlayer(gPlayer);
-   	                        } else {
-   	                        	SkyWarsReloaded.getGC().addToQueue(gPlayer);
-   	                        	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
-   	                        }
-   	                    }
-   	            	} 
-   	    		} else {
-   	    			String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-   	            	if (w != null) {
-   	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
-   	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
-   	                		Game game = findGame();
-   	        	    		int i = 0;
-   	        	    		while (i < 3) {
-   	                    		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
-   	            	                game.addPlayer(gPlayer);
-   	            	                break;
-   	            	    		} else {
-   	            	    			i++;
-   	            	    			game = findGame();
-   	            	    		}
-   	        	    		}
-   	                    }
-   	            	}
-   	        	}
-   			} else {
-   				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-   				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-   			}
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
-        	if (gPlayer.inGame()) {
+             
+        if (gPlayer.inGame()) {
+            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
         		if (gPlayer.getGame().getState() == GameState.PREGAME) {
         			if (!gPlayer.hasKitSelected()) {
         				new KitMenu(gPlayer);
@@ -430,44 +390,90 @@ public class PlayerListener implements Listener {
         				player.sendMessage(new Messaging.MessageFormatter().format("error.already-has-kit"));
         			}
         		}
-			}
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {			
-     		if (gPlayer.inGame()) {
-					e.setCancelled(true);
+            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {			
+            	if (gPlayer.getGame().getState() == GameState.PREGAME) {	
+            		e.setCancelled(true);
 					gPlayer.getGame().deletePlayer(gPlayer, true, false);
-			}
-			
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
-     		boolean specEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating");
-     		if (!gPlayer.inGame() && specEnabled) {
-					if (!gPlayer.isSpectating()) {
-						e.setCancelled(true);
-						new SpecGameMenu(gPlayer);
-					} 
-			}
-     	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
-			if (!gPlayer.inGame() && !gPlayer.isSpectating()) {
+            	}
+            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
+				if (gPlayer.getGame().getState() == GameState.PREGAME) {
 					e.setCancelled(true);
-					new JoinMenu(gPlayer);
-			}
-     	}  
-     	if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
-			if (gPlayer.inGame()) {
-				Game game = gPlayer.getGame();
-				if (game != null) {
-					if (game.getState() == GameState.PREGAME) {
-						e.setCancelled(true);
-						new MainMenu(gPlayer);
-					}
+					new MainMenu(gPlayer);
 				}
-			}
-     	} 
-     	if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
-			if (!gPlayer.inGame()) {
-				e.setCancelled(true);
-				new LobbyMainMenu(gPlayer);
-			}
-     	}
+            } else {
+            	if (gPlayer.getGame().getState() == GameState.PREGAME) {
+            		e.setCancelled(true);
+            	}
+            }
+        }
+
+        if (!gPlayer.inGame()) {
+        	if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
+        		boolean pressure = SkyWarsReloaded.get().getConfig().getBoolean("pressurePlateJoin");
+        		if (pressure) {
+        			String spawnWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+           			if (spawnWorld != null) {
+           				boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
+           		  		if (!signJoinMode) {
+           	            	String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+           	            	if (w != null) {
+           	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
+           	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
+           	                        Game game = SkyWarsReloaded.getGC().findGame();
+           	                        if (game != null) {
+           	                            game.addPlayer(gPlayer);
+           	                        } else {
+           	                        	SkyWarsReloaded.getGC().addToQueue(gPlayer);
+           	                        	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
+           	                        }
+           	                    }
+           	            	} 
+           	    		} else {
+           	    			String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+           	            	if (w != null) {
+           	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
+           	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
+           	                		Game game = findGame();
+           	        	    		int i = 0;
+           	        	    		while (i < 3) {
+           	                    		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
+           	            	                game.addPlayer(gPlayer);
+           	            	                break;
+           	            	    		} else {
+           	            	    			i++;
+           	            	    			game = findGame();
+           	            	    		}
+           	        	    		}
+           	                    }
+           	            	}
+           	        	}
+           			} else {
+           				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+           				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+           			}
+             	} 
+        	}
+                   	
+            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
+         		boolean specEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating");
+         		if (specEnabled) {
+    					if (!gPlayer.isSpectating()) {
+    						e.setCancelled(true);
+    						new SpecGameMenu(gPlayer);
+    					} 
+    			}
+         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
+    			if (!gPlayer.isSpectating()) {
+    					e.setCancelled(true);
+    					new JoinMenu(gPlayer);
+    			}
+         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
+    				e.setCancelled(true);
+    				new LobbyMainMenu(gPlayer);
+         	}
+        }
+        
+
     }
         
     private Game findGame() {

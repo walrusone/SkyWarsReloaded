@@ -441,7 +441,7 @@ public class DataStorage {
 	                        queryBuilder.append("WHERE `uuid` = ?;");
 
 	                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
-	                        preparedStatement.setString(1, player.getP().getUniqueId().toString());
+	                        preparedStatement.setString(1, player.getUUID().toString());
 	                        resultSet = preparedStatement.executeQuery();
 
 	                        List<String> perms = new ArrayList<String>();

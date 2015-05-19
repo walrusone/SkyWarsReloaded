@@ -21,8 +21,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -578,7 +576,7 @@ public class Game {
 				}
 				sendGameMessage(new Messaging.MessageFormatter()
 						.withPrefix()
-						.setVariable("number", "" + (gPlayers.size()-1))
+						.setVariable("number", "" + (gPlayers.size()))
 						.setVariable("total", "" + numberOfSpawns)
 						.setVariable("player", gPlayer.getName())
 						.format("game.lobby-leave"));
@@ -1130,9 +1128,9 @@ public class Game {
 			world.setWeatherDuration(Integer.MAX_VALUE);
 		} else if (weather.equalsIgnoreCase("thunder storm")) {
 			world.setStorm(true);
-			world.setWeatherDuration(Integer.MAX_VALUE);
 			world.setThundering(true);
 			world.setThunderDuration(Integer.MAX_VALUE);
+			world.setWeatherDuration(Integer.MAX_VALUE);
 		} else if (weather.equalsIgnoreCase("snow")) {
 			int size = SkyWarsReloaded.get().getConfig().getInt("gameVariables.maxMapSize")/2;
 			int min = 0 - size;
@@ -1155,7 +1153,7 @@ public class Game {
 								player.teleport(current);
 							}
 						}
-					}, 3);
+					}, 5);
 				}
 			}
 		}
@@ -1263,7 +1261,9 @@ public class Game {
     		if (paramPlayer.isDead()) {
       		  String bukkitversion = Bukkit.getServer().getClass().getPackage().getName().substring(23);
       		  if (bukkitversion.equalsIgnoreCase("v1_8_R2")) {
-          		  ((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)paramPlayer).getHandle(), 0, false);
+          		  ((org.bukkit.craftbukkit.v1_8_R2.CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer)paramPlayer).getHandle(), 0, false);
+      		  } else if (bukkitversion.equalsIgnoreCase("v1_8_R3")) {
+      			((org.bukkit.craftbukkit.v1_8_R3.CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer)paramPlayer).getHandle(), 0, false);
       		  } else {
       			  try {
       		            String path = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];

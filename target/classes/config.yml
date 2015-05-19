@@ -41,6 +41,7 @@
 #  lobbyServer: lobby		//The name of the server (as found in bungeecord) where players will be sent when the game ends. 
 
 signJoinMode: false
+pressurePlateJoin: true
 gameVariables:
   playerNameScoreboard: false 
   minPercentPlayers: 50

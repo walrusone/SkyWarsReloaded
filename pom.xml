@@ -5,7 +5,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <version>V2.5.2</version>
+  <version>V2.5.3</version>
    <build>
       <plugins>
           <plugin>
@@ -45,6 +45,13 @@
             <version>1.8.3</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/craftbukkit-1.8.3-R0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit1.8.4</artifactId>
+            <version>1.8.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/craftbukkit-1.8.4-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
