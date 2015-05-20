@@ -23,9 +23,31 @@ permissions:
   swr.play:
     description: Gives access to the swr join and quit commands
     default: true
+    children:
+      swr.join: true
+      swr.quit: true
+      swr.kit: true
+      swr.stats: true
   swr.admin:
     description: Gives access to the swr setspawn, list, games, endgame, and reload commands
     default: op
+    children:
+      swr.setspawn: true
+      swr.list: true
+      swr.games: true
+      swr.endgame: true
+      swr.reload: true
+  swr.maps: 
+    description: A.
+    default: op
+    children:
+      swr.create: true
+      swr.delete: true
+      swr.edit: true
+      swr.list: true
+      swr.save: true
+      swr.register: true
+      swr.unregister: true
   swr.signs:
     description: Allows the user to create and destory swr signs.
     default: op
@@ -61,4 +83,49 @@ permissions:
     defualt: op
   swr.permkits:
     description: Allows a player to use the permanent kits shop
+    default: op
+  swr.join: 
+    description: A.
+    default: true
+  swr.quit: 
+    description: A.
+    default: true
+  swr.kit: 
+    description: A.
+    default: true
+  swr.stats: 
+    description: A.
+    default: true
+  swr.setspawn: 
+    description: A.
+    default: op
+  swr.games: 
+    description: A.
+    default: op
+  swr.list: 
+    description: A.
+    default: op
+  swr.endgame: 
+    description: A.
+    default: op
+  swr.reload: 
+    description: A.
+    default: op
+  swr.create: 
+    description: A.
+    default: op
+  swr.delete: 
+    description: A.
+    default: op
+  swr.register: 
+    description: A.
+    default: op
+  swr.unregister: 
+    description: A.
+    default: op
+  swr.save: 
+    description: A.
+    default: op
+  swr.edit: 
+    description: A.
     default: op
