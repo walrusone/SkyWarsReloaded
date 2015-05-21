@@ -23,16 +23,15 @@ public class JoinGameCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		String lobbyWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		String lobbyWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld().getName();
 		if (lobbyWorld != null) {
-			boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
 			String world = ((Player) sender).getWorld().getName();
 			if (!world.equalsIgnoreCase(lobbyWorld)) {
 				sender.sendMessage(ChatColor.RED + "YOU CAN ONLY JOIN GAMES IN THE LOBBY WORLD");
 				return true;
 			}
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
-			if (!signJoinMode) {
+			if (!SkyWarsReloaded.getCfg().signJoinMode()) {
 				if (!gPlayer.inGame()) {
 					Game game = SkyWarsReloaded.getGC().findGame();
 					if (game != null) {

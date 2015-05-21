@@ -20,13 +20,10 @@ public class ChestMenu {
 	 private static final int menuSlotsPerRow = 9;
 	 private static final int menuSize = 36;
 	 private static final String menuName = new Messaging.MessageFormatter().format("menu.chest-menu-title");
-	 private String opVoteSound;
   
     public ChestMenu(final GamePlayer gamePlayer) {
 
-        opVoteSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.opChestVote");
-        
-        int rowCount = menuSlotsPerRow;
+    	int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
         }
@@ -105,7 +102,7 @@ public class ChestMenu {
         					.format("game.voted-for-chests"));
                 		}
                 	}
-                	game.playSound(opVoteSound);
+                	game.playSound(SkyWarsReloaded.getCfg().getChestVoteSound());
                 } 
             }
         });

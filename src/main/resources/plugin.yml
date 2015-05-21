@@ -1,6 +1,6 @@
 name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
-version: 2.5.4
+version: 2.6
 
 depend: [Vault, Multiverse-Core, VoidWorld]
 
@@ -79,53 +79,53 @@ permissions:
     description: Allows a player to use color chat.
     default: op
   swr.colorshop:
-    description: Allows a player to use the color glass shop
+    description: Allows a player to use the color glass shop.
     defualt: op
   swr.permkits:
-    description: Allows a player to use the permanent kits shop
+    description: Allows a player to use the permanent kits shop.
     default: op
   swr.join: 
-    description: A.
+    description: Allows a player to join a game.
     default: true
   swr.quit: 
-    description: A.
+    description: Allows a player to quit a game.
     default: true
   swr.kit: 
-    description: A.
+    description: Allows a player to use the kit menu item.
     default: true
   swr.stats: 
-    description: A.
+    description: Allows a player to use the swrstats command.
     default: true
   swr.setspawn: 
-    description: A.
+    description: Allows a player to use the setspawn command.
     default: op
   swr.games: 
-    description: A.
+    description: Allows a player to use the games command.
     default: op
   swr.list: 
-    description: A.
+    description: Aloows a player to use the list command.
     default: op
   swr.endgame: 
-    description: A.
+    description: Allows a player to use the endgame command.
     default: op
   swr.reload: 
-    description: A.
+    description: Allows a player to use the reload command.
     default: op
   swr.create: 
-    description: A.
+    description: Allows a player to use the create command.
     default: op
   swr.delete: 
-    description: A.
+    description: Allows a player to use the delete command.
     default: op
   swr.register: 
-    description: A.
+    description: Allows a player to use the register command.
     default: op
   swr.unregister: 
-    description: A.
+    description: Allows a player to use the unregister command.
     default: op
   swr.save: 
-    description: A.
+    description: Allows a player to use the save command.
     default: op
   swr.edit: 
-    description: A.
+    description: Allows a player to use the edit command.
     default: op

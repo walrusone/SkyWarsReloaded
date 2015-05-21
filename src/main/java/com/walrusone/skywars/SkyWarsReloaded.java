@@ -26,6 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.walrusone.skywars.commands.CmdManager;
+import com.walrusone.skywars.config.Config;
 import com.walrusone.skywars.controllers.ChestController;
 import com.walrusone.skywars.controllers.GameController;
 import com.walrusone.skywars.controllers.GlassController;
@@ -64,6 +65,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private WorldController wc;
     private DataStorage ds;
     private Database db;
+    private Config config;
     private InventoryController invc;
     private PlayerController pc;
     private ProjectileController projc;
@@ -80,8 +82,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public static Economy econ = null;
     public static Permission perms = null;
     public static Chat chat = null;
-    private boolean bungeeMode = false;
-    private boolean signJoinMode = false;
     private MultiverseCore mv;
     
     public void onEnable() {
@@ -92,8 +92,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         saveConfig();
         reloadConfig();
         
-     	bungeeMode = getConfig().getBoolean("bungeeMode.enabled");
-    	if (bungeeMode) {
+        messaging = new Messaging(this);
+        config = new Config();
+        
+    	if (config.bungeeEnabled()) {
     		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
     		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
@@ -111,8 +113,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         	getSWRDatabase();
         }
         
-        boolean economy = this.getConfig().getBoolean("gameVariables.useExternalEconomy");
-        if (economy) {
+        if (config.usingExternalEcomony()) {
             if (!setupEconomy() ) {
                 log.severe(String.format("[%s] - Disabling SkyWarsReloaded: No Economy Plugin Found!", getDescription().getName()));
                 getServer().getPluginManager().disablePlugin(this);
@@ -130,10 +131,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             saveConfig();
         }
         
-        if(getConfig().getBoolean("gameVariables.enableLogFilter")) {
+        if(config.logFilterEnabled()) {
             getServer().getLogger().setFilter(new LoggerFilter());
         }
-        messaging = new Messaging(this);
+        
         wc = new WorldController();
         mc = new MapController();
         gc = new GameController();
@@ -146,8 +147,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         sc = new ShopController();
         glc = new GlassController();
         pec = new ParticleController();
-		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.trailEffectsEnabled");
-		if (trailsEnabled) {
+		if (config.trailEffectsEnabled()) {
 	        Bukkit.getPluginManager().registerEvents(new ProjectileListener(), this);
 	        projc = new ProjectileController();
 		}
@@ -223,8 +223,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new SignListener(), this);
         Bukkit.getPluginManager().registerEvents(ic, this);
-        boolean allowSpectating = this.getConfig().getBoolean("gameVariables.allowSpectating");
-        if (allowSpectating) {
+        if (config.spectatingEnabled()) {
         	Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
         }
         
@@ -233,13 +232,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         int saveInterval = getConfig().getInt("sqldatabase.saveInterval");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new SavePlayers(), 0, (1200 * saveInterval));
         
-        if (bungeeMode) {
+        if (config.bungeeEnabled()) {
       		@SuppressWarnings("unused")
 			Game game = gc.createGame();
         }
         
-        signJoinMode = getConfig().getBoolean("signJoinMode");
-        if (signJoinMode) {
+        if (config.signJoinMode()) {
         	gc.signJoinLoad();
         }
         finishedStartup = true;
@@ -262,6 +260,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         invc.save();
         messaging = null;
 		messaging = new Messaging(this);
+		config = null;
+		config = new Config();
 		cc = null;
         cc = new ChestController();
         mc = null;
@@ -274,8 +274,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         glc = new GlassController();
         pec = null;
         pec = new ParticleController();
-		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.trailEffectsEnabled");
-		if (trailsEnabled) {
+		if (SkyWarsReloaded.getCfg().trailEffectsEnabled()) {
 	        projc = null;
 	        projc = new ProjectileController();
 		}
@@ -288,13 +287,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         gc = null;
         gc = new GameController();
-        if (bungeeMode) {
+        if (config.bungeeEnabled()) {
       		@SuppressWarnings("unused")
 			Game game = gc.createGame();
         }
         
-        signJoinMode = getConfig().getBoolean("signJoinMode");
-        if (signJoinMode) {
+        if (config.signJoinMode()) {
         	gc.signJoinLoad();
         }
         finishedStartup = true;
@@ -400,6 +398,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public static ScoreboardController getScore() {
     	return instance.score;
+    }
+    
+    public static Config getCfg() {
+    	return instance.config;
     }
     
     private boolean setupEconomy() {

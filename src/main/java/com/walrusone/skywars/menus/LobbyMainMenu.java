@@ -1,7 +1,5 @@
 package com.walrusone.skywars.menus;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -13,7 +11,6 @@ import com.google.common.collect.Lists;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.IconMenu;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class LobbyMainMenu {
@@ -21,26 +18,9 @@ public class LobbyMainMenu {
     private static final int menuSlotsPerRow = 9;
     private static final int menuSize = 36;
     private static final String optionsMenuName = new Messaging.MessageFormatter().format("menu.lobbymenu-menu-title");
-    private ItemStack kit;
-	private ItemStack color;
-	private ItemStack particle;
-	private ItemStack projEffect;
     
 	public LobbyMainMenu(final GamePlayer gamePlayer) {
 
-		String kitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.kitPermMenuItem");
-		List<String> kitItemData = new LinkedList<String>(Arrays.asList(kitItem.split(" ")));
-		kit = ItemUtils.parseItem(kitItemData);
-		String colorItem = SkyWarsReloaded.get().getConfig().getString("gameItems.glassMenuItem");
-		List<String> colorItemData = new LinkedList<String>(Arrays.asList(colorItem.split(" ")));
-		color = ItemUtils.parseItem(colorItemData);
-		String particleItem = SkyWarsReloaded.get().getConfig().getString("gameItems.particleMenuItem");
-		List<String> particleItemData = new LinkedList<String>(Arrays.asList(particleItem.split(" ")));
-		particle = ItemUtils.parseItem(particleItemData);
-		String projEffectItem = SkyWarsReloaded.get().getConfig().getString("gameItems.trailEffectMenuItem");
-		List<String> projEffectItemData = new LinkedList<String>(Arrays.asList(projEffectItem.split(" ")));
-		projEffect = ItemUtils.parseItem(projEffectItemData);
-		
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
             rowCount += menuSlotsPerRow;
@@ -140,42 +120,38 @@ public class LobbyMainMenu {
         }
         
     	if (gamePlayer.getP() != null && !gamePlayer.inGame()) {
-    		boolean opEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchasePermanentKitsEnabled");
-    		if (opEnabled) {
+    		if (SkyWarsReloaded.getCfg().purchasePermanentKitsEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
 	                    2,
-	                    kit.clone(),
+	                    SkyWarsReloaded.getCfg().getPermKitMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.permkit-item-name"),
 	                    kitLore.toArray(new String[kitLore.size()]));
     		}
     		
-    		boolean timeEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseColorGlassEnabled");
-    		if (timeEnabled) {
+    		if (SkyWarsReloaded.getCfg().purchaseColorClassEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
 	                    6,
-	                    color.clone(),
+	                    SkyWarsReloaded.getCfg().getGlassMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.buycolor-item-name"),
 	                    colorLore.toArray(new String[colorLore.size()]));
     		}
     		
-    		boolean particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseParticlesEnabled");
-    		if (particlesEnabled) {
+    		if (SkyWarsReloaded.getCfg().purchaseParticlesEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
    	                    20,
-   	                    particle.clone(),
+   	                    SkyWarsReloaded.getCfg().getparticleMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.buyeffect-item-name"),
    	                    particleLore.toArray(new String[particleLore.size()]));
     		}
             
-    		boolean trailsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseTrailEffectsEnabled");
-    		if (trailsEnabled) {
+    		if (SkyWarsReloaded.getCfg().purchaseTrailEffectsEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
    	                    24,
-   	                    projEffect.clone(),
+   	                    SkyWarsReloaded.getCfg().getTrailEffectsMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.buyprojeffect-item-name"),
    	                    projectEffectLore.toArray(new String[projectEffectLore.size()]));
     		}

@@ -22,8 +22,7 @@ public class KitCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		boolean enabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.kitsEnabled");
-		if (enabled) {
+		if (SkyWarsReloaded.getCfg().kitsEnabled()) {
 			Player player = (Player) sender;
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 			if (gPlayer.inGame()) {

@@ -23,7 +23,7 @@ public class StatsCmd extends BaseCmd {
 	
 	@Override
 	public boolean run() {
-		int cooldownLength = SkyWarsReloaded.get().getConfig().getInt("gameVariables.statsCommandCooldown");
+		int cooldownLength = SkyWarsReloaded.getCfg().getStatsCommandCooldown();
 		if(cooldown.containsKey(player)) {
 			long secondsLeft = ((cooldown.get(player)/1000) + cooldownLength) - (System.currentTimeMillis()/1000);
 			if(secondsLeft>0) {

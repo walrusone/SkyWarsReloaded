@@ -1,22 +1,18 @@
 package com.walrusone.skywars.game;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
-import com.walrusone.skywars.utilities.ItemUtils;
-import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.Tagged;
+
 public class GamePlayer {
 
 	private UUID uuid;
@@ -42,9 +38,6 @@ public class GamePlayer {
 	private int timeVote = 0;
 	private int jumpVote = 0;
 	private int weatherVote = 0;
-	private ItemStack exit;
-	private ItemStack specShopItem;
-	private ItemStack spec;
 	private List<String> permissions = new ArrayList<String>();
 	private List<String> newPerms = new ArrayList<String>();
 	
@@ -53,21 +46,6 @@ public class GamePlayer {
 		SkyWarsReloaded.getDS().loadPlayer(this);
 		name = getP().getName();
 		setTagged(this);
-		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
-		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
-		String exitName = "name:" + new Messaging.MessageFormatter().format("menu.returntospawn-item-name");
-		exitItemData.add(exitName);
-		exit = ItemUtils.parseItem(exitItemData);
-		String specShItem = SkyWarsReloaded.get().getConfig().getString("gameItems.specStoreItem");
-		List<String> specShopItemData = new LinkedList<String>(Arrays.asList(specShItem.split(" ")));
-		String specShopName = "name:" + new Messaging.MessageFormatter().format("menu.spectateshop-item-name");
-		specShopItemData.add(specShopName);
-		specShopItem = ItemUtils.parseItem(specShopItemData);
-		String specItem = SkyWarsReloaded.get().getConfig().getString("gameItems.spectateItem");
-		List<String> specItemData = new LinkedList<String>(Arrays.asList(specItem.split(" ")));
-		String name = "name:" + new Messaging.MessageFormatter().format("menu.spectate-item-name");
-		specItemData.add(name);
-		spec = ItemUtils.parseItem(specItemData);
 	}
 	
 	public Player getP() {
@@ -262,16 +240,16 @@ public class GamePlayer {
 	}
 
 	private void giveSpectateItems() {
+		
 		if (getP() != null) {
 			getP().getInventory().clear();
-			getP().getInventory().setItem(8, exit);
-			boolean specShop = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.spectateShopEnabled"); 
-			if (specShop) {
+			getP().getInventory().setItem(8, SkyWarsReloaded.getCfg().getExitGameItem());
+			if (SkyWarsReloaded.getCfg().spectateShopEnabled()) {
 				if (SkyWarsReloaded.perms.has(getP(), "swr.spectateshop")) {
-					getP().getInventory().setItem(4, specShopItem);
+					getP().getInventory().setItem(4, SkyWarsReloaded.getCfg().getSpecStoreMenuItem());
 				}
 			}
-			getP().getInventory().setItem(0, spec);
+			getP().getInventory().setItem(0, SkyWarsReloaded.getCfg().getSpectatePlayerItem());
 		}
 	}
 

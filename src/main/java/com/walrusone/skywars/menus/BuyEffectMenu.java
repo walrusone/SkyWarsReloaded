@@ -2,7 +2,6 @@ package com.walrusone.skywars.menus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -14,7 +13,6 @@ import com.google.common.collect.Lists;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.IconMenu;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.ParticleItem;
 
@@ -86,9 +84,6 @@ public class BuyEffectMenu {
         });
 
         ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35));
-		String particleItem = SkyWarsReloaded.get().getConfig().getString("gameItems.particleMenuItem");
-		List<String> particleItemData = new LinkedList<String>(Arrays.asList(particleItem.split(" ")));
-		ItemStack particle = ItemUtils.parseItem(particleItemData);
 		
         for (int iii = 0; iii < availableItems.size(); iii ++) {
             if (iii >= menuSize) {
@@ -100,7 +95,7 @@ public class BuyEffectMenu {
             if (effect.getCost() != -1) {
                 if (!gamePlayer.inGame()) {
                     if (!hasEffectPermission(gamePlayer, effect)) {
-                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+                    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
                     		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= effect.getCost() ? 'a' : 'c') + effect.getCost());
                     	} else {
                     		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= effect.getCost() ? 'a' : 'c') + effect.getCost());
@@ -114,7 +109,7 @@ public class BuyEffectMenu {
                         SkyWarsReloaded.getIC().setOption(
                                 gamePlayer.getP(),
                                 placement.get(iii),
-                                particle.clone(),
+                                SkyWarsReloaded.getCfg().getparticleMenuItem(),
                                 effect.getName(),
                                 loreList.toArray(new String[loreList.size()]));
                     }
@@ -142,9 +137,6 @@ public class BuyEffectMenu {
 		} else {
 	        List<ParticleItem> availableItems = SkyWarsReloaded.getPEC().getParticleItems();
 	        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35));
-			String particleItem = SkyWarsReloaded.get().getConfig().getString("gameItems.particleMenuItem");
-			List<String> particleItemData = new LinkedList<String>(Arrays.asList(particleItem.split(" ")));
-			ItemStack particle = ItemUtils.parseItem(particleItemData);
 			
 	        for (int iii = 0; iii < availableItems.size(); iii ++) {
 	            if (iii >= menuSize) {
@@ -156,7 +148,7 @@ public class BuyEffectMenu {
 	            if (effect.getCost() != -1) {
 	                if (!gamePlayer.inGame()) {
 	                    if (!hasEffectPermission(gamePlayer, effect)) {
-	                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+	                    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
 	                    		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= effect.getCost() ? 'a' : 'c') + effect.getCost());
 	                    	} else {
 	                    		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= effect.getCost() ? 'a' : 'c') + effect.getCost());
@@ -170,7 +162,7 @@ public class BuyEffectMenu {
 	                        SkyWarsReloaded.getIC().setOption(
 	                                gamePlayer.getP(),
 	                                placement.get(iii),
-	                                particle.clone(),
+	                                SkyWarsReloaded.getCfg().getparticleMenuItem(),
 	                                effect.getName(),
 	                                loreList.toArray(new String[loreList.size()]));
 	                    }
@@ -201,8 +193,7 @@ public class BuyEffectMenu {
     }
     
     public boolean canPurchase(GamePlayer gamePlayer, ParticleItem effect) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
             return effect.getCost() > 0 && (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= effect.getCost());
     	} else {
     		return effect.getCost() > 0 && (gamePlayer.getBalance() >= effect.getCost());
@@ -210,8 +201,7 @@ public class BuyEffectMenu {
     }
     
     private void removeBalance(GamePlayer p, int x) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
     		SkyWarsReloaded.econ.withdrawPlayer(p.getP(), x);
     	} else {
     		p.setBalance(p.getBalance() - x);

@@ -20,8 +20,7 @@ public class GlassShopCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		boolean enabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseColorGlassEnabled");
-		if (enabled) {
+		if (SkyWarsReloaded.getCfg().purchaseColorClassEnabled()) {
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 			if (!gPlayer.inGame()) {
 					new BuyColorMenu(gPlayer);

@@ -2,7 +2,6 @@ package com.walrusone.skywars.menus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -14,7 +13,6 @@ import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game.GameState;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.IconMenu;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.ParticleItem;
 
@@ -99,9 +97,6 @@ public class UseEffectMenu {
         });
 
         ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35));
-		String particleItem = SkyWarsReloaded.get().getConfig().getString("gameItems.particleMenuItem");
-		List<String> particleItemData = new LinkedList<String>(Arrays.asList(particleItem.split(" ")));
-		ItemStack particle = ItemUtils.parseItem(particleItemData);
 		
         for (int iii = 0; iii < availableItems.size(); iii ++) {
             if (iii >= menuSize) {
@@ -121,7 +116,7 @@ public class UseEffectMenu {
                 SkyWarsReloaded.getIC().setOption(
                         gamePlayer.getP(),
                         placement.get(iii),
-                        particle.clone(),
+                        SkyWarsReloaded.getCfg().getparticleMenuItem(),
                         effect.getName(),
                         loreList.toArray(new String[loreList.size()]));
             }

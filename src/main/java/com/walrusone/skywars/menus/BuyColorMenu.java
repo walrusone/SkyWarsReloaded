@@ -95,7 +95,7 @@ public class BuyColorMenu {
             if (glass.getCost() != -1) {
                 if (!gamePlayer.inGame()) {
                     if (!hasColorPermission(gamePlayer, glass)) {
-                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+                    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
                     		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= glass.getCost() ? 'a' : 'c') + glass.getCost());
                     	} else {
                     		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= glass.getCost() ? 'a' : 'c') + glass.getCost());
@@ -148,7 +148,7 @@ public class BuyColorMenu {
 	            if (glass.getCost() != -1) {
 	                if (!gamePlayer.inGame()) {
 	                    if (!hasColorPermission(gamePlayer, glass)) {
-	                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+	                    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
 	                    		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= glass.getCost() ? 'a' : 'c') + glass.getCost());
 	                    	} else {
 	                    		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= glass.getCost() ? 'a' : 'c') + glass.getCost());
@@ -192,8 +192,7 @@ public class BuyColorMenu {
     }
     
     public boolean canPurchase(GamePlayer gamePlayer, GlassColor gColor) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
             return gColor.getCost() > 0 && (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= gColor.getCost());
     	} else {
     		return gColor.getCost() > 0 && (gamePlayer.getBalance() >= gColor.getCost());
@@ -201,8 +200,7 @@ public class BuyColorMenu {
     }
     
     private void removeBalance(GamePlayer p, int x) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
     		SkyWarsReloaded.econ.withdrawPlayer(p.getP(), x);
     	} else {
     		p.setBalance(p.getBalance() - x);

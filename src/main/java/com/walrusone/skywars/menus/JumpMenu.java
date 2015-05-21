@@ -20,11 +20,8 @@ public class JumpMenu {
 	private static final int menuSlotsPerRow = 9;
     private static final int menuSize = 36;
     private static final String jumpMenuName = new Messaging.MessageFormatter().format("menu.jump-menu-title");
-	private String voteForTimeSound;
 	
     public JumpMenu(final GamePlayer gamePlayer) {
-
-    	voteForTimeSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.jumpVote");
     	
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
@@ -116,7 +113,7 @@ public class JumpMenu {
         					.format("game.voted-for-jump"));
                 		}
                 	}
-                	game.playSound(voteForTimeSound);
+                	game.playSound(SkyWarsReloaded.getCfg().getJumpVoteSound());
                 }
             }
         });

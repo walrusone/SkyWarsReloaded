@@ -112,7 +112,7 @@ public class PermKitMenu {
                         loreList.add(" ");
                     } else {
                         if (isPurchaseAble(kit)) {
-                        	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+                        	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
                         		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getPermCost() ? 'a' : 'c') + kit.getPermCost());
                         	} else {
                         		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getPermCost() ? 'a' : 'c') + kit.getPermCost());
@@ -177,7 +177,7 @@ public class PermKitMenu {
 	                        loreList.add(" ");
 	                    } else {
 	                        if (isPurchaseAble(kit)) {
-	                        	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+	                        	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
 	                        		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getPermCost() ? 'a' : 'c') + kit.getPermCost());
 	                        	} else {
 	                        		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getPermCost() ? 'a' : 'c') + kit.getPermCost());
@@ -237,8 +237,7 @@ public class PermKitMenu {
     }
 
     public boolean canPurchase(GamePlayer gamePlayer, GameKit kit) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
             return (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getPermCost());
     	} else {
     		return (gamePlayer.getBalance() >= kit.getPermCost());
@@ -246,8 +245,7 @@ public class PermKitMenu {
     }
     
     private void removeBalance(GamePlayer p, int x) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
     		SkyWarsReloaded.econ.withdrawPlayer(SkyWarsReloaded.get().getServer().getOfflinePlayer(p.getUUID()), x);
     	} else {
     		p.setBalance(p.getBalance() - x);

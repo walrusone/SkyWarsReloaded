@@ -39,7 +39,7 @@ public class GameMap {
 	private int maxY = 0;
 	
 	public GameMap(String name, File filepath) {
-		int size = SkyWarsReloaded.get().getConfig().getInt("gameVariables.maxMapSize");
+		int size = SkyWarsReloaded.getCfg().getMaxMapSize();
 		int max = size/2;
 		int min = -size/2;
 		minX = min;

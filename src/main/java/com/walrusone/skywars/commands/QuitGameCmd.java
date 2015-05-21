@@ -21,7 +21,7 @@ public class QuitGameCmd extends BaseCmd {
 			Game game = gPlayer.getGame();
 			game.deletePlayer(gPlayer, true, false);
 			return true;
-		} else if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating")) {
+		} else if (SkyWarsReloaded.getCfg().spectatingEnabled()) {
 			if (gPlayer.isSpectating()){
 				gPlayer.setSpectating(false);
 				gPlayer.getSpecGame().removeSpectator(gPlayer);

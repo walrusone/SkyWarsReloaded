@@ -20,11 +20,8 @@ public class WeatherMenu {
 	private static final int menuSlotsPerRow = 9;
     private static final int menuSize = 36;
     private static final String weatherMenuName = new Messaging.MessageFormatter().format("menu.weather-menu-title");
-	private String voteForWeatherSound;
     
     public WeatherMenu(final GamePlayer gamePlayer) {
-
-    	voteForWeatherSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.weatherVote");
     	
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
@@ -116,7 +113,7 @@ public class WeatherMenu {
         					.format("game.voted-for-time"));
                 		}
                 	}
-                	gamePlayer.getGame().playSound(voteForWeatherSound);
+                	gamePlayer.getGame().playSound(SkyWarsReloaded.getCfg().getWeatherVoteSound());
                 }
             }
         });

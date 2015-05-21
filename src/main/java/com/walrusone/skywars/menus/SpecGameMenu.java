@@ -33,8 +33,7 @@ public class SpecGameMenu {
         SkyWarsReloaded.getIC().create(gamePlayer.getP(), menuName, rowCount, new IconMenu.OptionClickEventHandler() {
             @Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
-            	boolean allowSpectating = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating");
-                if (!allowSpectating) {
+                if (!SkyWarsReloaded.getCfg().spectatingEnabled()) {
                 	return;
                 }
                 

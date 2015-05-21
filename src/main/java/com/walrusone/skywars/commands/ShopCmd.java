@@ -22,11 +22,11 @@ public class ShopCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		boolean enabled = (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.shopsEnabled") || SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.spectateShopEnabled"));
+		boolean enabled = (SkyWarsReloaded.getCfg().shopsEnabled() || SkyWarsReloaded.getCfg().spectateShopEnabled());
 		if (enabled) {
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 			if (gPlayer.inGame()) {
-				if (SkyWarsReloaded.perms.has(player, "swr.shop") && SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.shopsEnabled")) {
+				if (SkyWarsReloaded.perms.has(player, "swr.shop") && SkyWarsReloaded.getCfg().shopsEnabled()) {
 					if (gPlayer.getGame().getState() == GameState.PREGAME || gPlayer.getGame().getState() == GameState.PLAYING) {
 						new ShopMenu(gPlayer);
 					}
@@ -35,7 +35,7 @@ public class ShopCmd extends BaseCmd {
 					sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 					return true;
 				}
-			} else if (gPlayer.isSpectating() && SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.spectateShopEnabled")) {
+			} else if (gPlayer.isSpectating() && SkyWarsReloaded.getCfg().spectateShopEnabled()) {
 				if (SkyWarsReloaded.perms.has(player, "swr.spectateshop")) {
 					if (gPlayer.getSpecGame().getState() == GameState.PREGAME || gPlayer.getSpecGame().getState() == GameState.PLAYING) {
 						new SpecShopMenu(gPlayer);

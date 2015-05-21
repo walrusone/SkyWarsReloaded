@@ -3,9 +3,7 @@ package com.walrusone.skywars.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -16,14 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.game.Game.GameState;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class GameController {
@@ -32,32 +28,9 @@ public class GameController {
 	private Map<Integer, GameSign> signJoinGames = Maps.newHashMap();
 	private boolean shutdown = false;
 	private Queue<GamePlayer> waitingPlayers = new LinkedList<GamePlayer>();
-	private ItemStack exit;
-	private ItemStack kit;
-	private ItemStack options;
 	private int gameNumber = 0;
 	org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
 
-	public GameController() {
-		String kitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.kitMenuItem");
-		List<String> kitItemData = new LinkedList<String>(Arrays.asList(kitItem.split(" ")));
-		String kitName = "name:" + new Messaging.MessageFormatter().format("menu.kit-item-name");
-		kitItemData.add(kitName);
-		kit = ItemUtils.parseItem(kitItemData);
-		
-		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
-		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
-		String exitName = "name:" + new Messaging.MessageFormatter().format("menu.returntospawn-item-name");
-		exitItemData.add(exitName);
-		exit = ItemUtils.parseItem(exitItemData);
-		
-		String optionsItem = SkyWarsReloaded.get().getConfig().getString("gameItems.optionsItem");
-		List<String> optionsItemData = new LinkedList<String>(Arrays.asList(optionsItem.split(" ")));
-		String optionsName = "name:" + new Messaging.MessageFormatter().format("menu.options-item-name");
-		optionsItemData.add(optionsName);
-		options = ItemUtils.parseItem(optionsItemData);
-	}
-	
 	public Game findGame() {
 		ArrayList<Game> games = getGames();
 		for (int i = 0; i < getGames().size(); i++) {
@@ -88,7 +61,7 @@ public class GameController {
 	}
 	
 	private int findAvailableNumber() {
-		int maxNum = SkyWarsReloaded.get().getConfig().getInt("gameVariables.maxNumberOfGames");
+		int maxNum = SkyWarsReloaded.getCfg().getMaxNumberOfGames();
 		if (maxNum == -1) {
 			maxNum = Integer.MAX_VALUE;
 		}
@@ -251,7 +224,7 @@ public class GameController {
 	
 	@SuppressWarnings("deprecation")
 	private void setMaterial(GameStatus gs, Block attachedBlock) {
-		String material = SkyWarsReloaded.get().getConfig().getString("gameVariables.signJoinMaterial");
+		String material = SkyWarsReloaded.getCfg().getSignJoinMaterial();
 		Material sMat;
 		if (material.equalsIgnoreCase("wool")) {
 			sMat = Material.WOOL;
@@ -279,14 +252,14 @@ public class GameController {
 	public void deleteGame(final int gameNumber) {
 		final GameSign gs = signJoinGames.get(gameNumber);
 		gameNumbers.remove(gameNumber);
-		if (SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode.enabled")  && !shutdown) {
+		if (SkyWarsReloaded.getCfg().bungeeEnabled()  && !shutdown) {
 			SkyWarsReloaded.get().getServer().getScheduler().runTaskLater(SkyWarsReloaded.get(), new Runnable() {
 				public void run() {
 					createGame();
 				  }
 			}, 40);
 		}
-		if (SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode")  && !shutdown && gs != null) {
+		if (SkyWarsReloaded.getCfg().signJoinMode()  && !shutdown && gs != null) {
 			SkyWarsReloaded.get().getServer().getScheduler().runTaskLater(SkyWarsReloaded.get(), new Runnable() {
 				public void run() {
 					createGame(gameNumber, gs);
@@ -334,18 +307,6 @@ public class GameController {
 			if (!waitingPlayers.contains(gPlayer)) {
 				waitingPlayers.add(gPlayer);
 			}
-		}
-		
-		public ItemStack getKitItem() {
-			return kit;
-		}
-		
-		public ItemStack getOptionsItem() {
-			return options;
-		}
-		
-		public ItemStack getExitItem() {
-			return exit;
 		}
 		
 	private class GameSign {

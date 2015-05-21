@@ -20,11 +20,8 @@ public class TimeMenu {
 	private static final int menuSlotsPerRow = 9;
     private static final int menuSize = 36;
     private static final String timeMenuName = new Messaging.MessageFormatter().format("menu.time-menu-title");
-	private String voteForTimeSound;
     
     public TimeMenu(final GamePlayer gamePlayer) {
-
-    	voteForTimeSound = SkyWarsReloaded.get().getConfig().getString("gameSounds.timeVote");
     	
         int rowCount = menuSlotsPerRow;
         while (rowCount < 36 && rowCount < menuSize) {
@@ -116,7 +113,7 @@ public class TimeMenu {
         					.format("game.voted-for-time"));
                 		}
                 	}
-                	gamePlayer.getGame().playSound(voteForTimeSound);
+                	gamePlayer.getGame().playSound(SkyWarsReloaded.getCfg().getTimeVoteSound());
                 }
             }
         });

@@ -73,7 +73,7 @@ public class SpecShopMenu {
             List<String> loreList = Lists.newLinkedList();
             boolean canPurchase = false;
             
-            if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+            if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
         		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= shopItem.getCost() ? 'a' : 'c') + shopItem.getCost());
         	} else {
         		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= shopItem.getCost() ? 'a' : 'c') + shopItem.getCost());
@@ -105,8 +105,7 @@ public class SpecShopMenu {
     }
     
     public boolean canSpecPurchase(GamePlayer gamePlayer, ShopItem shopItem) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
             return shopItem.getCost() > 0 && (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= shopItem.getCost());
     	} else {
     		return shopItem.getCost() > 0 && (gamePlayer.getBalance() >= shopItem.getCost());
@@ -114,8 +113,7 @@ public class SpecShopMenu {
     }
     
     private void removeBalance(GamePlayer p, int x) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
     		SkyWarsReloaded.econ.withdrawPlayer(p.getP(), x);
     	} else {
     		p.setBalance(p.getBalance() - x);

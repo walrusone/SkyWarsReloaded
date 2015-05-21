@@ -94,7 +94,7 @@ public class KitMenu {
                     loreList.add(" ");
                 } else {
                     if (isPurchaseAble(kit)) {
-                    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+                    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
                     		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost() ? 'a' : 'c') + kit.getCost());
                     	} else {
                     		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getCost() ? 'a' : 'c') + kit.getCost());
@@ -142,8 +142,7 @@ public class KitMenu {
     }
 
     public boolean canPurchase(GamePlayer gamePlayer, GameKit kit) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
             return (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost());
     	} else {
     		return (gamePlayer.getBalance() >= kit.getCost());
@@ -151,8 +150,7 @@ public class KitMenu {
     }
     
     private void removeBalance(GamePlayer p, int x) {
-    	boolean economy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
-    	if (economy) {
+    	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
     		SkyWarsReloaded.econ.withdrawPlayer(SkyWarsReloaded.get().getServer().getOfflinePlayer(p.getUUID()), x);
     	} else {
     		p.setBalance(p.getBalance() - x);

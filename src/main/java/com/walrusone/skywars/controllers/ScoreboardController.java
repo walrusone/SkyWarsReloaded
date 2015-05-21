@@ -14,11 +14,9 @@ import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class ScoreboardController {
-
-	private boolean enabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.lobbyScoreBoardEnabled"); 
  
 	public void getScoreboard(Player player) {
-		if (player != null && enabled) {
+		if (player != null && SkyWarsReloaded.getCfg().LobbyScoreboardEnabeld()) {
 			try {
 				GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 				DecimalFormat df = new DecimalFormat("#.##");
@@ -33,7 +31,7 @@ public class ScoreboardController {
 		        Objective stats = board.registerNewObjective("stats", "dummy");
 		        stats.setDisplaySlot(DisplaySlot.SIDEBAR);
 		        stats.setDisplayName(new Messaging.MessageFormatter().format("scoreboard.title"));
-		        if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy")) {
+		        if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
 		            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) SkyWarsReloaded.econ.getBalance(player))).format("scoreboard.money")); 
 		            moneyScore.setScore(6);
 		        } else {

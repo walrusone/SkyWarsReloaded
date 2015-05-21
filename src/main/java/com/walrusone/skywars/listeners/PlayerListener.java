@@ -1,8 +1,6 @@
 package com.walrusone.skywars.listeners;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -52,90 +50,54 @@ import com.walrusone.skywars.menus.LobbyMainMenu;
 import com.walrusone.skywars.menus.MainMenu;
 import com.walrusone.skywars.menus.SpecGameMenu;
 import com.walrusone.skywars.utilities.BungeeUtil;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.ParticleEffect;
 
 public class PlayerListener implements Listener {
 	
-	private ItemStack spec;
-	private ItemStack join;
-	private ItemStack exit;
-	private ItemStack kit;
-	private ItemStack options;
-	private ItemStack lobbyMenu;
-	
-	public PlayerListener() {
-				
-		String specItem = SkyWarsReloaded.get().getConfig().getString("gameItems.spectateItem");
-		List<String> specItemData = new LinkedList<String>(Arrays.asList(specItem.split(" ")));
-		String name = "name:" + new Messaging.MessageFormatter().format("menu.spectategame-item-name");
-		specItemData.add(name);
-		spec = ItemUtils.parseItem(specItemData);
-		
-		String joinItem = SkyWarsReloaded.get().getConfig().getString("gameItems.joinItem");
-		List<String> joinItemData = new LinkedList<String>(Arrays.asList(joinItem.split(" ")));
-		String joinName = "name:" + new Messaging.MessageFormatter().format("menu.join-item-name");
-		joinItemData.add(joinName);
-		join = ItemUtils.parseItem(joinItemData);
-		
-		String kitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.kitMenuItem");
-		List<String> kitItemData = new LinkedList<String>(Arrays.asList(kitItem.split(" ")));
-		kit = ItemUtils.parseItem(kitItemData);
-		
-		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
-		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
-		exit = ItemUtils.parseItem(exitItemData);
-		
-		String optionsItem = SkyWarsReloaded.get().getConfig().getString("gameItems.optionsItem");
-		List<String> optionsItemData = new LinkedList<String>(Arrays.asList(optionsItem.split(" ")));
-		String optionsName = "name:" + new Messaging.MessageFormatter().format("menu.options-item-name");
-		optionsItemData.add(optionsName);
-		options = ItemUtils.parseItem(optionsItemData);
-		
-		String lobbyMenuItem = SkyWarsReloaded.get().getConfig().getString("gameItems.lobbyMenuItem");
-		List<String> lobbyMenuItemData = new LinkedList<String>(Arrays.asList(lobbyMenuItem.split(" ")));
-		String lobbyMenuName = "name:" + new Messaging.MessageFormatter().format("menu.lobbymenu-item-name");
-		lobbyMenuItemData.add(lobbyMenuName);
-		lobbyMenu = ItemUtils.parseItem(lobbyMenuItemData);
+	public void givePlayerItems(Player p) {
+		if (SkyWarsReloaded.getCfg().giveSpectateItem()) {
+			if (SkyWarsReloaded.perms.has(p, "swr.spectate")) {
+				p.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateItemSlot(), SkyWarsReloaded.getCfg().getSpectateItem());
+			}
+		}
+		if (SkyWarsReloaded.getCfg().giveJoinMenuItem()) {
+				p.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinMenuSlot(), SkyWarsReloaded.getCfg().getJoinItem());
+		}
+		if (SkyWarsReloaded.getCfg().giveLobbyMenuItem()) {
+			p.getInventory().setItem(SkyWarsReloaded.getCfg().getLobbyMenuSlot(), SkyWarsReloaded.getCfg().getLobbyMenuItem());
+		}
 	}
 	
 	@EventHandler
 	public void onTeleportEvent(PlayerTeleportEvent e) {
 		final Player player = e.getPlayer();
-		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-		String fromWorld = e.getFrom().getWorld().getName();
-		String toWorld = e.getTo().getWorld().getName();
-		if (!toWorld.equalsIgnoreCase(fromWorld) && world.equalsIgnoreCase(toWorld)) {
-			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-				public void run() {
-					if (player != null) {
-						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem")) {
-							if (SkyWarsReloaded.perms.has(player, "swr.spectate")) {
-								player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot"), spec);
-							}
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn != null) {
+			String world = spawn.getWorld().getName();
+			String fromWorld = e.getFrom().getWorld().getName();
+			String toWorld = e.getTo().getWorld().getName();
+			if (!toWorld.equalsIgnoreCase(fromWorld) && world.equalsIgnoreCase(toWorld)) {
+				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+					public void run() {
+						if (player != null) {
+							givePlayerItems(player);
+							SkyWarsReloaded.getScore().getScoreboard(player);
 						}
-						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem")) {
-								player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot"), join);
-						}
-						if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
-							player.getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
-						}
-						SkyWarsReloaded.getScore().getScoreboard(player);
 					}
-				}
-			}, 3);
-		} else if (!toWorld.equalsIgnoreCase(fromWorld) && !world.equalsIgnoreCase(toWorld)) {
-			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-				public void run() {
-					player.getInventory().remove(spec);
-					player.getInventory().remove(join);
-					player.getInventory().remove(lobbyMenu);
-					if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
-						player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+				}, 3);
+			} else if (!toWorld.equalsIgnoreCase(fromWorld) && !world.equalsIgnoreCase(toWorld)) {
+				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+					public void run() {
+						player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+						player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+						player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
+						if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
+							player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+						}
 					}
-				}
-			}, 3);
+				}, 3);
+			}
 		}
 	}
 	
@@ -210,71 +172,65 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onPlayerJoin(PlayerJoinEvent e) {
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
 		SkyWarsReloaded.getPC().addPlayer(e.getPlayer().getUniqueId());
 		if (SkyWarsReloaded.getInvC().playerExists(e.getPlayer().getUniqueId().toString())) {
 			SkyWarsReloaded.getInvC().restoreInventory(e.getPlayer());
-			String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-			int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
-			int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
-			int z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
-			float yaw = SkyWarsReloaded.get().getConfig().getInt("spawn.yaw");
-			float pitch = SkyWarsReloaded.get().getConfig().getInt("spawn.pitch");
-			Location spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world), x, y, z, yaw, pitch);
-			e.getPlayer().teleport(spawn);
-			final Player player = e.getPlayer();
-			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-				public void run() {
-					for (PotionEffect effect : player.getActivePotionEffects()) {
-				        player.removePotionEffect(effect.getType());
+			if (spawn != null) {
+				e.getPlayer().teleport(spawn);
+				final Player player = e.getPlayer();
+				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+					public void run() {
+						for (PotionEffect effect : player.getActivePotionEffects()) {
+					        player.removePotionEffect(effect.getType());
+						}
+						player.setFireTicks(0);
+						
+						player.setAllowFlight(false);
+						player.setFlying(false);
 					}
-					player.setFireTicks(0);
-					
-					player.setAllowFlight(false);
-					player.setFlying(false);
-				}
-			}, 5L);
+				}, 5L);
+			}
 		}
-		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.clearInventoryOnJoin")) {
+		if (SkyWarsReloaded.getCfg().clearInventoryOnJoin()) {
 			e.getPlayer().getInventory().clear();
+			e.getPlayer().getInventory().setHelmet(null);
+			e.getPlayer().getInventory().setChestplate(null);
+			e.getPlayer().getInventory().setLeggings(null);
+			e.getPlayer().getInventory().setBoots(null);
 		}
-		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.clearXPOnJoin")) {
+		if (SkyWarsReloaded.getCfg().clearXPOnJoin()) {
 			e.getPlayer().setExp(0);
 		}
-		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.clearPotionEffectsOnJoin")) {
+		if (SkyWarsReloaded.getCfg().clearPotionEffectsOnJoin()) {
 			for (PotionEffect effect : e.getPlayer().getActivePotionEffects()) {
 		        e.getPlayer().removePotionEffect(effect.getType());
 			}
 		}
 		final Player player = e.getPlayer();
-		if (SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode.enabled")) {
+		if (SkyWarsReloaded.getCfg().bungeeEnabled()) {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 				public void run() {
 					Game game = SkyWarsReloaded.getGC().getGame(1);
 					if (!game.isFull() && game.getState() == GameState.PREGAME) {
 						game.addPlayer(SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()));
 					} else {
-						BungeeUtil.connectToServer(player, SkyWarsReloaded.get().getConfig().getString("bungeeMode.lobbyServer"));
+						BungeeUtil.connectToServer(player, SkyWarsReloaded.getCfg().getLobbyServer());
 					}
 				}
 			}, 5L);
 		} else  {
-			String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-			if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem")) {
-					if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.spectate")) {
-						e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot"), spec);
+			if (spawn != null) {
+				String world = spawn.getWorld().getName();
+				if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
+					if (player != null) {
+						givePlayerItems(player);
 					}
+				} else {
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
 				}
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem")) {
-						e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot"), join);
-				}
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
-					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
-				}
-			} else {
-				e.getPlayer().getInventory().remove(spec);
-				e.getPlayer().getInventory().remove(join);
-				e.getPlayer().getInventory().remove(lobbyMenu);
 			}
 		} 
 	}
@@ -294,30 +250,26 @@ public class PlayerListener implements Listener {
 		        }
 		      }, 3);
 		} else {
-			String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-			if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem")) {
-					if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.spectate")) {
-						e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot"), spec);
+			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+			Player player = e.getPlayer();
+			if (spawn != null) {
+				String world = spawn.getWorld().getName();
+				if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
+					if (player != null) {
+						givePlayerItems(player);
 					}
+				} else {
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
 				}
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem")) {
-						e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot"), join);
-				}
-				if (SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem")) {
-					e.getPlayer().getInventory().setItem(SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot"), lobbyMenu);
-				}
-			} else {
-				e.getPlayer().getInventory().remove(spec);
-				e.getPlayer().getInventory().remove(join);
-				e.getPlayer().getInventory().remove(lobbyMenu);
 			}
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
+		final GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
 		if (gPlayer.inGame()) {
 			Game game = gPlayer.getGame();
 			gPlayer.getGame().deletePlayer(gPlayer, true, true);
@@ -329,7 +281,7 @@ public class PlayerListener implements Listener {
 			Game game = gPlayer.getSpecGame();
 			game.removeSpectator(gPlayer);
 		}
-		SkyWarsReloaded.getPC().removePlayer(e.getPlayer().getUniqueId());
+		SkyWarsReloaded.getPC().removePlayer(gPlayer.getUUID());
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -338,8 +290,7 @@ public class PlayerListener implements Listener {
 		if (gPlayer.inGame()) {
 			String message = e.getMessage();
 			boolean cAllow = false;
-			List<String> whitelist = SkyWarsReloaded.get().getConfig().getStringList("commandWhitelist");
-			for (String comm: whitelist) {
+			for (String comm: SkyWarsReloaded.getCfg().getCommandWhiteList()) {
 				if (comm.length() <= message.length()) {
 					String command = message.substring(0, comm.length());
 					if (command.equalsIgnoreCase(comm)) {
@@ -356,8 +307,7 @@ public class PlayerListener implements Listener {
 		} else if (gPlayer.isSpectating()) {
 			String message = e.getMessage();
 			boolean cAllow = false;
-			List<String> whitelist = SkyWarsReloaded.get().getConfig().getStringList("spectatorWhitelist");
-			for (String comm: whitelist) {
+			for (String comm: SkyWarsReloaded.getCfg().getSpectatorWhiteList()) {
 				if (comm.length() <= message.length()) {
 					String command = message.substring(0, comm.length());
 					if (command.equalsIgnoreCase(comm)) {
@@ -381,24 +331,28 @@ public class PlayerListener implements Listener {
         GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
              
         if (gPlayer.inGame()) {
-            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
+            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getEnchantments().keySet()))) {
         		if (gPlayer.getGame().getState() == GameState.PREGAME) {
         			if (!gPlayer.hasKitSelected()) {
-        				new KitMenu(gPlayer);
+        				if (SkyWarsReloaded.getCfg().kitsEnabled()) {
+        					new KitMenu(gPlayer);
+        				}
         				e.setCancelled(true);
         			} else {
         				player.sendMessage(new Messaging.MessageFormatter().format("error.already-has-kit"));
         			}
         		}
-            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {			
+            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet()))) {			
             	if (gPlayer.getGame().getState() == GameState.PREGAME) {	
             		e.setCancelled(true);
 					gPlayer.getGame().deletePlayer(gPlayer, true, false);
             	}
-            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
+            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getOptionsItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getOptionsItem().getEnchantments().keySet()))) {
 				if (gPlayer.getGame().getState() == GameState.PREGAME) {
 					e.setCancelled(true);
-					new MainMenu(gPlayer);
+					if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+						new MainMenu(gPlayer);
+					}
 				}
             } else {
             	if (gPlayer.getGame().getState() == GameState.PREGAME) {
@@ -409,67 +363,60 @@ public class PlayerListener implements Listener {
 
         if (!gPlayer.inGame()) {
         	if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
-        		boolean pressure = SkyWarsReloaded.get().getConfig().getBoolean("pressurePlateJoin");
-        		if (pressure) {
-        			String spawnWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-           			if (spawnWorld != null) {
-           				boolean signJoinMode = SkyWarsReloaded.get().getConfig().getBoolean("signJoinMode");
-           		  		if (!signJoinMode) {
-           	            	String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-           	            	if (w != null) {
-           	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
-           	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
-           	                        Game game = SkyWarsReloaded.getGC().findGame();
-           	                        if (game != null) {
-           	                            game.addPlayer(gPlayer);
-           	                        } else {
-           	                        	SkyWarsReloaded.getGC().addToQueue(gPlayer);
-           	                        	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
-           	                        }
-           	                    }
-           	            	} 
+        		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
+        			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+        			if (spawn != null) {
+        				if (!SkyWarsReloaded.getCfg().signJoinMode()) {
+       	                	World world = spawn.getWorld(); 
+       	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
+       	                        Game game = SkyWarsReloaded.getGC().findGame();
+       	                        if (game != null) {
+       	                            game.addPlayer(gPlayer);
+       	                        } else {
+       	                        	SkyWarsReloaded.getGC().addToQueue(gPlayer);
+       	                        	gPlayer.getP().sendMessage(new Messaging.MessageFormatter().format("game.no-game-available"));
+       	                        }
+       	                    }
            	    		} else {
-           	    			String w = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-           	            	if (w != null) {
-           	                	World world = SkyWarsReloaded.get().getServer().getWorld(w); 
-           	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
-           	                		Game game = findGame();
-           	        	    		int i = 0;
-           	        	    		while (i < 3) {
-           	                    		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
-           	            	                game.addPlayer(gPlayer);
-           	            	                break;
-           	            	    		} else {
-           	            	    			i++;
-           	            	    			game = findGame();
-           	            	    		}
-           	        	    		}
-           	                    }
-           	            	}
+           	    			World world = spawn.getWorld();
+       	                    if (!gPlayer.inGame() && player.getLocation().getWorld().equals(world)) {
+       	                		Game game = findGame();
+       	        	    		int i = 0;
+       	        	    		while (i < 3) {
+       	                    		if (game != null && game.getState() == GameState.PREGAME && !game.isFull()) {
+       	            	                game.addPlayer(gPlayer);
+       	            	                break;
+       	            	    		} else {
+       	            	    			i++;
+       	            	    			game = findGame();
+       	            	    		}
+       	        	    		}
+       	                    }
            	        	}
-           			} else {
+        			} else {
            				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
            				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
            			}
              	} 
         	}
                    	
-            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
-         		boolean specEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.allowSpectating");
-         		if (specEnabled) {
+            if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet()))) {
+         		if (SkyWarsReloaded.getCfg().spectatingEnabled()) {
     					if (!gPlayer.isSpectating()) {
     						e.setCancelled(true);
     						new SpecGameMenu(gPlayer);
     					} 
     			}
-         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
+         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getJoinItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getJoinItem().getEnchantments().keySet()))) {
     			if (!gPlayer.isSpectating()) {
     					e.setCancelled(true);
     					new JoinMenu(gPlayer);
     			}
-         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
+         	} else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getEnchantments().keySet()))) {
     				e.setCancelled(true);
-    				new LobbyMainMenu(gPlayer);
+    				if (SkyWarsReloaded.getCfg().lobbyMenuEnabled()) {
+        				new LobbyMainMenu(gPlayer);
+    				}
          	}
         }
         
@@ -493,17 +440,17 @@ public class PlayerListener implements Listener {
 		Player p = e.getPlayer();
 		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(p.getUniqueId());
 		ItemStack item = e.getItemDrop().getItemStack();
- 	    if ((item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
+ 	    if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
-     	} else if ((item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {
+     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
-     	} else if ((item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
+     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
-     	} else if ((item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
+     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getJoinItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getJoinItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
-		} else if ((item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
+		} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getOptionsItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getOptionsItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
-		} else if ((item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
+		} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getEnchantments().keySet()))) {
 			e.setCancelled(true);
 		}
 		if (gPlayer.inGame()) {
@@ -520,17 +467,17 @@ public class PlayerListener implements Listener {
 	public void onInventoryClick(InventoryClickEvent e) {
 		ItemStack item = e.getCurrentItem();
 		if (item != null) {
-     	    if ((item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
+     	    if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
-         	} else if ((item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {
+         	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
-	     	} else if ((item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
+	     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
-	     	} else if ((item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
+	     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getJoinItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getJoinItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
-			} else if ((item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
+			} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getOptionsItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getOptionsItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
-			} else if ((item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
+			} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getEnchantments().keySet()))) {
 				e.setCancelled(true);
 			}
 		}
@@ -549,7 +496,7 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
-		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.noFallDamage")) {
+		if (SkyWarsReloaded.getCfg().FallDamageDisabled()) {
 			if (e.getEntity() instanceof Player && e.getCause().equals(DamageCause.FALL)) {
 				Player player = (Player) e.getEntity();
 				GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
@@ -559,12 +506,15 @@ public class PlayerListener implements Listener {
 			}
 		} 
 		
-		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.noFallDamageLobby")) {
+		if (SkyWarsReloaded.getCfg().LobbyFallDamageDisabled()) {
 			if (e.getEntity() instanceof Player && e.getCause().equals(DamageCause.FALL)) {
 				Player player = (Player) e.getEntity();
-				String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-				if (player.getWorld().getName().equalsIgnoreCase(world)) {
-					e.setCancelled(true);
+				Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+				if (spawn != null) {
+					String world = spawn.getWorld().getName();
+					if (player.getWorld().getName().equalsIgnoreCase(world)) {
+						e.setCancelled(true);
+					}
 				}
 			}
 		} 
@@ -593,27 +543,31 @@ public class PlayerListener implements Listener {
 		final Location loc = player.getLocation();
 		final GamePlayer target = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 		Entity ent = e.getEntity();
-		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-		if(player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
-			List<ItemStack> drops = e.getDrops();
-			ListIterator<ItemStack> litr = drops.listIterator();
-			while(litr.hasNext()){
-	 	            ItemStack item = litr.next();
-	     	    if ((item.getData().getItemType().equals(kit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(kit.getEnchantments().keySet()))) {
-					litr.remove();
-	         	} else if ((item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet()))) {
-	         		litr.remove();
-		     	} else if ((item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet()))) {
-		     		litr.remove();
-		     	} else if ((item.getData().getItemType().equals(join.getData().getItemType()) &&  item.getEnchantments().keySet().equals(join.getEnchantments().keySet()))) {
-		     		litr.remove();
-				} else if ((item.getData().getItemType().equals(options.getData().getItemType()) &&  item.getEnchantments().keySet().equals(options.getEnchantments().keySet()))) {
-					litr.remove();
-				} else if ((item.getData().getItemType().equals(lobbyMenu.getData().getItemType()) &&  item.getEnchantments().keySet().equals(lobbyMenu.getEnchantments().keySet()))) {
-					litr.remove();
-				}
-	        }
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn != null) {
+			String world = spawn.getWorld().getName();
+			if(player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
+				List<ItemStack> drops = e.getDrops();
+				ListIterator<ItemStack> litr = drops.listIterator();
+				while(litr.hasNext()){
+		 	            ItemStack item = litr.next();
+		     	    if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getKitMenuItem().getEnchantments().keySet()))) {
+						litr.remove();
+		         	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet()))) {
+		         		litr.remove();
+			     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet()))) {
+			     		litr.remove();
+			     	} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getJoinItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getJoinItem().getEnchantments().keySet()))) {
+			     		litr.remove();
+					} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getOptionsItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getOptionsItem().getEnchantments().keySet()))) {
+						litr.remove();
+					} else if ((item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getLobbyMenuItem().getEnchantments().keySet()))) {
+						litr.remove();
+					}
+		        }
+			}
 		}
+
 		DamageCause damageCause = DamageCause.CUSTOM;
 		if (ent.getLastDamageCause() != null) {
 			damageCause = ent.getLastDamageCause().getCause();
@@ -641,8 +595,8 @@ public class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event){
-    	if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.addScorePrefix")) {
-    		if (SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalChat")) {
+    	if (SkyWarsReloaded.getCfg().addScorePrefix()) {
+    		if (SkyWarsReloaded.getCfg().useExternalChat()) {
     			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(event.getPlayer().getUniqueId());
     			int scoreValue = gPlayer.getScore();
             	String score;

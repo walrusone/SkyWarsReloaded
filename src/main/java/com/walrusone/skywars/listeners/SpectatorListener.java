@@ -1,10 +1,7 @@
 package com.walrusone.skywars.listeners;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.WordUtils;
@@ -54,33 +51,10 @@ import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.menus.SpecPlayerMenu;
 import com.walrusone.skywars.menus.SpecShopMenu;
-import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class SpectatorListener implements Listener {
 
-	private ItemStack exit;
-	private ItemStack specShopItem;
-	private ItemStack spec;
-	
-	public SpectatorListener() {
-		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
-		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
-		String exitName = "name:" + new Messaging.MessageFormatter().format("menu.returntospawn-item-name");
-		exitItemData.add(exitName);
-		exit = ItemUtils.parseItem(exitItemData);
-		String specShItem = SkyWarsReloaded.get().getConfig().getString("gameItems.specStoreItem");
-		List<String> specShopItemData = new LinkedList<String>(Arrays.asList(specShItem.split(" ")));
-		String specShopName = "name:" + new Messaging.MessageFormatter().format("menu.spectateshop-item-name");
-		specShopItemData.add(specShopName);
-		specShopItem = ItemUtils.parseItem(specShopItemData);
-		String specItem = SkyWarsReloaded.get().getConfig().getString("gameItems.spectateItem");
-		List<String> specItemData = new LinkedList<String>(Arrays.asList(specItem.split(" ")));
-		String name = "name:" + new Messaging.MessageFormatter().format("menu.spectate-item-name");
-		specItemData.add(name);
-		spec = ItemUtils.parseItem(specItemData);
-	}
-	
 	@EventHandler(ignoreCancelled = true)
 	protected void onChatSend(AsyncPlayerChatEvent e) {
 		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
@@ -357,15 +331,15 @@ public class SpectatorListener implements Listener {
 		if (player != null) {
 			ItemStack item = player.getItemInHand();
 			if (item != null) {
-				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(spec.getData().getItemType()) &&  item.getEnchantments().keySet().equals(spec.getEnchantments().keySet())))) {
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet())))) {
 					e.setCancelled(true);
 					new SpecPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 				}
-				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(specShopItem.getData().getItemType()) &&  item.getEnchantments().keySet().equals(specShopItem.getEnchantments().keySet())))) {
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpecStoreMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpecStoreMenuItem().getEnchantments().keySet())))) {
 					e.setCancelled(true);
 					new SpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 				}
-				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(exit.getData().getItemType()) &&  item.getEnchantments().keySet().equals(exit.getEnchantments().keySet())))) {
+				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet())))) {
 					e.setCancelled(true);
 					GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
 					if (gPlayer.inGame()) {

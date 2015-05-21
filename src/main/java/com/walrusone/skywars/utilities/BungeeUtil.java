@@ -28,7 +28,7 @@ public class BungeeUtil {
 
 	public static void sendSignUpdateRequest(Game game) {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
-		String name = SkyWarsReloaded.get().getConfig().getString("bungeeMode.bungeeServerName");
+		String name = SkyWarsReloaded.getCfg().getBungeeServer();
 		try {
 			out.writeUTF("Forward");
 			out.writeUTF("ALL");

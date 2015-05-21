@@ -27,12 +27,7 @@ public class SaveMapCmd extends BaseCmd {
 			if (world.getName().equalsIgnoreCase(worldName)) {
 				World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 				for (Player player: editWorld.getPlayers()) {
-					String world2 = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-					int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
-					int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
-					int z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
-					Location spawn;
-					spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world2), x, y, z);
+					Location spawn = SkyWarsReloaded.getCfg().getSpawn();
 					player.teleport(spawn);
 				}
 				editWorld.save();

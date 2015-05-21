@@ -28,7 +28,7 @@ public class PlayerController {
             SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 		        public void run() {
 		        	String world = gamePlayer.getP().getWorld().getName();
-		        	String lobbyWorld = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		        	String lobbyWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld().getName();
 		    		if (world.equalsIgnoreCase(lobbyWorld)) {
 			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
 		    		}

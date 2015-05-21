@@ -90,6 +90,12 @@ error:
   no-perm-spectating: '&4You cannot use that command while spectating!'
   stay-inside-game: '&4Spectators must stay inside game area!'
   only-click-sign: '&4You must use a join sign to join a game!'
+  lobby-only-command: '&4You must be in the lobby world to use this command!'
+  no-spawn-set: '&4You must have a lobby spawn set to use this command!'
+  particle-shop-disabled: '&4Particle Shop is Disabled!'
+  trail-shop-disabled: '&4Trail Effects Shop is Disabled!'
+  permanent-kitshop-disabled: '&4Permanent Kit Shop is Disabled!'
+  menu-disabled: '&4This Menu has been Disabled'
 spectate:
   teleport-from-block: '&4You were teleported away from a placed block!'
 signs:

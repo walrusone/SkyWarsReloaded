@@ -1,6 +1,7 @@
 package com.walrusone.skywars.commands;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
+
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.menus.BuyEffectMenu;
@@ -19,20 +20,29 @@ public class ParticleShopCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		boolean enabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.purchaseParticlesEnabled");
-		if (enabled) {
-			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
-			if (!gPlayer.inGame()) {
-					new BuyEffectMenu(gPlayer);
-					return true;
+		if (SkyWarsReloaded.getCfg().purchaseParticlesEnabled()) {
+			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+			if (spawn != null) {
+				if(SkyWarsReloaded.getCfg().getSpawn().getWorld().getName().equalsIgnoreCase(player.getWorld().getName())) {
+					GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
+					if (!gPlayer.inGame()) {
+							new BuyEffectMenu(gPlayer);
+							return true;
+					} else {
+						sender.sendMessage(new Messaging.MessageFormatter().format("error.shop-not-available"));
+						return true;
+					}
+				} else {
+					sender.sendMessage(new Messaging.MessageFormatter().format("error.lobby-only-command"));	
+				}
 			} else {
-				sender.sendMessage(new Messaging.MessageFormatter().format("error.shop-not-available"));
-				return true;
+				sender.sendMessage(new Messaging.MessageFormatter().format("error.no-spawn-set"));
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "Particle Shop is disabled!");
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.particle-shop-disabled"));
 			return true;
 		}
+		return true;
 	}
 
 }
