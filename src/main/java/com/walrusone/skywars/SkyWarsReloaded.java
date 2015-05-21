@@ -52,6 +52,7 @@ import com.walrusone.skywars.listeners.SpectatorListener;
 import com.walrusone.skywars.runnables.CheckForMinPlayers;
 import com.walrusone.skywars.runnables.SavePlayers;
 import com.walrusone.skywars.utilities.BungeeUtil;
+import com.walrusone.skywars.utilities.Config;
 import com.walrusone.skywars.utilities.LoggerFilter;
 import com.walrusone.skywars.utilities.Messaging;
 import com.walrusone.skywars.utilities.SaveDefaultMaps;
@@ -59,6 +60,7 @@ import com.walrusone.skywars.utilities.SaveDefaultMaps;
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
 	private static SkyWarsReloaded instance;
+	private static Config con;
     private GameController gc;
     private MapController mc;
     private WorldController wc;
@@ -91,6 +93,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         saveDefaultConfig();
         saveConfig();
         reloadConfig();
+        
+        con = new Config(getConfig());
         
      	bungeeMode = getConfig().getBoolean("bungeeMode.enabled");
     	if (bungeeMode) {
@@ -258,6 +262,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	finishedStartup = false;
 		reloadConfig();
 		saveConfig();
+		con = new Config(getConfig());
         gc.shutdown();
         invc.save();
         messaging = null;
@@ -328,6 +333,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public boolean loadingEnded() {
     	return finishedStartup;
+    }
+    
+    public static Config getCon() {
+    	return con;
     }
     
     public static SkyWarsReloaded get() {
