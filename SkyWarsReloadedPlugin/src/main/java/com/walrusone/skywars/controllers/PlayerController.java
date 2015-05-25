@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.google.common.collect.Maps;
@@ -25,15 +26,21 @@ public class PlayerController {
         if (!this.onlinePlayers.containsKey(uuid)) {
             final GamePlayer gamePlayer = new GamePlayer(uuid);
             onlinePlayers.put(uuid, gamePlayer);
-            SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-		        public void run() {
-		        	String world = gamePlayer.getP().getWorld().getName();
-		        	String lobbyWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld().getName();
-		    		if (world.equalsIgnoreCase(lobbyWorld)) {
-			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
-		    		}
-			   }
-            }, 5);
+            if (SkyWarsReloaded.getCfg().LobbyScoreboardEnabeld()) {
+                SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+    		        public void run() {
+    		        	String world = gamePlayer.getP().getWorld().getName();
+    		        	Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+    		        	if (spawn != null) {
+        		        	String lobbyWorld = spawn.getWorld().getName();
+        		    		if (world.equalsIgnoreCase(lobbyWorld)) {
+        			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
+        		    		}
+    		        	}
+
+    			   }
+                }, 5);
+            }
         }
     }
 	

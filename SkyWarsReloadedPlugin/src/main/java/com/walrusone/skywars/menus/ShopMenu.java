@@ -31,6 +31,7 @@ public class ShopMenu {
         }
 
         SkyWarsReloaded.getIC().create(gamePlayer.getP(), menuName, rowCount, new IconMenu.OptionClickEventHandler() {
+			@SuppressWarnings("deprecation")
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 if (gamePlayer.inGame() && (gamePlayer.getGame().getState() == GameState.PREGAME || gamePlayer.getGame().getState() == GameState.PLAYING)) {

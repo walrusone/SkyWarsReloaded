@@ -1,6 +1,7 @@
 package com.walrusone.skywars.commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywars.SkyWarsReloaded;
@@ -23,7 +24,12 @@ public class JoinGameCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		String lobbyWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld().getName();
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn == null) {
+			sender.sendMessage(ChatColor.RED + "YOU MUST SET SPAWN BEFORE YOU CAN JOIN A GAME");
+			return true;
+		}
+		String lobbyWorld = spawn.getWorld().getName();
 		if (lobbyWorld != null) {
 			String world = ((Player) sender).getWorld().getName();
 			if (!world.equalsIgnoreCase(lobbyWorld)) {

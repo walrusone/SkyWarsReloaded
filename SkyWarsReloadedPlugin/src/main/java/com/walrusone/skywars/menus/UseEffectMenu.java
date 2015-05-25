@@ -81,7 +81,7 @@ public class UseEffectMenu {
             		gamePlayer.getP().closeInventory();
                     return;
             	} else {
-            		gamePlayer.setEffect(name);
+            		gamePlayer.setEffect(effect.getEffect());
                 	gamePlayer.getP().closeInventory();
                 	if (gamePlayer.getGame().getState() == GameState.PREGAME) {
                     	SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
@@ -128,7 +128,7 @@ public class UseEffectMenu {
 	                    gamePlayer.getP(),
 	                    36,
 	                    new ItemStack(Material.GLASS, 1),
-	                    new Messaging.MessageFormatter().format("effect.no-effect"),
+	                    new Messaging.MessageFormatter().format("effects.no-effect"),
 	                    loreList2.toArray(new String[loreList2.size()])); 
         
         List<String> loreList5 = Lists.newLinkedList();

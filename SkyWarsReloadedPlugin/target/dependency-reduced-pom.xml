@@ -30,6 +30,7 @@
         </includes>
       </resource>
     </resources>
+    <finalName>SkyWarsReloaded</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>

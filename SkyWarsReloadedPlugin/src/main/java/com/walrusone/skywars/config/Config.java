@@ -198,10 +198,14 @@ public class Config {
 		
 		String kitItemName = SkyWarsReloaded.get().getConfig().getString("gameItems.kitMenuItem");
 		List<String> kitItemData = new LinkedList<String>(Arrays.asList(kitItemName.split(" ")));
+		String kitName = "name:" + new Messaging.MessageFormatter().format("menu.kit-item-name");
+		kitItemData.add(kitName);
 		kitMenuItem = ItemUtils.parseItem(kitItemData);
 		
 		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
 		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
+		String exitName = "name:" + new Messaging.MessageFormatter().format("menu.returntospawn-item-name");
+		kitItemData.add(exitName);
 		exitGameItem = ItemUtils.parseItem(exitItemData);
 		
 		String optionsItemName = SkyWarsReloaded.get().getConfig().getString("gameItems.optionsItem");

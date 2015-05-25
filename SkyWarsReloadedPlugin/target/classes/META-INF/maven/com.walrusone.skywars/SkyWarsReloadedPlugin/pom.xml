@@ -9,6 +9,7 @@
   <version>V2.6</version>
 
    <build>
+       <finalName>SkyWarsReloaded</finalName>
        <resources>
         <resource>
         <targetPath>.</targetPath>
@@ -74,6 +75,22 @@
             <groupId>com.walrusone.skywars</groupId>
             <artifactId>skywarsreloadedplugin-api</artifactId>
             <version>API</version>
+            <scope>compile</scope>
+            <type>jar</type>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.walrusone.skywars</groupId>
+            <artifactId>skywarsreloadedplugin-v1_7_R1</artifactId>
+            <version>v1_7_R1</version>
+            <scope>compile</scope>
+            <type>jar</type>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.walrusone.skywars</groupId>
+            <artifactId>skywarsreloadedplugin-v1_7_R2</artifactId>
+            <version>v1_7_R2</version>
             <scope>compile</scope>
             <type>jar</type>
             <optional>true</optional>

@@ -42,7 +42,8 @@ public class SpecPlayerMenu {
             @Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
             	String name = ChatColor.stripColor(event.getName());
-                Player player = SkyWarsReloaded.get().getServer().getPlayer(name);
+                @SuppressWarnings("deprecation")
+				Player player = SkyWarsReloaded.get().getServer().getPlayer(name);
                 if (player == null) {
                     return;
                 }
