@@ -7,8 +7,6 @@ import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.ShopItem;
 
-import net.milkbowl.vault.item.Items;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -51,7 +49,7 @@ public class ShopController {
                     
                     
                     if (itemStack != null) {
-                        shopMap.put(ChatColor.stripColor(Items.itemByStack(itemStack).getName().toString()), new ShopItem(itemStack, cost));
+                        shopMap.put(ChatColor.stripColor(SkyWarsReloaded.getNMS().getName(itemStack)), new ShopItem(itemStack, cost));
                     }
                 }
             }
@@ -78,7 +76,7 @@ public class ShopController {
                     
                     
                     if (itemStack != null) {
-                        specShopMap.put(Items.itemByStack(itemStack).getName().toString(), new ShopItem(itemStack, cost));
+                        specShopMap.put(SkyWarsReloaded.getNMS().getName(itemStack), new ShopItem(itemStack, cost));
                     }
                 }
             }

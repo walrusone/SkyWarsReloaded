@@ -17,8 +17,6 @@ import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.ItemUtils;
 import com.walrusone.skywars.utilities.Messaging;
 
-import net.milkbowl.vault.item.Items;
-
 public class GameKit {
 
     private String name;
@@ -106,7 +104,7 @@ public class GameKit {
             	if (ItemUtils.isEnchanted(itemStack)) {
             		enchanted = "Enchanted ";
             	}
-    			lores.add(ChatColor.YELLOW + enchanted + ChatColor.WHITE + "" + Items.itemByStack(itemStack).getName());
+    			lores.add(ChatColor.YELLOW + enchanted + ChatColor.WHITE + "" + SkyWarsReloaded.getNMS().getName(itemStack));
             }
             lores.add(ChatColor.DARK_BLUE + " ");
             String potions = new Messaging.MessageFormatter().format("kits.potion-effects");

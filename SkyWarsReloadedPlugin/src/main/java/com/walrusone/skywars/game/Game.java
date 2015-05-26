@@ -1020,7 +1020,7 @@ public class Game {
 	public void launchFireworkDisplay(final World w, final Location loc) {
 	    Firework fw = (Firework) w.spawn(loc.clone().add(new Vector(getRandomNum(5, -5), 1, getRandomNum(5, -5))), Firework.class);
 	    FireworkMeta meta = fw.getFireworkMeta();
-	    FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(getRandomColor(),getRandomColor(), getRandomColor(), getRandomColor()).withFade(getRandomColor()).with(getRandomType()).trail(true).build();
+	    FireworkEffect effect = SkyWarsReloaded.getNMS().getFireworkEffect(getRandomColor(),getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomType());
 	    meta.addEffect(effect);
 	    meta.setPower(getRandomNum(4, 1));
 	    fw.setFireworkMeta(meta);

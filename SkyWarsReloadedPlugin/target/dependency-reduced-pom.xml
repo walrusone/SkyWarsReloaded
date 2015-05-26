@@ -70,7 +70,7 @@
       <artifactId>craftbukkit</artifactId>
       <version>LATEST</version>
       <scope>system</scope>
-      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded\SkyWarsReloadedPlugin/lib/craftbukkit-1.8.6.jar</systemPath>
+      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded\SkyWarsReloadedPlugin/lib/craftbukkit-1.7.9.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.onarandombox.MultiverseCore</groupId>

@@ -11,11 +11,16 @@ import net.minecraft.server.v1_8_R2.PlayerConnection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.World;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.craftbukkit.v1_8_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.walrusone.skywars.api.NMS;
 
@@ -44,5 +49,13 @@ public class NMSHandler implements NMS {
 			PlayerConnection connect = target.playerConnection;
 			connect.sendPacket(particles);
 		}
+	}
+	
+	public String getName(ItemStack stack) {
+		return CraftItemStack.asNMSCopy(stack).getName();
+	}
+	
+	public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, Type type) {
+		return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
 	}
 }
