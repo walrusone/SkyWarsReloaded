@@ -27,6 +27,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -152,7 +153,7 @@ public class Game {
 		int spawn = getAvailableSpawn();
 		location = new Location(mapWorld, gameMap.getSpawns().get(spawn).getX()+0.5, gameMap.getSpawns().get(spawn).getY(), gameMap.getSpawns().get(spawn).getZ()+0.5);
 		availableSpawns.put(spawn,  gPlayer);
-		gPlayer.getP().teleport(location);
+		gPlayer.getP().teleport(location, TeleportCause.PLUGIN);
 		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 			public void run() {
 				if (gPlayer.getP() != null) {
@@ -370,7 +371,6 @@ public class Game {
 			setJump();
 		}
 		if (SkyWarsReloaded.getCfg().weatherVoteEnabled()) {
-			SkyWarsReloaded.getMV().getMVWorldManager().getMVWorld(mapWorld).setEnableWeather(true);
 			setWeather();
 		}
 	}
@@ -393,7 +393,7 @@ public class Game {
 		}
 		for (Player player: mapWorld.getPlayers()) {
 			if (player != null) {
-				player.teleport(SkyWarsReloaded.getCfg().getSpawn());
+				player.teleport(SkyWarsReloaded.getCfg().getSpawn(), TeleportCause.PLUGIN);
 			}
 		}
 		
@@ -482,7 +482,7 @@ public class Game {
 		}
 		if (SkyWarsReloaded.getCfg().bungeeEnabled() && !shutdown && !hardQuit) {
 			if (gplayer.getP() != null) {
-				gplayer.getP().teleport(SkyWarsReloaded.getCfg().getSpawn());
+				gplayer.getP().teleport(SkyWarsReloaded.getCfg().getSpawn(), TeleportCause.PLUGIN);
 				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 					public void run() {
 						SkyWarsReloaded.getInvC().restoreInventory(gplayer.getP());
@@ -492,7 +492,7 @@ public class Game {
 			}
 		} else {
 			if (gplayer.getP() != null) {
-				gplayer.getP().teleport(SkyWarsReloaded.getCfg().getSpawn());
+				gplayer.getP().teleport(SkyWarsReloaded.getCfg().getSpawn(), TeleportCause.PLUGIN);
 				if (!shutdown) {
 					SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 						public void run() {
@@ -616,7 +616,7 @@ public class Game {
 	}
 	
 	public void deleteGame() {
-		SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(mapName + "_" + gameNumber);
+		SkyWarsReloaded.getWC().deleteWorld(mapName + "_" + gameNumber);
 		deleteWorldGuardFolder(mapName + "_" + gameNumber);
 		SkyWarsReloaded.getGC().deleteGame(gameNumber);
 	}

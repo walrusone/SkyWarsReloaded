@@ -4,10 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.bukkit.World.Environment;
-
 import com.google.common.collect.Maps;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.game.GameMap;
 
@@ -43,15 +40,18 @@ public class MapController {
 		File target = new File(rootDirectory, name);
 		wc.copyWorld(source, target);
 		boolean mapExists = false;
-		for (MultiverseWorld mvworld: SkyWarsReloaded.getMV().getMVWorldManager().getMVWorlds()) {
-			if (mvworld.getName().equalsIgnoreCase(name)) {
-				mapExists = true;
-			}
+		if(target.isDirectory()) {			 
+			if(target.list().length > 0) {
+	 			mapExists = true;
+			}	 
 		}
 		if (mapExists) {
-			SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(name);
+			SkyWarsReloaded.getWC().deleteWorld(name);
 		}
-		boolean loaded = SkyWarsReloaded.getMV().getMVWorldManager().addWorld(name, Environment.NORMAL, null, null, null, "VoidWorld", false);
+		
+		wc.copyWorld(source, target);
+		
+		boolean loaded = SkyWarsReloaded.getWC().loadWorld(name);
 		if(loaded) {
 		  GameMap gameMap = new GameMap(name, source);
 		  	if (gameMap.containsSpawns()) {
@@ -71,7 +71,7 @@ public class MapController {
 			SkyWarsReloaded.get().getLogger().info("Could Not Load Map: " + name);
 			result = false;
 		}
-		SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(name);
+		SkyWarsReloaded.getWC().deleteWorld(name);
 		return result;
 	}
 	

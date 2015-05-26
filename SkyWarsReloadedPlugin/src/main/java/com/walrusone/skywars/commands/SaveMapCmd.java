@@ -5,6 +5,7 @@ import java.io.File;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.Messaging;
@@ -28,10 +29,10 @@ public class SaveMapCmd extends BaseCmd {
 				World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 				for (Player player: editWorld.getPlayers()) {
 					Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-					player.teleport(spawn);
+					player.teleport(spawn, TeleportCause.PLUGIN);
 				}
 				editWorld.save();
-				SkyWarsReloaded.getMV().getMVWorldManager().unloadWorld(worldName);
+				SkyWarsReloaded.getWC().unloadWorld(worldName);
 				File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
 				File target = new File (dataDirectory, worldName);
 				SkyWarsReloaded.getWC().deleteWorld(target);

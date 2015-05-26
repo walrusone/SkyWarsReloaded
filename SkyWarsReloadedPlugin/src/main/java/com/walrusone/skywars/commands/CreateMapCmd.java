@@ -3,6 +3,7 @@ package com.walrusone.skywars.commands;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.Messaging;
@@ -32,7 +33,7 @@ public class CreateMapCmd extends BaseCmd {
 			sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.created"));
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
-				player.teleport(new Location(newWorld, 0, 21, 0));
+				player.teleport(new Location(newWorld, 0, 21, 0), TeleportCause.PLUGIN);
 			}
 			return true;
 		} else {

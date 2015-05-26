@@ -2,12 +2,12 @@ package com.walrusone.skywars.commands;
 
 import java.io.File;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.Messaging;
 
@@ -36,26 +36,34 @@ public class EditMapCmd extends BaseCmd {
 						SkyWarsReloaded.getMC().removeMap(worldName);
 					}
 					World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-					player.teleport(new Location(editWorld, 0, 21, 0));
+					player.teleport(new Location(editWorld, 0, 21, 0), TeleportCause.PLUGIN);
 				}
 			} 
 			if (!alreadyLoaded) {
 				File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
 				File source = new File (dataDirectory, worldName);
 				File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
-				SkyWarsReloaded.getWC().copyWorld(source, target);
-				for (MultiverseWorld mvworld: SkyWarsReloaded.getMV().getMVWorldManager().getMVWorlds()) {
-					if (mvworld.getName().equalsIgnoreCase(worldName)) {
-						SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(worldName);
-					}
+				boolean mapExists = false;
+				if(target.isDirectory()) {			 
+					if(target.list().length > 0) {
+			 			mapExists = true;
+					}	 
 				}
-				SkyWarsReloaded.getMV().getMVWorldManager().addWorld(worldName, Environment.NORMAL, null, null, null, "VoidWorld", false);
-				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-					public void run() {
-						World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-						player.teleport(new Location(editWorld, 0, 21, 0));
-					}
-				}, 20);
+				if (mapExists) {
+					SkyWarsReloaded.getWC().deleteWorld(worldName);
+				}
+				SkyWarsReloaded.getWC().copyWorld(source, target);
+				boolean loaded = SkyWarsReloaded.getWC().loadWorld(worldName);
+				if (loaded) {
+					SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+						public void run() {
+							World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
+							player.teleport(new Location(editWorld, 0, 21, 0), TeleportCause.PLUGIN);
+						}
+					}, 20);
+				} else {
+					player.sendMessage(ChatColor.RED + "WORLD FAILED TO LOADED");
+				}
 			}
 			return true;
 		} else {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -54,7 +55,7 @@ public class SpecPlayerMenu {
                 if (player != null) {
 	                if (SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).inGame()) {
 	                	if (gamePlayer.getP().getWorld().getName().equalsIgnoreCase(player.getWorld().getName())) {
-			                gamePlayer.getP().teleport(player.getLocation());
+			                gamePlayer.getP().teleport(player.getLocation(), TeleportCause.PLUGIN);
 	                	} else {
 		                	gamePlayer.getP().sendMessage(new Messaging.MessageFormatter().format("error.player-not-playing"));
 	                	}

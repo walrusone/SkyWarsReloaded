@@ -133,7 +133,7 @@ public class SpectatorListener implements Listener {
 			if (spectatorInvolved != proj.getShooter()) {
 				spectatorInvolved.setAllowFlight(true);
 				spectatorInvolved.setFlying(true);
-				spectatorInvolved.teleport(initialSpectatorLocation.clone().add(0, 6, 0));
+				spectatorInvolved.teleport(initialSpectatorLocation.clone().add(0, 6, 0), TeleportCause.PLUGIN);
 				
 				Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), new Runnable() {
 					@Override
@@ -204,7 +204,7 @@ public class SpectatorListener implements Listener {
 					spectator.setAllowFlight(true);
 					spectator.setFlying(true);
 
-					spectator.teleport(spectator.getLocation().add(0, 10, 0));
+					spectator.teleport(spectator.getLocation().add(0, 10, 0), TeleportCause.PLUGIN);
 				}
 			}
 			
@@ -242,7 +242,7 @@ public class SpectatorListener implements Listener {
 						for(UUID spectatorUUID : spectatorsAffected) {
 							Player spectator = SkyWarsReloaded.get().getServer().getPlayer(spectatorUUID);
 							
-							spectator.teleport(spectator.getLocation().add(0, -10, 0));
+							spectator.teleport(spectator.getLocation().add(0, -10, 0), TeleportCause.PLUGIN);
 							spectator.setAllowFlight(true);
 							spectator.setFlying(oldFlyMode.get(spectatorUUID));
 						}

@@ -33,7 +33,6 @@ gameSettings:
   useExternalEconomy: false  
   disableWinBroadcast: false
   noFallDamage: true
-  noFallDamageLobby: false
   minPercentPlayers: 50
   preGameTimer: 20
   resetPreGameTimerOnJoin: true
@@ -142,6 +141,21 @@ gameSounds:
   timeVote: FUSE
   weatherVote: SPLASH
   jumpVote: MAGMACUBE_JUMP
+#lobbyGuard:
+#  enabled: false	//If enabled the items below will be enforced if set to true.
+#  hungerDisabled: true  //Players will not lose hunger in lobby.
+#  damageDisabled: true  //Player will not take damage in the lobby (Void damage will still be allowed).
+#  pvpDisabled: true     //PVP will be disabled in the lobby.
+#  playerBuildDisabled: true  //Players will not be able to build or break blocks in the lobby. 
+#  playerInteractDisabled: true  //Players will not be able to interact with blocks/items/picture frames/etc in the lobby.
+lobbyGuard:
+  enabled: false
+  hungerDisabled: true
+  fallDamageDisabled: true
+  damageDisabled: true
+  pvpDisabled: true
+  playerBuildDisabled: true
+  playerInteractDisabled: true  
 #spawn:						//use setspawn command to set a spawn point where people are teleported when leaving a game. This must be set before any game can be created.
 spawn:
 #commandWhiteList: 			//commands placed under the whitelist can be used by players ingame. 

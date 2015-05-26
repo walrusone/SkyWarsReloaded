@@ -24,7 +24,6 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.walrusone.skywars.api.NMS;
 import com.walrusone.skywars.commands.CmdManager;
 import com.walrusone.skywars.config.Config;
@@ -46,6 +45,7 @@ import com.walrusone.skywars.game.Game;
 import com.walrusone.skywars.game.GameMap;
 import com.walrusone.skywars.game.GamePlayer;
 import com.walrusone.skywars.listeners.IconMenuController;
+import com.walrusone.skywars.listeners.LobbyListener;
 import com.walrusone.skywars.listeners.PingListener;
 import com.walrusone.skywars.listeners.PlayerListener;
 import com.walrusone.skywars.listeners.ProjectileListener;
@@ -83,7 +83,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public static Economy econ = null;
     public static Permission perms = null;
     public static Chat chat = null;
-    private MultiverseCore mv;
     private NMS nmsHandler;
     
     public void onEnable() {
@@ -121,13 +120,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
     	}
    
-       	mv = (MultiverseCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        if (mv == null) {
-        		this.getLogger().info("Disabling SkyWarsReloaded: Multiverse-Core was not found");
-        		onDisable();
-        }
-
-    	
         boolean sqlEnabled = getConfig().getBoolean("sqldatabase.enabled");
         if (sqlEnabled) {
         	getSWRDatabase();
@@ -241,6 +233,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         });
         
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
         Bukkit.getPluginManager().registerEvents(new SignListener(), this);
         Bukkit.getPluginManager().registerEvents(ic, this);
         if (config.spectatingEnabled()) {
@@ -320,7 +313,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     private void deleteWorlds() {
     	for (GameMap map: mc.getRegisteredMaps()) {
-    		mv.getMVWorldManager().deleteWorld(map.getName());
+    		wc.deleteWorld(map.getName());
     	}
     }
     
@@ -410,10 +403,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public static ParticleController getPEC() {
         return instance.pec;
-    }
-    
-    public static MultiverseCore getMV() {
-        return instance.mv;
     }
     
     public static ScoreboardController getScore() {

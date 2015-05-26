@@ -7,7 +7,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -15,7 +14,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 
 import com.google.common.collect.Maps;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.controllers.WorldController;
 import com.walrusone.skywars.utilities.EmptyChest;
@@ -93,29 +91,30 @@ public class GameMap {
 		WorldController wc = SkyWarsReloaded.getWC();
 		String mapName = name + "_" + gNumber;
 		boolean mapExists = false;
-		for (MultiverseWorld mvworld: SkyWarsReloaded.getMV().getMVWorldManager().getMVWorlds()) {
-			if (mvworld.getName().equalsIgnoreCase(mapName)) {
-				mapExists = true;
-			}
+		File target = new File(rootDirectory, mapName);
+		if(target.isDirectory()) {			 
+			if(target.list().length > 0) {
+	 			mapExists = true;
+			}	 
 		}
 		if (mapExists) {
-			SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(mapName);
+			SkyWarsReloaded.getWC().deleteWorld(mapName);
 		}
-		File target = new File(rootDirectory, mapName);
+		
 		wc.copyWorld(source, target);
-		boolean loaded = SkyWarsReloaded.getMV().getMVWorldManager().addWorld(mapName, Environment.NORMAL, null, null, null, "VoidWorld", false);
+		
+		boolean loaded = SkyWarsReloaded.getWC().loadWorld(mapName);
 		if (loaded) {
-			MultiverseWorld mvworld = SkyWarsReloaded.getMV().getMVWorldManager().getMVWorld(mapName);
 			World world = SkyWarsReloaded.get().getServer().getWorld(mapName);
 		    world.setAutoSave(false);
 		    world.setThundering(false);
 		    world.setStorm(false);
 		    world.setDifficulty(Difficulty.NORMAL);
-		    mvworld.setSpawnLocation(new Location(world, 2000, 0, 2000));
-			mvworld.setAllowAnimalSpawn(false);
-			mvworld.setAllowMonsterSpawn(false);
-			mvworld.setKeepSpawnInMemory(false);
-			mvworld.setEnableWeather(false);
+		    world.setSpawnLocation(2000, 0, 2000);
+	        world.setGameRuleValue("doMobSpawning", "false");
+	        world.setGameRuleValue("mobGriefing", "false");
+	        world.setGameRuleValue("doFireTick", "false");
+	        world.setGameRuleValue("showDeathMessages", "false");
 		}
 		return loaded;
 	}

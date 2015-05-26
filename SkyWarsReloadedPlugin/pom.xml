@@ -111,12 +111,5 @@
             <type>jar</type>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.onarandombox.MultiverseCore</groupId>
-            <artifactId>multiversecore</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Multiverse-Core-2.5.jar</systemPath>
-        </dependency>
    </dependencies>
 </project>

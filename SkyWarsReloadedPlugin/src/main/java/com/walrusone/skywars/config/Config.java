@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 import com.walrusone.skywars.SkyWarsReloaded;
@@ -23,7 +24,6 @@ public class Config {
 	private boolean useExternalEconomy;
 	private boolean disableWinBroadcast;
 	private boolean noFallDamage;
-	private boolean noFallDamageLobby;
 	private int maxMapSize;
 	private int maxNumberOfGames;
 	private int minPercentPlayers;
@@ -100,6 +100,14 @@ public class Config {
 	private Sound weatherVote;
 	private Sound jumpVote;
 	
+	private boolean lobbyGuard;
+	private boolean hungerDisabled;
+	private boolean damageDisabled;
+	private boolean pvpDisabled;
+	private boolean playerBuildDisabled;
+	private boolean playerInteractDisabled;
+	private boolean fallDamageDisabled;
+	
 	private Location spawn;
 	
 	private List<String> commandWhiteList = new ArrayList<String>();
@@ -125,7 +133,6 @@ public class Config {
 			useExternalEconomy = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.useExternalEconomy");
 			disableWinBroadcast = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.disableWinBroadcast");
 			noFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.noFallDamage");
-			noFallDamageLobby = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.noFallDamageLobby");
 			minPercentPlayers = SkyWarsReloaded.get().getConfig().getInt("gameSettings.minPercentPlayers");
 			preGameTimer = SkyWarsReloaded.get().getConfig().getInt("gameSettings.preGameTimer");
 			resetPreGameTimerOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.resetPreGameTimerOnJoin");
@@ -268,6 +275,13 @@ public class Config {
 		weatherVote = Sound.valueOf(SkyWarsReloaded.get().getConfig().getString("gameSounds.weatherVote").toUpperCase());
 		jumpVote = Sound.valueOf(SkyWarsReloaded.get().getConfig().getString("gameSounds.jumpVote").toUpperCase());
 		
+		lobbyGuard = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.enabled");
+		hungerDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.hungerDisabled");
+		fallDamageDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.fallDamageDisabled");
+		damageDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.damageDisabled");
+		pvpDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.pvpDisabled");
+		playerBuildDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.playerBuildDisabled");
+		playerInteractDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.damageDisabled");
 		
 		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
 		int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
@@ -276,7 +290,12 @@ public class Config {
 		float yaw = SkyWarsReloaded.get().getConfig().getInt("spawn.yaw");
 		float pitch = SkyWarsReloaded.get().getConfig().getInt("spawn.pitch");
 		if (world != null) {
-			spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world), x, y, z, yaw, pitch);
+		    World checkLoaded = SkyWarsReloaded.get().getServer().getWorld(world);
+		    if(checkLoaded != null) {
+				spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world), x, y, z, yaw, pitch);
+		    } else {
+		    	spawn = null;
+		    }
 		} else {
 			spawn = null;
 		}
@@ -302,6 +321,48 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("spawn.yaw", spawn.getYaw());
 		SkyWarsReloaded.get().getConfig().set("spawn.pitch", spawn.getPitch());
 		SkyWarsReloaded.get().saveConfig();
+	}
+	
+	public boolean lobbyGuard() {
+		if (lobbyGuard) {
+			return lobbyGuard;
+		}
+		return false;
+	}
+	
+	public boolean hungerDisabled() {
+		if (lobbyGuard) {
+			return hungerDisabled;
+		}
+		return false;
+	}
+	
+	public boolean damageDisabled() {
+		if (lobbyGuard) {
+			return damageDisabled;
+		}
+		return false;
+	}
+	
+	public boolean pvpDisabled() {
+		if (lobbyGuard) {
+			return pvpDisabled;
+		}
+		return false;
+	}
+	
+	public boolean playerBuildDisabled() {
+		if (lobbyGuard) {
+			return playerBuildDisabled;
+		}
+		return false;
+	}
+	
+	public boolean playerInteractDisabled() {
+		if (lobbyGuard) {
+			return playerInteractDisabled;
+		}
+		return false;
 	}
 	
 	public List<String> getSpectatorWhiteList() {
@@ -623,7 +684,10 @@ public class Config {
 	}
 	
 	public boolean LobbyFallDamageDisabled() {
-		return noFallDamageLobby;
+		if (lobbyGuard) {
+			return fallDamageDisabled;
+		}
+		return false;
 	}
 	
 	public boolean bungeeEnabled() {
@@ -651,7 +715,7 @@ public class Config {
 		useExternalEconomy = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.useExternalEconomy");
 		disableWinBroadcast = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.disableWinBroadcast");
 		noFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.noFallDamage");
-		noFallDamageLobby = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.noFallDamageLobby");
+		fallDamageDisabled = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.noFallDamageLobby");
 		minPercentPlayers = SkyWarsReloaded.get().getConfig().getInt("gameVariables.minPercentPlayers");
 		preGameTimer = SkyWarsReloaded.get().getConfig().getInt("gameVariables.preGameTimer");
 		resetPreGameTimerOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("gameVariables.resetPreGameTimerOnJoin");
@@ -707,7 +771,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("gameSettings.useExternalEconomy", useExternalEconomy);
 		SkyWarsReloaded.get().getConfig().set("gameSettings.disableWinBroadcast", disableWinBroadcast);
 		SkyWarsReloaded.get().getConfig().set("gameSettings.noFallDamage", noFallDamage);
-		SkyWarsReloaded.get().getConfig().set("gameSettings.noFallDamageLobby", noFallDamageLobby);
+		SkyWarsReloaded.get().getConfig().set("lobbyGuard.fallDamageDisabled", fallDamageDisabled);
 		SkyWarsReloaded.get().getConfig().set("gameSettings.minPercentPlayers", minPercentPlayers);
 		SkyWarsReloaded.get().getConfig().set("gameSettings.preGameTimer", preGameTimer);
 		SkyWarsReloaded.get().getConfig().set("gameSettings.resetPreGameTimerOnJoin", resetPreGameTimerOnJoin);

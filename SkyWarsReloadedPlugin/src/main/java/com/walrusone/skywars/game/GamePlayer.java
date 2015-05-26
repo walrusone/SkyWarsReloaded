@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.Tagged;
@@ -193,7 +194,7 @@ public class GamePlayer {
 				getP().setFoodLevel(20);
 				getP().setScoreboard(game.getScoreboard());
 				getP().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
-				getP().teleport(location);
+				getP().teleport(location, TeleportCause.PLUGIN);
 				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 					@Override
 					public void run() {
@@ -221,7 +222,7 @@ public class GamePlayer {
 			        getP().removePotionEffect(effect.getType());
 				}
 				getP().setFireTicks(0);
-				getP().teleport(location);
+				getP().teleport(location, TeleportCause.PLUGIN);
 				if (!shutdown) {
 					SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 						@Override

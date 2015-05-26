@@ -2,7 +2,7 @@ name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
 version: 2.6
 
-depend: [Vault, Multiverse-Core, VoidWorld]
+depend: [Vault]
 
 commands:
    swr:

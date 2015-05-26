@@ -24,6 +24,9 @@ public class ItemUtils {
         	if (item.get(0).contains(":")) {
         		Material material = Material.getMaterial(item.get(0).split(":")[0].toUpperCase());
         		int amount = Integer.parseInt(item.get(1));
+        		if (amount < 1) {
+        			return null;
+        		}
         		short data = (short) Integer.parseInt(item.get(0).split(":")[1].toUpperCase());
         		itemStack = new ItemStack(material, amount, data);
         	} else {

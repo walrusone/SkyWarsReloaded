@@ -2,9 +2,9 @@ package com.walrusone.skywars.commands;
 
 import java.io.File;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.Messaging;
@@ -28,10 +28,10 @@ public class DeleteMapCmd extends BaseCmd {
 			if (world.getName().equalsIgnoreCase(worldName)) {
 				World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 				for (Player player: editWorld.getPlayers()) {
-					player.teleport(new Location(SkyWarsReloaded.get().getServer().getWorld("world"), -250, 64, -50));
+					player.teleport(SkyWarsReloaded.getCfg().getSpawn(), TeleportCause.PLUGIN);
 				}
 				editWorld.save();
-				SkyWarsReloaded.getMV().getMVWorldManager().deleteWorld(worldName);
+				SkyWarsReloaded.getWC().deleteWorld(worldName);
 				File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
 				File target = new File (dataDirectory, worldName);
 				SkyWarsReloaded.getWC().deleteWorld(target);

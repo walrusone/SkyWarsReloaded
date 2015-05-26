@@ -76,7 +76,7 @@ public class IconMenuController implements Listener {
         return menu.containsKey(player);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onInventoryClick(InventoryClickEvent event) {
             if (event.getWhoClicked() instanceof Player) {
             	if (SkyWarsReloaded.getPC().getPlayer(((Player) event.getWhoClicked()).getUniqueId()).isSpectating() && !menu.containsKey(event.getWhoClicked())) {

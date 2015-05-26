@@ -36,7 +36,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -53,52 +53,6 @@ import com.walrusone.skywars.utilities.BungeeUtil;
 import com.walrusone.skywars.utilities.Messaging;
 
 public class PlayerListener implements Listener {
-	
-	public void givePlayerItems(Player p) {
-		if (SkyWarsReloaded.getCfg().giveSpectateItem()) {
-			if (SkyWarsReloaded.perms.has(p, "swr.spectate")) {
-				p.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateItemSlot(), SkyWarsReloaded.getCfg().getSpectateItem());
-			}
-		}
-		if (SkyWarsReloaded.getCfg().giveJoinMenuItem()) {
-				p.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinMenuSlot(), SkyWarsReloaded.getCfg().getJoinItem());
-		}
-		if (SkyWarsReloaded.getCfg().giveLobbyMenuItem()) {
-			p.getInventory().setItem(SkyWarsReloaded.getCfg().getLobbyMenuSlot(), SkyWarsReloaded.getCfg().getLobbyMenuItem());
-		}
-	}
-	
-	@EventHandler
-	public void onTeleportEvent(PlayerTeleportEvent e) {
-		final Player player = e.getPlayer();
-		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-		if (spawn != null) {
-			String world = spawn.getWorld().getName();
-			String fromWorld = e.getFrom().getWorld().getName();
-			String toWorld = e.getTo().getWorld().getName();
-			if (!toWorld.equalsIgnoreCase(fromWorld) && world.equalsIgnoreCase(toWorld)) {
-				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-					public void run() {
-						if (player != null) {
-							givePlayerItems(player);
-							SkyWarsReloaded.getScore().getScoreboard(player);
-						}
-					}
-				}, 3);
-			} else if (!toWorld.equalsIgnoreCase(fromWorld) && !world.equalsIgnoreCase(toWorld)) {
-				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-					public void run() {
-						player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
-						player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
-						player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
-						if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
-							player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
-						}
-					}
-				}, 3);
-			}
-		}
-	}
 	
 	@EventHandler
 	public void onFoodChange(FoodLevelChangeEvent e) {
@@ -117,7 +71,7 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageByEntityEvent e) {
+	public void onEntityDamageEntity(EntityDamageByEntityEvent e) {
 		 Entity ent = e.getEntity();
 		 if(ent instanceof Player) {
 			 GamePlayer target = SkyWarsReloaded.getPC().getPlayer(((Player) ent).getUniqueId());
@@ -176,7 +130,7 @@ public class PlayerListener implements Listener {
 		if (SkyWarsReloaded.getInvC().playerExists(e.getPlayer().getUniqueId().toString())) {
 			SkyWarsReloaded.getInvC().restoreInventory(e.getPlayer());
 			if (spawn != null) {
-				e.getPlayer().teleport(spawn);
+				e.getPlayer().teleport(spawn, TeleportCause.PLUGIN);
 				final Player player = e.getPlayer();
 				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 					public void run() {
@@ -219,23 +173,17 @@ public class PlayerListener implements Listener {
 				}
 			}, 5L);
 		} else  {
-			if (spawn != null) {
-				String world = spawn.getWorld().getName();
-				if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
-					if (player != null) {
-						givePlayerItems(player);
-					}
-				} else {
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
-				}
+			if (inLobbyWorld(player)) {
+				givePlayerItems(player);
+			} else {
+				removePlayerItems(player);
 			}
 		} 
 	}
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
+		Player player = e.getPlayer();
 		final GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
 		if (gPlayer.isSpectating()) {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
@@ -249,19 +197,10 @@ public class PlayerListener implements Listener {
 		        }
 		      }, 3);
 		} else {
-			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-			Player player = e.getPlayer();
-			if (spawn != null) {
-				String world = spawn.getWorld().getName();
-				if (e.getPlayer().getWorld().getName().equalsIgnoreCase(world)) {
-					if (player != null) {
-						givePlayerItems(player);
-					}
-				} else {
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
-					e.getPlayer().getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
-				}
+			if (inLobbyWorld(player)) {
+				givePlayerItems(player);
+			} else {
+				removePlayerItems(player);
 			}
 		}
 	}
@@ -505,19 +444,6 @@ public class PlayerListener implements Listener {
 			}
 		} 
 		
-		if (SkyWarsReloaded.getCfg().LobbyFallDamageDisabled()) {
-			if (e.getEntity() instanceof Player && e.getCause().equals(DamageCause.FALL)) {
-				Player player = (Player) e.getEntity();
-				Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-				if (spawn != null) {
-					String world = spawn.getWorld().getName();
-					if (player.getWorld().getName().equalsIgnoreCase(world)) {
-						e.setCancelled(true);
-					}
-				}
-			}
-		} 
-		
 		if (e.getEntity() instanceof Player && e.getCause().equals(DamageCause.FALL)) {
 			Player player = (Player) e.getEntity();
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
@@ -733,5 +659,42 @@ public class PlayerListener implements Listener {
             }
         }
     }
+    
+	public void givePlayerItems(Player p) {
+		if (SkyWarsReloaded.getCfg().giveSpectateItem()) {
+			if (SkyWarsReloaded.perms.has(p, "swr.spectate")) {
+				p.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateItemSlot(), SkyWarsReloaded.getCfg().getSpectateItem());
+			}
+		}
+		if (SkyWarsReloaded.getCfg().giveJoinMenuItem()) {
+				p.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinMenuSlot(), SkyWarsReloaded.getCfg().getJoinItem());
+		}
+		if (SkyWarsReloaded.getCfg().giveLobbyMenuItem()) {
+			p.getInventory().setItem(SkyWarsReloaded.getCfg().getLobbyMenuSlot(), SkyWarsReloaded.getCfg().getLobbyMenuItem());
+		}
+		SkyWarsReloaded.getScore().getScoreboard(p);
+	}
+	
+	public void removePlayerItems(Player player) {
+		player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+		player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+		player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
+		if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
+			player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+		}
+	}
+	
+	public boolean inLobbyWorld(Player p) {
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn != null) {
+			if (spawn.getWorld().equals(p.getWorld())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
     
 }

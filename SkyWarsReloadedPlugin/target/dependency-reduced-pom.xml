@@ -58,26 +58,13 @@
       <artifactId>VaultAPI</artifactId>
       <version>1.5</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>bukkit</artifactId>
-          <groupId>org.bukkit</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>LATEST</version>
+      <artifactId>bukkit</artifactId>
+      <version>1.8.6-R0.1</version>
       <scope>system</scope>
-      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded\SkyWarsReloadedPlugin/lib/craftbukkit-1.7.9.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.onarandombox.MultiverseCore</groupId>
-      <artifactId>multiversecore</artifactId>
-      <version>LATEST</version>
-      <scope>system</scope>
-      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded\SkyWarsReloadedPlugin/lib/Multiverse-Core-2.5.jar</systemPath>
+      <systemPath>C:\Users\RussellW\workspace\SkyWarsReloaded\SkyWarsReloadedPlugin/lib/craftbukkit-1.8.4.jar</systemPath>
     </dependency>
   </dependencies>
   <properties>
