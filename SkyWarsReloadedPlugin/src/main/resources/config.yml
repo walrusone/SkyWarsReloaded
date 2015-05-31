@@ -24,6 +24,63 @@
 #  clearPotionEffectsOnJoin: false  //When set to true, a players potions effects are cleared whenever they join the server.
 #  addScorePrefix: true		//When set to true, a score prefix is added to player chat. 
 #  useExternalChat: false	//When set to true, the plugin will use the external chat plugin.
+#points:
+#  pointsPerKill: 2		//number of points awarded per kill.
+#  pointsLostPerDeath: 1	//number of points lost per death.
+#  pointsLostPerLeave: 1	//number of points lost per leave.
+#  pointsPerWin: 10		//number of points awarded per win.
+#  vipMultiplier: 2		//The multiplier value added to points awarded to players with the swr.vip permission.
+#gameOptions:
+#  kitsEnabled: true	//enables kits
+#  shopsEnabled: true	//enables in game shop
+#  spectateShopEnabled: true	//enabled spectator shop
+#  opChestsEnabled: true	//enables OP Chest voting
+#  timeVoteEnabled: true	//enables Time voting
+#  jumpVoteEnabled: true	//enables Jump voting
+#  highJumpValue: 2			//sets the jump boost value of high jump.
+#  superJumpValue: 4		//sets the jump boost value of super jump.
+#  godJumpValue: 8			/sets the jump boost value of god jump.
+#  weatherVoteEnabled: true		//enables weather voting.
+#  lightningStrikeChance: 5		//chance that lightning will hit a random player during thunderstorm weather.
+#  colorGlassEnabled: true		//enables players to change their glass colors (with permissions)
+#  particlesEnabled: true		//enables players to change their particle effects (with permissions)
+#  trailEffectsEnabled: true	//enables players to change their trail effects (with permissions)
+#  lobbyMenuEnabled: true		//enables the lobby menu 
+#  optionsMenuEnabled: true		//enables the in game options menu
+#  purchaseColorGlassEnabled: true	//enables the Color Glass shop
+#  purchaseParticlesEnabled: true	//enables the Particle Effects shop
+#  purchaseTrailEffectsEnabled: true	//enables the Trail Effects shop
+#  purchasePermanentKitsEnabled: true	//enables the Permanent Kit shop
+#  showKitItemsandPotionEffects: true   //when enabled, the items and potion effects are displayed in the kit info.
+#  doubleChestAlwaysOP: true		//when enabled, double chests are treated as OP chests (so you can have OP chests in the center of the map if you want)
+#lobbyGuard:
+#  enabled: false	//If enabled the items below will be enforced if set to true.
+#  hungerDisabled: true  //Players will not lose hunger in lobby.
+#  damageDisabled: true  //Player will not take damage in the lobby (Void damage will still be allowed).
+#  pvpDisabled: true     //PVP will be disabled in the lobby.
+#  playerBuildDisabled: true  //Players will not be able to build or break blocks in the lobby. 
+#  playerInteractDisabled: true  //Players will not be able to interact with blocks/items/picture frames/etc in the lobby.
+#  weatherDisabled: true //When enabled the weather will always be clear in the lobby world.
+#  daylightCycleDisabled: true  //When enabled the time will always be Noon in the lobby world. 
+#spawn:						//use setspawn command to set a spawn point where people are teleported when leaving a game. This must be set before any game can be created.
+#commandWhiteList: 			//commands placed under the whitelist can be used by players ingame. 
+# - '/swr quit'
+# - '/swr kit'
+# - '/swr shop'
+# - '/swr'
+#sqldatabase:
+#  enabled: false			//enable to store stats in a SQL database
+#  saveInterval: 5			//time in minutes between SQL database updates - how often the plugin sends player stats to the database
+#  hostname: localhost		//hostname of the SQL database
+#  port: 3306				//port of the SQL database
+#  database: database		//database being used
+#  username: username      	//username for login to the SQL database
+#  password: password		//password for login to the SQL database
+#resaveDefaultMaps: false	//When set to true the plugin will reload the maps that came with the plugin.
+#bungeeMode:
+#  enabled: false			//When enabled, the plugin will work with the SkyWarsReloaded bungeeMode plugin. 
+#  bungeeServerName: test	//The bungee cord name of the SkyWars server.
+#  lobbyServer: lobby		//The name of the server (as found in bungeecord) where players will be sent when the game ends. 
 gameSettings:
   signJoinMode: false
   signJoinMaterial: wool
@@ -48,39 +105,12 @@ gameSettings:
   clearPotionEffectsOnJoin: false
   addScorePrefix: true
   useExternalChat: false
-#points:
-#  pointsPerKill: 2		//number of points awarded per kill.
-#  pointsLostPerDeath: 1	//number of points lost per death.
-#  pointsLostPerLeave: 1	//number of points lost per leave.
-#  pointsPerWin: 10		//number of points awarded per win.
-#  vipMultiplier: 2		//The multiplier value added to points awarded to players with the swr.vip permission.
 points:
   pointsPerKill: 2
   pointsLostPerDeath: 1
   pointsLostPerLeave: 1
   pointsPerWin: 10
   vipMultiplier: 2
-#gameOptions:
-#  kitsEnabled: true	//enables kits
-#  shopsEnabled: true	//enables in game shop
-#  spectateShopEnabled: true	//enabled spectator shop
-#  opChestsEnabled: true	//enables OP Chest voting
-#  timeVoteEnabled: true	//enables Time voting
-#  jumpVoteEnabled: true	//enables Jump voting
-#  highJumpValue: 2			//sets the jump boost value of high jump.
-#  superJumpValue: 4		//sets the jump boost value of super jump.
-#  godJumpValue: 8			/sets the jump boost value of god jump.
-#  weatherVoteEnabled: true		//enables weather voting.
-#  lightningStrikeChance: 5		//chance that lightning will hit a random player during thunderstorm weather.
-#  colorGlassEnabled: true		//enables players to change their glass colors (with permissions)
-#  particlesEnabled: true		//enables players to change their particle effects (with permissions)
-#  trailEffectsEnabled: true	//enables players to change their trail effects (with permissions)
-#  lobbyMenuEnabled: true		//enables the lobby menu 
-#  optionsMenuEnabled: true		//enables the in game options menu
-#  purchaseColorGlassEnabled: true	//enables the Color Glass shop
-#  purchaseParticlesEnabled: true	//enables the Particle Effects shop
-#  purchaseTrailEffectsEnabled: true	//enables the Trail Effects shop
-#  purchasePermanentKitsEnabled: true	//enables the Permanent Kit shop
 gameOptions:
   kitsEnabled: true
   shopsEnabled: true
@@ -102,13 +132,8 @@ gameOptions:
   purchaseParticlesEnabled: true
   purchaseTrailEffectsEnabled: true
   purchasePermanentKitsEnabled: true
-#gameItems:
-#  giveSpectateItem: true	//when true, players will be given the spectate item (if they have spectate permission) when they join the lobby server.
-#  spectateItemSlot: 0		//the hotbar position where the item will be placed.
-#  giveLobbyMenuItem: true	//when true, players will be given the Lobby Menu item when they join the lobby server.
-#  lobbyMenuItemSlot: 4		//the hotbar position where the item will be placed.
-#  giveJoinItem: true		//when true, players will be given the Join Game item when they join the lobby server.
-#  joinItemSlot: 8			//the hotbar position where the item will be placed.
+  showKitItemsandPotionEffects: true
+  doubleChestAlwaysOP: true
 gameItems:
   giveSpectateItem: true
   spectateItemSlot: 0
@@ -120,18 +145,32 @@ gameItems:
   spectateItem: compass 1 luck:1
   joinItem: daylight_detector 1 luck:1
   exitGameItem: iron_door 1 luck:1
+  exitItemSlot: 8
   kitMenuItem: storage_minecart 1 luck:1
+  kitMenuItemSlot: 0
   kitPermMenuItem: storage_minecart 1
+  kitPermMenuItemSlot: 2 
   specStoreItem: anvil 1 luck:1
+  specStoreItemSlot: 4
   opChestMenuItem: diamond 1
+  opChestOptionMenuSlot: 3
   timeMenuItem: watch 1
+  timeOptionMenuSlot: 5
   weatherMenuItem: glowstone 1
+  weatherOptionMenuSlot: 7
   jumpMenuItem: diamond_boots 1
+  jumpOptionMenuSlot: 1
   particleMenuItem: pumpkin_seeds 1
+  particleLobbyMenuSlot: 20
+  particleOptionsMenuSlot: 22
   trailEffectMenuItem: arrow 1
+  trailEffectLobbyMenuSlot: 24
+  trailEffectOptionsMenuSlot: 24
   optionsItem: cake 1 luck:1
+  optionsItemSlot: 4
   glassMenuItem: stained_glass 1
-#gameSounds: //Sounds used during SWR games
+  glassLobbyMenuSlot: 6
+  glassOptionsMenuSlot: 20
 gameSounds:
   playerJoinLobby: SLIME_WALK2
   playerLeaveLobby: SLIME_ATTACK
@@ -141,13 +180,6 @@ gameSounds:
   timeVote: FUSE
   weatherVote: SPLASH
   jumpVote: MAGMACUBE_JUMP
-#lobbyGuard:
-#  enabled: false	//If enabled the items below will be enforced if set to true.
-#  hungerDisabled: true  //Players will not lose hunger in lobby.
-#  damageDisabled: true  //Player will not take damage in the lobby (Void damage will still be allowed).
-#  pvpDisabled: true     //PVP will be disabled in the lobby.
-#  playerBuildDisabled: true  //Players will not be able to build or break blocks in the lobby. 
-#  playerInteractDisabled: true  //Players will not be able to interact with blocks/items/picture frames/etc in the lobby.
 lobbyGuard:
   enabled: false
   hungerDisabled: true
@@ -155,14 +187,10 @@ lobbyGuard:
   damageDisabled: true
   pvpDisabled: true
   playerBuildDisabled: true
-  playerInteractDisabled: true  
-#spawn:						//use setspawn command to set a spawn point where people are teleported when leaving a game. This must be set before any game can be created.
+  playerInteractDisabled: true
+  weatherDisabled: true
+  daylightCycleDisabled: true
 spawn:
-#commandWhiteList: 			//commands placed under the whitelist can be used by players ingame. 
-# - '/swr quit'
-# - '/swr kit'
-# - '/swr shop'
-# - '/swr'
 commandWhitelist:
 - '/swr quit'
 - '/swr kit'
@@ -173,14 +201,6 @@ commandWhitelist:
 spectatorWhitelist:
 - '/swr quit'
 - '/swr shop'
-#sqldatabase:
-#  enabled: false			//enable to store stats in a SQL database
-#  saveInterval: 5			//time in minutes between SQL database updates - how often the plugin sends player stats to the database
-#  hostname: localhost		//hostname of the SQL database
-#  port: 3306				//port of the SQL database
-#  database: database		//database being used
-#  username: username      	//username for login to the SQL database
-#  password: password		//password for login to the SQL database
 sqldatabase:
   enabled: false
   saveInterval: 30
@@ -189,12 +209,7 @@ sqldatabase:
   database: database
   username: username
   password: password
-#resaveDefaultMaps: false	//When set to true the plugin will reload the maps that came with the plugin.
 resaveDefaultMaps: true
-#bungeeMode:
-#  enabled: false			//When enabled, the plugin will work with the SkyWarsReloaded bungeeMode plugin. 
-#  bungeeServerName: test	//The bungee cord name of the SkyWars server.
-#  lobbyServer: lobby		//The name of the server (as found in bungeecord) where players will be sent when the game ends. 
 bungeeMode:
   enabled: false
   bungeeServerName: skywars

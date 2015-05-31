@@ -23,11 +23,13 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -171,6 +173,7 @@ public class Game {
 					gPlayer.setWeatherVote(0);
 					gPlayer.setTimeVote(0);
 					gPlayer.setJumpVote(0);
+					SkyWarsReloaded.getNMS().sendTitle(gPlayer.getP(), 20, 60, 20, new Messaging.MessageFormatter().setVariable("mapname", mapName).formatNoColor("titles.joinGameTitle"), SkyWarsReloaded.getMessaging().getMessage("titles.joinGameSubtitle"));
 					for (PotionEffect effect : gPlayer.getP().getActivePotionEffects()) {
 				        gPlayer.getP().removePotionEffect(effect.getType());
 					}
@@ -179,12 +182,12 @@ public class Game {
 					gPlayer.getP().setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
 					gPlayer.getP().setScoreboard(scoreboard);
 					updateScoreboard();
-					gPlayer.getP().getInventory().setItem(8, SkyWarsReloaded.getCfg().getExitGameItem());
+					gPlayer.getP().getInventory().setItem(SkyWarsReloaded.getCfg().getExitItemSlot(), SkyWarsReloaded.getCfg().getExitGameItem());
 					if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
-						gPlayer.getP().getInventory().setItem(4, SkyWarsReloaded.getCfg().getOptionsItem());
+						gPlayer.getP().getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsItemSlot(), SkyWarsReloaded.getCfg().getOptionsItem());
 					}
 					if (SkyWarsReloaded.getCfg().kitsEnabled()) {
-						gPlayer.getP().getInventory().setItem(0, SkyWarsReloaded.getCfg().getKitMenuItem());
+						gPlayer.getP().getInventory().setItem(SkyWarsReloaded.getCfg().getKitMenuItemSlot(), SkyWarsReloaded.getCfg().getKitMenuItem());
 					}
 					String color = gPlayer.getGlass();
 					if (color == null) {
@@ -253,6 +256,18 @@ public class Game {
 			loc = new Location (mapWorld, x, y, z);
 			Chest chest = (Chest) loc.getBlock().getState();
 			SkyWarsReloaded.getCC().populateChest(chest, vote);
+		}
+		
+		for (EmptyChest eChest: gameMap.getDoubleChests().values()) {
+			Location loc;
+			int x = eChest.getX();
+			int y = eChest.getY();
+			int z = eChest.getZ();
+			loc = new Location (mapWorld, x, y, z);
+			Chest chest = (Chest) loc.getBlock().getState();
+            InventoryHolder ih = chest.getInventory().getHolder();
+            DoubleChest dc = (DoubleChest) ih;
+			SkyWarsReloaded.getCC().populateDoubleChest(dc, vote);
 		}
 	}
 
@@ -408,7 +423,7 @@ public class Game {
 					public void run() {
 						deleteGame();
 					}
-				}, 100);
+				}, 20 * SkyWarsReloaded.getCfg().getTimeAfterGame());
 		} else {
 			deleteGame();
 		}
@@ -1025,12 +1040,12 @@ public class Game {
 	    meta.setPower(getRandomNum(4, 1));
 	    fw.setFireworkMeta(meta);
 	    fireworksCount++;
-	    if (fireworksCount < 5) {
+	    if (fireworksCount < ((SkyWarsReloaded.getCfg().getTimeAfterGame() - 5)*4)) {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(),  new Runnable() {
 				public void run() {
 					launchFireworkDisplay(w, loc);
 				}
-			}, 10);
+			}, 5);
 	    }
 	}
 	

@@ -103,6 +103,36 @@ public final class Messaging {
 
             return ChatColor.translateAlternateColorCodes('&', message);
         }
+        
+        public String formatNoColor(String message) {
+            if (message == null || message.isEmpty()) {
+                return "";
+            }
+
+            if (SkyWarsReloaded.getMessaging().getMessage(message) != null) {
+                message = SkyWarsReloaded.getMessaging().getMessage(message);
+            }
+
+            Matcher matcher = PATTERN.matcher(message);
+
+            while (matcher.find()) {
+                String variable = matcher.group();
+                variable = variable.substring(1, variable.length() - 1);
+
+                String value = variableMap.get(variable);
+                if (value == null) {
+                    value = "";
+                }
+
+                message = message.replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(value));
+            }
+
+            if (prefix) {
+                message = SkyWarsReloaded.getMessaging().getPrefix() + message;
+            }
+
+            return message;
+        }
     }
 
 	private void copyDefaults(File playerFile) {

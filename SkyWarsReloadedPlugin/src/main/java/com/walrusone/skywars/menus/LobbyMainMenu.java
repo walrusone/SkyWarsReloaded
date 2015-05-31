@@ -123,7 +123,7 @@ public class LobbyMainMenu {
     		if (SkyWarsReloaded.getCfg().purchasePermanentKitsEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    2,
+	                    SkyWarsReloaded.getCfg().getKitPermMenuItemSlot(),
 	                    SkyWarsReloaded.getCfg().getPermKitMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.permkit-item-name"),
 	                    kitLore.toArray(new String[kitLore.size()]));
@@ -132,7 +132,7 @@ public class LobbyMainMenu {
     		if (SkyWarsReloaded.getCfg().purchaseColorClassEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    6,
+	                    SkyWarsReloaded.getCfg().getGlassLobbyMenuSlot(),
 	                    SkyWarsReloaded.getCfg().getGlassMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.buycolor-item-name"),
 	                    colorLore.toArray(new String[colorLore.size()]));
@@ -141,7 +141,7 @@ public class LobbyMainMenu {
     		if (SkyWarsReloaded.getCfg().purchaseParticlesEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    20,
+   	                    SkyWarsReloaded.getCfg().getParticleLobbyMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getparticleMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.buyeffect-item-name"),
    	                    particleLore.toArray(new String[particleLore.size()]));
@@ -150,7 +150,7 @@ public class LobbyMainMenu {
     		if (SkyWarsReloaded.getCfg().purchaseTrailEffectsEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    24,
+   	                    SkyWarsReloaded.getCfg().getTrailEffectLobbyMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getTrailEffectsMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.buyprojeffect-item-name"),
    	                    projectEffectLore.toArray(new String[projectEffectLore.size()]));

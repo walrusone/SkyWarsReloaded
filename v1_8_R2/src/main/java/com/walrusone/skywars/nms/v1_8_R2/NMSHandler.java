@@ -6,10 +6,13 @@ import net.minecraft.server.v1_8_R2.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R2.EntityHuman;
 import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.EnumParticle;
+import net.minecraft.server.v1_8_R2.IChatBaseComponent;
+import net.minecraft.server.v1_8_R2.PacketPlayOutTitle;
 import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
 import net.minecraft.server.v1_8_R2.PlayerConnection;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -57,5 +60,25 @@ public class NMSHandler implements NMS {
 	
 	public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, Type type) {
 		return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
+	}
+	
+	public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
+		PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
+		PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, (IChatBaseComponent) null, (int) fadein, (int) stay, (int) fadeout);
+		pConn.sendPacket(pTitleInfo);
+		if (subtitle != null) {
+			subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
+			subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
+			IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
+			PacketPlayOutTitle pSubtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, iComp);
+			pConn.sendPacket(pSubtitle);
+		}
+		if (title != null) {
+			title = title.replaceAll("%player%", player.getDisplayName());
+			title = ChatColor.translateAlternateColorCodes('&', title);
+			IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
+			PacketPlayOutTitle pTitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, iComp);
+			pConn.sendPacket(pTitle);
+		}
 	}
 }

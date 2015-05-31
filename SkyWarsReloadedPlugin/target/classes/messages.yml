@@ -230,3 +230,8 @@ effects:
   portal: '&aPortal'
   clouds: '&aClouds'
   no-effect: '&aNo Particles'
+titles:
+  joinServerTitle: '&aSkyWarsReloaded'
+  joinServerSubtitle: 'Visit our website for VIP Status'
+  joinGameTitle: '&1{mapname}'
+  joinGameSubtitle: 'Choose your Kits and Options'

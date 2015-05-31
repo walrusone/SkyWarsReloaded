@@ -11,13 +11,13 @@ import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Sign;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.inventory.InventoryHolder;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.controllers.WorldController;
 import com.walrusone.skywars.utilities.EmptyChest;
-import com.walrusone.skywars.utilities.VotingSign;
 
 public class GameMap {
 
@@ -25,8 +25,8 @@ public class GameMap {
 	private File rootDirectory;
 	private String name;
 	private Map<Integer, Location> spawnPoints = Maps.newHashMap();
-	private Map<Integer, VotingSign> signs = Maps.newHashMap();
 	private Map<Integer, EmptyChest> chests = Maps.newHashMap();
+	private Map<Integer, EmptyChest> doubleChests = Maps.newHashMap();
 	private Block min;
 	private Block max;
 	private int minX;
@@ -50,10 +50,6 @@ public class GameMap {
 		rootDirectory = new File(root);
 		ChunkIterator();
 	}
-
-	public void addSign(Integer x, VotingSign y) {
-		signs.put(x, y);
-	}
 	
 	public String getName() {
 		return name;
@@ -68,23 +64,16 @@ public class GameMap {
 		return false;
 	}
 	
-	public boolean containsSigns() {
-		if (signs.size() <= 0) {
-			return false;
-		} 
-		return true;
-	}
-	
 	public Map<Integer, Location> getSpawns(){
 		return spawnPoints;
 	}
 	
-	public Map<Integer, VotingSign> getSigns(){
-		return signs;
-	}
-	
 	public Map<Integer, EmptyChest> getChests(){
 		return chests;
+	}
+	
+	public Map<Integer, EmptyChest> getDoubleChests(){
+		return doubleChests;
 	}
 	
 	public boolean loadMap(int gNumber) {
@@ -126,8 +115,8 @@ public class GameMap {
 		Chunk cMin = min.getChunk();
 		Chunk cMax = max.getChunk();
 		int countSpawns = 1;
-		int countSigns = 0;
 		int countChests = 0;
+		int countDChests = 0;
 		
 		for(int cx = cMin.getX(); cx < cMax.getX(); cx++) {
 			for(int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {
@@ -140,21 +129,23 @@ public class GameMap {
 			                  Location loc = beacon.getLocation();
 			                  spawnPoints.put(countSpawns, loc);
 			                  countSpawns++;
-			               } else if (te instanceof Sign) {
-				                  Sign sign = (Sign) te;
-				                  int x = sign.getX();
-				                  int z = sign.getZ();
-				                  int y = sign.getY();
-				                  signs.put(countSigns, new VotingSign(x, y, z));
-				                  countSigns++;
-			               } else if (te instanceof Chest) {
+			            } else if (te instanceof Chest) {
 				                  Chest chest = (Chest) te;
-				                  int x = chest.getX();
-				                  int z = chest.getZ();
-				                  int y = chest.getY();
-				                  chests.put(countChests, new EmptyChest(x, y, z));
-				                  countChests++;
-			               }
+				                  InventoryHolder ih = chest.getInventory().getHolder();
+				                  if (ih instanceof DoubleChest){
+				                      int x = chest.getX();
+					                  int z = chest.getZ();
+					                  int y = chest.getY();			                  					                  
+					                  doubleChests.put(countDChests, new EmptyChest(x, y, z));
+						              countDChests++;
+					              } else {
+					                  int x = chest.getX();
+					                  int z = chest.getZ();
+					                  int y = chest.getY();
+					                  chests.put(countChests, new EmptyChest(x, y, z));
+					                  countChests++;
+				                  }
+			            }
 		           }
 		        }
 	     }

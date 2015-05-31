@@ -14,6 +14,8 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -232,6 +234,24 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         		}
         });
         
+        if (config.daylightCycleDisabled()) {
+			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+			if (spawn != null) {
+				World world = spawn.getWorld();
+				world.setTime(6000);
+				world.setGameRuleValue("doDaylightCycle", "false");
+			}
+        }
+        
+        if (config.weatherDisabled()) {
+			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+			if (spawn != null) {
+				World world = spawn.getWorld();
+				world.setStorm(false);
+				world.setThundering(false);
+			}
+        }
+        
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
         Bukkit.getPluginManager().registerEvents(new SignListener(), this);
@@ -253,6 +273,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (config.signJoinMode()) {
         	gc.signJoinLoad();
         }
+        
         finishedStartup = true;
     } 
     

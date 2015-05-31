@@ -43,9 +43,10 @@ public class PlayerController {
             }
         }
     }
-	
+
     public void removePlayer(UUID uuid) {
-    	SkyWarsReloaded.getDS().savePlayerAsync(onlinePlayers.get(uuid));
+    	GamePlayer save = getPlayer(uuid);
+    	SkyWarsReloaded.getDS().savePlayerAsync(uuid, save.getName(), save.getWins(), save.getKills(), save.getDeaths(), save.getGamesPlayed(), save.getScore(), save.getBalance(), save.getBlocks(), save.getPerms(), save.getNewPerms(), save.getGlass(), save.getEffect(), save.getProjEffect());
         onlinePlayers.remove(uuid);
     }
 
@@ -65,8 +66,8 @@ public class PlayerController {
     }
     
     public void savePlayersAsync() {
-    	for (GamePlayer gamePlayer : onlinePlayers.values()) {
-            SkyWarsReloaded.getDS().savePlayerAsync(gamePlayer);
+    	for (GamePlayer save : onlinePlayers.values()) {
+        	SkyWarsReloaded.getDS().savePlayerAsync(save.getUUID(), save.getName(), save.getWins(), save.getKills(), save.getDeaths(), save.getGamesPlayed(), save.getScore(), save.getBalance(), save.getBlocks(), save.getPerms(), save.getNewPerms(), save.getGlass(), save.getEffect(), save.getProjEffect());
         }
     }
     

@@ -2,8 +2,6 @@ package com.walrusone.skywars.menus;
 
 import java.util.List;
 
-import net.milkbowl.vault.item.Items;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -89,7 +87,7 @@ public class SpecShopMenu {
                         gamePlayer.getP(),
                         iii,
                         shopItem.getItem().clone(),
-                        "\247r\247" + (canPurchase ? 'a' : 'c') + Items.itemByStack(shopItem.getItem()).getName(),
+                        "\247r\247" + (canPurchase ? 'a' : 'c') + SkyWarsReloaded.getNMS().getName(shopItem.getItem()),
                         loreList.toArray(new String[loreList.size()]));
             }
 

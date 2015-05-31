@@ -39,7 +39,7 @@ public class NMSHandler implements NMS {
 	}
 	
 	public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {
-		PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles("SPELL_WITCH", x, y, z, offsetX, offsetY, offsetZ, data, amount);
+		PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles(getEffect(type), x, y, z, offsetX, offsetY, offsetZ, data, amount);
 		for (Player player: world.getPlayers()) {
 			CraftPlayer start = (CraftPlayer) player; //Replace player with your player.
 			EntityPlayer target = start.getHandle();
@@ -55,4 +55,76 @@ public class NMSHandler implements NMS {
 	public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, Type type) {
 		return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
 	}
+	
+	public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
+	}
+	
+	public String getEffect(String effect) {
+		if (effect.equalsIgnoreCase("HUGE_EXPLOSION")) {
+			return "hugeexplosion";
+		} else if (effect.equalsIgnoreCase("FIREWORKS_SPARK")) {
+			return "fireworksSpark";
+		} else if (effect.equalsIgnoreCase("BUBBLE")) {
+			return "bubble";
+		} else if (effect.equalsIgnoreCase("SUSPEND")) {
+			return "suspend";
+		} else if (effect.equalsIgnoreCase("DEPTH_SUSPEND")) {
+			return "depthSuspend";
+		} else if (effect.equalsIgnoreCase("TOWN_AURA")) {
+			return "townaura";
+		} else if (effect.equalsIgnoreCase("CRIT")) {
+			return "crit";
+		} else if (effect.equalsIgnoreCase("MAGIC_CRIT")) {
+			return "magicCrit";
+		} else if (effect.equalsIgnoreCase("MOB_SPELL")) {
+			return "mobSpell";
+		} else if (effect.equalsIgnoreCase("SPELL")) {
+			return "spell";
+		} else if (effect.equalsIgnoreCase("SPELL_INSTANT")) {
+			return "instantSpell";
+		} else if (effect.equalsIgnoreCase("SPELL_WITCH")) {
+			return "witchMagic";
+		} else if (effect.equalsIgnoreCase("NOTE")) {
+			return "note";
+		} else if (effect.equalsIgnoreCase("PORTAL")) {
+			return "portal";
+		} else if (effect.equalsIgnoreCase("ENCHANTMENT_TABLE")) {
+			return "enchantmenttable";
+		} else if (effect.equalsIgnoreCase("EXPLODE")) {
+			return "explode";
+		} else if (effect.equalsIgnoreCase("FLAME")) {
+			return "flame";
+		} else if (effect.equalsIgnoreCase("LAVA")) {
+			return "lava";
+		} else if (effect.equalsIgnoreCase("FOOTSTEP")) {
+			return "footstep";
+		} else if (effect.equalsIgnoreCase("WATER_SPLASH")) {
+			return "splash";
+		} else if (effect.equalsIgnoreCase("SMOKE_LARGE")) {
+			return "largesmoke";
+		} else if (effect.equalsIgnoreCase("CLOUD")) {
+			return "cloud";
+		} else if (effect.equalsIgnoreCase("REDSTONE")) {
+			return "reddust";
+		} else if (effect.equalsIgnoreCase("SNOWBALL_POOF")) {
+			return"snowballpoof";
+		} else if (effect.equalsIgnoreCase("DRIP_WATER")) {
+			return "dripWater";
+		}  else if (effect.equalsIgnoreCase("DRIP_LAVA")) {
+			return "dripLava";
+		} else if (effect.equalsIgnoreCase("SNOWBALL")) {
+			return "snowshovel";
+		} else if (effect.equalsIgnoreCase("SLIME")) {
+			return "slime";
+		} else if (effect.equalsIgnoreCase("HEART")) {
+			return "heart";
+		} else if (effect.equalsIgnoreCase("VILLAGER_ANGRY")) {
+			return "angryVillager";
+		} else if (effect.equalsIgnoreCase("VILLAGER_HAPPY")) {
+			return "happerVillager";
+		} else {
+			return "fireworksSpark";
+		}
+	}
+
 }

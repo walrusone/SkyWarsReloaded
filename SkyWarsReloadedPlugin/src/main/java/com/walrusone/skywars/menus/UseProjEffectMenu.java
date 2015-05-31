@@ -58,7 +58,7 @@ public class UseProjEffectMenu {
                 	return;
                 }
                 
-                if (name.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("effect.no-effect"))))) {
+                if (name.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("effects.no-effect"))))) {
                 	gamePlayer.getP().closeInventory();
             		gamePlayer.setProjEffect("normal");
                 	if (gamePlayer.getGame().getState() == GameState.PREGAME) {

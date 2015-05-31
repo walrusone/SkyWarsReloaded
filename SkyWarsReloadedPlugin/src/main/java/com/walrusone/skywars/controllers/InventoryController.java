@@ -37,11 +37,6 @@ public class InventoryController {
 
              File playerInventories = new File(playerDataDirectory, "inventories.yml");
 
-             if (!playerInventories.exists() && !playerInventories.createNewFile()) {
-             	System.out.println("Could not get Inventories File");
-                 return;
-             }
-
              if (playerInventories.exists()) {
                  FileConfiguration storage = YamlConfiguration.loadConfiguration(playerInventories);
 
@@ -56,6 +51,31 @@ public class InventoryController {
 						inventories.put(uuid, new pInventory(content, armor, level, exp, gamemode));
          			}
          		}
+                 playerInventories.delete();
+             } else {
+            	 
+            	 File playerInventoriesNew = new File(dataDirectory, "inventories.yml");
+            	 
+            	 if (!playerInventoriesNew.exists() && !playerInventoriesNew.createNewFile()) {
+                  	System.out.println("Could not get Inventories File");
+                      return;
+                  }
+
+                  if (playerInventoriesNew.exists()) {
+                      FileConfiguration storage = YamlConfiguration.loadConfiguration(playerInventoriesNew);
+
+                      if (storage.isSet("inventories")) {
+              			for (String uuid : storage.getConfigurationSection("inventories.").getKeys(false)) {
+     						ItemStack[] content = ((List<ItemStack>) storage.get("inventories." + uuid + ".contents")).toArray(new ItemStack[0]);
+     						ItemStack[] armor = ((List<ItemStack>) storage.get("inventories." + uuid + ".armor")).toArray(new ItemStack[0]);
+     						int level = storage.getInt("inventories." + uuid + ".level");
+     						float exp = (float) storage.getDouble("inventories." + uuid + ".exp");
+     						String gameMode = storage.getString("inventories." + uuid + ".gameMode");
+     						GameMode gamemode = GameMode.valueOf(gameMode);
+     						inventories.put(uuid, new pInventory(content, armor, level, exp, gamemode));
+              			}
+              		}
+                  }
              }
         } catch (IOException ioException) {
             System.out.println("Failed to load inventories file: " + ioException.getMessage());
@@ -66,14 +86,8 @@ public class InventoryController {
     public void save() {
         try {
         	 File dataDirectory = SkyWarsReloaded.get().getDataFolder();
-             File playerDataDirectory = new File(dataDirectory, "player_data");
 
-             if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
-                 System.out.println("Could not get Inventories File");
-                 return;
-             }
-
-             File playerInventories = new File(playerDataDirectory, "inventories.yml");
+             File playerInventories = new File(dataDirectory, "inventories.yml");
 
              if (!playerInventories.exists() && !playerInventories.createNewFile()) {
              	System.out.println("Could not get Inventories File");

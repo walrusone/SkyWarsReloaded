@@ -182,7 +182,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().opChestsEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    3,
+	                    SkyWarsReloaded.getCfg().getOpChestOptionMenuSlot(),
 	                    SkyWarsReloaded.getCfg().getOpChestMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.chest-item-name"),
 	                    chestLore.toArray(new String[chestLore.size()]));
@@ -191,7 +191,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().timeVoteEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    5,
+	                    SkyWarsReloaded.getCfg().getTimeOptionMenuSlot(),
 	                    SkyWarsReloaded.getCfg().getTimeMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.time-item-name"),
 	                    timeLore.toArray(new String[timeLore.size()]));
@@ -200,7 +200,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().jumpVoteEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    1,
+   	                    SkyWarsReloaded.getCfg().getJumpOptionMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getJumpMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.jump-item-name"),
    	                    jumpLore.toArray(new String[jumpLore.size()]));
@@ -209,7 +209,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().weatherVoteEnabled()) {
                 SkyWarsReloaded.getIC().setOption(
 	                    gamePlayer.getP(),
-	                    7,
+	                    SkyWarsReloaded.getCfg().getWeatherOptionMenuSlot(),
 	                    SkyWarsReloaded.getCfg().getWeatherMenuItem(),
 	                    new Messaging.MessageFormatter().format("menu.weather-item-name"),
 	                    weatherLore.toArray(new String[weatherLore.size()]));
@@ -218,7 +218,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().colorGlassEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    20,
+   	                    SkyWarsReloaded.getCfg().getGlassOptionsMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getGlassMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.selectcolor-item-name"),
    	                    colorLore.toArray(new String[colorLore.size()]));
@@ -227,7 +227,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().particlesEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    22,
+   	                    SkyWarsReloaded.getCfg().getParticleOptionsMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getparticleMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.selecteffect-item-name"),
    	                    effectLore.toArray(new String[effectLore.size()]));
@@ -236,7 +236,7 @@ public class MainMenu {
     		if (SkyWarsReloaded.getCfg().trailEffectsEnabled()) {
     	           SkyWarsReloaded.getIC().setOption(
    	                    gamePlayer.getP(),
-   	                    24,
+   	                    SkyWarsReloaded.getCfg().getTrailEffectOptionsMenuSlot(),
    	                    SkyWarsReloaded.getCfg().getTrailEffectsMenuItem(),
    	                    new Messaging.MessageFormatter().format("menu.selectprojeffect-item-name"),
    	                    trailLore.toArray(new String[trailLore.size()]));

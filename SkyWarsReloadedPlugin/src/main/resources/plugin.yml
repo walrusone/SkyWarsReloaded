@@ -1,12 +1,13 @@
 name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
-version: 2.6
+version: 2.7.2
 
 depend: [Vault]
 
 commands:
    swr:
       description: This is the main plugin command.
+      aliases: [sw]
       usage: /<command> [args]
    global:
       aliases: [g]

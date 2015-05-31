@@ -97,21 +97,24 @@ public class GameKit {
                     lores.add(ChatColor.translateAlternateColorCodes('&', string));
                 }
             }
-            String contents = new Messaging.MessageFormatter().format("kits.contents");
-            lores.add(contents);
-            for (ItemStack itemStack : items) {
-            	String enchanted = "";
-            	if (ItemUtils.isEnchanted(itemStack)) {
-            		enchanted = "Enchanted ";
-            	}
-    			lores.add(ChatColor.YELLOW + enchanted + ChatColor.WHITE + "" + SkyWarsReloaded.getNMS().getName(itemStack));
-            }
-            lores.add(ChatColor.DARK_BLUE + " ");
-            String potions = new Messaging.MessageFormatter().format("kits.potion-effects");
-            if (potionEffects.size() > 1) {
-                lores.add(potions);
-                for (PotionEffect potionEffect: potionEffects) {
-                    lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
+            
+            if (SkyWarsReloaded.getCfg().showKitItemsandPotionEffects()) {
+                String contents = new Messaging.MessageFormatter().format("kits.contents");
+                lores.add(contents);
+                for (ItemStack itemStack : items) {
+                	String enchanted = "";
+                	if (ItemUtils.isEnchanted(itemStack)) {
+                		enchanted = "Enchanted ";
+                	}
+        			lores.add(ChatColor.YELLOW + enchanted + ChatColor.WHITE + "" + SkyWarsReloaded.getNMS().getName(itemStack));
+                }
+                lores.add(ChatColor.DARK_BLUE + " ");
+                String potions = new Messaging.MessageFormatter().format("kits.potion-effects");
+                if (potionEffects.size() > 1) {
+                    lores.add(potions);
+                    for (PotionEffect potionEffect: potionEffects) {
+                        lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
+                    }
                 }
             }
         } catch (NullPointerException e) {

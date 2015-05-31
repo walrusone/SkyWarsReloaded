@@ -61,6 +61,8 @@ public class Config {
 	private boolean purchaseParticlesEnabled;
 	private boolean purchaseTrailEffectsEnabled;
 	private boolean purchasePermanentKitsEnabled;
+	private boolean showKitItemsandPotionEffects;
+	private boolean doubleChestAlwaysOP;
 	
 	private int pointsPerKill;
 	private int pointsLostPerDeath;
@@ -79,17 +81,32 @@ public class Config {
 	private ItemStack spectatePlayerItem;
 	private ItemStack joinItem;
 	private ItemStack exitGameItem;
+	private int exitItemSlot;
 	private ItemStack kitMenuItem;
+	private int kitMenuItemSlot;
 	private ItemStack kitPermMenuItem;
+	private int kitPermMenuItemSlot;
 	private ItemStack specStoreItem;
+	private int specStoreItemSlot;
 	private ItemStack opChestMenuItem;
+	private int opChestOptionMenuSlot;
 	private ItemStack timeMenuItem;
+	private int timeOptionMenuSlot;
 	private ItemStack weatherMenuItem;
+	private int weatherOptionMenuSlot;
 	private ItemStack jumpMenuItem;
+	private int jumpOptionMenuSlot;
 	private ItemStack particleMenuItem;
+	private int particleLobbyMenuSlot;
+	private int particleOptionsMenuSlot;
 	private ItemStack trailEffectMenuItem;
+	private int trailEffectLobbyMenuSlot;
+	private int trailEffectOptionsMenuSlot;
 	private ItemStack optionsItem;
+	private int optionsItemSlot;
 	private ItemStack glassMenuItem;
+	private int glassLobbyMenuSlot;
+	private int glassOptionsMenuSlot;
 	
 	private Sound playerJoinLobby;
 	private Sound playerLeaveLobby;
@@ -107,6 +124,8 @@ public class Config {
 	private boolean playerBuildDisabled;
 	private boolean playerInteractDisabled;
 	private boolean fallDamageDisabled;
+	private boolean weatherDisabled;
+	private boolean daylightCycleDisabled;
 	
 	private Location spawn;
 	
@@ -178,12 +197,30 @@ public class Config {
 		}
 		resetPreGameTimerThreshold = SkyWarsReloaded.get().getConfig().getInt("gameSettings.resetPreGameTimerThreshold");
 		
+		showKitItemsandPotionEffects = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.showKitItemsandPotionEffects");
+		doubleChestAlwaysOP = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.doubleChestAlwaysOP");
+		
 		giveSpectateItem = SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem");
 		spectateItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot");
 		giveLobbyMenuItem = SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveLobbyMenuItem");
 		lobbyMenuItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.lobbyMenuItemSlot");
 		giveJoinItem = SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveJoinItem");
 		joinItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.joinItemSlot");
+		exitItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.exitItemSlot");
+		kitMenuItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.kitMenuItemSlot");
+		kitPermMenuItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.kitPermMenuItemSlot");
+		specStoreItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.specStoreItemSlot");
+		opChestOptionMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.opChestOptionMenuSlot");
+		timeOptionMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.timeOptionMenuSlot");
+		weatherOptionMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.weatherOptionMenuSlot");
+		jumpOptionMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.jumpOptionMenuSlot");
+		particleLobbyMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.particleLobbyMenuSlot");
+		particleOptionsMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.particleOptionsMenuSlot");
+		trailEffectLobbyMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.trailEffectLobbyMenuSlot");
+		trailEffectOptionsMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.trailEffectOptionsMenuSlot");
+		optionsItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.optionsItemSlot");
+		glassLobbyMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.glassLobbyMenuSlot");
+		glassOptionsMenuSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.glassOptionsMenuSlot");
 		
 		String specItem = SkyWarsReloaded.get().getConfig().getString("gameItems.spectateItem");
 		List<String> specItemData = new LinkedList<String>(Arrays.asList(specItem.split(" ")));
@@ -212,7 +249,7 @@ public class Config {
 		String exitItem = SkyWarsReloaded.get().getConfig().getString("gameItems.exitGameItem");
 		List<String> exitItemData = new LinkedList<String>(Arrays.asList(exitItem.split(" ")));
 		String exitName = "name:" + new Messaging.MessageFormatter().format("menu.returntospawn-item-name");
-		kitItemData.add(exitName);
+		exitItemData.add(exitName);
 		exitGameItem = ItemUtils.parseItem(exitItemData);
 		
 		String optionsItemName = SkyWarsReloaded.get().getConfig().getString("gameItems.optionsItem");
@@ -282,6 +319,8 @@ public class Config {
 		pvpDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.pvpDisabled");
 		playerBuildDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.playerBuildDisabled");
 		playerInteractDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.damageDisabled");
+		weatherDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.weatherDisabled");
+		daylightCycleDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.daylightCycleDisabled");
 		
 		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
 		int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
@@ -314,6 +353,15 @@ public class Config {
 	
 	public void setSpawn(Location loc) {
 		spawn = loc;
+        if (daylightCycleDisabled()) {
+			if (spawn != null) {
+				World world = spawn.getWorld();
+				world.setTime(6000);
+				world.setGameRuleValue("doDaylightCycle", "false");
+				world.setStorm(false);
+				world.setThundering(false);
+			}
+        }
 		SkyWarsReloaded.get().getConfig().set("spawn.world", spawn.getWorld().getName().toString());
 		SkyWarsReloaded.get().getConfig().set("spawn.x", spawn.getBlockX());
 		SkyWarsReloaded.get().getConfig().set("spawn.y", spawn.getBlockY());
@@ -324,10 +372,7 @@ public class Config {
 	}
 	
 	public boolean lobbyGuard() {
-		if (lobbyGuard) {
 			return lobbyGuard;
-		}
-		return false;
 	}
 	
 	public boolean hungerDisabled() {
@@ -361,6 +406,20 @@ public class Config {
 	public boolean playerInteractDisabled() {
 		if (lobbyGuard) {
 			return playerInteractDisabled;
+		}
+		return false;
+	}
+	
+	public boolean weatherDisabled() {
+		if (lobbyGuard) {
+			return weatherDisabled;
+		}
+		return false;
+	}
+	
+	public boolean daylightCycleDisabled() {
+		if (lobbyGuard) {
+			return daylightCycleDisabled;
 		}
 		return false;
 	}
@@ -471,6 +530,66 @@ public class Config {
 		return joinItemSlot;
 	}
 	
+	public int getExitItemSlot() {
+		return exitItemSlot;
+	}
+	
+	public int getKitMenuItemSlot() {
+		return kitMenuItemSlot;
+	}
+	
+	public int getKitPermMenuItemSlot() {
+		return kitPermMenuItemSlot;
+	}
+	
+	public int getSpecStoreItemSlot() {
+		return specStoreItemSlot;
+	}
+	
+	public int getOpChestOptionMenuSlot() {
+		return opChestOptionMenuSlot;
+	}
+	
+	public int getTimeOptionMenuSlot() {
+		return timeOptionMenuSlot;
+	}
+	
+	public int getWeatherOptionMenuSlot() {
+		return weatherOptionMenuSlot;
+	}
+	
+	public int getJumpOptionMenuSlot() {
+		return jumpOptionMenuSlot;
+	}
+	
+	public int getParticleLobbyMenuSlot() {
+		return particleLobbyMenuSlot;
+	}
+	
+	public int getParticleOptionsMenuSlot() {
+		return particleOptionsMenuSlot;
+	}
+	
+	public int getTrailEffectLobbyMenuSlot() {
+		return trailEffectLobbyMenuSlot;
+	}
+	
+	public int getTrailEffectOptionsMenuSlot() {
+		return trailEffectOptionsMenuSlot;
+	}
+	
+	public int getOptionsItemSlot() {
+		return optionsItemSlot;
+	}
+	
+	public int getGlassLobbyMenuSlot() {
+		return glassLobbyMenuSlot;
+	}
+	
+	public int getGlassOptionsMenuSlot() {
+		return glassOptionsMenuSlot;
+	}
+
 	public boolean giveJoinMenuItem() {
 		return giveJoinItem;
 	}
@@ -493,6 +612,14 @@ public class Config {
 		
 	public boolean purchasePermanentKitsEnabled() {
 		return purchasePermanentKitsEnabled;
+	}
+	
+	public boolean showKitItemsandPotionEffects() {
+		return showKitItemsandPotionEffects;
+	}
+	
+	public boolean doubleChestAlwaysOP() {
+		return doubleChestAlwaysOP;
 	}
 	
 	public boolean purchaseTrailEffectsEnabled() {

@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 import com.walrusone.skywars.SkyWarsReloaded;
 
@@ -27,6 +28,18 @@ public class LobbyListener implements Listener {
 		if(ent instanceof Player) {
 			if (inLobbyWorld((Player) ent) && SkyWarsReloaded.getCfg().hungerDisabled()) {
 				e.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onWeatherChange(WeatherChangeEvent e) {
+		if (SkyWarsReloaded.getCfg().weatherDisabled()) {
+			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+			if (spawn != null) {
+				if (spawn.getWorld().equals(e.getWorld())) {
+					e.setCancelled(true);
+				} 
 			}
 		}
 	}
@@ -124,7 +137,7 @@ public class LobbyListener implements Listener {
 						givePlayerItems(player);
 					}
 				}
-			}, 3);
+			}, 8);
 		} else if (teleportBetweenWorlds(e.getTo().getWorld(), e.getFrom().getWorld()) && !teleportToLobby(e.getTo().getWorld())) {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 				public void run() {
@@ -132,7 +145,7 @@ public class LobbyListener implements Listener {
 						removePlayerItems(player);
 					}
 				}
-			}, 3);
+			}, 8);
 		}
 	}
 	

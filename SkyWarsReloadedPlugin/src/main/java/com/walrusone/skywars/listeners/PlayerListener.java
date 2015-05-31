@@ -174,6 +174,7 @@ public class PlayerListener implements Listener {
 			}, 5L);
 		} else  {
 			if (inLobbyWorld(player)) {
+				SkyWarsReloaded.getNMS().sendTitle(player, 20, 60, 20, SkyWarsReloaded.getMessaging().getMessage("titles.joinServerTitle"), SkyWarsReloaded.getMessaging().getMessage("titles.joinServerSubtitle"));
 				givePlayerItems(player);
 			} else {
 				removePlayerItems(player);
@@ -597,7 +598,7 @@ public class PlayerListener implements Listener {
                     } else if (effect.equalsIgnoreCase("flame")) {
                         Random random = new Random();
                         SkyWarsReloaded.getNMS().sendParticles(world, "FLAME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
-                    }  else if (effect.equalsIgnoreCase("smoke")) {
+                    } else if (effect.equalsIgnoreCase("smoke")) {
                         Random random = new Random();
                         SkyWarsReloaded.getNMS().sendParticles(world, "SMOKE_LARGE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1);
                     } else if (effect.equalsIgnoreCase("portal")) {

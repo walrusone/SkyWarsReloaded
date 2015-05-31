@@ -5,6 +5,7 @@ import com.walrusone.skywars.SkyWarsReloaded;
 import com.walrusone.skywars.utilities.ItemUtils;
 
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
@@ -26,12 +27,16 @@ public class ChestController {
     private final Random random = new Random();
    
     private List<Integer> randomLoc = new ArrayList<Integer>();
+    private List<Integer> randomDLoc = new ArrayList<Integer>();
 
 
     public ChestController() {
         load();
         for (int i = 0; i < 27; i++) {
         	randomLoc.add(i);
+        }
+        for (int i = 0; i < 54; i++) {
+        	randomDLoc.add(i);
         }
     }
 
@@ -157,6 +162,62 @@ public class ChestController {
             for (ChestItem chestItem : chestItemList) {
                 if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                     inventory.setItem(randomLoc.get(added), chestItem.getItem());
+                    if (added++ >= inventory.getSize()-1) {
+                        break;
+                    }
+                }
+            }
+    	}
+    }
+    
+    public void populateDoubleChest(DoubleChest chest, String chestfile) {
+    	String type = chestfile;
+    	if (SkyWarsReloaded.getCfg().doubleChestAlwaysOP()) {
+    		type = "op";
+    	}
+    	if (type.equalsIgnoreCase("op")) {
+    		Inventory inventory = chest.getInventory();
+    		inventory.clear();
+            int added = 0;
+            Collections.shuffle(randomDLoc);
+
+            for (ChestItem chestItem : opChestItemList) {
+                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                    inventory.setItem(randomDLoc.get(added), chestItem.getItem());
+                    if (added++ >= inventory.getSize()-1) {
+                        break;
+                    }
+                }
+                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                    inventory.setItem(randomDLoc.get(added), chestItem.getItem());
+                    if (added++ >= inventory.getSize()-1) {
+                        break;
+                    }
+                }
+            }
+    	} else if (type.equalsIgnoreCase("basic")) {
+    		Inventory inventory = chest.getInventory();
+    		inventory.clear();
+            int added = 0;
+            Collections.shuffle(randomDLoc);
+
+            for (ChestItem chestItem : basicChestItemList) {
+                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                    inventory.setItem(randomDLoc.get(added), chestItem.getItem());
+                    if (added++ >= inventory.getSize()-1) {
+                        break;
+                    }
+                }
+            }
+    	} else {
+            Inventory inventory = chest.getInventory();
+    		inventory.clear();
+            int added = 0;
+            Collections.shuffle(randomDLoc);
+
+            for (ChestItem chestItem : chestItemList) {
+                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                    inventory.setItem(randomDLoc.get(added), chestItem.getItem());
                     if (added++ >= inventory.getSize()-1) {
                         break;
                     }

@@ -244,13 +244,13 @@ public class GamePlayer {
 		
 		if (getP() != null) {
 			getP().getInventory().clear();
-			getP().getInventory().setItem(8, SkyWarsReloaded.getCfg().getExitGameItem());
+			getP().getInventory().setItem(SkyWarsReloaded.getCfg().getExitItemSlot(), SkyWarsReloaded.getCfg().getExitGameItem());
 			if (SkyWarsReloaded.getCfg().spectateShopEnabled()) {
 				if (SkyWarsReloaded.perms.has(getP(), "swr.spectateshop")) {
-					getP().getInventory().setItem(4, SkyWarsReloaded.getCfg().getSpecStoreMenuItem());
+					getP().getInventory().setItem(SkyWarsReloaded.getCfg().getSpecStoreItemSlot(), SkyWarsReloaded.getCfg().getSpecStoreMenuItem());
 				}
 			}
-			getP().getInventory().setItem(0, SkyWarsReloaded.getCfg().getSpectatePlayerItem());
+			getP().getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateItemSlot(), SkyWarsReloaded.getCfg().getSpectatePlayerItem());
 		}
 	}
 
