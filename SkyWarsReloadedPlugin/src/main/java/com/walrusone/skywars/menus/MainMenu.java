@@ -256,30 +256,30 @@ public class MainMenu {
     }
 	
     public boolean hasTimePermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.timevote");
+        return player.isOp() || player.hasPermission("swr.timevote");
     }
     
     public boolean hasWeatherPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.weathervote");
+        return player.isOp() || player.hasPermission("swr.weathervote");
     }
     
     public boolean hasJumpPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.jumpvote");
+        return player.isOp() || player.hasPermission("swr.jumpvote");
     }
     
     public boolean hasChestPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.opchest");
+        return player.isOp() || player.hasPermission("swr.opchest");
     }
     
     public boolean hasColorPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.usecolor");
+        return player.isOp() || player.hasPermission("swr.usecolor");
     }
     
     public boolean hasEffectPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.useeffect");
+        return player.isOp() || player.hasPermission("swr.useeffect");
     }
 	
     public boolean hasProjEffectPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.useprojeffect");
+        return player.isOp() || player.hasPermission("swr.useprojeffect");
     }
 }

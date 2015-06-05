@@ -34,6 +34,7 @@ public class Config {
 	private boolean clearInventoryOnJoin;
 	private boolean clearXPOnJoin;
 	private boolean clearPotionEffectsOnJoin;
+	private boolean sendPlayersToSpawnOnJoin;
 	private boolean playerNameScoreboard;
 	private int statsCommandCooldown;
 	private boolean lobbyScoreBoardEnabled;
@@ -127,7 +128,12 @@ public class Config {
 	private boolean weatherDisabled;
 	private boolean daylightCycleDisabled;
 	
-	private Location spawn;
+	private String world;
+	private int x;
+	private int y;
+	private int z;
+	private float yaw;
+	private float pitch;
 	
 	private List<String> commandWhiteList = new ArrayList<String>();
 	private List<String> spectatorWhiteList = new ArrayList<String>();
@@ -165,6 +171,7 @@ public class Config {
 			clearInventoryOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.clearInventoryOnJoin");
 			clearXPOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.clearXPOnJoin");
 			clearPotionEffectsOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.clearPotionEffectsOnJoin");
+			sendPlayersToSpawnOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.sendPlayersToSpawnOnJoin");
 			addScorePrefix = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.addScorePrefix");
 			useExternalChat = SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.useExternalChat");
 			
@@ -196,6 +203,7 @@ public class Config {
 			purchasePermanentKitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.purchasePermanentKitsEnabled");
 		}
 		resetPreGameTimerThreshold = SkyWarsReloaded.get().getConfig().getInt("gameSettings.resetPreGameTimerThreshold");
+		sendPlayersToSpawnOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.sendPlayersToSpawnOnJoin");
 		
 		showKitItemsandPotionEffects = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.showKitItemsandPotionEffects");
 		doubleChestAlwaysOP = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.doubleChestAlwaysOP");
@@ -322,23 +330,12 @@ public class Config {
 		weatherDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.weatherDisabled");
 		daylightCycleDisabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyGuard.daylightCycleDisabled");
 		
-		String world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
-		int x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
-		int y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
-		int z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
-		float yaw = SkyWarsReloaded.get().getConfig().getInt("spawn.yaw");
-		float pitch = SkyWarsReloaded.get().getConfig().getInt("spawn.pitch");
-		if (world != null) {
-		    World checkLoaded = SkyWarsReloaded.get().getServer().getWorld(world);
-		    if(checkLoaded != null) {
-				spawn = new Location(SkyWarsReloaded.get().getServer().getWorld(world), x, y, z, yaw, pitch);
-		    } else {
-		    	spawn = null;
-		    }
-		} else {
-			spawn = null;
-		}
-		
+		world = SkyWarsReloaded.get().getConfig().getString("spawn.world");
+		x = SkyWarsReloaded.get().getConfig().getInt("spawn.x");
+		y = SkyWarsReloaded.get().getConfig().getInt("spawn.y");
+		z = SkyWarsReloaded.get().getConfig().getInt("spawn.z");
+		yaw = SkyWarsReloaded.get().getConfig().getInt("spawn.yaw");
+		pitch = SkyWarsReloaded.get().getConfig().getInt("spawn.pitch");
 		
 		commandWhiteList = SkyWarsReloaded.get().getConfig().getStringList("commandWhitelist");
 		spectatorWhiteList = SkyWarsReloaded.get().getConfig().getStringList("spectatorWhitelist");
@@ -352,22 +349,27 @@ public class Config {
 	}
 	
 	public void setSpawn(Location loc) {
-		spawn = loc;
+		world = loc.getWorld().getName().toString();
+		x = loc.getBlockX();
+		y = loc.getBlockY();
+		z = loc.getBlockZ();
+		yaw = loc.getYaw();
+		pitch = loc.getPitch();
         if (daylightCycleDisabled()) {
-			if (spawn != null) {
-				World world = spawn.getWorld();
+			if (getSpawn() != null) {
+				World world = getSpawn().getWorld();
 				world.setTime(6000);
 				world.setGameRuleValue("doDaylightCycle", "false");
 				world.setStorm(false);
 				world.setThundering(false);
 			}
         }
-		SkyWarsReloaded.get().getConfig().set("spawn.world", spawn.getWorld().getName().toString());
-		SkyWarsReloaded.get().getConfig().set("spawn.x", spawn.getBlockX());
-		SkyWarsReloaded.get().getConfig().set("spawn.y", spawn.getBlockY());
-		SkyWarsReloaded.get().getConfig().set("spawn.z", spawn.getBlockZ());
-		SkyWarsReloaded.get().getConfig().set("spawn.yaw", spawn.getYaw());
-		SkyWarsReloaded.get().getConfig().set("spawn.pitch", spawn.getPitch());
+		SkyWarsReloaded.get().getConfig().set("spawn.world", world);
+		SkyWarsReloaded.get().getConfig().set("spawn.x", x);
+		SkyWarsReloaded.get().getConfig().set("spawn.y", y);
+		SkyWarsReloaded.get().getConfig().set("spawn.z", z);
+		SkyWarsReloaded.get().getConfig().set("spawn.yaw", yaw);
+		SkyWarsReloaded.get().getConfig().set("spawn.pitch", pitch);
 		SkyWarsReloaded.get().saveConfig();
 	}
 	
@@ -433,7 +435,16 @@ public class Config {
 	}
 	
 	public Location getSpawn() {
-		return spawn;
+		if (world != null) {
+		    World checkLoaded = SkyWarsReloaded.get().getServer().getWorld(world);
+		    if(checkLoaded != null) {
+				return new Location(SkyWarsReloaded.get().getServer().getWorld(world), x, y, z, yaw, pitch);
+		    } else {
+		    	return null;
+		    }
+		} else {
+			return null;
+		}
 	}
 	public Sound getJumpVoteSound() {
 		return jumpVote;
@@ -1167,6 +1178,10 @@ public class Config {
 			jumpVote =  Sound.MAGMACUBE_JUMP;
 			SkyWarsReloaded.get().getLogger().info("jumpVote sound in config is not valid, using default sound");
 		}
+	}
+
+	public boolean sendPlayersToSpawnOnJoin() {
+		return sendPlayersToSpawnOnJoin;
 	}
 	
 }

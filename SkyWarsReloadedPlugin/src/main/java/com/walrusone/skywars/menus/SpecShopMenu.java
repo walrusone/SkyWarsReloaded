@@ -99,7 +99,7 @@ public class SpecShopMenu {
     }
     
     public boolean hasSpecPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.spectateshop");
+        return player.isOp() || player.hasPermission("swr.spectateshop");
     }
     
     public boolean canSpecPurchase(GamePlayer gamePlayer, ShopItem shopItem) {

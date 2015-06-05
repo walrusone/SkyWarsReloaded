@@ -30,7 +30,7 @@ public class SignListener implements Listener {
     public void signPlaced(SignChangeEvent event) {
         String[] lines = event.getLines();
         if (lines[0].equalsIgnoreCase("[swr]")) {
-        	if (SkyWarsReloaded.perms.has(event.getPlayer(), "swr.signs")) {
+        	if (event.getPlayer().hasPermission("swr.signs")) {
         		if (SkyWarsReloaded.getCfg().signJoinMode()) {
         			Location signLocation = event.getBlock().getLocation();
                     World w = signLocation.getWorld();
@@ -91,7 +91,7 @@ public class SignListener implements Listener {
                     	int y1 = storage.getInt("games." + gameNumber + ".y");
                     	int z1 = storage.getInt("games." + gameNumber + ".z");
                     	if (x1 == x && y1 == y && z1 == z && world.equalsIgnoreCase(world1)) {
-                    		if (SkyWarsReloaded.perms.has(event.getPlayer(), "swr.signs")) {
+                    		if (event.getPlayer().hasPermission("swr.signs")) {
                           		SkyWarsReloaded.getGC().removeSignJoinGame(gameNumber);
                           	} else {
                           		event.setCancelled(true);
@@ -131,7 +131,7 @@ public class SignListener implements Listener {
            	    	                    	int y1 = storage.getInt("games." + gameNumber + ".y");
            	    	                    	int z1 = storage.getInt("games." + gameNumber + ".z");
            	    	                    	if (x1 == x && y1 == y && z1 == z && world.equalsIgnoreCase(world1)) {
-           	    	                    		if (SkyWarsReloaded.perms.has(e.getPlayer(), "swr.play")) {
+           	    	                    		if (e.getPlayer().hasPermission("swr.play")) {
            	    	                    			Game game = SkyWarsReloaded.getGC().getGame(Integer.valueOf(gameNumber));
            	    	                    			if (game != null) {
            	        	                    			if (!game.isFull() && game.getState() == GameState.PREGAME) {

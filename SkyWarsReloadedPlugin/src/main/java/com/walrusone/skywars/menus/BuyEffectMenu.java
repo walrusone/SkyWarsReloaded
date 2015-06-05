@@ -185,11 +185,11 @@ public class BuyEffectMenu {
     }
     
     public boolean hasPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.effectshop");
+        return player.isOp() || player.hasPermission("swr.effectshop");
     }
     
     public boolean hasEffectPermission(GamePlayer player, ParticleItem effect) {
-    	return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + effect.getEffect().toLowerCase()) || player.hasPerm(premissionPrefix + effect.getEffect().toLowerCase()));
+    	return (player.getP().isOp() || player.getP().hasPermission(premissionPrefix + effect.getEffect().toLowerCase()) || player.hasPerm(premissionPrefix + effect.getEffect().toLowerCase()));
     }
     
     public boolean canPurchase(GamePlayer gamePlayer, ParticleItem effect) {

@@ -160,6 +160,6 @@ public class ChestMenu {
     }
     
     public boolean hasChestPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.opchest");
+        return player.isOp() || player.hasPermission("swr.opchest");
     }
 }

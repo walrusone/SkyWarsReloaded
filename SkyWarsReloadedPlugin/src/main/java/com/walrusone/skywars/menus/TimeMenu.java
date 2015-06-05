@@ -181,7 +181,7 @@ public class TimeMenu {
     }
     
     public boolean hasTimePermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.timevote");
+        return player.isOp() || player.hasPermission("swr.timevote");
     }
     
 }

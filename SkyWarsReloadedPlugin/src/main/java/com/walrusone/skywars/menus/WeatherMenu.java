@@ -181,7 +181,7 @@ public class WeatherMenu {
     }
     
     public boolean hasWeatherPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.weathervote");
+        return player.isOp() || player.hasPermission("swr.weathervote");
     }
     
 }

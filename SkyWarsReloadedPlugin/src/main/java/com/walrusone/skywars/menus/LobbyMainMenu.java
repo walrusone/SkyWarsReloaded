@@ -172,19 +172,19 @@ public class LobbyMainMenu {
     }
 	
     public boolean hasEffectPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.effectshop");
+        return player.isOp() || player.hasPermission("swr.effectshop");
     }
     
     public boolean hasProjEffectPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.projeffectshop");
+        return player.isOp() || player.hasPermission("swr.projeffectshop");
     }
     
     public boolean hasColorPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.colorshop");
+        return player.isOp() || player.hasPermission("swr.colorshop");
     }
     
     public boolean hasPermKitPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.permkits");
+        return player.isOp() || player.hasPermission("swr.permkits");
     }
  
 }

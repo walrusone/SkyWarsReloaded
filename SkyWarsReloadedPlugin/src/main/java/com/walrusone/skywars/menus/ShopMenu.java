@@ -98,7 +98,7 @@ public class ShopMenu {
     }
     
     public boolean hasPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.shop");
+        return player.isOp() || player.hasPermission("swr.shop");
     }
     
     public boolean canPurchase(GamePlayer gamePlayer, ShopItem shopItem) {

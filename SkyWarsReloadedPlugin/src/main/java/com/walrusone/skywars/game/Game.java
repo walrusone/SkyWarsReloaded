@@ -542,7 +542,7 @@ public class Game {
 						gPlayer.setDeaths(gPlayer.getDeaths() + 1);
 						int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 						if (killer.getP() != null) {
-							if (SkyWarsReloaded.perms.has(killer.getP(), "swr.vip")) {
+							if (killer.getP().hasPermission("swr.vip")) {
 								killTotal = SkyWarsReloaded.getCfg().getKillValue() * SkyWarsReloaded.getCfg().getVIPMultiplier();
 							} else {
 								killTotal = SkyWarsReloaded.getCfg().getKillValue();
@@ -748,7 +748,7 @@ public class Game {
 						killer.setKills(killer.getKills() + 1);
 						int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 						if (killer.getP() != null) {
-							if (SkyWarsReloaded.perms.has(killer.getP(), "swr.vip")) {
+							if (killer.getP().hasPermission("swr.vip")) {
 								killTotal = SkyWarsReloaded.getCfg().getKillValue() * SkyWarsReloaded.getCfg().getVIPMultiplier();
 							} else {
 								killTotal = SkyWarsReloaded.getCfg().getKillValue();
@@ -808,7 +808,7 @@ public class Game {
 				}
 				int winTotal = SkyWarsReloaded.getCfg().getWinValue();
     			if (gPlayer.getP() != null) {
-    				if (SkyWarsReloaded.perms.has(gPlayer.getP(), "swr.vip")) {
+    				if (gPlayer.getP().hasPermission("swr.vip")) {
     					winTotal = SkyWarsReloaded.getCfg().getWinValue() * SkyWarsReloaded.getCfg().getVIPMultiplier();
     				} else {
     					winTotal = SkyWarsReloaded.getCfg().getWinValue();
@@ -909,7 +909,7 @@ public class Game {
 		String first = "";
 		int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 		if (killer.getP() != null) {
-			if (SkyWarsReloaded.perms.has(killer.getP(), "swr.vip")) {
+			if (killer.getP().hasPermission("swr.vip")) {
 				killTotal = SkyWarsReloaded.getCfg().getKillValue() * SkyWarsReloaded.getCfg().getVIPMultiplier();
 			} else {
 				killTotal = SkyWarsReloaded.getCfg().getKillValue();

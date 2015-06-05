@@ -49,7 +49,7 @@ public class JoinMenu {
                 event.setWillClose(true);
                 event.setWillDestroy(true);
                 
-                if (SkyWarsReloaded.perms.has(gamePlayer.getP(), "swr.play")) {
+                if (gamePlayer.getP().hasPermission("swr.play")) {
 	                if (gamePlayer.getP() != null) {
 	                	if (game.getState() == GameState.PREGAME && !game.isFull()) {
 		                	game.addPlayer(gamePlayer);

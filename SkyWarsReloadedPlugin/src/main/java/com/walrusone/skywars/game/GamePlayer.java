@@ -246,7 +246,7 @@ public class GamePlayer {
 			getP().getInventory().clear();
 			getP().getInventory().setItem(SkyWarsReloaded.getCfg().getExitItemSlot(), SkyWarsReloaded.getCfg().getExitGameItem());
 			if (SkyWarsReloaded.getCfg().spectateShopEnabled()) {
-				if (SkyWarsReloaded.perms.has(getP(), "swr.spectateshop")) {
+				if (getP().hasPermission("swr.spectateshop")) {
 					getP().getInventory().setItem(SkyWarsReloaded.getCfg().getSpecStoreItemSlot(), SkyWarsReloaded.getCfg().getSpecStoreMenuItem());
 				}
 			}

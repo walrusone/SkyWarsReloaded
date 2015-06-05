@@ -160,6 +160,9 @@ public class PlayerListener implements Listener {
 		        e.getPlayer().removePotionEffect(effect.getType());
 			}
 		}
+		if (SkyWarsReloaded.getCfg().sendPlayersToSpawnOnJoin()) {
+			e.getPlayer().teleport(spawn, TeleportCause.PLUGIN);
+		}
 		final Player player = e.getPlayer();
 		if (SkyWarsReloaded.getCfg().bungeeEnabled()) {
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
@@ -550,7 +553,7 @@ public class PlayerListener implements Listener {
             	} 
             	String colorMessage = ChatColor.translateAlternateColorCodes('&', event.getMessage());
             	String message = "";
-            	if (SkyWarsReloaded.perms.has(gPlayer.getP(), "swr.color")) {
+            	if (gPlayer.getP().hasPermission("swr.color")) {
                 	message = colorMessage;
             	} else {
             		message = ChatColor.stripColor(colorMessage);
@@ -663,7 +666,7 @@ public class PlayerListener implements Listener {
     
 	public void givePlayerItems(Player p) {
 		if (SkyWarsReloaded.getCfg().giveSpectateItem()) {
-			if (SkyWarsReloaded.perms.has(p, "swr.spectate")) {
+			if (p.hasPermission("swr.spectate")) {
 				p.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateItemSlot(), SkyWarsReloaded.getCfg().getSpectateItem());
 			}
 		}
@@ -677,11 +680,13 @@ public class PlayerListener implements Listener {
 	}
 	
 	public void removePlayerItems(Player player) {
-		player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
-		player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
-		player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
-		if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
-			player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+		if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).inGame()) {
+			player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+			player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+			player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
+			if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
+				player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+			}
 		}
 	}
 	

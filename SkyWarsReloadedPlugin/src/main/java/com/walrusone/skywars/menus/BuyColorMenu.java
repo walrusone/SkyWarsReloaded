@@ -184,11 +184,11 @@ public class BuyColorMenu {
     }
     
     public boolean hasPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.colorshop");
+        return player.isOp() || player.hasPermission("swr.colorshop");
     }
     
     public boolean hasColorPermission(GamePlayer player, GlassColor color) {
-    	return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + color.getColor()) || player.hasPerm(premissionPrefix + color.getColor()));
+    	return (player.getP().isOp() || player.getP().hasPermission(premissionPrefix + color.getColor()) || player.hasPerm(premissionPrefix + color.getColor().toLowerCase()));
     }
     
     public boolean canPurchase(GamePlayer gamePlayer, GlassColor gColor) {

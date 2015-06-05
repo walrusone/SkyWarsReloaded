@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,7 +82,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private boolean finishedStartup;
     private static final Logger log = Logger.getLogger("Minecraft");
     public static Economy econ = null;
-    public static Permission perms = null;
     public static Chat chat = null;
     private NMS nmsHandler;
     
@@ -135,7 +133,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
         }
         
-        setupPermissions();
         setupChat();
 
         boolean saveDefaultMaps = getConfig().getBoolean("resaveDefaultMaps");
@@ -178,7 +175,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         			hasPerm = true;
         		} else if (sender instanceof Player) {
         			Player player = (Player) sender;
-        			if (SkyWarsReloaded.perms.has(player, "swr.global")) {
+        			if (player.hasPermission("swr.global")) {
         				hasPerm = true;
         			} else {
             			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
@@ -205,7 +202,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 	}
                 	String colorMessage = ChatColor.translateAlternateColorCodes('&', messageBuilder.toString());
                  	String message = "";
-                	if (SkyWarsReloaded.perms.has(gPlayer.getP(), "swr.color")) {
+                	if (gPlayer.getP().hasPermission("swr.color")) {
                     	message = colorMessage;
                 	} else {
                 		message = ChatColor.stripColor(colorMessage);
@@ -450,12 +447,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return econ != null;
     }
 
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
-    }
-    
     private void setupChat() {
         RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
         if (chatProvider != null) {

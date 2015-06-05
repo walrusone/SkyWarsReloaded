@@ -103,6 +103,7 @@ gameSettings:
   clearInventoryOnJoin: false
   clearXPOnJoin: false
   clearPotionEffectsOnJoin: false
+  sendPlayersToSpawnOnJoin: false
   addScorePrefix: true
   useExternalChat: false
 points:

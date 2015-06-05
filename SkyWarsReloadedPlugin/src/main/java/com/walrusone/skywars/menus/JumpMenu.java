@@ -183,7 +183,7 @@ public class JumpMenu {
     }
     
     public boolean hasJumpPermission(Player player) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, "swr.jumpvote");
+        return player.isOp() || player.hasPermission("swr.jumpvote");
     }
         
 }

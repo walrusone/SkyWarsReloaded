@@ -127,11 +127,11 @@ public class KitMenu {
     }
     
     public boolean hasPermission(Player player, GameKit kit) {
-        return player.isOp() || SkyWarsReloaded.perms.has(player, premissionPrefix + kit.getName().toLowerCase());
+        return player.isOp() || player.hasPermission(premissionPrefix + kit.getName().toLowerCase());
     }
     
     public boolean hasFreePermission(GamePlayer player, GameKit kit) {
-        return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + "free." + kit.getName().toLowerCase()) || player.hasPerm(premissionPrefix + "free." + kit.getName().toLowerCase()));
+        return (player.getP().isOp() || player.getP().hasPermission(premissionPrefix + "free." + kit.getName().toLowerCase()) || player.hasPerm(premissionPrefix + "free." + kit.getName().toLowerCase()));
     }
     
     public boolean isPurchaseAble(GameKit kit) {

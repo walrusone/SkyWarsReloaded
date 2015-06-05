@@ -26,7 +26,7 @@ public class ShopCmd extends BaseCmd {
 		if (enabled) {
 			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 			if (gPlayer.inGame()) {
-				if (SkyWarsReloaded.perms.has(player, "swr.shop") && SkyWarsReloaded.getCfg().shopsEnabled()) {
+				if (player.hasPermission("swr.shop") && SkyWarsReloaded.getCfg().shopsEnabled()) {
 					if (gPlayer.getGame().getState() == GameState.PREGAME || gPlayer.getGame().getState() == GameState.PLAYING) {
 						new ShopMenu(gPlayer);
 					}
@@ -36,7 +36,7 @@ public class ShopCmd extends BaseCmd {
 					return true;
 				}
 			} else if (gPlayer.isSpectating() && SkyWarsReloaded.getCfg().spectateShopEnabled()) {
-				if (SkyWarsReloaded.perms.has(player, "swr.spectateshop")) {
+				if (player.hasPermission("swr.spectateshop")) {
 					if (gPlayer.getSpecGame().getState() == GameState.PREGAME || gPlayer.getSpecGame().getState() == GameState.PLAYING) {
 						new SpecShopMenu(gPlayer);
 					}

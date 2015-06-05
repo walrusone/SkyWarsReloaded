@@ -145,6 +145,6 @@ public class UseEffectMenu {
     }
     
     public boolean hasEffectPermission(GamePlayer player, ParticleItem effect) {
-    	return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + effect.getEffect().toLowerCase()) || player.hasPerm(premissionPrefix + effect.getEffect().toLowerCase()));
+    	return (player.getP().isOp() || player.getP().hasPermission(premissionPrefix + effect.getEffect().toLowerCase()) || player.hasPerm(premissionPrefix + effect.getEffect().toLowerCase()));
     }
 }

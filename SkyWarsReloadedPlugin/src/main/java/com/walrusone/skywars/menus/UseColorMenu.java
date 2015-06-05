@@ -147,6 +147,6 @@ public class UseColorMenu {
     }
     
     public boolean hasColorPermission(GamePlayer player, GlassColor color) {
-    	return (player.getP().isOp() || SkyWarsReloaded.perms.has(player.getP(), premissionPrefix + color.getColor()) || player.hasPerm(premissionPrefix + color.getColor()));
+    	return (player.getP().isOp() || player.getP().hasPermission(premissionPrefix + color.getColor()) || player.hasPerm(premissionPrefix + color.getColor()));
     }
 }
