@@ -97,8 +97,7 @@ public class GlassController {
                     case "black": itemStack = new ItemStack(Material.STAINED_GLASS, 1, (short)15);
                     name = new Messaging.MessageFormatter().format("colors.black");
       			  	break;
-      			    }
-                    
+      			    }  
                     
                     if (itemStack != null) {
                         colorMap.put(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name)), new GlassColor(color, name, itemStack, cost));
@@ -111,6 +110,15 @@ public class GlassController {
  
     public GlassColor getByName(String name) {
         return colorMap.get(name);
+    }
+    
+    public GlassColor getByColor(String color) {
+    	for (GlassColor glassColor: colorMap.values()) {
+    		if (glassColor.getColor().equalsIgnoreCase(color)) {
+    			return glassColor;
+    		}
+    	}
+        return null;
     }
     
     public List<GlassColor> getColorItems() {

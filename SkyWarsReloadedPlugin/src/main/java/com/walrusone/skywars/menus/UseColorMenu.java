@@ -58,7 +58,7 @@ public class UseColorMenu {
                 	return;
                 }
                 
-                if (name.equalsIgnoreCase("glass")) {
+                if (name.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', new Messaging.MessageFormatter().format("color.normal"))))) {
                 	gamePlayer.getP().closeInventory();
             		gamePlayer.setGlass("normal");
             		gamePlayer.getGame().setGlass(Material.GLASS, gamePlayer);
@@ -82,7 +82,7 @@ public class UseColorMenu {
             		gamePlayer.getP().closeInventory();
                     return;
             	} else {
-            		gamePlayer.setGlass(name);
+            		gamePlayer.setGlass(glass.getColor());
             		gamePlayer.getGame().setGlass(glass.getMaterial(), glass.getData(), gamePlayer);
                 	gamePlayer.getP().closeInventory();
                 	if (gamePlayer.getGame().getState() == GameState.PREGAME) {
@@ -130,7 +130,7 @@ public class UseColorMenu {
 	                    gamePlayer.getP(),
 	                    29,
 	                    new ItemStack(Material.GLASS, 1),
-	                    ChatColor.GREEN + "Glass",
+	                    new Messaging.MessageFormatter().format("colors.normal"),
 	                    loreList2.toArray(new String[loreList2.size()])); 
         
         List<String> loreList5 = Lists.newLinkedList();

@@ -16,6 +16,7 @@
 #  timeAfterGame: 10	//This is the amount of time after the end of a game, before the game shutsdown/restarts.
 #  maxMapSize: 200		//This is the maximum square size of the map. 
 #  maxNumberOfGames: -1 	//This is the maximum number of games possible on the server. If set to -1, it is unlimited. 
+#  maxGameLength: -1		//Sets the maximum length of a game in minutes. 
 #  playerNameScoreboard: false 	//When enabled, the in game scoreboard will show player names instead of Warriors Remaining.
 #  lobbyScoreBoardEnabled: false //When enable, a scoreboard showing player stats will be shown to players in the Lobby World.
 #  statsCommandCooldown: 60		//The amount of time a player has to wait to use the stats command again.
@@ -97,6 +98,7 @@ gameSettings:
   timeAfterGame: 10
   maxMapSize: 200
   maxNumberOfGames: -1
+  maxGameLength: -1
   playerNameScoreboard: false 
   lobbyScoreBoardEnabled: false
   statsCommandCooldown: 60

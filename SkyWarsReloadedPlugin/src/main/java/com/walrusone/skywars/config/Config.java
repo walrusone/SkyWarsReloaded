@@ -26,6 +26,7 @@ public class Config {
 	private boolean noFallDamage;
 	private int maxMapSize;
 	private int maxNumberOfGames;
+    private int maxGameLength;
 	private int minPercentPlayers;
 	private boolean resetPreGameTimerOnJoin;
 	private int timeAfterGame;
@@ -40,7 +41,6 @@ public class Config {
 	private boolean lobbyScoreBoardEnabled;
 	private boolean addScorePrefix;
 	private boolean useExternalChat;
-
 	
 	private boolean kitsEnabled;
 	private boolean shopsEnabled;
@@ -204,9 +204,16 @@ public class Config {
 		}
 		resetPreGameTimerThreshold = SkyWarsReloaded.get().getConfig().getInt("gameSettings.resetPreGameTimerThreshold");
 		sendPlayersToSpawnOnJoin =  SkyWarsReloaded.get().getConfig().getBoolean("gameSettings.sendPlayersToSpawnOnJoin");
+		int length = SkyWarsReloaded.get().getConfig().getInt("gameSettings.maxGameLength");
+		if (length != -1 && length > 0) {
+		    maxGameLength = SkyWarsReloaded.get().getConfig().getInt("gameSettings.maxGameLength") * 60;
+		} else {
+			maxGameLength = Integer.MAX_VALUE;
+		}
 		
 		showKitItemsandPotionEffects = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.showKitItemsandPotionEffects");
 		doubleChestAlwaysOP = SkyWarsReloaded.get().getConfig().getBoolean("gameOptions.doubleChestAlwaysOP");
+
 		
 		giveSpectateItem = SkyWarsReloaded.get().getConfig().getBoolean("gameItems.giveSpectateItem");
 		spectateItemSlot = SkyWarsReloaded.get().getConfig().getInt("gameItems.spectateItemSlot");
@@ -667,6 +674,10 @@ public class Config {
 	
 	public int getStrikeChance() {
 		return lightningStrikeChance;
+	}
+	
+	public int getMaxGameLength() {
+		return maxGameLength;
 	}
 	
 	public boolean weatherVoteEnabled() {

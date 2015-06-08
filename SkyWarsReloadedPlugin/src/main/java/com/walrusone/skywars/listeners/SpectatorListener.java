@@ -289,7 +289,7 @@ public class SpectatorListener implements Listener {
 		if (e.getTarget() != null && e.getTarget() instanceof Player && !e.getTarget().hasMetadata("NPC") && SkyWarsReloaded.getPC().getPlayer(((Player) e.getTarget()).getUniqueId()).isSpectating()) {
 			e.setCancelled(true);
 		}
-		if (e.getTarget() instanceof Player && SkyWarsReloaded.getPC().getPlayer(((Player) e.getTarget()).getUniqueId()).isSpectating()) {
+		if (e.getTarget() instanceof Player && e.getTarget() != null && SkyWarsReloaded.getPC().getPlayer(((Player) e.getTarget()).getUniqueId()).isSpectating()) {
 			if (e.getEntity() instanceof ExperienceOrb) {
 				repellExpOrb((Player) e.getTarget(), (ExperienceOrb) e.getEntity());
 				e.setCancelled(true);

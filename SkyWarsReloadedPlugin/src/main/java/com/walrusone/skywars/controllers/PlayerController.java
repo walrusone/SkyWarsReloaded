@@ -29,15 +29,16 @@ public class PlayerController {
             if (SkyWarsReloaded.getCfg().LobbyScoreboardEnabeld()) {
                 SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
     		        public void run() {
-    		        	String world = gamePlayer.getP().getWorld().getName();
-    		        	Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-    		        	if (spawn != null) {
-        		        	String lobbyWorld = spawn.getWorld().getName();
-        		    		if (world.equalsIgnoreCase(lobbyWorld)) {
-        			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
-        		    		}
+    		        	if (gamePlayer.getP() != null) {
+        		        	String world = gamePlayer.getP().getWorld().getName();
+        		        	Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+        		        	if (spawn != null) {
+            		        	String lobbyWorld = spawn.getWorld().getName();
+            		    		if (world.equalsIgnoreCase(lobbyWorld)) {
+            			        	SkyWarsReloaded.getScore().getScoreboard(gamePlayer.getP());
+            		    		}
+        		        	}
     		        	}
-
     			   }
                 }, 5);
             }
@@ -52,6 +53,15 @@ public class PlayerController {
 
     public GamePlayer getPlayer(UUID uuid) {
         return onlinePlayers.get(uuid);
+    }
+    
+    public GamePlayer getPlayerByName(String name) {
+    	for (GamePlayer gPlayer: onlinePlayers.values()) {
+    		if (gPlayer.getName().equals(name)) {
+    			return gPlayer;
+    		}
+    	} 
+    	return null;    	
     }
 
     public Collection<GamePlayer> getAll() {

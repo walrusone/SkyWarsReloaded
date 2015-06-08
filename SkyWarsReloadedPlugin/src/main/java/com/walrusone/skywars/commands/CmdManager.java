@@ -42,6 +42,11 @@ public class CmdManager implements CommandExecutor {
 		cmds.add(new MenuGuiCmd());
 		cmds.add(new ParticleShopCmd());
 		cmds.add(new TrailShopCmd());
+		cmds.add(new AddPointsCmd());
+		cmds.add(new RemovePointsCmd());
+		cmds.add(new SetGlassCmd());
+		cmds.add(new SetEffectCmd());
+		cmds.add(new SetProjEffectCmd());
 	}
 
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 

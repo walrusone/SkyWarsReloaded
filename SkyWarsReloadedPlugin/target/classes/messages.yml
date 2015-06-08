@@ -26,6 +26,8 @@ game:
   no-game-available: '&4There is no game available at this time. You will be added to the next available game!'
   countdown: '&4Game Starting in {time}'
   countdown-continue: '&4{time}'
+  gameEndingTimer: '&4 Game Ending in {time} Minutes'
+  forceGameEnd: '&4 Game Ending. Time Limit Reached!'
   death:
     quit-while-tagged: '&6 {player} {player_score} &b tried to run away! But he was killed by &6{killer} {killer_score}'
     explosion: '&6 {player} {player_score} &b was blown to pieces'
@@ -208,6 +210,7 @@ colors:
   green: '&aGreen'
   red: '&aRed'
   black: '&aBlack'
+  normal: '&aGlass'
 effects:
   water: '&aWater'
   flame: '&aFlame'

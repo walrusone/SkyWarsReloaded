@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywars</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V2.7.4</version>
+  <version>V2.7.5</version>
   <build>
     <resources>
       <resource>

@@ -1,6 +1,6 @@
 name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
-version: 2.7.4
+version: 2.7.5
 
 depend: [Vault]
 
@@ -38,8 +38,13 @@ permissions:
       swr.games: true
       swr.endgame: true
       swr.reload: true
+      swr.addpoints: true
+      swr.removepoints: true
+      swr.setglass: true
+      swr.seteffect: true
+      swr.setprojeffect: true
   swr.maps: 
-    description: A.
+    description: Allows a player to use map commands.
     default: op
     children:
       swr.create: true
@@ -129,4 +134,19 @@ permissions:
     default: op
   swr.edit: 
     description: Allows a player to use the edit command.
+    default: op
+  swr.addpoints: 
+    description: Allows a player to use the addpoints command.
+    default: op
+  swr.removepoints: 
+    description: Allows a player to use the removepoints command.
+    default: op
+  swr.setglass: 
+    description: Allows a player to use the setglass command.
+    default: op
+  swr.seteffect: 
+    description: Allows a player to use the seteffect command.
+    default: op
+  swr.setprojeffect: 
+    description: Allows a player to use the setprojeffect command.
     default: op

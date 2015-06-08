@@ -53,8 +53,11 @@ public class Game {
 
     private List<GamePlayer> gPlayers = new ArrayList<GamePlayer>();
 	private List<GamePlayer> spectators = new ArrayList<GamePlayer>();
+	private Map<GamePlayer, Integer> kills = new HashMap<GamePlayer, Integer>();
+	private boolean forceEnd = false;
 	private int fireworksCount = 0;
 	private int count = 0;
+	private int gameLength = 0;
 	private boolean thunderStorm = false;
 	private int nextStrike = 5;
 	private int strikeCounter = 0;
@@ -131,6 +134,7 @@ public class Game {
 		} else {
 			if (gPlayer.getP() != null) {
 				gPlayers.add(gPlayer);
+				kills.put(gPlayer, 0);
 				gPlayer.setGame(gameNumber);
 				gPlayer.setInGame(true);
 				if (SkyWarsReloaded.getCfg().bungeeEnabled()) {
@@ -194,7 +198,7 @@ public class Game {
 						color = "normal";
 					}
 					if (!color.equalsIgnoreCase("normal")) {
-						GlassColor colorGlass = SkyWarsReloaded.getGLC().getByName(color);
+						GlassColor colorGlass = SkyWarsReloaded.getGLC().getByColor(color);
 						if (colorGlass != null) {
 							setGlass(colorGlass.getMaterial(), colorGlass.getData(), gPlayer);
 						} else {
@@ -313,15 +317,18 @@ public class Game {
 									deletePlayer(gPlayer, true, false);
 								} else {
 									gPlayers.remove(gPlayer);
+									kills.remove(gPlayer);
 									checkForWinner();
 								}
 							} else {
 								gPlayers.remove(gPlayer);
+								kills.remove(gPlayer);
 								checkForWinner();
 							}
 						}
 					} else {
 						gPlayers.remove(gPlayer);
+						kills.remove(gPlayer);
 						checkForWinner();
 					}
 				}
@@ -347,6 +354,43 @@ public class Game {
 				strikeCounter = 0;
 			} else {
 				strikeCounter++;
+			}
+		}
+		
+		if(gameState == GameState.PLAYING && !forceEnd) {
+			gameLength++;
+			if ((SkyWarsReloaded.getCfg().getMaxGameLength() - gameLength) == 300) {
+				sendGameMessage(new Messaging.MessageFormatter()
+				.withPrefix()
+				.setVariable("time", "" + 5)
+				.format("game.gameEndingTimer"));
+			} else if ((SkyWarsReloaded.getCfg().getMaxGameLength() - gameLength) == 120) {
+				sendGameMessage(new Messaging.MessageFormatter()
+				.withPrefix()
+				.setVariable("time", "" + 2)
+				.format("game.gameEndingTimer"));
+			} else if ((SkyWarsReloaded.getCfg().getMaxGameLength() - gameLength) == 60) {
+				sendGameMessage(new Messaging.MessageFormatter()
+				.withPrefix()
+				.setVariable("time", "" + 1)
+				.format("game.gameEndingTimer"));
+			} else if ((SkyWarsReloaded.getCfg().getMaxGameLength() - gameLength) <= 0) {
+				forceEnd = true;
+				sendGameMessage(new Messaging.MessageFormatter()
+				.withPrefix()
+				.format("game.forceGameEnd"));
+				int highest = 0; 
+				GamePlayer winner = null;
+				for (GamePlayer gplayer: kills.keySet()) {
+					if (kills.get(gplayer) >= highest) {
+						winner = gplayer;
+					}
+				}
+				for (GamePlayer gplayer: getPlayers()) {
+					if (winner != gplayer) {
+						gplayer.getP().teleport(new Location(mapWorld, 0, -64, 0), TeleportCause.PLUGIN);
+					}
+				}
 			}
 		}
 
@@ -480,6 +524,7 @@ public class Game {
 	public void deletePlayer(final GamePlayer gplayer, boolean playerQuit, boolean hardQuit) {
 		if (gPlayers.contains(gplayer)) {
 			gPlayers.remove(gplayer);
+			kills.remove(gplayer);
 		}
 		if (playerQuit) {
 			playerQuit(gplayer);
@@ -539,6 +584,7 @@ public class Game {
 				if ((System.currentTimeMillis() - gPlayer.getTagged().getTime()) < 10000 && killer != gPlayer) {
 					if (killer != gPlayer) {
 						killer.setKills(killer.getKills() + 1);
+						kills.put(killer, kills.get(killer) + 1);
 						gPlayer.setDeaths(gPlayer.getDeaths() + 1);
 						int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 						if (killer.getP() != null) {
@@ -720,6 +766,7 @@ public class Game {
 
 	public void onPlayerDeath(final GamePlayer target, final DamageCause dCause, final Location loc) {
 		gPlayers.remove(target);
+		kills.remove(target);
 		scoreboardData.put(target.getP().getName(), 0);
 		updateScoreboard();
 		preparePlayerForExit(target);
@@ -746,6 +793,7 @@ public class Game {
 					GamePlayer killer = target.getTagged().getPlayer();
 					if (killer != target) {
 						killer.setKills(killer.getKills() + 1);
+						kills.put(killer, kills.get(killer) + 1);
 						int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 						if (killer.getP() != null) {
 							if (killer.getP().hasPermission("swr.vip")) {
@@ -798,6 +846,7 @@ public class Game {
     			}
     			GamePlayer gPlayer = getPlayers().get(0);
     			gPlayers.remove(gPlayer);
+    			kills.remove(gPlayer);
     			preparePlayerForExit(gPlayer);
 				gPlayer.setWins(gPlayer.getWins() + 1);
 				gPlayer.setGamesPlayed(gPlayer.getGamesPlayed() + 1);

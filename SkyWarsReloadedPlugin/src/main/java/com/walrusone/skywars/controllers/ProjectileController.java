@@ -159,6 +159,15 @@ public class ProjectileController {
     	return Lists.newArrayList(projEffectMap.values());
     }
     
+    public ParticleItem getByEffect(String effect) {
+    	for (ParticleItem pItem: projEffectMap.values()) {
+    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    			return pItem;
+    		}
+    	}
+        return null;
+    }
+    
 	public void addProjectile(Projectile p, String e) {
 		projectileMap.put(p,  e);
 	}

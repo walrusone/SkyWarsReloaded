@@ -144,4 +144,13 @@ public class ParticleController {
     	return Lists.newArrayList(particleMap.values());
     }
     
+    public ParticleItem getByEffect(String effect) {
+    	for (ParticleItem pItem: particleMap.values()) {
+    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    			return pItem;
+    		}
+    	}
+        return null;
+    }
+    
 }
