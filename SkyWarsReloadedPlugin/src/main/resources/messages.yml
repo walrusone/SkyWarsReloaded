@@ -127,6 +127,7 @@ menu:
   returntospawn-item-name: '&bReturn to Spawn'
   kit-item-name: '&bOpen Kit Menu'
   kit-menu-title: '&bKit Menu'
+  kit-price: '&6Price'
   kit-free: '&aFREE'
   kit-purchased: '&aYou Have Purchased This Kit'
   permkit-menu-title: 'Buy Kits Permanently'
