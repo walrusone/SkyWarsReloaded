@@ -95,9 +95,9 @@ public class KitMenu {
                 } else {
                     if (isPurchaseAble(kit)) {
                     	if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
-                    		loreList.add("\247r\2476Price\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost() ? 'a' : 'c') + kit.getCost());
+                    		loreList.add("\247r" + new Messaging.MessageFormatter().format("menu.kit-price") + "\247f: \247" + (SkyWarsReloaded.econ.getBalance(gamePlayer.getP()) >= kit.getCost() ? 'a' : 'c') + kit.getCost());
                     	} else {
-                    		loreList.add("\247r\2476Price\247f: \247" + (gamePlayer.getBalance() >= kit.getCost() ? 'a' : 'c') + kit.getCost());
+                    		loreList.add("\247r" + new Messaging.MessageFormatter().format("menu.kit-price") + "\247f: \247" + (gamePlayer.getBalance() >= kit.getCost() ? 'a' : 'c') + kit.getCost());
                     	}
                         loreList.add(" ");
 
