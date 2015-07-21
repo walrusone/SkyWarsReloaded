@@ -1,6 +1,6 @@
 name: SkyWarsReloaded
 main: com.walrusone.skywars.SkyWarsReloaded
-version: 2.7.5
+version: 2.7.6
 
 depend: [Vault]
 

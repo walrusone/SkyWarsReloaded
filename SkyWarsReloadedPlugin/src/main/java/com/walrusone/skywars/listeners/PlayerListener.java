@@ -548,9 +548,11 @@ public class PlayerListener implements Listener {
     			GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(event.getPlayer().getUniqueId());
             	String name = event.getPlayer().getDisplayName();
             	String prefix = "";
-            	if (SkyWarsReloaded.chat.getPlayerPrefix(event.getPlayer()) != null) {
-                	prefix = SkyWarsReloaded.chat.getPlayerPrefix(event.getPlayer());
-            	} 
+            	if (SkyWarsReloaded.chat != null) {
+                	if (SkyWarsReloaded.chat.getPlayerPrefix(event.getPlayer()) != null) {
+                    	prefix = SkyWarsReloaded.chat.getPlayerPrefix(event.getPlayer());
+                	} 
+            	}
             	String colorMessage = ChatColor.translateAlternateColorCodes('&', event.getMessage());
             	String message = "";
             	if (gPlayer.getP().hasPermission("swr.color")) {

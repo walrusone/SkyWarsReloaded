@@ -1,5 +1,6 @@
 package com.walrusone.skywars.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -22,6 +23,11 @@ public class CreateMapCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn == null) {
+			sender.sendMessage(ChatColor.RED + "YOU MUST SET SPAWN BEFORE YOU CAN CREATE A MAP");
+			return true;
+		}
 		String worldName = args[1].toLowerCase();
 		if (!SkyWarsReloaded.getMC().mapExists(worldName.toLowerCase())) {
 			World newWorld = SkyWarsReloaded.getWC().createEmptyWorld(worldName);

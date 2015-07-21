@@ -793,7 +793,9 @@ public class Game {
 					GamePlayer killer = target.getTagged().getPlayer();
 					if (killer != target) {
 						killer.setKills(killer.getKills() + 1);
-						kills.put(killer, kills.get(killer) + 1);
+						if (kills.get(killer) != null) {
+							kills.put(killer, kills.get(killer) + 1);
+						}
 						int killTotal = SkyWarsReloaded.getCfg().getKillValue();
 						if (killer.getP() != null) {
 							if (killer.getP().hasPermission("swr.vip")) {

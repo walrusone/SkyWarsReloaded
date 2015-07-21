@@ -2,6 +2,7 @@ package com.walrusone.skywars.commands;
 
 import java.io.File;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -23,12 +24,16 @@ public class SaveMapCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
+		Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+		if (spawn == null) {
+			sender.sendMessage(ChatColor.RED + "YOU MUST SET SPAWN BEFORE YOU CAN SAVE A MAP");
+			return true;
+		}
 		String worldName = args[1].toLowerCase();
 		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
 			if (world.getName().equalsIgnoreCase(worldName)) {
 				World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 				for (Player player: editWorld.getPlayers()) {
-					Location spawn = SkyWarsReloaded.getCfg().getSpawn();
 					player.teleport(spawn, TeleportCause.PLUGIN);
 				}
 				editWorld.save();
