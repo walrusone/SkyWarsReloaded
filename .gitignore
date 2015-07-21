@@ -15,12 +15,12 @@ $RECYCLE.BIN/
 *.msp
 
 #craftbukkit files
-craftbukkit-1.8.4.jar
-craftbukkit-1.7.10-R0.1.jar
-craftbukkit-1.7.9-R0.2-SNAPSHOT.jar
-craftbukkit-1.8.jar
-craftbukkit-1.8.3.jar
-craftbukkit-1.8.4.jar
+SkyWarsReloadedPlugin/lib/*
+v1_7_R3/lib/*
+v1_7_R4/lib/*
+v1_8_R1/lib/*
+v1_8_R2/lib/*
+v1_8_R3/lib/*
 
 # =========================
 # Operating System Files
