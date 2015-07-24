@@ -82,4 +82,8 @@ public class NMSHandler implements NMS {
 		}
 	}
 	
+	public boolean isOnePointSeven() {
+		return false;
+	} 
+	
 }

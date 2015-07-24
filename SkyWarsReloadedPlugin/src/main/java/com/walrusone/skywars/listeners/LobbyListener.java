@@ -166,12 +166,14 @@ public class LobbyListener implements Listener {
 	
 	public void removePlayerItems(Player player) {
 		if (player != null) {
-			if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).inGame()) {
-				player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
-				player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
-				player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
-				if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
-					player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+			if (SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()) != null) {
+				if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).inGame()) {
+					player.getInventory().remove(SkyWarsReloaded.getCfg().getSpectateItem());
+					player.getInventory().remove(SkyWarsReloaded.getCfg().getJoinItem());
+					player.getInventory().remove(SkyWarsReloaded.getCfg().getLobbyMenuItem());
+					if (!SkyWarsReloaded.getPC().getPlayer(player.getUniqueId()).isSpectating()) {
+						player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+					}
 				}
 			}
 		}

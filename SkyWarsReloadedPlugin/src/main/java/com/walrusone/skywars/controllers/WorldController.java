@@ -51,16 +51,16 @@ public class WorldController {
         });
 
         World world = worldCreator.createWorld();
-        world.setDifficulty(Difficulty.PEACEFUL);
-        world.setSpawnFlags(false, false);
+        world.setDifficulty(Difficulty.NORMAL);
+        world.setSpawnFlags(true, true);
         world.setPVP(true);
         world.setStorm(false);
         world.setThundering(false);
         world.setWeatherDuration(Integer.MAX_VALUE);
         world.setAutoSave(false);
         world.setKeepSpawnInMemory(false);
-        world.setTicksPerAnimalSpawns(0);
-        world.setTicksPerMonsterSpawns(0);
+        world.setTicksPerAnimalSpawns(1);
+        world.setTicksPerMonsterSpawns(1);
 
         world.setGameRuleValue("doMobSpawning", "false");
         world.setGameRuleValue("mobGriefing", "false");
@@ -100,7 +100,7 @@ public class WorldController {
         });
 		World world = worldCreator.createWorld();
         world.setDifficulty(Difficulty.NORMAL);
-        world.setSpawnFlags(false, false);
+        world.setSpawnFlags(true, true);
         if (isLobby.equalsIgnoreCase("lobby")) {
         	world.setPVP(false);
         } else {
@@ -111,9 +111,9 @@ public class WorldController {
         world.setWeatherDuration(Integer.MAX_VALUE);
         world.setAutoSave(false);
         world.setKeepSpawnInMemory(false);
-        world.setTicksPerAnimalSpawns(0);
-        world.setTicksPerMonsterSpawns(0);
-
+	    world.setTicksPerAnimalSpawns(1);
+	    world.setTicksPerMonsterSpawns(1);
+        
         world.setGameRuleValue("doMobSpawning", "false");
         world.setGameRuleValue("mobGriefing", "false");
         world.setGameRuleValue("doFireTick", "false");

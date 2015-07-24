@@ -81,4 +81,9 @@ public class NMSHandler implements NMS {
 			pConn.sendPacket(pTitle);
 		}
 	}
+	
+	public boolean isOnePointSeven() {
+		return false;
+	}
+	
 }

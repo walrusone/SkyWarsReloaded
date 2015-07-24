@@ -47,7 +47,25 @@ public class PlayerController {
 
     public void removePlayer(UUID uuid) {
     	GamePlayer save = getPlayer(uuid);
-    	SkyWarsReloaded.getDS().savePlayerAsync(uuid, save.getName(), save.getWins(), save.getKills(), save.getDeaths(), save.getGamesPlayed(), save.getScore(), save.getBalance(), save.getBlocks(), save.getPerms(), save.getNewPerms(), save.getGlass(), save.getEffect(), save.getProjEffect());
+    	String glassColor;
+    	String effect;
+    	String projEffect;
+    	if (save.getGlass() != null) {
+    		glassColor = save.getGlass();
+    	} else {
+    		glassColor = "normal";
+    	}
+    	if (save.getEffect() != null) {
+    		effect = save.getEffect();
+    	} else {
+    		effect = "normal";
+    	}
+    	if (save.getProjEffect() != null) {
+    		projEffect = save.getProjEffect();
+    	} else {
+    		projEffect = "normal";
+    	}
+    	SkyWarsReloaded.getDS().savePlayerAsync(uuid, save.getName(), save.getWins(), save.getKills(), save.getDeaths(), save.getGamesPlayed(), save.getScore(), save.getBalance(), save.getBlocks(), save.getPerms(), save.getNewPerms(), glassColor, effect, projEffect);
         onlinePlayers.remove(uuid);
     }
 

@@ -638,6 +638,7 @@ public class Game {
 		if (gplayer.getP() != null) {
 			gplayer.setInGame(false);
 			gplayer.setKitSelected(false);
+			gplayer.getP().getInventory().clear();
 			gplayer.setOpVote(0);
 			gplayer.setWeatherVote(0);
 			gplayer.setTimeVote(0);

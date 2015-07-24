@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -39,6 +41,12 @@ public class ItemUtils {
             			ItemMeta itemMeta = itemStack.getItemMeta();
             	        itemMeta.setDisplayName(item.get(x).split(":")[1]);
             	        itemStack.setItemMeta(itemMeta);
+            		} else if (item.get(x).split(":")[0].equalsIgnoreCase("color")) {
+            			if (itemStack.getType().equals(Material.LEATHER_BOOTS) || itemStack.getType().equals(Material.LEATHER_LEGGINGS) || itemStack.getType().equals(Material.LEATHER_HELMET) || itemStack.getType().equals(Material.LEATHER_CHESTPLATE)) {
+            				LeatherArmorMeta itemMeta = (LeatherArmorMeta) itemStack.getItemMeta();
+            				itemMeta.setColor(getColor(item.get(x).split(":")[1]));
+            				itemStack.setItemMeta(itemMeta);
+            			}
             		} else {
                         itemStack.addUnsafeEnchantment(getEnchant(item.get(x).split(":")[0]), Integer.parseInt(item.get(x).split(":")[1]));
             		}
@@ -193,6 +201,46 @@ public class ItemUtils {
     		return true;
     	} 
     	return false;
+    }
+    
+    public static Color getColor(String c) {
+    	if (c.equalsIgnoreCase("aqua")) {
+    		return Color.AQUA;
+    	} else if (c.equalsIgnoreCase("black")) {
+    		return Color.BLACK;
+    	} else if (c.equalsIgnoreCase("blue")) {
+    		return Color.BLUE;
+    	} else if (c.equalsIgnoreCase("fuchsia")) {
+    		return Color.FUCHSIA;
+    	} else if (c.equalsIgnoreCase("gray")) {
+    		return Color.GRAY;
+    	} else if (c.equalsIgnoreCase("green")) {
+    		return Color.GREEN;
+    	} else if (c.equalsIgnoreCase("lime")) {
+    		return Color.LIME;
+    	} else if (c.equalsIgnoreCase("maroon")) {
+    		return Color.MAROON;
+    	} else if (c.equalsIgnoreCase("navy")) {
+    		return Color.NAVY;
+    	} else if (c.equalsIgnoreCase("olive")) {
+    		return Color.OLIVE;
+    	} else if (c.equalsIgnoreCase("orange")) {
+    		return Color.ORANGE;
+    	} else if (c.equalsIgnoreCase("purple")) {
+    		return Color.PURPLE;
+    	} else if (c.equalsIgnoreCase("red")) {
+    		return Color.RED;
+    	} else if (c.equalsIgnoreCase("silver")) {
+    		return Color.SILVER;
+    	} else if (c.equalsIgnoreCase("teal")) {
+    		return Color.TEAL;
+    	} else if (c.equalsIgnoreCase("white")) {
+    		return Color.WHITE;
+    	} else if (c.equalsIgnoreCase("yellow")) {
+    		return Color.YELLOW;
+    	} else {
+    		return Color.NAVY;
+    	}
     }
     
     public static ItemStack name(ItemStack itemStack, String name, String... lores) {

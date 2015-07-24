@@ -126,5 +126,9 @@ public class NMSHandler implements NMS {
 			return "fireworksSpark";
 		}
 	}
+	
+	public boolean isOnePointSeven() {
+		return true;
+	}
 
 }

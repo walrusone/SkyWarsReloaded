@@ -20,37 +20,82 @@ public class ScoreboardController {
 			try {
 				GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
 				DecimalFormat df = new DecimalFormat("#.##");
-				String kd;
+
+				double kd;
 				if (gPlayer.getDeaths() <= 0) {
-					kd = df.format(0.00);
+					kd = 0.00;
 				} else {
-					kd = df.format((double) gPlayer.getKills()/gPlayer.getDeaths());
+					kd = (double) gPlayer.getKills()/gPlayer.getDeaths();
 				}
-		    	ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
-		        Scoreboard board = manager.getNewScoreboard();
-		        Objective stats = board.registerNewObjective("stats", "dummy");
-		        stats.setDisplaySlot(DisplaySlot.SIDEBAR);
-		        stats.setDisplayName(new Messaging.MessageFormatter().format("scoreboard.title"));
+				
+				double money;
 		        if (SkyWarsReloaded.getCfg().usingExternalEcomony()) {
-		            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) SkyWarsReloaded.econ.getBalance(player))).format("scoreboard.money")); 
-		            moneyScore.setScore(6);
+		            money = (double) SkyWarsReloaded.econ.getBalance(player); 
 		        } else {
-		            Score moneyScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", df.format((double) gPlayer.getBalance())).format("scoreboard.money")); 
-		            moneyScore.setScore(6);
+		        	money = (double) gPlayer.getBalance();
 		        }
-		        Score scoreScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getScore()).format("scoreboard.score"));
-		        scoreScore.setScore(5);
-		        Score winsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getWins()).format("scoreboard.wins"));
-		        winsScore.setScore(4);
-		        Score killsScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getKills()).format("scoreboard.kills"));
-		        killsScore.setScore(3);
-		        Score gamesScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getGamesPlayed()).format("scoreboard.games-played"));
-		        gamesScore.setScore(2);
-	            Score kdScore = stats.getScore(new Messaging.MessageFormatter().setVariable("value", kd).format("scoreboard.kd")); 
-	            kdScore.setScore(1);
-	            if (player != null) {
-	    	        player.setScoreboard(board); 
-	            }
+		        
+		    	boolean isOnePointSeven = SkyWarsReloaded.getNMS().isOnePointSeven();
+		    	if (isOnePointSeven) {
+		    		String moneyValue = new Messaging.MessageFormatter().format("scoreboard17.money");
+			        String score = new Messaging.MessageFormatter().format("scoreboard17.score");
+			        String wins = new Messaging.MessageFormatter().format("scoreboard17.wins");
+			        String kills = new Messaging.MessageFormatter().format("scoreboard17.kills");
+			        String gamesPlayed = new Messaging.MessageFormatter().format("scoreboard17.games-played");
+			        String title = new Messaging.MessageFormatter().format("scoreboard.title");
+			        
+			    	ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
+			    			    	
+			    	Scoreboard board = manager.getNewScoreboard();
+			        Objective stats = board.registerNewObjective("stats", "dummy");
+			        stats.setDisplaySlot(DisplaySlot.SIDEBAR);
+			        stats.setDisplayName(title);
+
+		            Score moneyScore = stats.getScore(moneyValue); 
+		            moneyScore.setScore((int) money);
+			        Score scoreScore = stats.getScore(score);
+			        scoreScore.setScore(gPlayer.getScore());
+			        Score winsScore = stats.getScore(wins);
+			        winsScore.setScore(gPlayer.getWins());
+			        Score killsScore = stats.getScore(kills);
+			        killsScore.setScore(gPlayer.getKills());
+			        Score gamesScore = stats.getScore(gamesPlayed);
+			        gamesScore.setScore(gPlayer.getGamesPlayed());
+		            if (player != null) {
+		    	        player.setScoreboard(board); 
+		            }
+		    	} else {
+			        String moneyValue = new Messaging.MessageFormatter().setVariable("value", df.format(money)).format("scoreboard.money");
+					String kdValue = new Messaging.MessageFormatter().setVariable("value", df.format(kd)).format("scoreboard.kd");
+			        String score = new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getScore()).format("scoreboard.score");
+			        String wins = new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getWins()).format("scoreboard.wins");
+			        String kills = new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getKills()).format("scoreboard.kills");
+			        String gamesPlayed = new Messaging.MessageFormatter().setVariable("value", "" + gPlayer.getGamesPlayed()).format("scoreboard.games-played");
+			        String title = new Messaging.MessageFormatter().format("scoreboard.title");
+			        
+			    	ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
+			    			    	
+			    	Scoreboard board = manager.getNewScoreboard();
+			        Objective stats = board.registerNewObjective("stats", "dummy");
+			        stats.setDisplaySlot(DisplaySlot.SIDEBAR);
+			        stats.setDisplayName(title);
+
+		            Score moneyScore = stats.getScore(moneyValue); 
+		            moneyScore.setScore(6);
+			        Score scoreScore = stats.getScore(score);
+			        scoreScore.setScore(5);
+			        Score winsScore = stats.getScore(wins);
+			        winsScore.setScore(4);
+			        Score killsScore = stats.getScore(kills);
+			        killsScore.setScore(3);
+			        Score gamesScore = stats.getScore(gamesPlayed);
+			        gamesScore.setScore(2);
+		            Score kdScore = stats.getScore(kdValue); 
+		            kdScore.setScore(1);
+		            if (player != null) {
+		    	        player.setScoreboard(board); 
+		            }
+		    	}
 			} catch (NullPointerException e) {
 			}
 			

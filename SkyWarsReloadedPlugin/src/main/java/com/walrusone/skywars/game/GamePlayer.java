@@ -294,7 +294,11 @@ public class GamePlayer {
 	}
 
 	public void setGlass(String name2) {
-		color = name2;
+		if (name2 != null) {
+			color = name2;
+		} else {
+			color = "normal";
+		}
 	}
 	
 	public String getGlass() {
@@ -337,7 +341,12 @@ public class GamePlayer {
 	}
 	
 	public void setEffect(String effect) {
-		this.effect = effect;
+		if (effect != null) {
+			this.effect = effect;
+		} else {
+			this.effect = "normal";
+		}
+
 	}
 	
 	public String getProjEffect() {
@@ -345,7 +354,12 @@ public class GamePlayer {
 	}
 	
 	public void setProjEffect(String effect) {
-		this.projEffect = effect;
+		if (effect != null) {
+			this.projEffect = effect;
+		} else {
+			this.projEffect = "normal";
+		}
+
 	}
 	
 }
