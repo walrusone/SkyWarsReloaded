@@ -149,57 +149,7 @@ public class ItemUtils {
     }
     
     public static boolean isEnchanted(ItemStack itemStack) {
-    	if (itemStack.containsEnchantment(Enchantment.ARROW_DAMAGE)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.ARROW_DAMAGE)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.ARROW_FIRE)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.ARROW_INFINITE)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.ARROW_KNOCKBACK)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.DAMAGE_ALL)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.DAMAGE_ARTHROPODS)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.DAMAGE_UNDEAD)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.DIG_SPEED)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.DURABILITY)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.FIRE_ASPECT)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.KNOCKBACK)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.LOOT_BONUS_MOBS)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.LUCK)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.LURE)) {
-    		return true;
-    	}  else if (itemStack.containsEnchantment(Enchantment.OXYGEN)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.PROTECTION_EXPLOSIONS)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.PROTECTION_FALL)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.PROTECTION_FIRE)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.PROTECTION_PROJECTILE)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.SILK_TOUCH)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.THORNS)) {
-    		return true;
-    	} else if (itemStack.containsEnchantment(Enchantment.WATER_WORKER)) {
-    		return true;
-    	} 
+        if (!itemStack.getEnchantments().isEmpty()) return true;
     	return false;
     }
     
