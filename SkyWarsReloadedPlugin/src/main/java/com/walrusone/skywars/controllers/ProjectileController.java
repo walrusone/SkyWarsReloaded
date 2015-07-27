@@ -23,6 +23,9 @@ public class ProjectileController {
 
 	private final Map<Projectile, String> projectileMap = Maps.newConcurrentMap();
 	private final Map<String, ParticleItem> projEffectMap = Maps.newHashMap();
+    private final List<String> effects = Arrays.asList("water", "flame", "smoke", "critical", "slime", "snow", "magic", 
+    		"music", "happy", "angry", "potion", "poison", "alphabet", "lava", "lava_drip", "heart", "redstone", "sparks", "portal", "clouds");
+    
 	
 	public ProjectileController() {
 		load();
@@ -60,89 +63,10 @@ public class ProjectileController {
                     String effect = itemData.get(0).toLowerCase();
                     String name = null;
                     
-                    switch (effect) {
-                    case "water": {
-                    	name = new Messaging.MessageFormatter().format("effects.water");
-                        break;
+                    if (effects.contains(effect)) {
+                    	name = new Messaging.MessageFormatter().format("effects." + effect);
                     }
-                    case "flame": {
-                    	name = new Messaging.MessageFormatter().format("effects.flame");
-                    	break;
-                    }
-                    case "smoke": {
-                    	name = new Messaging.MessageFormatter().format("effects.smoke");
-                    	break;
-                    }
-                    case "critical": {
-                    	name = new Messaging.MessageFormatter().format("effects.critical");
-                    	break;
-                    }
-                    case "slime": {
-                    	name = new Messaging.MessageFormatter().format("effects.slime");
-      			  		break;
-                	}
-                    case "snow": {
-                    	name = new Messaging.MessageFormatter().format("effects.snow");
-      			  		break;
-            		}
-                    case "magic": {
-                    	name = new Messaging.MessageFormatter().format("effects.magic");
-                    	break;
-                    }
-                    case "music": {
-                    	name = new Messaging.MessageFormatter().format("effects.music");
-                    	break;
-                    }
-                    case "happy": {
-                    	name = new Messaging.MessageFormatter().format("effects.happy");
-      			  		break;
-                    }
-                    case "angry": {
-                    	name = new Messaging.MessageFormatter().format("effects.angry");
-      			  		break;
-                	}
-                    case "potion": {
-                    	name = new Messaging.MessageFormatter().format("effects.potion");
-      			  		break;
-            		}
-                    case "poison": {
-                    	name = new Messaging.MessageFormatter().format("effects.poison");
-      			  		break;
-        			}
-                    case "alphabet": {
-                    	name = new Messaging.MessageFormatter().format("effects.alphabet");
-                    	break;
-    				}
-                    case "lava": {
-                    	name = new Messaging.MessageFormatter().format("effects.lava");
-      			  		break;
-					}
-                    case "lava_drip": {
-                    	name = new Messaging.MessageFormatter().format("effects.lava_drip");
-      			  		break;
-                    }
-                    case "heart": {
-                    	name = new Messaging.MessageFormatter().format("effects.heart");
-      			  		break;
-                	}
-                    case "redstone": {
-                    	name = new Messaging.MessageFormatter().format("effects.redstone");
-      			  		break;
-            		}
-                    case "sparks": {
-                    	name = new Messaging.MessageFormatter().format("effects.sparks");
-      			  		break;
-        			}
-                    case "portal": {
-                    	name = new Messaging.MessageFormatter().format("effects.portal");
-      			  		break;
-    				}
-                    case "clouds": {
-                    	name = new Messaging.MessageFormatter().format("effects.clouds");
-          			  	break;
-                    }
-      			    }
-                    
+                                        
                     if (name != null) {
                     	projEffectMap.put(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', name)), new ParticleItem(effect, name, cost));
                     }
