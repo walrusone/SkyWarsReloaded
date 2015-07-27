@@ -76,49 +76,17 @@ public class PlayerListener implements Listener {
 		 if(ent instanceof Player) {
 			 GamePlayer target = SkyWarsReloaded.getPC().getPlayer(((Player) ent).getUniqueId());
 			 if (target.inGame()) {
-				 Entity damager = e.getDamager();
-				 if (e.getCause().equals(DamageCause.PROJECTILE)) {
-					 if (damager instanceof Snowball) {
-						 Snowball snowball = (Snowball) damager;
-						 if(snowball.getShooter() instanceof Player) {
-							 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) snowball.getShooter()).getUniqueId());
-								 target.setTagged(killer);
-								 return;
-							 }
-					 	} else if (damager instanceof Egg) {
-							 Egg egg = (Egg) damager;
-							 if(egg.getShooter() instanceof Player) {
-								 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) egg.getShooter()).getUniqueId());
-									 target.setTagged(killer);
-									 return;
-								 }
-					 	} else if (damager instanceof Arrow) {
-							 Arrow arrow = (Arrow) damager;
-							 if(arrow.getShooter() instanceof Player) {
-								 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) arrow.getShooter()).getUniqueId());
-									 target.setTagged(killer);
-									 return;
-							 }
-					 	} else if (damager instanceof EnderPearl) {
-						 EnderPearl ePearl = (EnderPearl) damager;
-						 if(ePearl.getShooter() instanceof Player) {
-							 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) ePearl.getShooter()).getUniqueId());
-								 target.setTagged(killer);
-								 return;
-							 }
-						 } else if (damager instanceof ThrownPotion) {
-							 ThrownPotion potion = (ThrownPotion) damager;
-							 if(potion.getShooter() instanceof Player) {
-								 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) potion.getShooter()).getUniqueId());
-									 target.setTagged(killer);
-									 return;
-								 }
-						 }
-				 } else if (damager instanceof Player) {
-					 GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) damager).getUniqueId());
-						 target.setTagged(killer);
-						 return;
-					}
+				Entity damager = e.getDamager();
+				if (damager instanceof Projectile) {
+					Projectile proj = (Projectile) damager;
+					GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) proj.getShooter()).getUniqueId());
+					target.setTagged(killer);
+					return;
+				} else if (damager instanceof Player) {
+					GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) damager).getUniqueId());
+					target.setTagged(killer);
+					return;
+				}
 			 }
 		 }
 	}
