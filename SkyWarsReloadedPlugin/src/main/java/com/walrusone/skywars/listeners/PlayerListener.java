@@ -559,79 +559,77 @@ public class PlayerListener implements Listener {
     
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent event) {
-        final Player sender = event.getPlayer();
-        if (sender!= null) {
-        	GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(sender.getUniqueId());
+        Player sender = event.getPlayer();
+        GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(sender.getUniqueId());
             if (gPlayer.inGame()) {
             	String effect = gPlayer.getEffect();
             	World world = sender.getWorld();
             	Location location = sender.getLocation();
-            	if (effect != null) {
-                    if (effect.equalsIgnoreCase("normal")) {
-                    } else if (effect.equalsIgnoreCase("flame")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "FLAME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
-                    } else if (effect.equalsIgnoreCase("smoke")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SMOKE_LARGE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1);
-                    } else if (effect.equalsIgnoreCase("portal")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "PORTAL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((140 - 80) + 80) + 1);
-                    } else if (effect.equalsIgnoreCase("heart")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "HEART", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1);
-                    } else if (effect.equalsIgnoreCase("critical")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "CRIT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 5) + 5) + 1);
-                    }  else if (effect.equalsIgnoreCase("water")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "WATER_SPLASH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((14 - 8) + 8) + 1);
-                    } else if (effect.equalsIgnoreCase("redstone")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "REDSTONE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1);
-                    } else if (effect.equalsIgnoreCase("sparks")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "FIREWORKS_SPARK", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
-                    } else if (effect.equalsIgnoreCase("lava_drip")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "DRIP_LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
-                    } else if (effect.equalsIgnoreCase("lava")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 4) + 4) + 1);
-                    }  else if (effect.equalsIgnoreCase("alphabet")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "ENCHANTMENT_TABLE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1);
-                    } else if (effect.equalsIgnoreCase("happy")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "VILLAGER_HAPPY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 4) + 4) + 1);
-                    } else if (effect.equalsIgnoreCase("magic")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SPELL_WITCH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 7) + 7) + 1);
-                   	} else if (effect.equalsIgnoreCase("music")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "NOTE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 4) + 4) + 1);
-                   	} else if (effect.equalsIgnoreCase("angry")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "VILLAGER_ANGRY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((5 - 2) + 2) + 1);
-                   	} else if (effect.equalsIgnoreCase("clouds")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "CLOUD", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
-                   	} else if (effect.equalsIgnoreCase("potion")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SPELL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
-                    } else if (effect.equalsIgnoreCase("poison")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SPELL_INSTANT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
-                    } else if (effect.equalsIgnoreCase("snow")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SNOWBALL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
-                    } else if (effect.equalsIgnoreCase("slime")) {
-                        Random random = new Random();
-                        SkyWarsReloaded.getNMS().sendParticles(world, "SLIME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
-                    }
-            	}
+            	Random random = new Random();
+            		switch(effect) {
+            		case "flame":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "FLAME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
+                        	break;
+            		case "smoke":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "SMOKE_LARGE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1);
+                        	break;
+            		case "portal":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "PORTAL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((140 - 80) + 80) + 1);
+                        	break;
+            		case "heart":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "HEART", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1);
+                        	break;
+            		case "critical":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "CRIT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 5) + 5) + 1);
+                        	break;
+            		case "water":
+                        	SkyWarsReloaded.getNMS().sendParticles(world, "WATER_SPLASH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((14 - 8) + 8) + 1);
+                        	break;
+            		case "redstone":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "REDSTONE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 3) + 3) + 1);
+            			break;
+            		case "sparks":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "FIREWORKS_SPARK", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
+            			break;
+            		case "lava_drip":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "DRIP_LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((8 - 4) + 4) + 1);
+            			break;
+            		case "lava":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 4) + 4) + 1);
+            			break;
+            		case "alphabet":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "ENCHANTMENT_TABLE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((16 - 8) + 8) + 1);
+            			break;
+            		case "happy":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "VILLAGER_HAPPY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 4) + 4) + 1);
+            			break;
+            		case "magic":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "SPELL_WITCH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 7) + 7) + 1);
+            			break;
+            		case "music":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "NOTE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((10 - 4) + 4) + 1);
+            			break;
+            		case "angry":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "VILLAGER_ANGRY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((5 - 2) + 2) + 1);
+            			break;
+            		case "clouds":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "CLOUD", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
+            			break;
+            		case "potion":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "SPELL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
+            			break;
+            		case "poison":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "SPELL_INSTANT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
+            			break;
+            		case "snow":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "SNOWBALL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
+            			break;
+            		case "slime":
+            			SkyWarsReloaded.getNMS().sendParticles(world, "SLIME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat(), random.nextFloat(), 0, random.nextInt((12 - 6) + 6) + 1);
+            			break;
+            		default: break;
+            		}
             }
-        }
     }
     
 	public void givePlayerItems(Player p) {
