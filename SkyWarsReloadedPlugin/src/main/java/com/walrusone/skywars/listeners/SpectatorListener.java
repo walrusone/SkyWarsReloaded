@@ -55,7 +55,7 @@ import com.walrusone.skywars.utilities.Messaging;
 
 public class SpectatorListener implements Listener {
 
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true, priority=EventPriority.LOW)
 	protected void onChatSend(AsyncPlayerChatEvent e) {
 		GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
 		if (gPlayer.isSpectating()) {
