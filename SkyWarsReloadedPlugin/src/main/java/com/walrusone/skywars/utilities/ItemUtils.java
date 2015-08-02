@@ -149,50 +149,30 @@ public class ItemUtils {
     }
     
     public static boolean isEnchanted(ItemStack itemStack) {
-    	if (!itemStack.getEnchantments().isEmpty()) {
-    		return true;
-    	}
-     	return false;
+     	return !itemStack.getEnchantments().isEmpty();
     }
     
-    public static Color getColor(String c) {
-    	if (c.equalsIgnoreCase("aqua")) {
-    		return Color.AQUA;
-    	} else if (c.equalsIgnoreCase("black")) {
-    		return Color.BLACK;
-    	} else if (c.equalsIgnoreCase("blue")) {
-    		return Color.BLUE;
-    	} else if (c.equalsIgnoreCase("fuchsia")) {
-    		return Color.FUCHSIA;
-    	} else if (c.equalsIgnoreCase("gray")) {
-    		return Color.GRAY;
-    	} else if (c.equalsIgnoreCase("green")) {
-    		return Color.GREEN;
-    	} else if (c.equalsIgnoreCase("lime")) {
-    		return Color.LIME;
-    	} else if (c.equalsIgnoreCase("maroon")) {
-    		return Color.MAROON;
-    	} else if (c.equalsIgnoreCase("navy")) {
-    		return Color.NAVY;
-    	} else if (c.equalsIgnoreCase("olive")) {
-    		return Color.OLIVE;
-    	} else if (c.equalsIgnoreCase("orange")) {
-    		return Color.ORANGE;
-    	} else if (c.equalsIgnoreCase("purple")) {
-    		return Color.PURPLE;
-    	} else if (c.equalsIgnoreCase("red")) {
-    		return Color.RED;
-    	} else if (c.equalsIgnoreCase("silver")) {
-    		return Color.SILVER;
-    	} else if (c.equalsIgnoreCase("teal")) {
-    		return Color.TEAL;
-    	} else if (c.equalsIgnoreCase("white")) {
-    		return Color.WHITE;
-    	} else if (c.equalsIgnoreCase("yellow")) {
-    		return Color.YELLOW;
-    	} else {
-    		return Color.NAVY;
-    	}
+	public static Color getColor(String c) {
+		switch (c) {
+		case "aqua": return Color.AQUA;
+		case "black": return Color.BLACK;
+		case "blue": return Color.BLUE;
+		case "fuschia": return Color.FUCHSIA;
+		case "gray": return Color.GRAY;
+		case "green": return Color.GREEN;
+		case "lime": return Color.LIME;
+		case "maroon": return Color.MAROON;
+		case "navy": return Color.NAVY;
+		case "olvie": return Color.OLIVE;
+		case "orange": return Color.ORANGE;
+		case "purple": return Color.PURPLE;
+		case "red": return Color.RED;
+		case "silver": return Color.SILVER;
+		case "teal": return Color.TEAL;
+		case "white": return Color.WHITE;
+		case "yellow": return Color.YELLOW;
+		default: return Color.NAVY;
+		}
     }
     
     public static ItemStack name(ItemStack itemStack, String name, String... lores) {
