@@ -563,6 +563,9 @@ public class PlayerListener implements Listener {
         GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(sender.getUniqueId());
             if (gPlayer.inGame()) {
             	String effect = gPlayer.getEffect();
+            	if (effect == null) {
+            	    return;
+            	}
             	World world = sender.getWorld();
             	Location location = sender.getLocation();
             	Random random = new Random();
