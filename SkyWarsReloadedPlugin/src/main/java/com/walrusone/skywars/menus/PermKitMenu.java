@@ -230,7 +230,7 @@ public class PermKitMenu {
     }
     
     public boolean isPurchaseAble(GameKit kit) {
-        if (kit.getCost() > 0) {
+        if (kit.getPermCost() > 0) {
         	return true;
         }
         return false;
