@@ -110,7 +110,7 @@ public class GameKit {
                 }
                 lores.add(ChatColor.DARK_BLUE + " ");
                 String potions = new Messaging.MessageFormatter().format("kits.potion-effects");
-                if (potionEffects.size() > 1) {
+                if (potionEffects.size() > 0) {
                     lores.add(potions);
                     for (PotionEffect potionEffect: potionEffects) {
                         lores.add(ChatColor.WHITE + "" + potionEffect.getType().getName() + ", " + potionEffect.getDuration() + ", " + potionEffect.getAmplifier());
