@@ -197,20 +197,15 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(player.getUniqueId());
                 	String name = player.getDisplayName();
                 	String prefix = "";
-                	if (chat != null) {
-                    	if (SkyWarsReloaded.chat.getPlayerPrefix(gPlayer.getP()) != null) {
+                	if (chat != null && SkyWarsReloaded.chat.getPlayerPrefix(gPlayer.getP()) != null) {
                         	prefix = SkyWarsReloaded.chat.getPlayerPrefix(gPlayer.getP());
-                    	}
                 	}
                 	String colorMessage = ChatColor.translateAlternateColorCodes('&', messageBuilder.toString());
                  	String message = "";
                 	if (gPlayer.getP().hasPermission("swr.color")) {
-                    	message = colorMessage;
+                    		message = colorMessage;
                 	} else {
                 		message = ChatColor.stripColor(colorMessage);
-                		while (message.contains("&")) {
-                			message = ChatColor.translateAlternateColorCodes('&', message);
-                    		message = ChatColor.stripColor(message);
                 		}
                 	}
                 	int scoreValue = gPlayer.getScore();
