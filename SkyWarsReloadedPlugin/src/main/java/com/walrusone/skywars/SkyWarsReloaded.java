@@ -278,6 +278,24 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             invc.save();
         	deleteWorlds();
     	}
+    	    	instance = null;
+    	wc = null;
+    	ds = null;
+    	pc = null;
+    	ic = null;
+    	score = null;
+        messaging = null;
+	config = null;
+	cc = null;
+        mc = null;
+        kc = null;
+        sc = null;
+        glc = null;
+        pec = null;
+	projc = null;
+        invc = null;
+        db = null;
+        gc = null;
     }
     
     public void reload() {
