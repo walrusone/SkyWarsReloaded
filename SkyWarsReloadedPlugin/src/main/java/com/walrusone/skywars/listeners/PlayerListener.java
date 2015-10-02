@@ -14,6 +14,7 @@ import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
@@ -79,9 +80,11 @@ public class PlayerListener implements Listener {
 				Entity damager = e.getDamager();
 				if (damager instanceof Projectile) {
 					Projectile proj = (Projectile) damager;
-					GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) proj.getShooter()).getUniqueId());
-					target.setTagged(killer);
-					return;
+					if (proj.getShooter() instanceof Player) {
+						GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) proj.getShooter()).getUniqueId());
+						target.setTagged(killer);
+						return;
+					}
 				} else if (damager instanceof Player) {
 					GamePlayer killer = SkyWarsReloaded.getPC().getPlayer(((Player) damager).getUniqueId());
 					target.setTagged(killer);
