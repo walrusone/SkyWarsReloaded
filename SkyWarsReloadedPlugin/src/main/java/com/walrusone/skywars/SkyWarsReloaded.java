@@ -206,7 +206,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     		message = colorMessage;
                 	} else {
                 		message = ChatColor.stripColor(colorMessage);
-                		}
                 	}
                 	int scoreValue = gPlayer.getScore();
                 	String score;
