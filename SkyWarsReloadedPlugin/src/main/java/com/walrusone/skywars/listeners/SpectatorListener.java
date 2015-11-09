@@ -329,18 +329,20 @@ public class SpectatorListener implements Listener {
 	protected void onPlayerInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
 		if (player != null) {
+			if(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()) != null) {
+				if(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
+					e.setCancelled(true);
+				}
+			}
 			ItemStack item = player.getItemInHand();
 			if (item != null) {
 				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpectateItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpectateItem().getEnchantments().keySet())))) {
-					e.setCancelled(true);
 					new SpecPlayerMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 				}
 				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getSpecStoreMenuItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getSpecStoreMenuItem().getEnchantments().keySet())))) {
-					e.setCancelled(true);
 					new SpecShopMenu(SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()));
 				}
 				if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating() && ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (item.getData().getItemType().equals(SkyWarsReloaded.getCfg().getExitGameItem().getData().getItemType()) &&  item.getEnchantments().keySet().equals(SkyWarsReloaded.getCfg().getExitGameItem().getEnchantments().keySet())))) {
-					e.setCancelled(true);
 					GamePlayer gPlayer = SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId());
 					if (gPlayer.inGame()) {
 						Game game = gPlayer.getGame();
@@ -351,10 +353,7 @@ public class SpectatorListener implements Listener {
 					}
 				}
 			}
-			
 			if (SkyWarsReloaded.getPC().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
-				e.setCancelled(true);
-				
 				if(e.hasBlock()) {
 					if(e.getClickedBlock().getState() instanceof InventoryHolder) {
 							Inventory original = ((InventoryHolder) e.getClickedBlock().getState()).getInventory();
