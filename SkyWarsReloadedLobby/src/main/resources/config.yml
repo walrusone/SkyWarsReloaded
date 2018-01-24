@@ -1,0 +1,33 @@
+debugMode: false
+spawn: null
+leaderboardUpdateInterval: 300
+signs:
+  enabled: true
+  blockoffline: COAL_BLOCK
+  blockwaiting: EMERALD_BLOCK
+  blockplaying: REDSTONE_BLOCK
+  blockending: LAPIS_BLOCK
+items:
+  particleselect: BLAZE_POWDER
+  projectileselect: ARROW
+  killsoundselect: DIAMOND_SWORD
+  killsounditem: NOTE_BLOCK
+  winsoundselect: DRAGON_EGG
+  glassselect: STAINED_GLASS
+  tauntselect: SHIELD
+enabledMenus:
+  glass: true
+  particle: true
+  projectile: true
+  killsound: true
+  winsound: true
+  taunts: true
+sqldatabase:
+  enabled: false
+  hostname: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+gameServers:
+ - "swr:Death Caves:8:25566"

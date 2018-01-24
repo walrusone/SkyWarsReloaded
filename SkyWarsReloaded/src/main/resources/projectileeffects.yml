@@ -1,0 +1,88 @@
+# The first value is the particle effect.
+# The second value is the cost to unlock that particle effect.
+
+effects:
+  water:
+    displayname: "&bWater"
+    icon: NETHER_STAR
+    level: 3
+  flame:
+    displayname: "&bFlame"
+    icon: NETHER_STAR
+    level: 8
+  smoke:
+    displayname: "&bSmoke"
+    icon: NETHER_STAR
+    level: 13
+  critical:
+    displayname: "&bCritical"
+    icon: NETHER_STAR
+    level: 18
+  slime: 
+    displayname: "&bSlime"
+    icon: NETHER_STAR
+    level: 23
+  snow:     
+    displayname: "&bSnow"
+    icon: NETHER_STAR
+    level: 28
+  magic: 
+    displayname: "&bMagic"
+    icon: NETHER_STAR
+    level: 33
+  music: 
+    displayname: "&bMusic"
+    icon: NETHER_STAR
+    level: 38
+  happy:
+    displayname: "&bHappy"
+    icon: NETHER_STAR
+    level: 43
+  angry: 
+    displayname: "&bAngry"
+    icon: NETHER_STAR
+    level: 48
+  potion: 
+    displayname: "&bPotion"
+    icon: NETHER_STAR
+    level: 53
+  poison: 
+    displayname: "&bPoison"
+    icon: NETHER_STAR
+    level: 58
+  alphabet: 
+    displayname: "&bAlphabet"
+    icon: NETHER_STAR
+    level: 63
+  lava: 
+    displayname: "&bLava"
+    icon: NETHER_STAR
+    level: 68
+  lava_drip:   
+    displayname: "&bLave Drip"
+    icon: NETHER_STAR
+    level: 73
+  heart:
+    displayname: "&bHeart"
+    icon: NETHER_STAR
+    level: 78
+  redstone:
+    displayname: "&bRedstone"
+    icon: NETHER_STAR
+    level: 83
+  sparks: 
+    displayname: "&bSparks"
+    icon: NETHER_STAR
+    level: 88
+  portal: 
+    displayname: "&bPortal"
+    icon: NETHER_STAR
+    level: 93
+  clouds: 
+    displayname: "&bClouds"
+    icon: NETHER_STAR
+    level: 98
+  none:
+    displayname: "&bNo Particles"
+    icon: NETHER_STAR
+    level: 0

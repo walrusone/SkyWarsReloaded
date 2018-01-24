@@ -1,0 +1,139 @@
+name: SkywarsLobby
+main: com.walrusone.skywarsreloaded.SkyWarsReloaded
+version: 3.0
+
+commands:
+   skywars:
+      description: This is the main plugin command.
+      aliases: [sw]
+      usage: /<command> [args]
+permissions:
+  sw.*:
+    description: Gives access to all sw commands
+    children:
+      sw.admin: true
+      sw.maps: true
+      sw.kits: true
+      sw.player: true
+      sw.allowcommands: true
+  sw.admin:
+    description: Gives access to the sw setspawn, list, games, endgame, and reload commands
+    default: op
+    children:
+      sw.maps: true
+      sw.kits: true
+      sw.reload: true
+      sw.player: true
+      sw.setstat: true
+      sw.clearstats: true
+      sw.spectate: true
+      sw.allowcommands: true
+  sw.maps: 
+    description: Allows a player to use map commands.
+    default: op
+    children:
+      sw.addmap: true
+      sw.deletemap: true
+      sw.addmapspawn: true
+      sw.listmaps: true
+      sw.player: true
+  sw.kits:
+    description: Allows a player to use kit commands.
+    default: op
+    children:
+      sw.kitcreate: true
+      sw.kitenable: true
+      sw.kitfall: true
+      sw.kiticon: true
+      sw.kitload: true
+      sw.kitlist: true
+      sw.kitlore: true
+      sw.kitname: true
+      sw.kitpos: true
+      sw.kitregen: true
+      sw.kitpvp: true
+      sw.kitsoup: true
+      sw.kitupdate: true
+      sw.player: true
+  sw.player:
+    description: Allows a player to play faction wars.
+    default: true
+    children:
+      sw.join: true
+      sw.stats: true
+      sw.top: true
+  sw.addmap:
+    description: Allows a player to add a arena.
+    default: op
+  sw.deletemap: 
+    description: Allows a player to quit a game.
+    default: op
+  sw.addmapspawn: 
+    description: Allows a player to add a map spawnpoint.
+    default: op
+  sw.listmaps: 
+    description: Allows a player to list the available maps.
+    default: op
+  sw.reload: 
+    description: Allows a player to reload the plugin.
+    default: op
+  sw.kitcreate: 
+    description: Allows a player to use the kitcreate command.
+    default: op
+  sw.kitenable: 
+    description: Allows a player to use the kitenable command.
+    default: op
+  sw.kitfall: 
+    description: Allows a player to use the kitfall command.
+    default: op
+  sw.kiticon: 
+    description: Allows a player to use the kiticon command.
+    default: op
+  sw.kitload: 
+    description: Allows a player to use the kitload command.
+    default: op
+  sw.kitlist: 
+    description: Allows a player to use the kitlist command.
+    default: op
+  sw.kitlore: 
+    description: Allows a player to use the kitlore command.
+    default: op
+  sw.kitname: 
+    description: Allows a player to use the kitname command.
+    default: op
+  sw.kitpos: 
+    description: Allows a player to use the kitpos command.
+    default: op
+  sw.kitregen: 
+    description: Allows a player to use the kitregen command.
+    default: op
+  sw.kitpvp: 
+    description: Allows a player to use the kitpvp command.
+    default: op
+  sw.kitsoup: 
+    description: Allows a player to use the kitsoup command.
+    default: op
+  sw.kitupdate: 
+    description: Allows a player to use the kitupdate command.
+    default: op
+  sw.join: 
+    description: Allows a player to use sw join command.
+    default: true
+  sw.stats: 
+    description: Allows a player to view player stats.
+    default: true
+  sw.top: 
+    description: Allows a player to view the leaderboard.
+    default: true
+  sw.setstat:
+    description: Allows a player to set a players stats in sw.
+    default: op
+  sw.clearstats:
+    description: Allows a player to clear a players stats in sw.
+    default: op
+  sw.spectate:
+    description: Allows a player to use the spectate command.
+    default: op
+  sw.allowcommands:
+    description: Allows a player to use the commands when spectating or in sw.
+    default: op

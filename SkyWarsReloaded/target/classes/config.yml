@@ -1,0 +1,108 @@
+debugMode: false
+spawn: null
+bungeeMode: false
+bungeeLobby: lobby
+tauntCooldown: 10
+enablePressurePlateJoin: true
+teleportToSpawnOnJoin: false
+teleportToSpawnOnWorldEnter: true
+game:
+  xpForWin: 5
+  winCommands: 
+  xpForKill: 1
+  killCommands:
+  vip1Multiplier: 2
+  vip2Multiplier: 3
+  vip3Multiplier: 4
+  vip4Multiplier: 5
+  vip5Multiplier: 10
+  timeAfterMatch: 15
+  gameTimer: 900
+  waitTimer: 10
+  leaderboardUpdateInterval: 300
+  spectateEnabled: true
+  spectateDistance: 75
+  maxMapSize: 400
+  suddendeath:
+    enabled: true
+    disableHealthRegen: true
+    enableHealthDecay: false
+titles:
+  enabled: true
+fireworks:
+  enabled: true
+  per5Ticks: 1
+sounds:
+  enabled: true
+  countdown: BLOCK_NOTE_BASS
+signs:
+  enabled: true
+  blockoffline: COAL_BLOCK
+  blockwaiting: EMERALD_BLOCK
+  blockplaying: REDSTONE_BLOCK
+  blockending: LAPIS_BLOCK
+items:
+  kitvote: EYE_OF_ENDER
+  chestvote: SHIELD
+  chestrandom: NETHER_STAR
+  chestbasic: STONE_SWORD
+  chestnormal: IRON_SWORD
+  chestop: DIAMOND_SWORD
+  chestscavenger: WOOD_HOE
+  nopermission: BARRIER
+  timevote: WATCH
+  timerandom: NETHER_STAR
+  timedawn: WATCH
+  timenoon: WATCH
+  timedusk: WATCH
+  timemidnight: WATCH
+  weathervote: BLAZE_POWDER
+  weatherrandom: NETHER_STAR
+  weathersunny: PRISMARINE_SHARD
+  weatherrain: PRISMARINE_SHARD
+  weatherstorm: PRISMARINE_SHARD
+  weathersnow: PRISMARINE_SHARD
+  modifiervote: DRAGONS_BREATH
+  modifierspeed: BOOK
+  modifierjump: BOOK
+  modifierstrength: BOOK
+  modifiernone: BOOK
+  modifierrandom: NETHER_STAR
+  optionselect: EYE_OF_ENDER
+  particleselect: BLAZE_POWDER
+  projectileselect: ARROW
+  killsoundselect: DIAMOND_SWORD
+  killsounditem: NOTE_BLOCK
+  winsoundselect: DRAGON_EGG
+  glassselect: STAINED_GLASS
+  tauntselect: SHIELD
+particles:
+  enabled: true
+enabledMenus:
+  options: true
+  optionsSlot: 8
+  glass: true
+  particle: true
+  projectile: true
+  killsound: true
+  winsound: true
+  taunts: true
+sqldatabase:
+  enabled: false
+  hostname: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+disable-commands:
+  exceptions:
+  - msg
+  - r
+  - sw quit
+  enabled: true
+disable-commands-spectate:
+  exceptions:
+  - msg
+  - r
+  - sw quit
+  enabled: true

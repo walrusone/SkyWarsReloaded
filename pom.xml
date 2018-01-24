@@ -1,22 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.walrusone.skywars</groupId>
-  <artifactId>skywarsreloaded-parent</artifactId>
+  <groupId>com.walrusone.skywarsreloaded</groupId>
+  <artifactId>swrplugin-parent</artifactId>
   <version>parent</version>
   <packaging>pom</packaging>
-  <name>SkyWarsReloaded Parent</name>
-  
-  <properties>
+<properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <modules>
-    <module>API</module>
-    <module>v1_7_R3</module>
-    <module>v1_7_R4</module>
-    <module>v1_8_R1</module>
-    <module>v1_8_R2</module>
-    <module>v1_8_R3</module>    
-    <module>SkyWarsReloadedPlugin</module>
+    <module>swr-api</module>
+    <module>swr-v1_8_R1</module>
+    <module>swr-v1_8_R2</module>
+    <module>swr-v1_8_R3</module>
+    <module>swr-v1_9_R1</module>
+    <module>swr-v1_9_R2</module>
+    <module>swr-v1_10_R1</module>
+    <module>swr-v1_11_R1</module>
+    <module>swr-v1_12_R1</module>
+    <module>SkyWarsReloaded</module>
+    <module>SkyWarsReloadedLobby</module>
   </modules>
 </project>

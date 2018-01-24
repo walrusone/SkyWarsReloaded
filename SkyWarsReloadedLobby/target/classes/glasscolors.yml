@@ -1,0 +1,109 @@
+# The first value is the glass color.
+# The second value is the level to unlock that glass color.
+
+colors:
+  white: 
+    displayname: "&bWhite"
+    level: 1
+    material: STAINED_GLASS
+    datavalue: 0
+  orange:
+    displayname: "&bOrange"
+    level: 6
+    material: STAINED_GLASS
+    datavalue: 1
+  cyan:
+    displayname: "&bCyan"
+    level: 46
+    material: STAINED_GLASS
+    datavalue: 9
+  purple:
+    displayname: "&bPurple"
+    level: 51
+    material: STAINED_GLASS
+    datavalue: 10
+  blue:
+    displayname: "&Blue"
+    level: 56
+    material: STAINED_GLASS
+    datavalue: 11
+  brown:
+    displayname: "&bBrown"
+    level: 61
+    material: STAINED_GLASS
+    datavalue: 12
+  green:
+    displayname: "&bGreen"
+    level: 66
+    material: STAINED_GLASS
+    datavalue: 13
+  magenta:
+    displayname: "&bMagenta"
+    level: 11
+    material: STAINED_GLASS
+    datavalue: 2
+  lightblue:
+    displayname: "&bLight Blue"
+    level: 16
+    material: STAINED_GLASS
+    datavalue: 3
+  yellow:
+    displayname: "&bYellow"
+    level: 21
+    material: STAINED_GLASS
+    datavalue: 4
+  lime:
+    displayname: "&bLime"
+    level: 26
+    material: STAINED_GLASS
+    datavalue: 5
+  pink:
+    displayname: "&bPink"
+    level: 31
+    material: STAINED_GLASS
+    datavalue: 6
+  gray:
+    displayname: "&bGray"
+    level: 36
+    material: STAINED_GLASS
+    datavalue: 7
+  lightgray:
+    displayname: "&bLight Gray"
+    level: 41
+    material: STAINED_GLASS
+    datavalue: 8
+  red:
+    displayname: "&bRed"
+    level: 71
+    material: STAINED_GLASS
+    datavalue: 14
+  black:
+    displayname: "&bBlack"
+    level: 76
+    material: STAINED_GLASS
+    datavalue: 15
+  lapis:
+    displayname: "&bLapis"
+    level: 81
+    material: LAPIS_BLOCK
+    datavalue: -1
+  redstone:
+    displayname: "&bRedstone"
+    level: 86
+    material: REDSTONE_BLOCK
+    datavalue: -1
+  emerald:
+    displayname: "&bEmerald"
+    level: 91
+    material: EMERALD_BLOCK
+    datavalue: -1
+  diamond:
+    displayname: "&bDiamond"
+    level: 96
+    material: DIAMOND_BLOCK
+    datavalue: -1
+  none:
+    displayname: "&bGlass"
+    level: 0
+    material: GLASS
+    datavalue: -1
