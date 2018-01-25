@@ -28,6 +28,7 @@ permissions:
       sw.setstat: true
       sw.clearstats: true
       sw.chestadd: true
+      sw.start: true
       sw.allowcommands: true
   sw.maps: 
     description: Allows a player to use all map commands.
@@ -82,6 +83,9 @@ permissions:
     default: true
   sw.setspawn:
     description: Allows a player to set a set the lobby spawn.
+    default: op
+  sw.start:
+    description: Allows a player to use the start command.
     default: op
   sw.setstat:
     description: Allows a player to set a players stats.

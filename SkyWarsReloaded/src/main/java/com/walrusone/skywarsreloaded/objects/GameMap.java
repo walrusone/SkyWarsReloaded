@@ -56,6 +56,7 @@ public class GameMap {
 	private static ArrayList<String> editMaps = new ArrayList<String>();
 	private static Map<String, MapData> mapData = new HashMap<String, MapData>();
 	
+	private boolean forceStart;
     private boolean allowRegen;
     private boolean allowPvp;
     private boolean soupPvp;
@@ -87,14 +88,14 @@ public class GameMap {
 	private Objective objective;
 	private Map<String, Integer> scoreboardData = new HashMap<String, Integer>();
 	
-	private final List<String> timeItemList = Arrays.asList("timerandom", "timedawn", "timenoon", "timedusk", "timemidnight");
-	private final List<Vote> timeVoteList = Arrays.asList(Vote.TIMERANDOM, Vote.TIMEDAWN, Vote.TIMENOON, Vote.TIMEDUSK, Vote.TIMEMIDNIGHT);
-	private final List<String> chestItemList = Arrays.asList("chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger");
-	private final List<Vote> chestVoteList = Arrays.asList(Vote.CHESTRANDOM, Vote.CHESTBASIC, Vote.CHESTNORMAL, Vote.CHESTOP, Vote.CHESTSCAVENGER);
-	private final List<String> weatherItemList = Arrays.asList("weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow");
-	private final List<Vote> weatherVoteList = Arrays.asList(Vote.WEATHERRANDOM, Vote.WEATHERSUN, Vote.WEATHERRAIN, Vote.WEATHERTHUNDER, Vote.WEATHERSNOW);
-	private final List<String> modifierItemList = Arrays.asList("modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone");
-	private final List<Vote> modifierVoteList = Arrays.asList(Vote.MODIFIERRANDOM, Vote.MODIFIERSPEED, Vote.MODIFIERJUMP, Vote.MODIFIERSTRENGTH, Vote.MODIFIERNONE);
+	private static final ArrayList<String> timeItemList = new ArrayList<>(Arrays.asList("timerandom", "timedawn", "timenoon", "timedusk", "timemidnight"));
+	private static final ArrayList<Vote> timeVoteList = new ArrayList<>(Arrays.asList(Vote.TIMERANDOM, Vote.TIMEDAWN, Vote.TIMENOON, Vote.TIMEDUSK, Vote.TIMEMIDNIGHT));
+	private static final ArrayList<String> chestItemList = new ArrayList<>(Arrays.asList("chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger"));
+	private static final ArrayList<Vote> chestVoteList = new ArrayList<>(Arrays.asList(Vote.CHESTRANDOM, Vote.CHESTBASIC, Vote.CHESTNORMAL, Vote.CHESTOP, Vote.CHESTSCAVENGER));
+	private static final ArrayList<String> weatherItemList = new ArrayList<>(Arrays.asList("weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow"));
+	private static final ArrayList<Vote> weatherVoteList = new ArrayList<>(Arrays.asList(Vote.WEATHERRANDOM, Vote.WEATHERSUN, Vote.WEATHERRAIN, Vote.WEATHERTHUNDER, Vote.WEATHERSNOW));
+	private static final ArrayList<String> modifierItemList = new ArrayList<>(Arrays.asList("modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone"));
+	private static final ArrayList<Vote> modifierVoteList = new ArrayList<>(Arrays.asList(Vote.MODIFIERRANDOM, Vote.MODIFIERSPEED, Vote.MODIFIERJUMP, Vote.MODIFIERSTRENGTH, Vote.MODIFIERNONE));
 			
     public GameMap(final String name) {
         this.matchState = MatchState.WAITINGSTART;
@@ -423,6 +424,7 @@ public class GameMap {
 		}
 		availableKits.clear();
 		thunder = false;
+		forceStart = false;
         dead.clear();
         kit = null;
         kitsVoteMenu.clear();
@@ -575,7 +577,7 @@ public class GameMap {
     /*Other Voting Menu Methods*/
     
     private void prepareMenu(Inventory inv, String type) {
-		List<String> itemList = null;
+		ArrayList<String> itemList = null;
 		
 		if (type.equalsIgnoreCase("time")) {
 			itemList = timeItemList;
@@ -619,8 +621,8 @@ public class GameMap {
 	public void updateVotes(String type) {
 		HashMap <Vote, Integer> votes = getVotes(type, false);
 		
-		List<String> itemList = null;
-		List<Vote> voteList = null;
+		ArrayList<String> itemList = null;
+		ArrayList<Vote> voteList = null;
 		Inventory inv = null;
 		
 		if (type.equalsIgnoreCase("time")) {
@@ -641,29 +643,31 @@ public class GameMap {
 			inv = modifierVoteMenu;
 		}
 		
-		int x = 0;
 		for (Vote vote: votes.keySet()) {
-			ItemStack item = SkyWarsReloaded.getIM().getItem(itemList.get(x));
-			item.setAmount(votes.get(vote) == 0 ? 1 : votes.get(vote));
-			ItemMeta itemMeta = item.getItemMeta();
-			List<String> lores = itemMeta.getLore();
-			lores.add(" ");
-			lores.add(new Messaging.MessageFormatter().setVariable("number", "" + votes.get(vote)).format("game.vote-display"));
-			itemMeta.setLore(lores);
-			item.setItemMeta(itemMeta);
 			if (vote == voteList.get(0)) {
-				inv.setItem(9, item);
+				updateSlot(votes, vote, 0, 9, itemList, inv);
 			} else if (vote == voteList.get(1)) {
-				inv.setItem(11, item);
+				updateSlot(votes, vote, 1, 11, itemList, inv);
 			} else if (vote == voteList.get(2)) {
-				inv.setItem(13, item);
+				updateSlot(votes, vote, 2, 13, itemList, inv);
 			} else if (vote == voteList.get(3)) {
-				inv.setItem(15, item);
+				updateSlot(votes, vote, 3, 15, itemList, inv);
 			} else if (vote == voteList.get(4)) {
-				inv.setItem(17, item);	
+				updateSlot(votes, vote, 4, 17, itemList, inv);
 			}
-			x++;
 		}
+	}
+	
+	private void updateSlot(HashMap <Vote, Integer> votes, Vote vote, int count, int slot, ArrayList<String> itemList, Inventory inv) {
+		ItemStack item = SkyWarsReloaded.getIM().getItem(itemList.get(count));
+		item.setAmount(votes.get(vote) == 0 ? 1 : votes.get(vote));
+		ItemMeta itemMeta = item.getItemMeta();
+		List<String> lores = itemMeta.getLore();
+		lores.add(" ");
+		lores.add(new Messaging.MessageFormatter().setVariable("number", "" + votes.get(vote)).format("game.vote-display"));
+		itemMeta.setLore(lores);
+		item.setItemMeta(itemMeta);
+		inv.setItem(slot, item);
 	}
 	
     public Vote getVoted(String type) {
@@ -694,7 +698,7 @@ public class GameMap {
     private HashMap<Vote, Integer> getVotes(String type, boolean getRandom) {
     	HashMap <Vote, Integer> votes = new HashMap<Vote, Integer>();
 		
-		List<Vote> voteList = null;
+		ArrayList<Vote> voteList = null;
 		
 		if (type.equalsIgnoreCase("time")) {
 			voteList = timeVoteList;
@@ -1229,6 +1233,14 @@ public class GameMap {
 			}
 		}
 		return null;
+	}
+	
+	public void setForceStart(boolean state) {
+		forceStart = true;
+	}
+	
+	public boolean getForceStart() {
+		return forceStart;
 	}
 
 }

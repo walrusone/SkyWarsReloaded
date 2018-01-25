@@ -201,6 +201,7 @@ helpList:
   setspawn: '&a/sw setspawn &e- &2Sets the spawn at your current location'
   setstat: '&a/sw setstat &e[playername] [stat] [value] &e- &2Set a players stat value'
   clearstats: '&a/sw removestats &e[playername] &e- &2Clears a SkyWars players stats'
+  start: '&a/sw forcestart &e- &2Forces a SkyWars match to Start'
   join: '&a/sw join &e- &2Join a SkyWars match'
   reload: '&a/sw reload &e- &2Reloads SkyWars'
   stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'

@@ -176,18 +176,21 @@ public class ChestManager {
     		inventory.clear();
             int added = 0;
             Collections.shuffle(randomLoc);
+            Collections.shuffle(randomDLoc);
 
             for (ChestItem chestItem : fill) {
-                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
-                    inventory.setItem(randomLoc.get(added), chestItem.getItem());
-                    if (added++ >= inventory.getSize()-1) {
-                        break;
+            	if (chest instanceof Chest) {
+                    if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                        inventory.setItem(randomLoc.get(added), chestItem.getItem());
+                        if (added++ >= inventory.getSize()) {
+                            break;
+                        }
                     }
-                }
+            	}
                 if (chest instanceof DoubleChest) {
                     if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                         inventory.setItem(randomDLoc.get(added), chestItem.getItem());
-                        if (added++ >= inventory.getSize()-1) {
+                        if (added++ >= inventory.getSize()) {
                             break;
                         }
                     }

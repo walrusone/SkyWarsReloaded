@@ -66,15 +66,15 @@ public class Util {
 	
 	public int getMultiplier(Player player) {
 		if (player.hasPermission("sw.vip5")) {
-			return SkyWarsReloaded.getCfg().getVip1();
+			return SkyWarsReloaded.getCfg().getVip5();
 		} else if (player.hasPermission("sw.vip4")) {
-			return SkyWarsReloaded.getCfg().getVip2();
+			return SkyWarsReloaded.getCfg().getVip4();
 		} else if (player.hasPermission("sw.vip3")) {
 			return SkyWarsReloaded.getCfg().getVip3();
 		} else if (player.hasPermission("sw.vip2")) {
-			return SkyWarsReloaded.getCfg().getVip4();
+			return SkyWarsReloaded.getCfg().getVip2();
 		} else if (player.hasPermission("sw.vip1")) {
-			return SkyWarsReloaded.getCfg().getVip5();
+			return SkyWarsReloaded.getCfg().getVip1();
 		} else {
 			return 1;
 		}

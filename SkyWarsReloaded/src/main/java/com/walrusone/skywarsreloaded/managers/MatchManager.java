@@ -230,7 +230,7 @@ public class MatchManager
         gameMap.setTimer(this.getWaitTime());
         new BukkitRunnable() {
             public void run() {
-            	if (gameMap.getAlivePlayers().size() >= gameMap.getMinPlayers()) {
+            	if (gameMap.getAlivePlayers().size() >= gameMap.getMinPlayers() || gameMap.getForceStart()) {
                     if (gameMap.getTimer() <= 0) {
                         this.cancel();
                         if (gameMap.getMatchState() != MatchState.ENDING) {
@@ -272,6 +272,11 @@ public class MatchManager
             	}
             }
         }.runTaskTimer((Plugin)SkyWarsReloaded.get(), 0L, 20L);
+    }
+    
+    public void forceStart(Player player) {
+    	GameMap gameMap = this.getPlayerMap(player);
+    	gameMap.setForceStart(true);
     }
     
 	private void startMatch(final GameMap gameMap) {
@@ -463,28 +468,27 @@ public class MatchManager
         }.runTaskTimer(SkyWarsReloaded.get(), 0L, 20L);
     }
            
-    private void won(final GameMap gameMap, final Player win) {
-    	if (debug) {
-        	Util.get().logToFile(debugName + ChatColor.YELLOW + win.getName() + "Won the Match");
-    	}
-    	
-        final PlayerCard pCard = gameMap.getPlayerCard(win);
-        pCard.setPlace(1);
-        pCard.calculateELO();
-        final int eloChange = pCard.getEloChange();
-    	
-        final PlayerStat winnerData = PlayerStat.getPlayerStats(win.getUniqueId().toString());
-        winnerData.setWins(winnerData.getWins() + 1);
-		final int multiplier = Util.get().getMultiplier(win);
-		winnerData.setXp(winnerData.getXp() + (multiplier * SkyWarsReloaded.getCfg().getWinnerXP()));
-        winnerData.setElo(pCard.getPostElo());
-        
-        SoundItem sound = SkyWarsReloaded.getLM().getKillSoundByKey(winnerData.getWinSound());
-        if (sound != null) {
-        	sound.playSound(win.getLocation());
-        }    
-              
+    private void won(final GameMap gameMap, final Player win) {             
         if (win != null) {
+        	if (debug) {
+            	Util.get().logToFile(debugName + ChatColor.YELLOW + win.getName() + "Won the Match");
+        	}
+        	
+            final PlayerCard pCard = gameMap.getPlayerCard(win);
+            pCard.setPlace(1);
+            pCard.calculateELO();
+            final int eloChange = pCard.getEloChange();
+        	
+            final PlayerStat winnerData = PlayerStat.getPlayerStats(win.getUniqueId().toString());
+            winnerData.setWins(winnerData.getWins() + 1);
+    		final int multiplier = Util.get().getMultiplier(win);
+    		winnerData.setXp(winnerData.getXp() + (multiplier * SkyWarsReloaded.getCfg().getWinnerXP()));
+            winnerData.setElo(pCard.getPostElo());
+            
+            SoundItem sound = SkyWarsReloaded.getLM().getKillSoundByKey(winnerData.getWinSound());
+            if (sound != null) {
+            	sound.playSound(win.getLocation());
+            } 
             final String winner = win.getName();
             final String map = gameMap.getDisplayName();
             if (SkyWarsReloaded.get().isEnabled()) {
@@ -658,8 +662,13 @@ public class MatchManager
                      	PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
                         loserData.setLosts(loserData.getLosts() + 1);
                     }
-                	if (gameMap.getAlivePlayers().size() == 1) {
-                		this.won(gameMap, gameMap.getAlivePlayers().get(0));
+                	if (gameMap.getAlivePlayers().size() <= 1) {
+                		if (gameMap.getAlivePlayers().size() >= 1) {
+                			this.won(gameMap, gameMap.getAlivePlayers().get(0));
+                		} else {
+                			this.won(gameMap, null);
+                		}
+                		
                 	}
                 }
             }
