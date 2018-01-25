@@ -354,7 +354,7 @@ public class MatchManager
 			gameMap.setNextStrike(Util.get().getRandomNum(20, 3));
 			gameMap.setStrikeCounter(0);
 		} else if (weather == Vote.WEATHERSNOW) {
-			World world = gameMap.getAlivePlayers().get(1).getWorld();
+			World world = gameMap.getAlivePlayers().get(0).getWorld();
 			for (int x = min; x < max; x++) {
 				for (int z = min; z < max; z++) {
 					world.setBiome(x, z, Biome.ICE_MOUNTAINS);

@@ -12,7 +12,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,11 +29,11 @@ public class LobbyListener implements Listener
 {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-    public void onEntityDamage(final EntityDamageEvent e) {	
+    public void onEntityDamage(final EntityDamageByEntityEvent e) {	
 		if (e.getEntity().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
     		e.setCancelled(true);
-    		if (e.getEntity() instanceof Player) {
-        		if (((Player)e.getEntity()).hasPermission("sw.alterlobby")) {
+    		if (e.getEntity() instanceof Player || e.getDamager() instanceof Player) {
+        		if (((Player)e.getDamager()).hasPermission("sw.alterlobby")) {
         			e.setCancelled(false);
         		}
     		}
