@@ -32,6 +32,11 @@ command:
   invalid-sound: '&cThat is not a valid sound!'
   chestadd: '&cAdded the item(s) in your {method} to {type} chests at {percent} percent'
   stat-types: '&cStat type must be wins, losses, kills, deaths, elo, xp, pareffect, proeffect, glasscolor, killsound, or winsound'
+kit:
+  vote-random: '&1Random'
+  rand-lore: '&cRandomly pick a kit1'
+  vote-nokit: '&1No Kit'
+  nokit-lore: '&cBare Bones!'
 taunt:
   prefix: "&5TAUNT: &b<{player}>"
 maps:

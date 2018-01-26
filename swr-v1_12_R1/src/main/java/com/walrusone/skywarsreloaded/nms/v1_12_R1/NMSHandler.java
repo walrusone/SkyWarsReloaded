@@ -118,6 +118,7 @@ public class NMSHandler implements NMS, Listener {
         addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
 	}
@@ -133,6 +134,7 @@ public class NMSHandler implements NMS, Listener {
         addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
 	}	

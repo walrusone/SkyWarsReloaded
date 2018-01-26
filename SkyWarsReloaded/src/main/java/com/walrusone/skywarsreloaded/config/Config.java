@@ -46,6 +46,11 @@ public class Config {
 	
 	private int cooldown;
 	
+	private int randPos;
+	private int noKitPos;
+	private String randMat;
+	private String noKitMat;
+	
 	private boolean particlesEnabled;
 	
 	private boolean optionsEnabled;
@@ -140,6 +145,10 @@ public class Config {
 		
 		cooldown = SkyWarsReloaded.get().getConfig().getInt("tauntCooldown");
 		
+		randPos = SkyWarsReloaded.get().getConfig().getInt("kit.randPos");
+		noKitPos = SkyWarsReloaded.get().getConfig().getInt("kit.noKitPos");
+		randMat = SkyWarsReloaded.get().getConfig().getString("kit.randItem");
+		noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
 
 		particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
 		optionsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.options");
@@ -218,6 +227,11 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enableHealthDecay", enableHealthDecay);
 		
 		SkyWarsReloaded.get().getConfig().set("tauntCooldown", cooldown);
+		
+		SkyWarsReloaded.get().getConfig().set("kit.randPos", randPos);
+		SkyWarsReloaded.get().getConfig().set("kit.noKitPos", noKitPos);
+		SkyWarsReloaded.get().getConfig().set("kit.randItem", randMat);
+		SkyWarsReloaded.get().getConfig().set("kit.noKitItem", noKitMat);
 		
 		SkyWarsReloaded.get().getConfig().set("particles.enabled", particlesEnabled);
 		
@@ -433,5 +447,29 @@ public class Config {
 	
 	public boolean teleportOnWorldEnter() {
 		return teleportOnWorldEnter;
+	}
+
+	public int getRandPos() {
+		return randPos;
+	}
+	
+	public Material getRandMat() {
+		Material mat = Material.valueOf(randMat);
+		if (mat == null) {
+			return Material.NETHER_STAR;
+		}
+		return mat;
+	}
+	
+	public int getNoKitPos() {
+		return noKitPos;
+	}
+	
+	public Material getNoKitMat() {
+		Material mat = Material.valueOf(noKitMat);
+		if (mat == null) {
+			return Material.GLASS;
+		}
+		return mat;
 	}
 }

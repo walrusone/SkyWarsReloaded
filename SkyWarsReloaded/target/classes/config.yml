@@ -27,6 +27,11 @@ game:
     enabled: true
     disableHealthRegen: true
     enableHealthDecay: false
+kit:
+  randPos: 0
+  randItem: NETHER_STAR
+  noKitPos: 35
+  noKitItem: GLASS
 titles:
   enabled: true
 fireworks:

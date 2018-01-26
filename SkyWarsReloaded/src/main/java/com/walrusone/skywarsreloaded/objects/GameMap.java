@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -428,6 +429,7 @@ public class GameMap {
         dead.clear();
         kit = null;
         kitsVoteMenu.clear();
+        addKits();
         prepareMenu(chestVoteMenu, "chest");
         prepareMenu(timeVoteMenu, "time");
         prepareMenu(weatherVoteMenu, "weather");
@@ -547,6 +549,11 @@ public class GameMap {
 				GameKit gKit = pCard.getKitVote();
 				if (gKit != null) {
 					int multiplier = Util.get().getMultiplier(player);
+					while (gKit.getName().equalsIgnoreCase(new Messaging.MessageFormatter().format("kit.vote-random"))) {
+						Random rand = new Random();
+						int n = rand.nextInt(GameKit.getAvailableKits().size());
+						gKit = GameKit.getAvailableKits().get(n);
+					}
 					votes.put(gKit, votes.get(gKit) + (1 * multiplier));
 				}
 			}	

@@ -24,14 +24,18 @@ public class KitList extends BaseCmd {
 		player.sendMessage(new Messaging.MessageFormatter().format("command.kit-listheader"));
 		player.sendMessage(new Messaging.MessageFormatter().format("command.kit-listheader2"));
 		for (GameKit kit: GameKit.getKits()) {
-			String message;
-			if (kit.getEnabled()) {
-				message = ChatColor.GREEN + "enabled";
-			} else {
-				message = ChatColor.RED + "disabled";
+			if (!kit.getName().equalsIgnoreCase(new Messaging.MessageFormatter().format("kit.vote-random")) &&
+					!kit.getName().equalsIgnoreCase(new Messaging.MessageFormatter().format("kit.vote-nokit"))) {
+				String message;
+				if (kit.getEnabled()) {
+					message = ChatColor.GREEN + "enabled";
+				} else {
+					message = ChatColor.RED + "disabled";
+				}
+				player.sendMessage(new Messaging.MessageFormatter().setVariable("filename", kit.getFilename())
+						.setVariable("position", "" + kit.getPosition()).setVariable("status", message).format("command.kit-list"));
 			}
-			player.sendMessage(new Messaging.MessageFormatter().setVariable("filename", kit.getFilename())
-					.setVariable("position", "" + kit.getPosition()).setVariable("status", message).format("command.kit-list"));
+
 		}
 		return true;
 	}

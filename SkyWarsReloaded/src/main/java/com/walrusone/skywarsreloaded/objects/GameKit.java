@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class GameKit {
@@ -85,6 +86,31 @@ public class GameKit {
         	storage.save(kitFile);
 		} catch (IOException e) {
 		}
+	}
+	
+	private GameKit(String fnam, String nam, int pos, ItemStack ico, String lore) {
+        inventory = new ItemStack[41];
+        armor = new ItemStack[4];
+        icon = ico;    
+        lIcon = new ItemStack(Material.BARRIER, 1);
+        name = nam;
+        filename = fnam;
+        position = pos;
+       	lores.put(1, lore);
+        for (int x = 2; x < 17; x++) {
+        	lores.put(x, " ");
+        } 
+        lockedLore = "";
+        enabled = true;
+        requirePermission = false;
+        boolean noRegen = false;
+        boolean noPvp = false;
+        boolean soupPvp = false;
+        boolean noFallDamage = false;
+        gameSettings.put("noregen", noRegen);
+        gameSettings.put("nopvp", noPvp);
+        gameSettings.put("souppvp", soupPvp);
+        gameSettings.put("nofalldamage", noFallDamage);
 	}
 		
     private ItemStack[] getArmor() {
@@ -330,6 +356,16 @@ public class GameKit {
 
 	public static void loadkits() {
     	kits.clear();
+    	kits.add(new GameKit("rand",
+    			new Messaging.MessageFormatter().format("kit.vote-random"), 
+    			SkyWarsReloaded.getCfg().getRandPos(),
+    			new ItemStack(SkyWarsReloaded.getCfg().getRandMat(), 1),
+    			new Messaging.MessageFormatter().format("kit.rand-lore")));
+    	kits.add(new GameKit("nokit",
+    			new Messaging.MessageFormatter().format("kit.vote-nokit"), 
+    			SkyWarsReloaded.getCfg().getNoKitPos(),
+    			new ItemStack(SkyWarsReloaded.getCfg().getNoKitMat(), 1),
+    			new Messaging.MessageFormatter().format("kit.nokit-lore")));
         File dataDirectory = SkyWarsReloaded.get().getDataFolder();
         File kitsDirectory = new File(dataDirectory, "kits");
 
