@@ -6,6 +6,8 @@ tauntCooldown: 10
 enablePressurePlateJoin: true
 teleportToSpawnOnJoin: false
 teleportToSpawnOnWorldEnter: true
+resourcepack: https://www.dropbox.com/s/8scs6c911y3mqbg/taunts-resource-pack.zip?dl=1
+promptForResourcePackOnJoin: false
 game:
   xpForWin: 5
   winCommands: 

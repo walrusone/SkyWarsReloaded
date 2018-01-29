@@ -18,6 +18,9 @@ public class Config {
 	private boolean bungeeMode;
 	private String bungeeLobby;
 	
+	private String resourcePack;
+	private boolean promptResource;
+	
 	private int winnerXP;
 	private List<String> winCommands;
 	private int killerXP;
@@ -114,6 +117,9 @@ public class Config {
 		bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
 		bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
 		
+		resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
+		promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
+		
 		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
 		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
 		killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
@@ -198,6 +204,9 @@ public class Config {
 		
 		SkyWarsReloaded.get().getConfig().set("bungeeMode", bungeeMode);
 		SkyWarsReloaded.get().getConfig().set("bungeeLobby", bungeeLobby);
+		
+		SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
+		SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
 		
 		SkyWarsReloaded.get().getConfig().set("game.xpForWin", winnerXP);
 		SkyWarsReloaded.get().getConfig().set("game.winCommands", winCommands);
@@ -471,5 +480,13 @@ public class Config {
 			return Material.GLASS;
 		}
 		return mat;
+	}
+	
+	public boolean promptForResource() {
+		return promptResource;
+	}
+	
+	public String getResourceLink() {
+		return resourcePack;
 	}
 }
