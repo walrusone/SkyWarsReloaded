@@ -6,83 +6,124 @@ effects:
     displayname: "&bWater"
     icon: NETHER_STAR
     level: 3
+    particles: 
+    - 'WATER_SPLASH:0:0:0:2:2'
   flame:
     displayname: "&bFlame"
     icon: NETHER_STAR
     level: 8
+    particles: 
+    - 'FLAME:0:0:0:2:2'
   smoke:
     displayname: "&bSmoke"
     icon: NETHER_STAR
     level: 13
+    particles: 
+    - 'SMOKE_LARGE:0:0:0:2:2'
   critical:
     displayname: "&bCritical"
     icon: NETHER_STAR
     level: 18
+    particles: 
+    - 'CRIT:0:0:0:2:2'
   slime: 
     displayname: "&bSlime"
     icon: NETHER_STAR
     level: 23
+    particles: 
+    - 'SLIME:0:0:0:2:2'
   snow:     
     displayname: "&bSnow"
     icon: NETHER_STAR
     level: 28
+    particles: 
+    - 'SNOWBALL:0:0:0:2:2'
   magic: 
     displayname: "&bMagic"
     icon: NETHER_STAR
     level: 33
+    particles: 
+    - 'SPELL_WITCH:0:0:0:2:2'
   music: 
     displayname: "&bMusic"
     icon: NETHER_STAR
     level: 38
+    particles: 
+    - 'NOTE:0:0:-1:2:2'
   happy:
     displayname: "&bHappy"
     icon: NETHER_STAR
     level: 43
+    particles: 
+    - 'VILLAGER_HAPPY:0:0:0:2:2'
   angry: 
     displayname: "&bAngry"
     icon: NETHER_STAR
     level: 48
+    particles: 
+    - 'VILLAGER_ANGRY:0:0:0:2:2'
   potion: 
     displayname: "&bPotion"
     icon: NETHER_STAR
     level: 53
+    particles: 
+    - 'SPELL:0:0:0:2:2'
   poison: 
     displayname: "&bPoison"
     icon: NETHER_STAR
     level: 58
+    particles:
+    - 'SPELL_INSTANT:0:0:0:2:2'
   alphabet: 
     displayname: "&bAlphabet"
     icon: NETHER_STAR
     level: 63
+    particles:
+    - 'ENCHANTMENT_TABLE:0:0:-1:2:2'
   lava: 
     displayname: "&bLava"
     icon: NETHER_STAR
     level: 68
+    particles:
+    - 'LAVA:0:0:0:2:2'
   lava_drip:   
     displayname: "&bLave Drip"
     icon: NETHER_STAR
     level: 73
+    particles:
+    - 'DRIP_LAVA:0:0:0:2:2'
   heart:
     displayname: "&bHeart"
     icon: NETHER_STAR
     level: 78
+    particles:
+    - 'HEART:0:1:0:2:2'
   redstone:
     displayname: "&bRedstone"
     icon: NETHER_STAR
     level: 83
+    particles:
+    - 'REDSTONE:0:0:0:2:2'
   sparks: 
     displayname: "&bSparks"
     icon: NETHER_STAR
     level: 88
+    particles:
+    - 'FIREWORKS_SPARK:0:0:0:2:2'
   portal: 
     displayname: "&bPortal"
     icon: NETHER_STAR
     level: 93
+    particles:
+    - 'PORTAL:0:0:0:2:2'
   clouds: 
     displayname: "&bClouds"
     icon: NETHER_STAR
     level: 98
+    particles:
+    - 'CLOUD:0:0:0:2:2'
   none:
     displayname: "&bNo Particles"
     icon: NETHER_STAR
     level: 0
+    particles:

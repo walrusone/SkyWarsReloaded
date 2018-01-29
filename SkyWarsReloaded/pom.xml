@@ -82,8 +82,8 @@
     </dependency>
     <dependency>
       <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_8_R2</artifactId>
-      <version>v1_8_R2</version>
+      <artifactId>swr-v1_8_R1</artifactId>
+      <version>v1_8_R1</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>true</optional>

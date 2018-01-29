@@ -53,7 +53,7 @@ public class NMSHandler implements NMS {
 	
 	public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {
 		EnumParticle particle = EnumParticle.valueOf(type);
-		PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles(particle, false, x, y, z, offsetX, offsetY, offsetZ, data, amount, 1);
+		PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles(particle, true, x, y, z, offsetX, offsetY, offsetZ, data, amount, 1);
 		for (Player player: world.getPlayers()) {
 			CraftPlayer start = (CraftPlayer) player; //Replace player with your player.
 			EntityPlayer target = start.getHandle();
@@ -149,6 +149,11 @@ public class NMSHandler implements NMS {
         addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         addItem.setItemMeta(addItemMeta);
         return addItem;
+	}
+
+	@Override
+	public boolean isValueParticle(String string) {
+		return true;
 	}
 	
 }

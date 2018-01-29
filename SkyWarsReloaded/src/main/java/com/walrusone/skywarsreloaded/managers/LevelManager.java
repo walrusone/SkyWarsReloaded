@@ -3,39 +3,42 @@ package com.walrusone.skywarsreloaded.managers;
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.objects.GlassColor;
+import com.walrusone.skywarsreloaded.objects.ParticleEffect;
 import com.walrusone.skywarsreloaded.objects.ParticleItem;
 import com.walrusone.skywarsreloaded.objects.SoundItem;
 import com.walrusone.skywarsreloaded.objects.Taunt;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class LevelManager {
 
     private final ArrayList<GlassColor> colorList = new ArrayList<GlassColor>();
     private final ArrayList<Taunt> tauntList = new ArrayList<Taunt>();
-	private final Map<Projectile, String> projectileMap = Maps.newConcurrentMap();
+	private final Map<Projectile, List<ParticleEffect>> projectileMap = Maps.newConcurrentMap();
+	private final Map<UUID, List<ParticleEffect>> playerMap = Maps.newConcurrentMap();
     private final ArrayList<ParticleItem> particleList = new ArrayList<ParticleItem>();
 	private final ArrayList<ParticleItem> projEffectList = new ArrayList<ParticleItem>();
 	private final ArrayList<SoundItem> killSoundList = new ArrayList<SoundItem>();
 	private final ArrayList<SoundItem> winSoundList = new ArrayList<SoundItem>();
-    private final List<String> effects = Arrays.asList("water", "flame", "smoke", "critical", "slime", "snow", "magic", 
-    		"music", "happy", "angry", "potion", "poison", "alphabet", "lava", "lava_drip", "heart", "redstone", "sparks", "portal", "clouds", "none");
-    
+
     public LevelManager() {
     	if (SkyWarsReloaded.getCfg().particlesEnabled()) {
             SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), new Runnable() {
@@ -44,12 +47,21 @@ public class LevelManager {
     					if (projectile.isDead()) {
     						projectileMap.remove(projectile);
     					} else {
-    						String effect = projectileMap.get(projectile);
-    						doEffect(projectile, effect);
+    						List<ParticleEffect> effects = projectileMap.get(projectile);
+    						doEffects(projectile.getLocation(), effects, true);
+    					}
+    				}
+    				for (UUID p: playerMap.keySet()) {
+    					Player player = Bukkit.getPlayer(p);
+    					if (player == null) {
+    						playerMap.remove(p);
+    					} else {
+    						List<ParticleEffect> effects = playerMap.get(p);
+    						doEffects(player.getLocation(), effects, false);
     					}
     				}
     			}
-    		}, 2, 2); 
+    		}, 3, 3); 
     	}
         loadGlassColors();
         loadParticleEffects();
@@ -137,16 +149,31 @@ public class LevelManager {
 
             if (storage.getConfigurationSection("effects") != null) {
             	for (String key: storage.getConfigurationSection("effects").getKeys(false)) {
-            		String effect = key;
                 	String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
+                	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
+                	if (particles != null) {
+                    	for (String part: particles) {
+                    		final String[] parts = part.split(":");
+                            if (parts.length == 6 
+                            		&& SkyWarsReloaded.getNMS().isValueParticle(parts[0].toUpperCase()) 
+                            		&& Util.get().isFloat(parts[1])
+                    				&& Util.get().isFloat(parts[2])
+                    				&& Util.get().isFloat(parts[3])
+                            		&& Util.get().isInteger(parts[4]) 
+                            		&& Util.get().isInteger(parts[5])) {
+                            	effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.valueOf(parts[4]), Integer.valueOf(parts[5])));
+                            } else {
+                            	SkyWarsReloaded.get().getLogger().info("The particle effect " + key + " has an invalid particle effect");
+                            }
+                    	}
+                	}
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		if (effects.contains(effect)) {
-                            particleList.add(new ParticleItem(effect, name, mat, level));
-                		}
+                		particleList.add(new ParticleItem(key, effects, name, mat, level));
                     }
             	}
             }
@@ -169,9 +196,9 @@ public class LevelManager {
     	return particleList;
     }
     
-    public ParticleItem getParticleByEffect(String effect) {
+    public ParticleItem getParticleByKey(String effect) {
     	for (ParticleItem pItem: particleList) {
-    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    		if (pItem.getKey().equalsIgnoreCase(effect)) {
     			return pItem;
     		}
     	}
@@ -194,16 +221,32 @@ public class LevelManager {
 
             if (storage.getConfigurationSection("effects") != null) {
             	for (String key: storage.getConfigurationSection("effects").getKeys(false)) {
-            		String effect = key;
-                	String name = storage.getString("effects." + key + ".displayname");
+            		String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
+                	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
+                	if (particles != null) {
+                		for (String part: particles) {
+                    		final String[] parts = part.split(":");
+                            if (parts.length == 6 
+                            		&& SkyWarsReloaded.getNMS().isValueParticle(parts[0].toUpperCase()) 
+                            		&& Util.get().isFloat(parts[1])
+                    				&& Util.get().isFloat(parts[2])
+                    				&& Util.get().isFloat(parts[3])
+                            		&& Util.get().isInteger(parts[4]) 
+                            		&& Util.get().isInteger(parts[5])) {
+                            	effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.valueOf(parts[4]), Integer.valueOf(parts[5])));
+                            } else {
+                            	SkyWarsReloaded.get().getLogger().info("The particle effect " + key + " has an invalid particle effect");
+                            }
+                    	}
+                	}                	
+        
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		if (effects.contains(effect)) {
-                    		projEffectList.add(new ParticleItem(effect, name, mat, level));
-                		}
+                		projEffectList.add(new ParticleItem(key, effects, name, mat, level));
                     }
             	}
             }
@@ -225,9 +268,9 @@ public class LevelManager {
     	return projEffectList;
     }
     
-    public ParticleItem getProjByEffect(String effect) {
+    public ParticleItem getProjByKey(String effect) {
     	for (ParticleItem pItem: projEffectList) {
-    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    		if (pItem.getKey().equalsIgnoreCase(effect)) {
     			return pItem;
     		}
     	}
@@ -430,55 +473,46 @@ public class LevelManager {
     
     /*Handles projectile effects*/
   
-    public void addProjectile(Projectile p, String e) {
+    public void addProjectile(Projectile p, List<ParticleEffect> e) {
 		projectileMap.put(p,  e);
 	}
+    
+    public void addPlayer(UUID p, List<ParticleEffect> e) {
+		playerMap.put(p,  e);
+	}
+    
+    public void removePlayer(UUID p) {
+		playerMap.remove(p);
+	}
 	
-	private void doEffect(Projectile projectile, String effect) {
-		World world = projectile.getWorld();
-		Location location = projectile.getLocation();
-		if (effect.equalsIgnoreCase("none")) {
-        } else if (effect.equalsIgnoreCase("flame")) {
-        	Util.get().sendParticles(world, "FLAME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        }  else if (effect.equalsIgnoreCase("smoke")) {
-        	Util.get().sendParticles(world, "SMOKE_LARGE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("portal")) {
-        	Util.get().sendParticles(world, "PORTAL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("heart")) {
-        	Util.get().sendParticles(world, "HEART", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("critical")) {
-        	Util.get().sendParticles(world, "CRIT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        }  else if (effect.equalsIgnoreCase("water")) {
-        	Util.get().sendParticles(world, "WATER_SPLASH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("redstone")) {
-        	Util.get().sendParticles(world, "REDSTONE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("sparks")) {
-        	Util.get().sendParticles(world, "FIREWORKS_SPARK", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("lava_drip")) {
-        	Util.get().sendParticles(world, "DRIP_LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("lava")) {
-        	Util.get().sendParticles(world, "LAVA", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        }  else if (effect.equalsIgnoreCase("alphabet")) {
-        	Util.get().sendParticles(world, "ENCHANTMENT_TABLE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("happy")) {
-        	Util.get().sendParticles(world, "VILLAGER_HAPPY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("magic")) {
-        	Util.get().sendParticles(world, "SPELL_WITCH", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-       	} else if (effect.equalsIgnoreCase("music")) {
-       		Util.get().sendParticles(world, "NOTE", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-       	} else if (effect.equalsIgnoreCase("angry")) {
-       		Util.get().sendParticles(world, "VILLAGER_ANGRY", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-       	} else if (effect.equalsIgnoreCase("clouds")) {
-       		Util.get().sendParticles(world, "CLOUD", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-       	} else if (effect.equalsIgnoreCase("potion")) {
-       		Util.get().sendParticles(world, "SPELL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("poison")) {
-        	Util.get().sendParticles(world, "SPELL_INSTANT", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("snow")) {
-        	Util.get().sendParticles(world, "SNOWBALL", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        } else if (effect.equalsIgnoreCase("slime")) {
-        	Util.get().sendParticles(world, "SLIME", (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        }
+	private void doEffects(Location location, List<ParticleEffect> effects, boolean isProjectile) {
+		Random random = new Random();
+		if (isProjectile) {
+			for (ParticleEffect p: effects) {
+				Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, getData(p), 2);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						for (int i = 0; i < 3; i++) {
+							Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), getData(p), 1);
+						}
+					}
+				}.runTaskLater(SkyWarsReloaded.get(), 3);
+			}
+		} else {
+			for (ParticleEffect p: effects) {
+				Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat() * (p.getOffsetYU() - p.getOffsetYL()) + p.getOffsetYL() , random.nextFloat(), getData(p), random.nextInt((p.getAmountU() - p.getAmountL()) + p.getAmountL()) + 1);
+			}
+		}
+	}
+	
+	private float getData(ParticleEffect p) {
+		Random random = new Random();
+		float data = p.getData();
+		if (p.getData() == -1) {
+			data = random.nextFloat();
+		}
+		return data;
 	}
     
 }

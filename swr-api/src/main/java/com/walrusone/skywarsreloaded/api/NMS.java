@@ -26,4 +26,5 @@ public interface NMS {
 	public ItemStack getOffHandItem(Player player);
 	public ItemStack getItemStack(Material material, List<String> lore, String message);
 	public ItemStack getItemStack(ItemStack item, List<String> lore, String message);
+	public boolean isValueParticle(String string);
 }
