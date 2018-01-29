@@ -149,5 +149,10 @@ public class NMSHandler implements NMS {
         addItem.setItemMeta(addItemMeta);
         return addItem;
 	}
+
+	@Override
+	public boolean isValueParticle(String string) {
+		return true;
+	}
 	
 }

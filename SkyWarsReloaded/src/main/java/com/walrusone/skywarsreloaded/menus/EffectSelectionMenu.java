@@ -42,14 +42,14 @@ public class EffectSelectionMenu {
                     return;
                 }           
                 
-            	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getEffect())) {
+            	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getEffects())) {
                     return;
             	} else {
                     event.setWillClose(true);
                     event.setWillDestroy(true);
             
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
-                	ps.setParticleEffect(effect.getEffect());
+                	ps.setParticleEffect(effect.getKey());
                 	DataStorage.get().saveStats(ps);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg"));
             	}   
@@ -69,7 +69,7 @@ public class EffectSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= effect.getLevel() || player.hasPermission("sw.pareffect." + effect.getEffect())) {
+            if (player.getLevel() >= effect.getLevel() || player.hasPermission("sw.pareffect." + effect.getEffects())) {
             	loreList.add(new Messaging.MessageFormatter().format("menu.useeffect-seteffect"));
             	item = new ItemStack(effect.getMaterial(), 1);
             } else {
