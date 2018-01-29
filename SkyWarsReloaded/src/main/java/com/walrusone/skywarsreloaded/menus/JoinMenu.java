@@ -50,7 +50,7 @@ public class JoinMenu {
                 event.setWillClose(true);
                 event.setWillDestroy(true);
                 
-                if (player.hasPermission("swr.play")) {
+                if (player.hasPermission("sw.join")) {
 	                if (player!= null) {
 	                	if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
 		                	gMap.addPlayer(player);

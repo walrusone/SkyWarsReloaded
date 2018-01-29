@@ -50,7 +50,7 @@ public class SpectateMenu {
                 event.setWillClose(true);
                 event.setWillDestroy(true);
                 
-                if (player.hasPermission("swr.play")) {
+                if (player.hasPermission("sw.spectate")) {
 	                if (player!= null) {
 		                MatchManager.get().addSpectator(gMap, player);
 	                }

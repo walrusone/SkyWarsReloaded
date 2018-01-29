@@ -60,6 +60,7 @@ permissions:
     default: true
     children:
       sw.join: true
+      sw.quit: true
       sw.stats: true
       sw.top: true
   sw.addmap:
@@ -118,6 +119,9 @@ permissions:
     default: op
   sw.join: 
     description: Allows a player to use sw join command.
+    default: true
+  sw.quit: 
+    description: Allows a player to use sw quit command.
     default: true
   sw.stats: 
     description: Allows a player to view player stats.

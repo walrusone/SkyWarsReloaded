@@ -16,6 +16,7 @@ import com.walrusone.skywarsreloaded.menus.EffectSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.KillSoundSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.ProjSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.WinSoundSelectionMenu;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class LobbyListener implements Listener
 {
@@ -48,6 +49,14 @@ public class LobbyListener implements Listener
     	Player player = (Player) event.getWhoClicked();
     	if (!player.hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(player)) {
     		event.setCancelled(true);
+    	}
+    	
+    	SkyWarsReloaded.get().getLogger().info(event.getInventory().getName());
+    	SkyWarsReloaded.get().getLogger().info(new Messaging.MessageFormatter().format("items.joinmenu"));
+    	
+    	if (event.getInventory().getName().equalsIgnoreCase(new Messaging.MessageFormatter().format("items.joinmenu")) ||
+    			event.getInventory().getName().equalsIgnoreCase(new Messaging.MessageFormatter().format("items.spectatemenu"))) {
+    		event.setCancelled(false);
     	}
     }
     

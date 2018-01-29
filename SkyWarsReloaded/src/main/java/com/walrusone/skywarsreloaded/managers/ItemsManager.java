@@ -36,7 +36,7 @@ public class ItemsManager {
         
         addItem("optionselect", lore, "items.skywars-options"); 
         addItem("joinselect", lore, "items.joinmenu");
-        addItem("spectateselect", lore, "items.spectatemenu:");
+        addItem("spectateselect", lore, "items.spectatemenu");
     }
 
 	private void getMatchStartItems() {

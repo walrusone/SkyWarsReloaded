@@ -102,10 +102,10 @@ public class PlayerStat
     	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
         	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
     	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
+    	        		        if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
         	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
     	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+    	        		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
         	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
     	        		        }
     	        		        player.updateInventory();

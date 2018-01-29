@@ -25,7 +25,7 @@ public class PlayerJoinListener implements Listener
         	new BukkitRunnable() {
     			@Override
     			public void run() {
-   			    	a1.getPlayer().setResourcePack(SkyWarsReloaded.getCfg().getResourceLink());
+    				a1.getPlayer().setResourcePack(SkyWarsReloaded.getCfg().getResourceLink());
     			}
         	}.runTaskLater(SkyWarsReloaded.get(), 20);
     	}

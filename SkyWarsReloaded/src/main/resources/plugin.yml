@@ -30,6 +30,7 @@ permissions:
       sw.chestadd: true
       sw.start: true
       sw.allowcommands: true
+      sw.spectate: true
   sw.maps: 
     description: Allows a player to use all map commands.
     default: op
@@ -72,6 +73,9 @@ permissions:
   sw.join: 
     description: Allows a player to use sw join command.
     default: true
+  sw.spectate: 
+    description: Allows a player to use spectate using the spectate menu.
+    default: op
   sw.stats: 
     description: Allows a player to view player stats.
     default: true
