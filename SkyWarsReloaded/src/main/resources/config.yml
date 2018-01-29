@@ -48,6 +48,10 @@ signs:
   blockwaiting: EMERALD_BLOCK
   blockplaying: REDSTONE_BLOCK
   blockending: LAPIS_BLOCK
+  almostfull: DIAMOND_HELMET
+  threefull: GOLD_HELMET
+  halffull: IRON_HELMET
+  almostempty: LEATHER_HELMET
 items:
   kitvote: EYE_OF_ENDER
   chestvote: SHIELD
@@ -75,6 +79,8 @@ items:
   modifierstrength: BOOK
   modifiernone: BOOK
   modifierrandom: NETHER_STAR
+  joinselect: DIAMOND_HELMET
+  spectateselect: LEATHER_HELMET
   optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
   projectileselect: ARROW
@@ -86,6 +92,10 @@ items:
 particles:
   enabled: true
 enabledMenus:
+  join: true
+  joinSlot: 0
+  spectate: true
+  spectateSlot: 4
   options: true
   optionsSlot: 8
   glass: true

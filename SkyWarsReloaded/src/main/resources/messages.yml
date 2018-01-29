@@ -134,6 +134,7 @@ menu:
   usewin-setsound: '&aClick to Set Your Victory Sound'
   usewin-playermsg: '&aYour Victory Sound has been changed to {sound}'
   no-use: '&cUnlocked at Level {level}'
+  joingame-menu-title: '&5Join Game Menu'
 titles:
   warmup-title: '&a{time}'
   warmup-subtitle: '&aPrepare for SkyWars'
@@ -171,6 +172,8 @@ items:
   modifier-jump: '&bJUMP'
   modifier-strength: '&bSTRENGTH'
   modifier-none: '&bNONE'
+  joinmenu: '&bSKYWARS JOIN MENU'
+  spectatemenu: '&bSKYWARS SPECTATE MENU'
   skywars-options: '&bSKYWARS OPTIONS SELECTION MENU'
   particle-effect-sel: '&bPARTICLE EFFECT SELECTION MENU'
   projectile-effect-sel: '&bPROJECTILE PARTICLE EFFECT SELECTION MENU'

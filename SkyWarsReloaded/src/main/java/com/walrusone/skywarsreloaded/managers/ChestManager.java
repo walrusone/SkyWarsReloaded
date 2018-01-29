@@ -182,7 +182,7 @@ public class ChestManager {
             	if (chest instanceof Chest) {
                     if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                         inventory.setItem(randomLoc.get(added), chestItem.getItem());
-                        if (added++ >= inventory.getSize()) {
+                        if (added++ >= inventory.getSize() - 1) {
                             break;
                         }
                     }
@@ -190,7 +190,7 @@ public class ChestManager {
                 if (chest instanceof DoubleChest) {
                     if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                         inventory.setItem(randomDLoc.get(added), chestItem.getItem());
-                        if (added++ >= inventory.getSize()) {
+                        if (added++ >= inventory.getSize() - 1) {
                             break;
                         }
                     }

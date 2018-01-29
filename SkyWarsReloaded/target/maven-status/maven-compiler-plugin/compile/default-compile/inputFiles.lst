@@ -24,6 +24,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\managers\ChestManager.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\Leaderboard.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\Taunt.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\JoinMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\KitName.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerCommandPrepocessListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\database\DataStorage.java
@@ -32,6 +33,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\OptionsSelectionMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerQuitListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\ParticleItem.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\SpectateMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\SetStatsCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\ChestType.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\BaseCmd.java

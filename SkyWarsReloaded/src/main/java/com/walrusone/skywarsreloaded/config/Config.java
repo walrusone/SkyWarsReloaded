@@ -56,6 +56,10 @@ public class Config {
 	
 	private boolean particlesEnabled;
 	
+	private boolean joinEnabled;
+	private int joinSlot;
+	private boolean spectateMenuEnabled;
+	private int spectateSlot;
 	private boolean optionsEnabled;
 	private int optionsSlot;
 	private boolean glassEnabled;
@@ -85,6 +89,8 @@ public class Config {
 			"timevote", "timerandom", "timedawn", "timenoon", "timedusk", "timemidnight", 
 			"weathervote", "weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow", 
 			"modifiervote", "modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone", 
+			"joinselect",
+			"spectateselect",
 			"optionselect",
 			"particleselect", 
 			"projectileselect",
@@ -97,6 +103,8 @@ public class Config {
 			"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
 			"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
 			"DRAGONS_BREATH", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
+			"DIAMOND_HELMET",
+			"LEATHER_HELMET",			
 			"EYE_OF_ENDER",
 			"BLAZE_POWDER",
 			"ARROW",
@@ -104,8 +112,8 @@ public class Config {
 			"DRAGON_EGG", 
 			"STAINED_GLASS", "SHIELD");
 	
-	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending");
-	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK");
+	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
+	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
 	
 	public Config() {
 		load();
@@ -157,6 +165,10 @@ public class Config {
 		noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
 
 		particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
+		spectateMenuEnabled= SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
+		spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
+		joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
+		joinSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.joinSlot");
 		optionsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.options");
 		optionsSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.optionsSlot");
 		glassEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.glass");
@@ -244,6 +256,10 @@ public class Config {
 		
 		SkyWarsReloaded.get().getConfig().set("particles.enabled", particlesEnabled);
 		
+		SkyWarsReloaded.get().getConfig().set("enabledMenus.spectate", spectateMenuEnabled);
+		SkyWarsReloaded.get().getConfig().set("enabledMenus.spectateSlot", spectateSlot);
+		SkyWarsReloaded.get().getConfig().set("enabledMenus.join", joinEnabled);
+		SkyWarsReloaded.get().getConfig().set("enabledMenus.joinSlot", joinSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.options", optionsEnabled);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.optionsSlot", optionsSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.glass", glassEnabled);
@@ -448,6 +464,22 @@ public class Config {
 	
 	public int getOptionsSlot() {
 		return optionsSlot;
+	}
+	
+	public boolean joinMenuEnabled() {
+		return joinEnabled;
+	}
+	
+	public int getJoinSlot() {
+		return joinSlot;
+	}
+	
+	public boolean spectateMenuEnabled() {
+		return spectateMenuEnabled;
+	}
+	
+	public int getSpectateSlot() {
+		return spectateSlot;
 	}
 
 	public boolean teleportOnJoin() {

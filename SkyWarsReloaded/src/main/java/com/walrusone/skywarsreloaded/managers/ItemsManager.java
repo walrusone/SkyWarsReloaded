@@ -35,6 +35,8 @@ public class ItemsManager {
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
         
         addItem("optionselect", lore, "items.skywars-options"); 
+        addItem("joinselect", lore, "items.joinmenu");
+        addItem("spectateselect", lore, "items.spectatemenu:");
     }
 
 	private void getMatchStartItems() {

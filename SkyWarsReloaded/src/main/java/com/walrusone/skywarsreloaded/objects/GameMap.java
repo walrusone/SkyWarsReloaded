@@ -1250,4 +1250,13 @@ public class GameMap {
 		return forceStart;
 	}
 
+	public static GameMap getMapByDisplayName(String name) {
+		for (GameMap gMap: arenas) {
+			if (ChatColor.stripColor((ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()))).equalsIgnoreCase(name)) {
+				return gMap;
+			}
+		}
+		return null;
+	}
+
 }

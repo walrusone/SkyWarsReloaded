@@ -21,7 +21,9 @@ import org.bukkit.event.Listener;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.JoinMenu;
 import com.walrusone.skywarsreloaded.menus.OptionsSelectionMenu;
+import com.walrusone.skywarsreloaded.menus.SpectateMenu;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
@@ -49,10 +51,16 @@ public class LobbyListener implements Listener
     		}
         	if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
         		if (e.hasItem()) {
-                    if (e.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("optionselect"))) {
+                    if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
                     	e.setCancelled(true);
                     	new OptionsSelectionMenu(e.getPlayer());
-                    } 
+                    } else if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("joinselect"))) {
+                    	e.setCancelled(true);
+                    	new JoinMenu(e.getPlayer());
+                    } else if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
+                    	e.setCancelled(true);
+                    	new SpectateMenu(e.getPlayer());
+                    }
         		}
         	}
         	

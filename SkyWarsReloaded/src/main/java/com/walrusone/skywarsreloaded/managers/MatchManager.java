@@ -269,7 +269,9 @@ public class MatchManager
                                     } 
                                 }
                             }
-                            MatchManager.this.announceTimer(gameMap, "timer.wait-timer");
+                        }
+                        if (gameMap.getTimer() % 5 == 0 || gameMap.getTimer() <= 5) {
+                        	MatchManager.this.announceTimer(gameMap, "timer.wait-timer");
                         }
                     }
                     gameMap.setTimer(gameMap.getTimer() - 1);
