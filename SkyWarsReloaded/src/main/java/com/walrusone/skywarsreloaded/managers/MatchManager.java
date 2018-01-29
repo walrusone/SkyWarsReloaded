@@ -36,7 +36,6 @@ import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.objects.EmptyChest;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.ParticleEffect;
 import com.walrusone.skywarsreloaded.objects.PlayerCard;
 import com.walrusone.skywarsreloaded.objects.PlayerData;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
@@ -193,11 +192,6 @@ public class MatchManager
         World world = getWorld(gameMap);
 		Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5);
         player.teleport(newSpawn, TeleportCause.END_PORTAL);
-        
-        String key = PlayerStat.getPlayerStats(player.getUniqueId()).getParticleEffect();
-		List<ParticleEffect> effects = SkyWarsReloaded.getLM().getParticleByKey(key).getEffects();
-        SkyWarsReloaded.getLM().addPlayer(player.getUniqueId(), effects);
-        
     	if (debug) {
     		if (gameMap.getAlivePlayers().size() < gameMap.getMinPlayers()) {
         		Util.get().logToFile(debugName + ChatColor.YELLOW + "Waiting for More Players on map " + gameMap.getName());
@@ -590,8 +584,6 @@ public class MatchManager
     }
     
     public void playerLeave(final Player player, DamageCause dCause, final boolean leftGame, boolean sendMessages) {
-    	SkyWarsReloaded.getLM().removePlayer(player.getUniqueId());
-    	
     	final GameMap gameMap = this.getPlayerMap(player);
         if (gameMap == null) {
             return;
