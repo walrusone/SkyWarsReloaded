@@ -21,7 +21,6 @@ game:
   timeAfterMatch: 15
   gameTimer: 900
   waitTimer: 10
-  leaderboardUpdateInterval: 300
   spectateEnabled: true
   spectateDistance: 75
   maxMapSize: 400
@@ -113,6 +112,7 @@ sqldatabase:
   password: password
 leaderboards:
   length: 10
+  leaderboardUpdateInterval: 300
   signsEnabled: true
   headsEnabled: true  
   eloLeaderboardEnabled: true

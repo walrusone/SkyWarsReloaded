@@ -24,6 +24,7 @@ public class Config {
 	private int leaderSize;
 	private boolean leaderSignsEnabled;
 	private boolean leaderHeadsEnabled;
+	private int leaderboardUpdateInterval;
 	private boolean eloEnabled;
 	private boolean winsEnabled;
 	private boolean lossesEnabled;
@@ -43,7 +44,7 @@ public class Config {
 	private boolean titlesEnabled;
 	private int gameTimer;
 	private int waitTimer;
-	private int leaderboardUpdateInterval;
+
 	private int timeAfterMatch;
 	private boolean fireworksEnabled;
 	private int fireworksPer5Tick;
@@ -147,6 +148,7 @@ public class Config {
 		killsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.killsLeaderboardEnabled");
 		deathsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.deathsLeaderboardEnabled");
 		xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
+		leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 		
 		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
 		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
@@ -163,7 +165,6 @@ public class Config {
 		fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
 		gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
 		waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
-		leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("game.leaderboardUpdateInterval");
 		titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
 		spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
 		spectateDistance = SkyWarsReloaded.get().getConfig().getInt("game.spectateDistance");
@@ -249,6 +250,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("leaderboards.killsLeaderboardEnabled", killsEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.deathsLeaderboardEnabled", deathsEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 		
 		SkyWarsReloaded.get().getConfig().set("game.xpForWin", winnerXP);
 		SkyWarsReloaded.get().getConfig().set("game.winCommands", winCommands);
@@ -262,7 +264,6 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("titles.enabled", titlesEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.gameTimer", gameTimer);
 		SkyWarsReloaded.get().getConfig().set("game.waitTimer", waitTimer);
-		SkyWarsReloaded.get().getConfig().set("game.leaderboardUpdateInterval", leaderboardUpdateInterval);
 		SkyWarsReloaded.get().getConfig().set("game.timeAfterMatch", timeAfterMatch);
 		SkyWarsReloaded.get().getConfig().set("fireworks.per5Ticks", fireworksPer5Tick);
 		SkyWarsReloaded.get().getConfig().set("fireworks.enabled", fireworksEnabled);
