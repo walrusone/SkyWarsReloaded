@@ -66,6 +66,7 @@ public class Config {
 	private String noKitMat;
 	
 	private boolean particlesEnabled;
+	private int ticksPerUpdate;
 	
 	private boolean joinEnabled;
 	private int joinSlot;
@@ -186,6 +187,8 @@ public class Config {
 		noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
 
 		particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
+		ticksPerUpdate = SkyWarsReloaded.get().getConfig().getInt("particles.ticksperupdate");
+		
 		spectateMenuEnabled= SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
 		spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
 		joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
@@ -286,6 +289,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("kit.noKitItem", noKitMat);
 		
 		SkyWarsReloaded.get().getConfig().set("particles.enabled", particlesEnabled);
+		SkyWarsReloaded.get().getConfig().set("particles.ticksperupdate", ticksPerUpdate);
 		
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.spectate", spectateMenuEnabled);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.spectateSlot", spectateSlot);
@@ -587,5 +591,9 @@ public class Config {
 
 	public boolean leaderHeadsEnabled() {
 		return leaderHeadsEnabled;
+	}
+
+	public long getTicksPerUpdate() {
+		return ticksPerUpdate;
 	}
 }

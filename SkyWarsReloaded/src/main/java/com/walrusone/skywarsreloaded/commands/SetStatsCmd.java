@@ -87,7 +87,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("pareffect")) {
-				if (SkyWarsReloaded.getNMS().isValueParticle(args[3])) {
+				if (SkyWarsReloaded.getLM().getParticleByKey(args[3]) != null) {
 					pStat.setParticleEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
@@ -96,7 +96,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
 				}
 			} else if (args[2].equalsIgnoreCase("proeffect")) {
-				if (SkyWarsReloaded.getNMS().isValueParticle(args[3])) {
+				if (SkyWarsReloaded.getLM().getProjByKey(args[3]) != null) {
 					pStat.setProjectileEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])

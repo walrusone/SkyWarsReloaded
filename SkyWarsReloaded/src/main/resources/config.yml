@@ -90,6 +90,7 @@ items:
   tauntselect: SHIELD
 particles:
   enabled: true
+  ticksperupdate: 3
 enabledMenus:
   join: true
   joinSlot: 0

@@ -61,7 +61,7 @@ public class LevelManager {
     					}
     				}
     			}
-    		}, 3, 3); 
+    		}, SkyWarsReloaded.getCfg().getTicksPerUpdate(), SkyWarsReloaded.getCfg().getTicksPerUpdate()); 
     	}
         loadGlassColors();
         loadParticleEffects();
