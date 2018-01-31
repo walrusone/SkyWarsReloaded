@@ -111,6 +111,16 @@ sqldatabase:
   database: database
   username: username
   password: password
+leaderboards:
+  length: 10
+  signsEnabled: true
+  headsEnabled: true  
+  eloLeaderboardEnabled: true
+  winsLeaderboardEnabled: false
+  lossesLeaderboardEnabled: false  
+  killsLeaderboardEnabled: false
+  deathsLeaderboardEnabled: false
+  xpLeaderboardEnabled: false
 disable-commands:
   exceptions:
   - msg

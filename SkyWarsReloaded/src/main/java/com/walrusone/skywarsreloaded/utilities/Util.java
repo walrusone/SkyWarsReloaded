@@ -449,55 +449,6 @@ public class Util {
     	SkyWarsReloaded.getNMS().sendActionBar(p, msg);
     }
     
-	public boolean isValidEffect(String string) {
-		String effect = string.toLowerCase();
-		
-		switch(effect) {
-		case "flame":
-            return true;
-		case "smoke":
-            return true;
-		case "portal":
-            return true;
-		case "heart":
-            return true;
-        case "critical":
-            return true;
-		case "water":
-            return true;
-		case "redstone":
-            return true;
-		case "sparks":
-            return true;
-		case "lava_drip":
-            return true;
-		case "lava":
-            return true;
-		case "alphabet":
-            return true;
-		case "happy":
-            return true;
-		case "magic":
-            return true;
-		case "music":
-            return true;
-		case "angry":
-            return true;
-		case "clouds":
-            return true;
-		case "potion":
-            return true;
-		case "poison":
-            return true;
-		case "snow":
-            return true;
-		case "slime":
-            return true;
-		default:
-			return false;
-		}
-	}
-	
 	public byte getByteFromColor(String color) {
 		 switch (color) {
 	     case "white": return (byte) 0;

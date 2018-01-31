@@ -52,6 +52,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
+	private static ArrayList<String> useable = new ArrayList<String>();
 	private Messaging messaging;
 	private Leaderboard leaderboard;
 	private IconMenuController ic;
@@ -64,6 +65,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private WorldManager wm;
 	private String servername;
 	private NMS nmsHandler;
+
 	
 	public void onEnable() {
     	instance = this;
@@ -97,8 +99,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         reloadConfig();
         ic = new IconMenuController();
         wm = new WorldManager();
+
         load();
-        
+		
         this.getServer().getPluginManager().registerEvents(ic, this);
         this.getServer().getPluginManager().registerEvents(new ArenaDamageListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
@@ -176,6 +179,25 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (sqlEnabled) {
         	getFWDatabase();
         }
+        useable.clear();
+        if (SkyWarsReloaded.getCfg().eloEnabled()) {
+			useable.add("ELO");
+		} 
+        if (SkyWarsReloaded.getCfg().winsEnabled()) {
+			useable.add("WINS");
+		}
+        if (SkyWarsReloaded.getCfg().lossesEnabled()) {
+			useable.add("LOSSES");
+		}
+        if (SkyWarsReloaded.getCfg().killsEnabled()) {
+			useable.add("KILLS");
+		}
+        if (SkyWarsReloaded.getCfg().deathsEnabled()) {
+			useable.add("DEATHS");
+		}
+        if (SkyWarsReloaded.getCfg().xpEnabled()) {
+			useable.add("XP");
+		}
 
         new BukkitRunnable() {
             public void run() {
@@ -322,6 +344,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	
     public static NMS getNMS() {
     	return instance.nmsHandler;
+    }
+    
+    public static ArrayList<String> getUseable() {
+    	return useable;
     }	
     
 }

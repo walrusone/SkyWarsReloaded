@@ -9,12 +9,11 @@
     <artifactId>swr-parent</artifactId>
     <version>parent</version>
   </parent>
-  
   <dependencies>
-  		<dependency>
+<dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.8-R0.1</version>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.8.0-R0.1-SHAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/craftbukkit-1.8.jar</systemPath>
         </dependency>

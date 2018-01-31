@@ -3,7 +3,6 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\managers\ItemsManager.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\utilities\Util.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\database\DataStorage.java
-D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\utilities\ItemBuilder.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\listeners\SignListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\SkyWarsReloaded.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\objects\GlassColor.java
@@ -15,15 +14,14 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\database\Database.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\commands\CmdManager.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\menus\ColorSelectionMenu.java
-D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\utilities\CustomEnchantment.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\listeners\IconMenuController.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\menus\ProjSelectionMenu.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\objects\ParticleEffect.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\objects\ParticleItem.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\menus\IconMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\commands\ClearStatsCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\commands\SWJoinCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\objects\PlayerStat.java
-D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\utilities\ItemUtils.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\objects\Leaderboard.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\commands\SetSpawnCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby\src\main\java\com\walrusone\skywarsreloaded\utilities\Messaging.java

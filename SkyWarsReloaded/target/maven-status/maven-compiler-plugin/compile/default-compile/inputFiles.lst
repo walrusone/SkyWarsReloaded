@@ -4,6 +4,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\PlayerStat.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\EmptyChest.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\ParticleEffectListener.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\LeaderType.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\Vote.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\GameKit.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\ChestItem.java
@@ -52,6 +53,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\WinSoundSelectionMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\KitLore.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerInteractListener.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\SWUpdateTopCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\database\Database.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\SWJoinCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\SpectateListener.java

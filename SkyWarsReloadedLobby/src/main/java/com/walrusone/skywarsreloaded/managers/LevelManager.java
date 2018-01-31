@@ -2,9 +2,11 @@ package com.walrusone.skywarsreloaded.managers;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.objects.GlassColor;
+import com.walrusone.skywarsreloaded.objects.ParticleEffect;
 import com.walrusone.skywarsreloaded.objects.ParticleItem;
 import com.walrusone.skywarsreloaded.objects.SoundItem;
 import com.walrusone.skywarsreloaded.objects.Taunt;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -14,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,9 +27,7 @@ public class LevelManager {
 	private final ArrayList<ParticleItem> projEffectList = new ArrayList<ParticleItem>();
 	private final ArrayList<SoundItem> killSoundList = new ArrayList<SoundItem>();
 	private final ArrayList<SoundItem> winSoundList = new ArrayList<SoundItem>();
-    private final List<String> effects = Arrays.asList("water", "flame", "smoke", "critical", "slime", "snow", "magic", 
-    		"music", "happy", "angry", "potion", "poison", "alphabet", "lava", "lava_drip", "heart", "redstone", "sparks", "portal", "clouds", "none");
-    
+
     public LevelManager() {
         loadGlassColors();
         loadParticleEffects();
@@ -58,11 +57,11 @@ public class LevelManager {
                 	String material = storage.getString("colors." + key + ".material");
                 	int level = storage.getInt("colors." + key + ".level");
                 	int data = storage.getInt("colors." + key + ".datavalue");
-                	
+                	                	
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
                 		ItemStack itemStack = null;
-                		if (data != -1) {
+                		if (data == -1) {
                 			itemStack = new ItemStack(mat, 1);
                 		} else {
                 			itemStack = new ItemStack(mat, 1, (short) data);
@@ -116,16 +115,31 @@ public class LevelManager {
 
             if (storage.getConfigurationSection("effects") != null) {
             	for (String key: storage.getConfigurationSection("effects").getKeys(false)) {
-            		String effect = key;
                 	String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
+                	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
+                	if (particles != null) {
+                    	for (String part: particles) {
+                    		final String[] parts = part.split(":");
+                            if (parts.length == 6 
+                            		&& SkyWarsReloaded.getNMS().isValueParticle(parts[0].toUpperCase()) 
+                            		&& Util.get().isFloat(parts[1])
+                    				&& Util.get().isFloat(parts[2])
+                    				&& Util.get().isFloat(parts[3])
+                            		&& Util.get().isInteger(parts[4]) 
+                            		&& Util.get().isInteger(parts[5])) {
+                            	effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.valueOf(parts[4]), Integer.valueOf(parts[5])));
+                            } else {
+                            	SkyWarsReloaded.get().getLogger().info("The particle effect " + key + " has an invalid particle effect");
+                            }
+                    	}
+                	}
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		if (effects.contains(effect)) {
-                            particleList.add(new ParticleItem(effect, name, mat, level));
-                		}
+                		particleList.add(new ParticleItem(key, effects, name, mat, level));
                     }
             	}
             }
@@ -148,9 +162,9 @@ public class LevelManager {
     	return particleList;
     }
     
-    public ParticleItem getParticleByEffect(String effect) {
+    public ParticleItem getParticleByKey(String effect) {
     	for (ParticleItem pItem: particleList) {
-    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    		if (pItem.getKey().equalsIgnoreCase(effect)) {
     			return pItem;
     		}
     	}
@@ -173,16 +187,32 @@ public class LevelManager {
 
             if (storage.getConfigurationSection("effects") != null) {
             	for (String key: storage.getConfigurationSection("effects").getKeys(false)) {
-            		String effect = key;
-                	String name = storage.getString("effects." + key + ".displayname");
+            		String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
+                	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
+                	if (particles != null) {
+                		for (String part: particles) {
+                    		final String[] parts = part.split(":");
+                            if (parts.length == 6 
+                            		&& SkyWarsReloaded.getNMS().isValueParticle(parts[0].toUpperCase()) 
+                            		&& Util.get().isFloat(parts[1])
+                    				&& Util.get().isFloat(parts[2])
+                    				&& Util.get().isFloat(parts[3])
+                            		&& Util.get().isInteger(parts[4]) 
+                            		&& Util.get().isInteger(parts[5])) {
+                            	effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.valueOf(parts[4]), Integer.valueOf(parts[5])));
+                            } else {
+                            	SkyWarsReloaded.get().getLogger().info("The particle effect " + key + " has an invalid particle effect");
+                            }
+                    	}
+                	}                	
+        
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		if (effects.contains(effect)) {
-                    		projEffectList.add(new ParticleItem(effect, name, mat, level));
-                		}
+                		projEffectList.add(new ParticleItem(key, effects, name, mat, level));
                     }
             	}
             }
@@ -204,9 +234,9 @@ public class LevelManager {
     	return projEffectList;
     }
     
-    public ParticleItem getProjByEffect(String effect) {
+    public ParticleItem getProjByKey(String effect) {
     	for (ParticleItem pItem: projEffectList) {
-    		if (pItem.getEffect().equalsIgnoreCase(effect)) {
+    		if (pItem.getKey().equalsIgnoreCase(effect)) {
     			return pItem;
     		}
     	}

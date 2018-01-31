@@ -25,13 +25,13 @@ public class PlayerData {
 	    
 	    public PlayerData(final Player a1) {
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	        	Util.get().logToFile(ChatColor.RED + "[DUEL] " + ChatColor.YELLOW + "Creating " + a1.getName() + "'s Datafile");
+	        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Creating " + a1.getName() + "'s Datafile");
 	    	}
 	    	this.beingRestored = false;
 	        this.uuid = a1.getUniqueId();
 	        this.sb = a1.getScoreboard();
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	    		Util.get().logToFile(ChatColor.RED + "[DUEL] " + ChatColor.YELLOW + a1.getName() + "'s Datafile has been created");
+	    		Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + a1.getName() + "'s Datafile has been created");
 	    	}
 	    }
 	        
@@ -56,7 +56,7 @@ public class PlayerData {
 		            return;
 		        }
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-		        	Util.get().logToFile(ChatColor.RED + "[DUEL] " + ChatColor.YELLOW + "Restoring " + player.getName());
+		        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Restoring " + player.getName());
 		    	}
 		    	PlayerStat pStats = PlayerStat.getPlayerStats(player);
 		    	
@@ -75,7 +75,7 @@ public class PlayerData {
 		        player.setScoreboard(sb);
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-		        	Util.get().logToFile(ChatColor.RED + "[DUEL] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
+		        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
 		    	}
 		    
 		        player.teleport(respawn, TeleportCause.END_PORTAL);	       

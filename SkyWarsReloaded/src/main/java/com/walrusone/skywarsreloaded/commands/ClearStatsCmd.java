@@ -22,15 +22,15 @@ public class ClearStatsCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		Player duelsPlayer = null;
+		Player bouncewarssPlayer = null;
 		for (Player playerMatch: Bukkit.getOnlinePlayers()) {
 			if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {
-				duelsPlayer = playerMatch;
+				bouncewarssPlayer = playerMatch;
 			}
 		}
 		
-		if (duelsPlayer != null) {
-			PlayerStat pStat = PlayerStat.getPlayerStats(duelsPlayer);
+		if (bouncewarssPlayer != null) {
+			PlayerStat pStat = PlayerStat.getPlayerStats(bouncewarssPlayer);
 			pStat.clear();
 			DataStorage.get().saveStats(pStat);
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
@@ -51,7 +51,6 @@ public class ClearStatsCmd extends BaseCmd {
 							@Override
 							public void run() {
 									DataStorage.get().removePlayerData(uuid);
-									DataStorage.get().updateTop();
 									player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
 							}
 						}.runTask(SkyWarsReloaded.get());

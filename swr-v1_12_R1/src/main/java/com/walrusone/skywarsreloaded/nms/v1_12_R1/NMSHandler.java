@@ -10,6 +10,7 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
@@ -148,5 +150,10 @@ public class NMSHandler implements NMS, Listener {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override 
+	public void updateSkull(Skull skull, UUID uuid) {
+		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 	}
 }

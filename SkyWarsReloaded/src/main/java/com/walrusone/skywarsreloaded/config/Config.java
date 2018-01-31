@@ -21,6 +21,16 @@ public class Config {
 	private String resourcePack;
 	private boolean promptResource;
 	
+	private int leaderSize;
+	private boolean leaderSignsEnabled;
+	private boolean leaderHeadsEnabled;
+	private boolean eloEnabled;
+	private boolean winsEnabled;
+	private boolean lossesEnabled;
+	private boolean killsEnabled;
+	private boolean deathsEnabled;
+	private boolean xpEnabled;
+	
 	private int winnerXP;
 	private List<String> winCommands;
 	private int killerXP;
@@ -128,6 +138,16 @@ public class Config {
 		resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
 		promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
 		
+		leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
+		leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
+		leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
+		eloEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.eloLeaderboardEnabled");
+		winsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.winsLeaderboardEnabled");
+		lossesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.lossesLeaderboardEnabled");
+		killsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.killsLeaderboardEnabled");
+		deathsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.deathsLeaderboardEnabled");
+		xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
+		
 		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
 		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
 		killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
@@ -220,6 +240,16 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
 		SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
 		
+		SkyWarsReloaded.get().getConfig().set("leaderboards.length", leaderSize);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.signsEnabled", leaderSignsEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.headsEnabled", leaderHeadsEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.eloLeaderboardEnabled", eloEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.winsLeaderboardEnabled", winsEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.lossesLeaderboardEnabled", lossesEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.killsLeaderboardEnabled", killsEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.deathsLeaderboardEnabled", deathsEnabled);
+		SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
+		
 		SkyWarsReloaded.get().getConfig().set("game.xpForWin", winnerXP);
 		SkyWarsReloaded.get().getConfig().set("game.winCommands", winCommands);
 		SkyWarsReloaded.get().getConfig().set("game.xpForKill", killerXP);
@@ -230,9 +260,9 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.vip4Multiplier", vip4);
 		SkyWarsReloaded.get().getConfig().set("game.vip5Multiplier", vip5);
 		SkyWarsReloaded.get().getConfig().set("titles.enabled", titlesEnabled);
-		SkyWarsReloaded.get().getConfig().getInt("game.gameTimer", gameTimer);
-		SkyWarsReloaded.get().getConfig().getInt("game.waitTimer", waitTimer);
-		SkyWarsReloaded.get().getConfig().getInt("game.leaderboardUpdateInterval", leaderboardUpdateInterval);
+		SkyWarsReloaded.get().getConfig().set("game.gameTimer", gameTimer);
+		SkyWarsReloaded.get().getConfig().set("game.waitTimer", waitTimer);
+		SkyWarsReloaded.get().getConfig().set("game.leaderboardUpdateInterval", leaderboardUpdateInterval);
 		SkyWarsReloaded.get().getConfig().set("game.timeAfterMatch", timeAfterMatch);
 		SkyWarsReloaded.get().getConfig().set("fireworks.per5Ticks", fireworksPer5Tick);
 		SkyWarsReloaded.get().getConfig().set("fireworks.enabled", fireworksEnabled);
@@ -520,5 +550,41 @@ public class Config {
 	
 	public String getResourceLink() {
 		return resourcePack;
+	}
+
+	public int getLeaderSize() {
+		return leaderSize;
+	}
+
+	public boolean eloEnabled() {
+		return eloEnabled;
+	}
+
+	public boolean winsEnabled() {
+		return winsEnabled;
+	}
+
+	public boolean lossesEnabled() {
+		return lossesEnabled;
+	}
+
+	public boolean killsEnabled() {
+		return killsEnabled;
+	}
+
+	public boolean deathsEnabled() {
+		return deathsEnabled;
+	}
+
+	public boolean xpEnabled() {
+		return xpEnabled;
+	}
+
+	public boolean leaderSignsEnabled() {
+		return leaderSignsEnabled;
+	}
+
+	public boolean leaderHeadsEnabled() {
+		return leaderHeadsEnabled;
 	}
 }

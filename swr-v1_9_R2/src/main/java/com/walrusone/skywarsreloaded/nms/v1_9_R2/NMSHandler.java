@@ -10,6 +10,7 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles;
 import net.minecraft.server.v1_9_R2.PlayerConnection;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.block.Skull;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
@@ -147,6 +149,11 @@ public class NMSHandler implements NMS {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override 
+	public void updateSkull(Skull skull, UUID uuid) {
+		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 	}
 	
 }

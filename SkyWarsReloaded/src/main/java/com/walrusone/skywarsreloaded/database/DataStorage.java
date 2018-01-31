@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
@@ -296,7 +297,7 @@ public class DataStorage {
 		}
 	}
 	
-	public void updateTop() {
+	public void updateTop(LeaderType type, int size) {
 		new BukkitRunnable() {
 
 			@Override
@@ -318,13 +319,13 @@ public class DataStorage {
 		                queryBuilder.append("SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` ");
 		                queryBuilder.append("FROM `sw_player` ");
 		                queryBuilder.append("GROUP BY `uuid` ");
-		                queryBuilder.append("ORDER BY `elo` DESC LIMIT 10;");
+		                queryBuilder.append("ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";");
 		                
 		                preparedStatement = connection.prepareStatement(queryBuilder.toString());
 		                resultSet = preparedStatement.executeQuery();
-		                SkyWarsReloaded.getLB().resetLeader();
+		                SkyWarsReloaded.getLB().resetLeader(type);
 		                while (resultSet.next()) {
-		                	SkyWarsReloaded.getLB().addLeader(Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
+		                	SkyWarsReloaded.getLB().addLeader(type, resultSet.getString(1), Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
 		                }
 		                
 		            } catch (final SQLException sqlException) {
@@ -346,7 +347,7 @@ public class DataStorage {
 			            return;
 			        }
 
-			        SkyWarsReloaded.getLB().resetLeader();
+			        SkyWarsReloaded.getLB().resetLeader(type);
 			        for (File playerFile : playerFiles) {
 			            if (!playerFile.getName().endsWith(".yml")) {
 			                continue;
@@ -354,10 +355,10 @@ public class DataStorage {
 
 			            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 			            String uuid = playerFile.getName().replace(".yml", "");
-		                SkyWarsReloaded.getLB().addLeader(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("elo"), fc.getInt("xp"));           
+		                SkyWarsReloaded.getLB().addLeader(type, uuid, Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("elo"), fc.getInt("xp"));           
 			        }
 				}
-				SkyWarsReloaded.getLB().finishedLoading();
+				SkyWarsReloaded.getLB().finishedLoading(type);
 			}
 		}.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
 	}

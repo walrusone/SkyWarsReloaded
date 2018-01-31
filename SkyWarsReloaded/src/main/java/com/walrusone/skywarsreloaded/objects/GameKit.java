@@ -255,7 +255,7 @@ public class GameKit {
 	       }
         
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	    		Util.get().logToFile(ChatColor.RED + "[DUEL] " + ChatColor.YELLOW + player.getName() + " has recieved kit " + kit.getColorName());
+	    		Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + player.getName() + " has recieved kit " + kit.getColorName());
 	    	}
 		}
 	

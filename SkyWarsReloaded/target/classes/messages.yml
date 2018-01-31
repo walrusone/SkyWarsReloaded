@@ -106,6 +106,9 @@ signs:
   added: '&aSkyWars sign successfully added!'
   no-map: '&cThere is no map with that name!'
   remove: '&aSkyWars sign successfully removed!'
+  addedleader: '&aSkyWars Leaderboard sign successfully added!'
+  invalid-type: '&cThat is not a valid leaderboard type'
+  invalid-range: '&cThat position is outside of your leaderboard range. Check your configuration.'
 spectate:
   starting: '&aTeleporting to SkyWars match as a spectator'
   startmessage: '&aYou are now spectating. Press E to access menu.'
@@ -113,7 +116,7 @@ spectate:
   exititemname: '&eEXIT SPECTATOR'
   exititemlore: '&bClick to leave spectator mode'
   playeritemlore: '&bClick to teleport to {player}'
-  stayinarena: '&cPlease stay within the Duel Arena!'
+  stayinarena: '&cPlease stay within the bouncewars Arena!'
 menu:
   usetaunt-menu-title: '&5Taunt Menu'
   usetaunt-settaunt: '&aClick to Set Your Taunt'
@@ -199,6 +202,38 @@ leaderboard:
   player-data: '&b#{rank} &a{player}: &d{elo} &e{wins}/&4{losses} &e{kills}/&4{deaths} &e{xp}'
   footer: '&9>>>&3==&1==&3==&1==&3==&1==&3==&1==&3==&1==&9<<<'
   updating: '&4The leaderboard is currently being updated. Try again later!'
+  invalidtype: '&4Leaderboard [stat] must be either: {validtypes}'
+  signformats:
+    elo:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{elo}'
+    wins:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{wins}'
+    kills:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{kills}'
+    xp:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{xp}'
+    losses:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{losses}'
+    deaths:
+      line1: '&L&0{position}'
+      line2: '&1{name}'
+      line3: '&c{type}'
+      line4: '&5{deaths}'
 helpList:
   header: '&7-------------------[&aSkyWars&7]-------------------'
   header2: '&7-----------------[&aMap Commands&7]-----------------'
@@ -213,7 +248,8 @@ helpList:
   join: '&a/sw join &e- &2Join a SkyWars match'
   reload: '&a/sw reload &e- &2Reloads SkyWars'
   stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'
-  top: '&a/sw top &e- &2Displays SkyWars leaderboard'
+  top: '&a/sw top [stat] &e- &2Displays SkyWars leaderboard'
+  updatetop: '&a/sw updatetop &e - &2Forces a leaderboard update'
   chestadd: '&a/sw chestadd &e[chesttype] [method] [percentage] &e- &2Adds item(s) in hand/inventory to the chesttype with the assigned percentage'
   kitcreate: '&a/sw kitcreate &e[kitname] &e- &2Create a kit using the items in your inventory'
   kitenable: '&a/sw enable &e[kitname] &e- &2Toggles whether the kit is enabled or disabled'

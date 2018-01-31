@@ -21,12 +21,22 @@ public class ItemsManager {
     	getTimeVoteItems();
     	getWeatherVoteItems();
     	getModifierVoteItems();
-    	getLobbyItems();
+    	getLobbyItem();
+    	getOptionItems();
     }
     
     private void addItem(String materialref, List<String> lore, String message) {
     	ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref)), lore, new Messaging.MessageFormatter().format(message));
         gameItems.put(materialref, addItem);
+    }
+    
+    private void getLobbyItem() {
+        List<String> lore = new ArrayList<String>();
+        lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
+        
+        addItem("optionselect", lore, "items.skywars-options"); 
+        addItem("joinselect", lore, "items.joinmenu");
+        addItem("spectateselect", lore, "items.spectatemenu");
     }
 
 	private void getMatchStartItems() {
@@ -85,9 +95,9 @@ public class ItemsManager {
 		addItem("modifiernone", lore, "items.modifier-none");
     }
     
-    private void getLobbyItems() {
+    private void getOptionItems() {
         List<String> lore = new ArrayList<String>();
-        lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
+        lore.add(new Messaging.MessageFormatter().format("items.lclick-to-open"));
         
         addItem("particleselect", lore, "items.particle-effect-sel");
         addItem("projectileselect", lore, "items.projectile-effect-sel");

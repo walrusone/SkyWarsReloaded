@@ -72,6 +72,7 @@ public class CmdManager implements CommandExecutor {
 		admincmds.add(new ClearStatsCmd());
 		admincmds.add(new SetSpawnCmd());
 		admincmds.add(new StartCmd());
+		admincmds.add(new SWUpdateTopCmd());
 		
 		pcmds.add(new SWJoinCmd());
 		pcmds.add(new SWQuitCmd());

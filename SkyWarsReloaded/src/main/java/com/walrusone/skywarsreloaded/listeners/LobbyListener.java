@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.Listener;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.JoinMenu;
@@ -26,6 +27,7 @@ import com.walrusone.skywarsreloaded.menus.OptionsSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.SpectateMenu;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class LobbyListener implements Listener
 {
@@ -127,6 +129,33 @@ public class LobbyListener implements Listener
             		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
         			event.setCancelled(true);
             } 
+       } else if (lines[0].equalsIgnoreCase("[swl]") && lines.length >= 3) {
+    	   if (event.getPlayer().hasPermission("sw.signs")) {
+   				Location signLocation = event.getBlock().getLocation();
+   				World w = signLocation.getWorld();
+               	Block b = w.getBlockAt(signLocation);
+           		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+          			event.setCancelled(true);
+          			if (SkyWarsReloaded.getUseable().contains(lines[1].toUpperCase())) {
+          				LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
+          				if (Util.get().isInteger(lines[2])) {
+          					if (Integer.valueOf(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
+                  				SkyWarsReloaded.getLB().addLeaderSign(Integer.valueOf(lines[2]), type, signLocation);
+                          		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
+          					} else {
+          						event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
+          					}
+          				} else {
+          					event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
+          				}
+                  	} else {
+                  		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
+                  	}
+           		}
+       		} else {
+       			event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+       			event.setCancelled(true);
+       		} 
        }
     }
     
@@ -143,6 +172,9 @@ public class LobbyListener implements Listener
 	    		if (!removed) {
 		    		removed = gMap.removeSign(loc);
 	    		}
+	    	}
+	    	if (!removed) {
+	    		removed = SkyWarsReloaded.getLB().removeLeaderSign(loc);
 	    	}
 	    	if (removed) {
 		    	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));

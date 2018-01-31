@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.nms.v1_8_R2;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.server.v1_8_R2.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R2.EntityHuman;
@@ -23,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
@@ -153,6 +155,11 @@ public class NMSHandler implements NMS {
 	@Override
 	public boolean isValueParticle(String string) {
 		return true;
+	}
+	
+	@Override 
+	public void updateSkull(Skull skull, UUID uuid) {
+		skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
 	}
 	
 }

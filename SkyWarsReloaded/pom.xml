@@ -22,6 +22,7 @@
           <include>chest.yml</include>
           <include>config.yml</include>
           <include>glasscolors.yml</include>
+          <include>leaderboards.yml</include>
           <include>killsounds.yml</include>
           <include>maps.yml</include>
           <include>messages.yml</include>
@@ -56,6 +57,12 @@
           </plugin>
       </plugins>
    </build>
+  <repositories>
+    <repository>
+        <id>spigot-repo</id>
+        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+ </repositories>
   <dependencies>
   		<dependency>
             <groupId>org.bukkit</groupId>

@@ -1,10 +1,12 @@
 package com.walrusone.skywarsreloaded.api;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.World;
+import org.bukkit.block.Skull;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,4 +29,5 @@ public interface NMS {
 	public ItemStack getItemStack(Material material, List<String> lore, String message);
 	public ItemStack getItemStack(ItemStack item, List<String> lore, String message);
 	public boolean isValueParticle(String string);
+	void updateSkull(Skull skull, UUID uuid);
 }
