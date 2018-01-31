@@ -31,6 +31,7 @@ permissions:
       sw.start: true
       sw.allowcommands: true
       sw.spectate: true
+      sw.updatetop: true
   sw.maps: 
     description: Allows a player to use all map commands.
     default: op
@@ -87,6 +88,9 @@ permissions:
     default: true
   sw.setspawn:
     description: Allows a player to set a set the lobby spawn.
+    default: op
+  sw.updatetop:
+    description: Allows a player to use the updatetop command.
     default: op
   sw.start:
     description: Allows a player to use the start command.
