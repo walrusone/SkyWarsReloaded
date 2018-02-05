@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -507,5 +508,17 @@ public class Util {
 	    root2 = (-b - Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
 	    return Math.max(root1, root2);  
 	}
-
+	
+	public String getFormattedTime(int x) {
+		String hms;
+		if (x >= 3600) {
+			hms = String.format("%02d:%02d:%02d", TimeUnit.SECONDS.toHours(x),
+				    TimeUnit.SECONDS.toMinutes(x) % TimeUnit.HOURS.toMinutes(1),
+				    TimeUnit.SECONDS.toSeconds(x) % TimeUnit.MINUTES.toSeconds(1));
+		} else {
+			hms = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(x) % TimeUnit.HOURS.toMinutes(1),
+				    TimeUnit.SECONDS.toSeconds(x) % TimeUnit.MINUTES.toSeconds(1));
+		}
+		return hms;
+	}
 }

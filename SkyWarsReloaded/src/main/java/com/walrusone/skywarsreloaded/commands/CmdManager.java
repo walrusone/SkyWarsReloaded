@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 
 import com.walrusone.skywarsreloaded.commands.kits.KitCreate;
 import com.walrusone.skywarsreloaded.commands.kits.KitEnable;
-import com.walrusone.skywarsreloaded.commands.kits.KitFallDamage;
 import com.walrusone.skywarsreloaded.commands.kits.KitIcon;
 import com.walrusone.skywarsreloaded.commands.kits.KitList;
 import com.walrusone.skywarsreloaded.commands.kits.KitLoad;
@@ -20,9 +19,6 @@ import com.walrusone.skywarsreloaded.commands.kits.KitLore;
 import com.walrusone.skywarsreloaded.commands.kits.KitName;
 import com.walrusone.skywarsreloaded.commands.kits.KitPermission;
 import com.walrusone.skywarsreloaded.commands.kits.KitPosition;
-import com.walrusone.skywarsreloaded.commands.kits.KitPvp;
-import com.walrusone.skywarsreloaded.commands.kits.KitRegen;
-import com.walrusone.skywarsreloaded.commands.kits.KitSoup;
 import com.walrusone.skywarsreloaded.commands.kits.KitUpdate;
 import com.walrusone.skywarsreloaded.commands.maps.CreateMapCmd;
 import com.walrusone.skywarsreloaded.commands.maps.EditMapCmd;
@@ -52,7 +48,6 @@ public class CmdManager implements CommandExecutor {
 		
 		kitcmds.add(new KitCreate());
 		kitcmds.add(new KitEnable());
-		kitcmds.add(new KitFallDamage());
 		kitcmds.add(new KitIcon());
 		kitcmds.add(new KitLockedIcon());
 		kitcmds.add(new KitLoad());
@@ -60,9 +55,6 @@ public class CmdManager implements CommandExecutor {
 		kitcmds.add(new KitName());
 		kitcmds.add(new KitPosition());
 		kitcmds.add(new KitPermission());
-		kitcmds.add(new KitSoup());
-		kitcmds.add(new KitRegen());
-		kitcmds.add(new KitPvp());
 		kitcmds.add(new KitUpdate());
 		kitcmds.add(new KitList());
 		

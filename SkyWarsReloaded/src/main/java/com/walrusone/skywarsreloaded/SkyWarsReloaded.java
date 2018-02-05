@@ -35,7 +35,6 @@ import com.walrusone.skywarsreloaded.listeners.PlayerInteractListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerJoinListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerQuitListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerTeleportListener;
-import com.walrusone.skywarsreloaded.listeners.SoupListener;
 import com.walrusone.skywarsreloaded.listeners.SpectateListener;
 import com.walrusone.skywarsreloaded.listeners.TauntListener;
 import com.walrusone.skywarsreloaded.managers.ChestManager;
@@ -109,7 +108,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
-        this.getServer().getPluginManager().registerEvents(new SoupListener(), this);
         this.getServer().getPluginManager().registerEvents(new LobbyListener(), this);
         this.getServer().getPluginManager().registerEvents(new TauntListener(), this);
         if (SkyWarsReloaded.getCfg().particlesEnabled()) {

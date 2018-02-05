@@ -21,8 +21,10 @@ game:
   timeAfterMatch: 15
   gameTimer: 900
   waitTimer: 10
+  kitVotingEnabled: false
   spectateEnabled: true
   spectateDistance: 75
+  allowFallDamage: false
   maxMapSize: 400
   suddendeath:
     enabled: true
@@ -31,7 +33,7 @@ game:
 kit:
   randPos: 0
   randItem: NETHER_STAR
-  noKitPos: 35
+  noKitPos: 44
   noKitItem: GLASS
 titles:
   enabled: true
@@ -52,7 +54,11 @@ signs:
   halffull: IRON_HELMET
   almostempty: LEATHER_HELMET
 items:
+  kitsEnabled: true
+  kitVotePosition: 0
   kitvote: EYE_OF_ENDER
+  chestVoteEnabled: true
+  chestVotePosition: 2
   chestvote: SHIELD
   chestrandom: NETHER_STAR
   chestbasic: STONE_SWORD
@@ -60,18 +66,24 @@ items:
   chestop: DIAMOND_SWORD
   chestscavenger: WOOD_HOE
   nopermission: BARRIER
+  timeVoteEnabled: true
+  timeVotePosition: 4
   timevote: WATCH
   timerandom: NETHER_STAR
   timedawn: WATCH
   timenoon: WATCH
   timedusk: WATCH
   timemidnight: WATCH
+  weatherVoteEnabled: true
+  weatherVotePosition: 6
   weathervote: BLAZE_POWDER
   weatherrandom: NETHER_STAR
   weathersunny: PRISMARINE_SHARD
   weatherrain: PRISMARINE_SHARD
   weatherstorm: PRISMARINE_SHARD
   weathersnow: PRISMARINE_SHARD
+  modifierVoteEnabled: true
+  modifierVotePosition: 8
   modifiervote: DRAGONS_BREATH
   modifierspeed: BOOK
   modifierjump: BOOK

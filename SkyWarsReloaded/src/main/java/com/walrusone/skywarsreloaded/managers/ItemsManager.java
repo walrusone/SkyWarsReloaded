@@ -43,7 +43,11 @@ public class ItemsManager {
         List<String> lore = new ArrayList<String>();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
         
-		addItem("kitvote", lore, "items.kit-item");
+		if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+	        addItem("kitvote", lore, "items.kit-vote-item");
+		} else {
+			addItem("kitvote", lore, "items.kit-select-item");
+		}
 		addItem("chestvote", lore, "items.chest-item");
 		addItem("nopermission", lore, "items.no-perm");
 		addItem("timevote", lore, "items.time-item");

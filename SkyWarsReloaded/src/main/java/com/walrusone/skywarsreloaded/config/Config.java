@@ -21,6 +21,17 @@ public class Config {
 	private String resourcePack;
 	private boolean promptResource;
 	
+	private int kitvotepos;
+	private boolean kitsEnabled;
+	private int chestvotepos;
+	private boolean chestVoteEnabled;
+	private int timevotepos;
+	private boolean timeVoteEnabled;
+	private int weathervotepos;
+	private boolean weatherVoteEnabled;
+	private int modifiervotepos;
+	private boolean modifierVoteEnabled;
+	
 	private int leaderSize;
 	private boolean leaderSignsEnabled;
 	private boolean leaderHeadsEnabled;
@@ -42,6 +53,8 @@ public class Config {
 	private int vip4;
 	private int vip5;
 	private boolean titlesEnabled;
+	private boolean allowFallDamage;
+	private boolean kitVotingEnabled;
 	private int gameTimer;
 	private int waitTimer;
 
@@ -167,6 +180,8 @@ public class Config {
 		gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
 		waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
 		titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
+		allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
+		kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
 		spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
 		spectateDistance = SkyWarsReloaded.get().getConfig().getInt("game.spectateDistance");
 		maxMapSize = SkyWarsReloaded.get().getConfig().getInt("game.maxMapSize");
@@ -174,6 +189,16 @@ public class Config {
 		teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
 		teleportOnWorldEnter = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnWorldEnter");
 		
+		kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
+		kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
+		chestvotepos = SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
+		chestVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
+		timevotepos = SkyWarsReloaded.get().getConfig().getInt("items.timeVotePosition");
+		timeVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.timeVoteEnabled");
+		weathervotepos = SkyWarsReloaded.get().getConfig().getInt("items.weatherVotePosition");
+		weatherVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.weatherVoteEnabled");
+		modifiervotepos = SkyWarsReloaded.get().getConfig().getInt("items.modifierVotePosition");
+		modifierVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.modifierVoteEnabled");
 		
 		suddenDeathEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enabled");
 		disableHealthRegen = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.disableHealthRegen");
@@ -276,10 +301,23 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("enablePressurePlateJoin", pressurePlate);
 		SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnJoin", teleportOnJoin);
 		SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnWorldEnter", teleportOnWorldEnter);
+		SkyWarsReloaded.get().getConfig().set("game.allowFallDamage", allowFallDamage);
+		SkyWarsReloaded.get().getConfig().set("game.kitVotingEnabled", kitVotingEnabled);
 		
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enabled", suddenDeathEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.disableHealthRegen", disableHealthRegen);
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enableHealthDecay", enableHealthDecay);
+		
+		SkyWarsReloaded.get().getConfig().set("items.kitVotePosition", kitvotepos);
+		SkyWarsReloaded.get().getConfig().set("items.kitsEnabled", kitsEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.chestVotePosition", chestvotepos);
+		SkyWarsReloaded.get().getConfig().set("items.chestVoteEnabled", chestVoteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.timeVotePosition", timevotepos);
+		SkyWarsReloaded.get().getConfig().set("items.timeVoteEnabled", timeVoteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.weatherVotePosition", weathervotepos);
+		SkyWarsReloaded.get().getConfig().set("items.weatherVoteEnabled", weatherVoteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.modifierVotePosition", modifiervotepos);
+		SkyWarsReloaded.get().getConfig().set("items.modifierVoteEnabled", modifierVoteEnabled);
 		
 		SkyWarsReloaded.get().getConfig().set("tauntCooldown", cooldown);
 		
@@ -595,5 +633,53 @@ public class Config {
 
 	public long getTicksPerUpdate() {
 		return ticksPerUpdate;
+	}
+
+	public boolean allowFallDamage() {
+		return allowFallDamage;
+	}
+
+	public boolean kitVotingEnabled() {
+		return kitVotingEnabled;
+	}
+	
+	public int getKitVotePos() {
+		return kitvotepos;
+	}
+	
+	public boolean areKitsEnabled() {
+		return kitsEnabled;
+	}
+	
+	public int getChestVotePos() {
+		return chestvotepos;
+	}
+	
+	public boolean isChestVoteEnabled() {
+		return chestVoteEnabled;
+	}
+	
+	public int getTimeVotePos() {
+		return timevotepos;
+	}
+	
+	public boolean isTimeVoteEnabled() {
+		return timeVoteEnabled;
+	}
+	
+	public int getWeatherVotePos() {
+		return weathervotepos;
+	}
+	
+	public boolean isWeatherVoteEnabled() {
+		return weatherVoteEnabled;
+	}
+	
+	public int getModifierVotePos() {
+		return modifiervotepos;
+	}
+	
+	public boolean isModifierVoteEnabled() {
+		return modifierVoteEnabled;
 	}
 }

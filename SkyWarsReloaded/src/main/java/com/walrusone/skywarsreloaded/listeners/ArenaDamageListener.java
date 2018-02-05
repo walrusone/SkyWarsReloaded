@@ -35,7 +35,6 @@ public class ArenaDamageListener implements Listener {
 					event.setCancelled(true);
 					return;
 				} else {
-					if (gameMap.allowPvp()) {
 						event.setCancelled(false);
 						if (damager instanceof Projectile) {
 							Projectile proj = (Projectile) damager;
@@ -61,26 +60,6 @@ public class ArenaDamageListener implements Listener {
 						} else {
 							return;
 						}
-					} else {
-						if (damager instanceof Projectile) {
-							event.setCancelled(false);
-							Projectile proj = (Projectile) damager;
-							if (proj.getShooter() instanceof Player) {
-								hitter = (Player) proj.getShooter();
-								PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
-								if (pd != null) {
-									pd.setTaggedBy(hitter);
-								}
-							} else {
-								return;
-							}
-						} else if (damager instanceof Player) {
-							event.setCancelled(true);
-						} else {
-							return;
-						}
-					}
-
 				}
 
 			}

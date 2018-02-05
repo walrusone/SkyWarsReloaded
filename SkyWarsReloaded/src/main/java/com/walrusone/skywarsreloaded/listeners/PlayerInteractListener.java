@@ -16,6 +16,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.KitSelectionMenu;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 
@@ -32,7 +33,11 @@ public class PlayerInteractListener implements Listener
         	if (a1.getAction() == Action.RIGHT_CLICK_AIR || a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
         		if (a1.hasItem()) {
                     if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("kitvote"))) {
-                    	a1.getPlayer().openInventory(gameMap.getKitsVoteMenu());
+                    	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+                        	a1.getPlayer().openInventory(gameMap.getKitsVoteMenu());
+                    	} else {
+                    		new KitSelectionMenu(a1.getPlayer());
+                    	}
                     } else if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("chestvote")) && a1.getPlayer().hasPermission("sw.chestvote")) {
                     	a1.getPlayer().openInventory(gameMap.getChestVoteMenu());
                     } else if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("timevote")) && a1.getPlayer().hasPermission("sw.timevote")) {
@@ -153,6 +158,9 @@ public class PlayerInteractListener implements Listener
 					gameMap.updateVotes("modifier");
 					((Player) event.getWhoClicked()).closeInventory();
 				}
+			}
+			if (SkyWarsReloaded.getIC().has((Player) event.getWhoClicked())) {
+				event.setCancelled(false);
 			}
 		}
     }

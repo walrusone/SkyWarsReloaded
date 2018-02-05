@@ -28,11 +28,19 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class Leaderboard {
+	private static HashMap<LeaderType, List<LeaderData>> topLeaders =  new HashMap<LeaderType, List<LeaderData>>();
 	private static HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<LeaderType, ArrayList<LeaderData>>();
 	private static HashMap<LeaderType, Boolean> loaded = new HashMap<LeaderType, Boolean>();
 	private static HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>>();
 	
 	public Leaderboard() {
+		loaded.put(LeaderType.DEATHS, false);
+		loaded.put(LeaderType.ELO, false);
+		loaded.put(LeaderType.WINS, false);
+		loaded.put(LeaderType.KILLS, false);
+		loaded.put(LeaderType.LOSSES, false);
+		loaded.put(LeaderType.XP, false);
+		
 		if (SkyWarsReloaded.getCfg().eloEnabled()) {
 			leaders.put(LeaderType.ELO, new ArrayList<LeaderData>());
 			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
@@ -107,11 +115,13 @@ public class Leaderboard {
 	}
 	
 	public void resetLeader(LeaderType type) {
-		loaded.put(type, false);
 		leaders.get(type).clear();
 	}
 	
 	public void finishedLoading(LeaderType type) {
+		loaded.put(type, false);
+		topLeaders.remove(type);
+		topLeaders.put(type, (List<LeaderData>) getTop(SkyWarsReloaded.getCfg().getLeaderSize(), type));
 		loaded.put(type, true);
 		if (SkyWarsReloaded.getCfg().leaderSignsEnabled() && SkyWarsReloaded.get().isEnabled()) {
 			new BukkitRunnable() {
@@ -132,6 +142,10 @@ public class Leaderboard {
         pData.addAll(leaders.get(type));
         Collections.<LeaderData>sort(pData, new RankComparator(type));
         return pData.subList(0, (top > pData.size()) ? pData.size() : top);
+    }
+    
+    public List<LeaderData> getTopList(LeaderType type) {
+    	return topLeaders.get(type);
     }
     
     public void getSigns(LeaderType type) {
@@ -206,7 +220,7 @@ public class Leaderboard {
     }
     
     public void updateSigns(LeaderType type) {
-    	List<LeaderData> top = getTop(SkyWarsReloaded.getCfg().getLeaderSize(), type);
+    	List<LeaderData> top = getTopList(type);
     	
     	for (int pos: signs.get(type).keySet()) {
     		if (pos-1 < top.size()) {

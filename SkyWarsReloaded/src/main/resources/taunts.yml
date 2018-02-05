@@ -6,7 +6,7 @@ taunts:
     addGlow: true
     lore:
     - "&b*Plays ambient fire sound."
-    - "&6*Sorrounds player in fire and"
+    - "&6*Surrounds player in fire and"
     - "&6lava particles."
     message: "&eWhen you play with fire you get burned!"
     sound: BLOCK_FIRE_AMBIENT 
@@ -26,7 +26,7 @@ taunts:
     addGlow: true
     lore:
     - "&b*Plays chicken hurt sound."
-    - "&6*Sorrounds player in snowball and"
+    - "&6*Surrounds player in snowball and"
     - "&6angry villager particles."
     message: "&eSomeone's a yellow belly!"
     sound: ENTITY_CHICKEN_DEATH
@@ -45,7 +45,7 @@ taunts:
     addGlow: true
     lore:
     - "&b*Plays pig hurt sound."
-    - "&6*Sorrounds player in fire and"
+    - "&6*Surrounds player in fire and"
     - "&6lava particles."
     message: "&eHere Piggy Piggy Piggy!"
     sound: ENTITY_PIG_DEATH
@@ -64,7 +64,7 @@ taunts:
     addGlow: true
     lore:
     - "&b*Plays dragon growl."
-    - "&6*Sorrounds player in fire and lava particles."
+    - "&6*Surrounds player in fire and lava particles."
     message: "&4Sniff....Sniff....I smell fear!!"
     sound: ENTITY_ENDERDRAGON_GROWL
     useCustomSound: false
@@ -83,7 +83,7 @@ taunts:
     lore:
     - "&a*REQUIRES CUSTOM RESOURCE PACK!"
     - "&b*Plays custom seek and destory taunt."
-    - "&6*Sorrounds player in portal"
+    - "&6*Surrounds player in portal"
     - "&6and restone particles"
     message: "&eWe will seek and destroy you!"
     sound: SEEK_DESTROY
@@ -103,7 +103,7 @@ taunts:
     lore:
     - "&a*REQUIRES CUSTOM RESOURCE PACK!"
     - "&b*Plays custom come out and play taunt."
-    - "&6*Sorrounds player in witch and happy particles"
+    - "&6*Surrounds player in witch and happy particles"
     message: "&eCome out and play with me!"
     sound: COME_OUT_AND_PLAY 
     useCustomSound: true

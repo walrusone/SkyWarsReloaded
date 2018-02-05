@@ -3,7 +3,6 @@ package com.walrusone.skywarsreloaded.objects;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +34,6 @@ public class GameKit {
 	private String lockedLore;
 	private boolean enabled;
 	private boolean requirePermission;
-	private Map<String, Boolean> gameSettings = new HashMap<String, Boolean>();
-	
 	
 	@SuppressWarnings("unchecked")
 	public GameKit(File kitFile) {
@@ -67,21 +64,7 @@ public class GameKit {
         requirePermission = storage.getBoolean("requirePermission");
         
         filename = storage.getString("filename");
-        
-        boolean noRegen = storage.getBoolean("gameSettings.noRegen");
-        boolean noPvp = storage.getBoolean("gameSettings.noPvp");
-        boolean soupPvp = storage.getBoolean("gameSettings.soupPvp");
-        boolean noFallDamage = storage.getBoolean("gameSettings.noFallDamage");
-        storage.set("gameSettings.noRegen", noRegen);
-        storage.set("gameSettings.noPvp", noPvp);
-        storage.set("gameSettings.soupPvp", soupPvp);
-        storage.set("gameSettings.noFallDamage", noFallDamage);
-        
-        gameSettings.put("noregen", noRegen);
-        gameSettings.put("nopvp", noPvp);
-        gameSettings.put("souppvp", soupPvp);
-        gameSettings.put("nofalldamage", noFallDamage);
-        
+                
         try {
         	storage.save(kitFile);
 		} catch (IOException e) {
@@ -103,14 +86,6 @@ public class GameKit {
         lockedLore = "";
         enabled = true;
         requirePermission = false;
-        boolean noRegen = false;
-        boolean noPvp = false;
-        boolean soupPvp = false;
-        boolean noFallDamage = false;
-        gameSettings.put("noregen", noRegen);
-        gameSettings.put("nopvp", noPvp);
-        gameSettings.put("souppvp", soupPvp);
-        gameSettings.put("nofalldamage", noFallDamage);
 	}
 		
     private ItemStack[] getArmor() {
@@ -224,10 +199,6 @@ public class GameKit {
 		this.lockedLore = lore;
 	}
 	
-	public boolean hasSetting(String setting) {
-		return gameSettings.get(setting.toLowerCase());
-	}
-	
 	//STATIC METHODS
 	public static ArrayList<GameKit> getKits() {
         return GameKit.kits;
@@ -235,7 +206,7 @@ public class GameKit {
 	
 	public static GameKit getKit(String filename) {
 		for (GameKit kit: GameKit.getKits()) {
-			if (kit.getFilename().equalsIgnoreCase(filename) || kit.getColorName().equals(filename)) {
+			if (kit.getFilename().equalsIgnoreCase(filename) || kit.getColorName().equals(filename) || kit.getColorName().equals(ChatColor.translateAlternateColorCodes('&', filename))) {
 				return kit;
 			}
 		}
@@ -335,11 +306,6 @@ public class GameKit {
         
         storage.set("enabled", kit.getEnabled());
         
-        storage.set("gameSettings.noRegen", kit.gameSettings.get("noregen"));
-        storage.set("gameSettings.noPvp", kit.gameSettings.get("nopvp"));
-        storage.set("gameSettings.soupPvp", kit.gameSettings.get("souppvp"));
-        storage.set("gameSettings.noFallDamage", kit.gameSettings.get("nofalldamage"));
-        
         for (int x = 1; x < 17; x++) {
         	storage.set("lores.line" + x, kit.getLores().get(x));
         }
@@ -356,16 +322,18 @@ public class GameKit {
 
 	public static void loadkits() {
     	kits.clear();
-    	kits.add(new GameKit("rand",
-    			new Messaging.MessageFormatter().format("kit.vote-random"), 
-    			SkyWarsReloaded.getCfg().getRandPos(),
-    			new ItemStack(SkyWarsReloaded.getCfg().getRandMat(), 1),
-    			new Messaging.MessageFormatter().format("kit.rand-lore")));
-    	kits.add(new GameKit("nokit",
-    			new Messaging.MessageFormatter().format("kit.vote-nokit"), 
-    			SkyWarsReloaded.getCfg().getNoKitPos(),
-    			new ItemStack(SkyWarsReloaded.getCfg().getNoKitMat(), 1),
-    			new Messaging.MessageFormatter().format("kit.nokit-lore")));
+    	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+        	kits.add(new GameKit("rand",
+        			new Messaging.MessageFormatter().format("kit.vote-random"), 
+        			SkyWarsReloaded.getCfg().getRandPos(),
+        			new ItemStack(SkyWarsReloaded.getCfg().getRandMat(), 1),
+        			new Messaging.MessageFormatter().format("kit.rand-lore")));
+        	kits.add(new GameKit("nokit",
+        			new Messaging.MessageFormatter().format("kit.vote-nokit"), 
+        			SkyWarsReloaded.getCfg().getNoKitPos(),
+        			new ItemStack(SkyWarsReloaded.getCfg().getNoKitMat(), 1),
+        			new Messaging.MessageFormatter().format("kit.nokit-lore")));
+    	}
         File dataDirectory = SkyWarsReloaded.get().getDataFolder();
         File kitsDirectory = new File(dataDirectory, "kits");
 
@@ -401,10 +369,6 @@ public class GameKit {
 			}
 		}
 		return availableKits;
-	}
-
-	public Map<String, Boolean> getSettings() {
-		return gameSettings;
 	}
 
 }

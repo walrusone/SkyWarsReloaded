@@ -58,11 +58,10 @@ public class GameMap {
 	private static Map<String, MapData> mapData = new HashMap<String, MapData>();
 	
 	private boolean forceStart;
-    private boolean allowRegen;
-    private boolean allowPvp;
-    private boolean soupPvp;
-    private boolean allowFallDamage;
+	private boolean allowFallDamage;
+	private boolean allowRegen;
     private boolean thunder;
+    private String winner = "";
     private int strikeCounter;
     private int nextStrike;
     private MatchState matchState;
@@ -71,6 +70,8 @@ public class GameMap {
     private ArrayList<UUID> spectators = new ArrayList<UUID>();
     private String name;
     private int timer;
+    private int displayTimer = 0;
+    private int restartTimer = -1;
     private int minPlayers;
     private GameKit kit;
     private Inventory kitsVoteMenu;
@@ -78,6 +79,10 @@ public class GameMap {
     private Inventory chestVoteMenu;
     private Inventory weatherVoteMenu;
     private Inventory modifierVoteMenu;
+    private String currentTime;
+    private String currentChest;
+    private String currentWeather;
+    private String currentModifier;
     private Map<GameKit, Boolean> availableKits;
 	private Map<Integer, EmptyChest> chests = Maps.newHashMap();
 	private Map<Integer, EmptyChest> doubleChests = Maps.newHashMap();
@@ -87,7 +92,7 @@ public class GameMap {
 	private ArrayList<SWRSign> signs;
 	private Scoreboard scoreboard;
 	private Objective objective;
-	private Map<String, Integer> scoreboardData = new HashMap<String, Integer>();
+
 	
 	private static final ArrayList<String> timeItemList = new ArrayList<>(Arrays.asList("timerandom", "timedawn", "timenoon", "timedusk", "timemidnight"));
 	private static final ArrayList<Vote> timeVoteList = new ArrayList<>(Arrays.asList(Vote.TIMERANDOM, Vote.TIMEDAWN, Vote.TIMENOON, Vote.TIMEDUSK, Vote.TIMEMIDNIGHT));
@@ -104,18 +109,18 @@ public class GameMap {
 		this.name = name.toLowerCase();
         playerCards = new HashMap<Integer, PlayerCard>();
 		ChunkIterator();
-        this.allowRegen = true;
-        this.allowPvp = true;
-        this.allowFallDamage = true;
-        this.soupPvp = false;
         this.thunder = false;
-        kitsVoteMenu = Bukkit.createInventory(null, 36, "VOTE FOR KIT");
-        chestVoteMenu = Bukkit.createInventory(null, 27, "VOTE FOR CHEST TYPE");
-        timeVoteMenu = Bukkit.createInventory(null, 27, "VOTE FOR GAME TIME");
-        weatherVoteMenu = Bukkit.createInventory(null, 27, "VOTE FOR GAME WEATHER");
-        modifierVoteMenu = Bukkit.createInventory(null, 27, "VOTE FOR GAME MODIFIER");
-        availableKits = Maps.newHashMap();
-        addKits();
+        allowRegen = true;
+        kitsVoteMenu = Bukkit.createInventory(null, 45, new Messaging.MessageFormatter().format("menu.kit-voting-menu"));
+        if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+            availableKits = Maps.newHashMap();
+            addKits();
+        }
+        chestVoteMenu = Bukkit.createInventory(null, 27, new Messaging.MessageFormatter().format("menu.chest-voting-menu"));
+        timeVoteMenu = Bukkit.createInventory(null, 27, new Messaging.MessageFormatter().format("menu.time-voting-menu"));
+        weatherVoteMenu = Bukkit.createInventory(null, 27, new Messaging.MessageFormatter().format("menu.weather-voting-menu"));
+        modifierVoteMenu = Bukkit.createInventory(null, 27, new Messaging.MessageFormatter().format("menu.modifier-voting-menu"));
+
         prepareMenu(chestVoteMenu, "chest");
         prepareMenu(timeVoteMenu, "time");
         prepareMenu(weatherVoteMenu, "weather");
@@ -167,6 +172,7 @@ public class GameMap {
     	}
     	sendBungeeUpdate();
     	updateSigns();
+    	updateScoreboard();
     	return false;
     }
 
@@ -426,9 +432,13 @@ public class GameMap {
 		availableKits.clear();
 		thunder = false;
 		forceStart = false;
+		allowRegen = true;
         dead.clear();
         kit = null;
         kitsVoteMenu.clear();
+        setDisplayTimer(0);
+        restartTimer = -1;
+        winner = "";
         addKits();
         prepareMenu(chestVoteMenu, "chest");
         prepareMenu(timeVoteMenu, "time");
@@ -537,6 +547,7 @@ public class GameMap {
 		}
 		
 	}
+	
     public void getVotedKit() {
     	HashMap <GameKit, Integer> votes = new HashMap<GameKit, Integer>();
 		for (GameKit gKit: availableKits.keySet()) {
@@ -567,6 +578,17 @@ public class GameMap {
 			}
 		}
 		this.kit = voted;
+    }
+    
+    public GameKit getSelectedKit(Player player) {
+    	for (PlayerCard pCard: playerCards.values()) {
+    		if (pCard != null) {
+    			if (player.equals(pCard.getPlayer())) {
+    				return pCard.getKitVote();
+    			}
+    		}
+    	}
+    	return null;
     }
     
 	public boolean isKitLocked(GameKit kit2) {
@@ -602,6 +624,11 @@ public class GameMap {
 		inv.setItem(13, SkyWarsReloaded.getIM().getItem(itemList.get(2)));
 		inv.setItem(15, SkyWarsReloaded.getIM().getItem(itemList.get(3)));
 		inv.setItem(17, SkyWarsReloaded.getIM().getItem(itemList.get(4)));
+		
+		currentTime = getVoteString(Vote.TIMENOON);
+		currentChest = getVoteString(Vote.CHESTNORMAL);
+		currentWeather = getVoteString(Vote.WEATHERSUN);
+		currentModifier = getVoteString(Vote.MODIFIERNONE);
 	}
     
 	public void setVote(Player player, Vote vote, String type) {
@@ -663,6 +690,17 @@ public class GameMap {
 				updateSlot(votes, vote, 4, 17, itemList, inv);
 			}
 		}
+		
+		if (type.equalsIgnoreCase("time")) {
+			currentTime = getVoteString(getVoted("time"));
+		} else if (type.equalsIgnoreCase("chest")) {
+			currentChest = getVoteString(getVoted("chest"));
+		} else if (type.equalsIgnoreCase("weather")) {
+			currentWeather = getVoteString(getVoted("weather"));
+		} else if (type.equalsIgnoreCase("modifier")) {
+			currentModifier = getVoteString(getVoted("modifier"));
+		}
+		updateScoreboard();
 	}
 	
 	private void updateSlot(HashMap <Vote, Integer> votes, Vote vote, int count, int slot, ArrayList<String> itemList, Inventory inv) {
@@ -764,8 +802,7 @@ public class GameMap {
 		scoreboard = manager.getNewScoreboard();
         objective = scoreboard.registerNewObjective("info", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        String leaderboard = new Messaging.MessageFormatter().setVariable("mapname", displayName.toUpperCase()).format("game.scoreboard-title");
-        objective.setDisplayName(leaderboard);
+		updateScoreboard();
 	}
 	
 	public void updateScoreboard() {
@@ -774,38 +811,107 @@ public class GameMap {
         }
         objective = scoreboard.registerNewObjective("info", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        String leaderboard = new Messaging.MessageFormatter().setVariable("mapname", displayName.toUpperCase()).format("game.scoreboard-title");
-        objective.setDisplayName(leaderboard);
-		
-        for (String name: scoreboardData.keySet()) {
-			if (scoreboardData.get(name) == 0) {
-				Score score = objective.getScore(ChatColor.RED + name);
-				score.setScore(scoreboardData.get(name));
-			} else {
-				Score score = objective.getScore(ChatColor.GREEN + name);
-				score.setScore(scoreboardData.get(name));
-			}
+        String sb = "";
+        if (matchState.equals(MatchState.WAITINGSTART)) {
+        	sb = "scoreboards.waitboard.line";
+        } else if (matchState.equals(MatchState.PLAYING) || matchState.equals(MatchState.SUDDENDEATH)) {
+        	sb = "scoreboards.playboard.line";
+        } else if (matchState.equals(MatchState.ENDING)) {
+        	sb = "scoreboards.endboard.line";
+        	if (restartTimer == -1) {
+        		startRestartTimer();
+        	}
+        }
+        
+        for (int i = 1; i < 17; i++) {
+        	if (i == 1) {
+    	        String leaderboard = getScoreboardLine(sb + i);
+    	        objective.setDisplayName(leaderboard);
+    		} else {
+    			String s = "";
+    			if (getScoreboardLine(sb + i).length() == 0) {
+    				for (int j = 0; j < i; j++) {
+    					s = s + " ";
+    				}
+    			} else {
+    				s = getScoreboardLine(sb + i);
+    			}
+    			if (!s.equalsIgnoreCase("remove")) {
+        			Score score = objective.getScore(s);
+    				score.setScore(17-i);
+    			}
+    		}
+        }	
+	}
+	
+	private void startRestartTimer() {
+		restartTimer = SkyWarsReloaded.getCfg().getTimeAfterMatch();
+		if (SkyWarsReloaded.get().isEnabled()) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					restartTimer--;
+					if (restartTimer == 0) {
+						this.cancel();
+					}
+					updateScoreboard();
+				}
+			}.runTaskTimer(SkyWarsReloaded.get(), 0, 20);
 		}
 	}
+	
 
+	
+	private String getScoreboardLine(String lineNum) {
+		return new Messaging.MessageFormatter()
+				.setVariable("mapname", displayName)
+				.setVariable("time", "" + Util.get().getFormattedTime(displayTimer))
+				.setVariable("players", "" + getAlivePlayers().size())
+				.setVariable("maxplayers", "" + playerCards.size())
+				.setVariable("winner", winner)
+				.setVariable("restarttime", "" + restartTimer)
+				.setVariable("chestvote", ChatColor.stripColor(currentChest))
+				.setVariable("timevote", ChatColor.stripColor(currentTime))
+				.setVariable("weathervote", ChatColor.stripColor(currentWeather))
+				.setVariable("modifiervote", ChatColor.stripColor(currentModifier))
+				.format(lineNum);
+	}
+	
+	private String getVoteString(Vote vote) {
+		switch(vote) {
+		case CHESTRANDOM: return new Messaging.MessageFormatter().format("items.chest-random");
+		case CHESTBASIC: return new Messaging.MessageFormatter().format("items.chest-basic");
+		case CHESTNORMAL: return new Messaging.MessageFormatter().format("items.chest-normal");
+		case CHESTOP: return new Messaging.MessageFormatter().format("items.chest-op");
+		case CHESTSCAVENGER: return new Messaging.MessageFormatter().format("items.chest-scavenger");
+		case TIMERANDOM: return new Messaging.MessageFormatter().format("items.time-random");
+		case TIMEDAWN: return new Messaging.MessageFormatter().format("items.time-dawn");
+		case TIMENOON: return new Messaging.MessageFormatter().format("items.time-noon");
+		case TIMEDUSK: return new Messaging.MessageFormatter().format("items.time-dusk");
+		case TIMEMIDNIGHT: return new Messaging.MessageFormatter().format("items.time-midnight");
+		case WEATHERRANDOM: return new Messaging.MessageFormatter().format("items.weather-random");
+		case WEATHERSUN: return new Messaging.MessageFormatter().format("items.weather-sunny");
+		case WEATHERRAIN: return new Messaging.MessageFormatter().format("items.weather-rain");
+		case WEATHERTHUNDER: return new Messaging.MessageFormatter().format("items.weather-storm");
+		case WEATHERSNOW: return new Messaging.MessageFormatter().format("items.weather-snow");
+		case MODIFIERRANDOM: return new Messaging.MessageFormatter().format("items.modifier-random");
+		case MODIFIERSPEED: return new Messaging.MessageFormatter().format("items.modifier-speed");
+		case MODIFIERJUMP: return new Messaging.MessageFormatter().format("items.modifier-jump");
+		case MODIFIERSTRENGTH: return new Messaging.MessageFormatter().format("items.modifier-strength");
+		case MODIFIERNONE: return new Messaging.MessageFormatter().format("items.modifier-none");
+		default: return "";
+		}
+	}
 	
     private void resetScoreboard() {
         if (objective != null) {
             objective.unregister();
         }
         
-        if (scoreboardData != null) {
-        	scoreboardData.clear();
-        }
-
         if (scoreboard != null) {
             scoreboard = null;
         }
     }
-
-	public Map<String, Integer> getScoreboardData() {
-		return scoreboardData;
-	}
 
 	public Scoreboard getScoreboard() {
 		return scoreboard;
@@ -915,12 +1021,12 @@ public class GameMap {
     	World mapWorld;
 		mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName() + "_" + this.getMapCount());
 		final GameMap gMap = this;
-        gMap.allowFallDamage = false;
+		this.allowFallDamage = false;
         new BukkitRunnable() {
 			@Override
 			public void run() {
 				if (kit != null) {
-					gMap.allowFallDamage = !kit.hasSetting("nofalldamage");
+					gMap.allowFallDamage = SkyWarsReloaded.getCfg().allowFallDamage();
 				}
 			}
         	
@@ -1153,30 +1259,6 @@ public class GameMap {
 		Collections.shuffle(arenas);
 	}
 	
-	public boolean allowRegen() {
-		return allowRegen;
-	}
-	
-	public void setAllowRegen(boolean state) {
-		allowRegen = state;
-	}
-	
-	public boolean allowPvp() {
-		return allowPvp;
-	}
-	
-	public void setAllowPvp(boolean state) {
-		allowPvp = state;
-	}
-	
-	public void setSoupPvp(boolean state) {
-		soupPvp = state;
-	}
-
-	public boolean soupPvp() {
-		return soupPvp;
-	}
-
 	public void setAllowFallDamage(boolean b) {
 		allowFallDamage = b;
 	}
@@ -1257,6 +1339,26 @@ public class GameMap {
 			}
 		}
 		return null;
+	}
+
+	public int getDisplayTimer() {
+		return displayTimer;
+	}
+
+	public void setDisplayTimer(int displayTimer) {
+		this.displayTimer = displayTimer;
+	}
+
+	public void setAllowRegen(boolean b) {
+		allowRegen = b;
+	}
+
+	public boolean allowRegen() {
+		return allowRegen;
+	}
+	
+	public void setWinner(String name) {
+		winner = name;
 	}
 
 }

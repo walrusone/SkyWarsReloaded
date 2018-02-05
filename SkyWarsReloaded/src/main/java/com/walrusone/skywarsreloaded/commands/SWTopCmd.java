@@ -26,7 +26,7 @@ public class SWTopCmd extends BaseCmd {
 				return true;
 			}
 			player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.header"));
-	        final List<LeaderData> top = SkyWarsReloaded.getLB().getTop(SkyWarsReloaded.getCfg().getLeaderSize(), LeaderType.valueOf(args[1].toUpperCase()));
+	        final List<LeaderData> top = SkyWarsReloaded.getLB().getTopList(LeaderType.valueOf(args[1].toUpperCase()));
 	        player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.header2"));
 	        if (top.size() == 0) {
 	        	player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.no-data"));

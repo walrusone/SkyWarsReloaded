@@ -134,8 +134,7 @@ public class MatchManager
         player.setLevel(0);
         player.setFlying(false);
         player.setAllowFlight(false);
-        player.setGameMode(GameMode.SURVIVAL);
-		gameMap.getScoreboardData().put(player.getName(), 1);
+        player.setGameMode(GameMode.ADVENTURE);
 		player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
 		player.setScoreboard(gameMap.getScoreboard());
 		gameMap.updateScoreboard();
@@ -146,39 +145,52 @@ public class MatchManager
         player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
         player.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
         
-        ItemStack kitItem = SkyWarsReloaded.getIM().getItem("kitvote");
-        player.getInventory().setItem(0, kitItem);
+        if (SkyWarsReloaded.getCfg().areKitsEnabled()) {
+            ItemStack kitItem = SkyWarsReloaded.getIM().getItem("kitvote");
+            player.getInventory().setItem(SkyWarsReloaded.getCfg().getKitVotePos(), kitItem);
+        }
+
         
-        if (player.hasPermission("sw.chestvote")) {
-            ItemStack chestItem = SkyWarsReloaded.getIM().getItem("chestvote");
-            player.getInventory().setItem(2, chestItem);
-        } else {
-        	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
-            player.getInventory().setItem(2, noPermItem);
+        if (SkyWarsReloaded.getCfg().isChestVoteEnabled()) {
+            if (player.hasPermission("sw.chestvote")) {
+                ItemStack chestItem = SkyWarsReloaded.getIM().getItem("chestvote");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getChestVotePos(), chestItem);
+            } else {
+            	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getChestVotePos(), noPermItem);
+            }
         }
 
-        if (player.hasPermission("sw.timevote")) {
-            ItemStack timeItem = SkyWarsReloaded.getIM().getItem("timevote");
-            player.getInventory().setItem(4, timeItem);
-        } else {
-        	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
-            player.getInventory().setItem(4, noPermItem);
+        if (SkyWarsReloaded.getCfg().isTimeVoteEnabled()) {
+            if (player.hasPermission("sw.timevote")) {
+                ItemStack timeItem = SkyWarsReloaded.getIM().getItem("timevote");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getTimeVotePos(), timeItem);
+            } else {
+            	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getTimeVotePos(), noPermItem);
+            }
         }
 
-        if (player.hasPermission("sw.weathervote")) {
-            ItemStack weatherItem = SkyWarsReloaded.getIM().getItem("weathervote");
-            player.getInventory().setItem(6, weatherItem);
-        } else {
-        	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
-            player.getInventory().setItem(6, noPermItem);
+        if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()) {
+            if (player.hasPermission("sw.weathervote")) {
+                ItemStack weatherItem = SkyWarsReloaded.getIM().getItem("weathervote");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getWeatherVotePos(), weatherItem);
+            } else {
+            	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getWeatherVotePos(), noPermItem);
+            }
         }
-        if (player.hasPermission("sw.modifiervote")) {
-            ItemStack modifierItem = SkyWarsReloaded.getIM().getItem("modifiervote");
-            player.getInventory().setItem(8, modifierItem);
-        } else {
-        	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
-            player.getInventory().setItem(8, noPermItem);
+        
+        if (SkyWarsReloaded.getCfg().isModifierVoteEnabled()) {
+            if (player.hasPermission("sw.modifiervote")) {
+                ItemStack modifierItem = SkyWarsReloaded.getIM().getItem("modifiervote");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getModifierVotePos(), modifierItem);
+            } else {
+            	ItemStack noPermItem = SkyWarsReloaded.getIM().getItem("nopermission");
+                player.getInventory().setItem(SkyWarsReloaded.getCfg().getModifierVotePos(), noPermItem);
+            }
         }
+
     	if (debug) {
     		Util.get().logToFile(debugName + ChatColor.YELLOW + "Finished Preparing " + player.getName() + " for SkyWars on map " + gameMap.getName());
     	}
@@ -222,13 +234,13 @@ public class MatchManager
     private void waitStart(final GameMap gameMap) {
         final int waitTime = this.getWaitTime();
         Sound sound;
-        if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-        	sound = Sound.valueOf("NOTE_BASS");
-        } else {
-            try {
-            	sound = Sound.valueOf(SkyWarsReloaded.getCfg().getCountdownSound());
-            } catch (IllegalArgumentException | NullPointerException e) {
-            	SkyWarsReloaded.get().getServer().getLogger().info("Countdown Sound in Config is Invalid");
+    	try {
+        	sound = Sound.valueOf(SkyWarsReloaded.getCfg().getCountdownSound());
+        } catch (IllegalArgumentException | NullPointerException e) {
+        	SkyWarsReloaded.get().getServer().getLogger().info("Countdown Sound in Config is Invalid");
+            if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+            	sound = Sound.valueOf("NOTE_BASS");
+            } else {
             	sound = Sound.valueOf("BLOCK_NOTE_BASS");
             }
         }
@@ -236,6 +248,9 @@ public class MatchManager
         gameMap.setTimer(this.getWaitTime());
         new BukkitRunnable() {
             public void run() {
+            	if (gameMap.getMatchState() != MatchState.WAITINGSTART) {
+            		this.cancel();
+            	}
             	if (gameMap.getAlivePlayers().size() >= gameMap.getMinPlayers() || gameMap.getForceStart()) {
                     if (gameMap.getTimer() <= 0) {
                         this.cancel();
@@ -293,6 +308,7 @@ public class MatchManager
     	}
     	for (Player player: gameMap.getAlivePlayers()) {
     		player.closeInventory();
+    		player.setGameMode(GameMode.SURVIVAL);
     	}
         if (gameMap.getMatchState() != MatchState.ENDING) {
         	this.matchCountdown(gameMap);
@@ -396,16 +412,17 @@ public class MatchManager
     }
     
     private void selectKit(GameMap gameMap) {
-    	gameMap.getVotedKit();
-        if (gameMap.getKit() != null) {
-            gameMap.setAllowRegen(!gameMap.getKit().hasSetting("noregen"));
-           	gameMap.setAllowPvp(!gameMap.getKit().hasSetting("nopvp"));
-           	gameMap.setAllowFallDamage(!gameMap.getKit().hasSetting("nofalldamage"));
-            gameMap.setSoupPvp(gameMap.getKit().hasSetting("souppvp"));
-        }
-    	for (final Player player : gameMap.getAlivePlayers()) {
-    		GameKit.giveKit(player, gameMap.getKit());         
+    	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+        	gameMap.getVotedKit();
+        	for (final Player player : gameMap.getAlivePlayers()) {
+        		GameKit.giveKit(player, gameMap.getKit());         
+        	}
+    	} else {
+        	for (final Player player : gameMap.getAlivePlayers()) {
+        		GameKit.giveKit(player, gameMap.getSelectedKit(player));         
+        	}
     	}
+
     }
        
     private void matchCountdown(final GameMap gameMap) {
@@ -472,6 +489,8 @@ public class MatchManager
         			}
                 }                  
                 gameMap.setTimer((gameMap.getTimer() > 0) ? gameMap.getTimer() - 1 : 0);
+                gameMap.setDisplayTimer(gameMap.getDisplayTimer() + 1);
+                gameMap.updateScoreboard();
             }
         }.runTaskTimer(SkyWarsReloaded.get(), 0L, 20L);
     }
@@ -482,6 +501,7 @@ public class MatchManager
             	Util.get().logToFile(debugName + ChatColor.YELLOW + win.getName() + "Won the Match");
         	}
         	
+        	gameMap.setWinner(win.getDisplayName());
             final PlayerCard pCard = gameMap.getPlayerCard(win);
             pCard.setPlace(1);
             pCard.calculateELO();
@@ -541,6 +561,7 @@ public class MatchManager
         	Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Wating for teleport");
     	}
         gameMap.setMatchState(MatchState.ENDING);
+        gameMap.updateScoreboard();
         gameMap.updateSigns();
         gameMap.setTimer(0);
         if (SkyWarsReloaded.get().isEnabled()) {
@@ -599,11 +620,10 @@ public class MatchManager
             return;
         }
         if (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.ENDING) {
-			gameMap.getScoreboardData().put(player.getName(), 0);
-			gameMap.updateScoreboard();
             gameMap.getDead().add(player.getUniqueId());
             gameMap.getAlivePlayers().remove(player.getUniqueId());
             gameMap.sendBungeeUpdate();
+            gameMap.updateScoreboard();
             PlayerCard pCard = gameMap.getPlayerCard(player);
             pCard.setPlace(gameMap.getPlayerCount() + 1 - gameMap.getDead().size());
             pCard.calculateELO();
@@ -687,9 +707,8 @@ public class MatchManager
             	prepareSpectateInv(spec, gameMap);
             }
         } else {
-			gameMap.getScoreboardData().remove(player.getName());
-			gameMap.updateScoreboard();
         	gameMap.removePlayer(player);
+			gameMap.updateScoreboard();
         	this.message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).format("game.left-the-game"));
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
@@ -809,6 +828,7 @@ public class MatchManager
 		            player.setExp(0.0f);
 		            player.setLevel(0);
 		            player.setGameMode(GameMode.SPECTATOR);
+		            player.setScoreboard(gameMap.getScoreboard());
 		            
 		            prepareSpectateInv(player, gameMap);
 		    		
