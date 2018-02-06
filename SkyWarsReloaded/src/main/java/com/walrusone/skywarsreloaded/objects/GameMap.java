@@ -165,16 +165,13 @@ public class GameMap {
     			pCard.setLevel(player.getLevel());
    			
     			MatchManager.get().teleportToArena(this, player, pCard.getSpawn());
-    			LobbyListener.updateJoinMenu();
     	        updateKitVotes();
     	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
-    	        sendBungeeUpdate();
-    	        updateSigns();
+    	        this.update();
     			return true;
     		}  		
     	}
-    	sendBungeeUpdate();
-    	updateSigns();
+    	this.update();
     	updateScoreboard();
     	return false;
     }
@@ -185,15 +182,12 @@ public class GameMap {
     		if (player != null) {
         		if(pCard.getPlayer().equals(player)) {
         			pCard.reset();
-        			LobbyListener.updateJoinMenu();
-        			sendBungeeUpdate();
-        			updateSigns();
+        			this.update();
         			return true;
         		}
     		}
     	}
-    	sendBungeeUpdate();
-    	updateSigns();
+    	this.update();
     	return false;
     }
  
@@ -1367,6 +1361,13 @@ public class GameMap {
 	
 	public void setWinner(String name) {
 		winner = name;
+	}
+
+	public void update() {
+        this.updateSigns();
+        this.sendBungeeUpdate();
+        this.updateScoreboard();
+        LobbyListener.updateJoinMenu();
 	}
 
 }

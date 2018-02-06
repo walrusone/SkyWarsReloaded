@@ -32,7 +32,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.listeners.LobbyListener;
 import com.walrusone.skywarsreloaded.objects.EmptyChest;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.walrusone.skywarsreloaded.objects.GameMap;
@@ -98,8 +97,7 @@ public class MatchManager
         this.setWaitTime(SkyWarsReloaded.getCfg().getWaitTimer());
         this.setGameTime(SkyWarsReloaded.getCfg().getGameTimer());
         gameMap.setMatchState(MatchState.WAITINGSTART);
-        gameMap.updateSigns();
-        LobbyListener.updateJoinMenu();
+        gameMap.update();
         this.waitStart(gameMap);
     }
     
@@ -138,7 +136,6 @@ public class MatchManager
         player.setGameMode(GameMode.ADVENTURE);
 		player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
 		player.setScoreboard(gameMap.getScoreboard());
-		gameMap.updateScoreboard();
 		
         Util.get().clear(player);
         player.getInventory().setBoots(new ItemStack(Material.AIR, 1));
@@ -236,7 +233,7 @@ public class MatchManager
     		}
     	}
     	gameMap.setMatchState(MatchState.WAITINGSTART);
-    	gameMap.updateSigns();
+    	gameMap.update();
     	String designer; 
     	if (SkyWarsReloaded.getCfg().titlesEnabled()) {
         	if (gameMap.getDesigner() != null && gameMap.getDesigner().length() > 0) {
@@ -431,9 +428,7 @@ public class MatchManager
             return;
         }
         gameMap.setMatchState(MatchState.PLAYING);
-        LobbyListener.updateJoinMenu();
-        gameMap.updateSigns();
-        gameMap.sendBungeeUpdate();
+        gameMap.update();
         gameMap.setTimer(this.getGameTime());
         new BukkitRunnable() {
             public void run() {
@@ -563,9 +558,7 @@ public class MatchManager
         	Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Wating for teleport");
     	}
         gameMap.setMatchState(MatchState.ENDING);
-        LobbyListener.updateJoinMenu();
-        gameMap.updateScoreboard();
-        gameMap.updateSigns();
+        gameMap.update();
         gameMap.setTimer(0);
         if (SkyWarsReloaded.get().isEnabled()) {
         	for (final Player player: gameMap.getAllPlayers()) {
@@ -625,9 +618,7 @@ public class MatchManager
         if (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.ENDING) {
             gameMap.getDead().add(player.getUniqueId());
             gameMap.getAlivePlayers().remove(player.getUniqueId());
-            LobbyListener.updateJoinMenu();
-            gameMap.sendBungeeUpdate();
-            gameMap.updateScoreboard();
+            gameMap.update();
             PlayerCard pCard = gameMap.getPlayerCard(player);
             pCard.setPlace(gameMap.getPlayerCount() + 1 - gameMap.getDead().size());
             pCard.calculateELO();
@@ -712,7 +703,7 @@ public class MatchManager
             }
         } else {
         	gameMap.removePlayer(player);
-			gameMap.updateScoreboard();
+        	gameMap.update();
 			
 	        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
 	        	for (final Player p : gameMap.getAlivePlayers()) {
