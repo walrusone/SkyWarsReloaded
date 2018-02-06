@@ -221,37 +221,38 @@ public class Leaderboard {
     
     public void updateSigns(LeaderType type) {
     	List<LeaderData> top = getTopList(type);
-    	
-    	for (int pos: signs.get(type).keySet()) {
-    		if (pos-1 < top.size()) {
-    			for (Location loc: signs.get(type).get(pos)) {
-        			BlockState bs = loc.getBlock().getState();
-        			Sign sign = null;
-        			if (bs instanceof Sign) {
-        				sign = (Sign) bs;
-        			}
-        			if (sign != null) {
-        				sign.getBlock().getChunk().load();
-        				for (int i = 0; i < 4; i++) {
-        					sign.setLine(i, new Messaging.MessageFormatter().setVariable("name", top.get(pos-1).getName())
-            						.setVariable("elo", "" + top.get(pos-1).getElo())
-            						.setVariable("kills", "" + top.get(pos-1).getKills())
-            						.setVariable("wins", "" + top.get(pos-1).getWins())
-            						.setVariable("xp", "" + top.get(pos-1).getXp())
-            						.setVariable("deaths", "" + top.get(pos-1).getDeaths())
-            						.setVariable("losses", "" + top.get(pos-1).getLoses())
-            						.setVariable("position", "" + pos)
-            						.setVariable("type", type.toString())
-            						.format("leaderboard.signformats." + type.toString().toLowerCase() + ".line" + (i + 1)));
-        				}
-        			}
-        			sign.update();
-        			if (SkyWarsReloaded.getCfg().leaderHeadsEnabled()) {
-        				updateHead(sign, top.get(pos-1).getUUID());
-        			}
-        		}
-    		}	
-    	} 	
+    	if (top != null) {
+    		for (int pos: signs.get(type).keySet()) {
+        		if (pos-1 < top.size()) {
+        			for (Location loc: signs.get(type).get(pos)) {
+            			BlockState bs = loc.getBlock().getState();
+            			Sign sign = null;
+            			if (bs instanceof Sign) {
+            				sign = (Sign) bs;
+            			}
+            			if (sign != null) {
+            				sign.getBlock().getChunk().load();
+            				for (int i = 0; i < 4; i++) {
+            					sign.setLine(i, new Messaging.MessageFormatter().setVariable("name", top.get(pos-1).getName())
+                						.setVariable("elo", "" + top.get(pos-1).getElo())
+                						.setVariable("kills", "" + top.get(pos-1).getKills())
+                						.setVariable("wins", "" + top.get(pos-1).getWins())
+                						.setVariable("xp", "" + top.get(pos-1).getXp())
+                						.setVariable("deaths", "" + top.get(pos-1).getDeaths())
+                						.setVariable("losses", "" + top.get(pos-1).getLoses())
+                						.setVariable("position", "" + pos)
+                						.setVariable("type", type.toString())
+                						.format("leaderboard.signformats." + type.toString().toLowerCase() + ".line" + (i + 1)));
+            				}
+            			}
+            			sign.update();
+            			if (SkyWarsReloaded.getCfg().leaderHeadsEnabled()) {
+            				updateHead(sign, top.get(pos-1).getUUID());
+            			}
+            		}
+        		}	
+        	} 	
+    	}
     }
     
     private void updateHead(Sign sign, UUID uuid) {

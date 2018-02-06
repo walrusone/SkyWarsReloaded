@@ -22,6 +22,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -57,6 +58,18 @@ public class Util {
 			return true;
 		}
 		return false;
+	}
+	
+	public void playSound(Player player, Location location, String sound, float volume, float pitch) {
+		if (SkyWarsReloaded.getCfg().soundsEnabled()) {
+			try {
+				if (player != null) {
+					player.playSound(location, Sound.valueOf(sound), volume, pitch);
+				}
+			} catch (IllegalArgumentException | NullPointerException e) {
+				SkyWarsReloaded.get().getLogger().info("ERROR: " + sound + " is not a valid bukkit sound. Please check your configs");
+			}
+		}
 	}
 	
 	public int getRandomNum(int max, int min) {

@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.ParticleItem;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class EffectSelectionMenu {
 
@@ -43,6 +44,7 @@ public class EffectSelectionMenu {
                 }           
                 
             	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getEffects())) {
+            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
             	} else {
                     event.setWillClose(true);
@@ -51,6 +53,7 @@ public class EffectSelectionMenu {
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
                 	ps.setParticleEffect(effect.getKey());
                 	DataStorage.get().saveStats(ps);
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg"));
             	}   
             	

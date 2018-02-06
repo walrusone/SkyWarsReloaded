@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class JoinMenu {
 
@@ -44,6 +45,7 @@ public class JoinMenu {
                 }
                 
                 if (gMap.getMatchState() != MatchState.WAITINGSTART) {
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                 	return;
                 }
 

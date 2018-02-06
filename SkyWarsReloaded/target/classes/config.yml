@@ -44,6 +44,24 @@ fireworks:
 sounds:
   enabled: true
   countdown: BLOCK_NOTE_BASS
+  join: BLOCK_WOODEN_DOOR_OPEN
+  leave: BLOCK_WOODEN_DOOR_CLOSE
+  openJoinMenu: BLOCK_FENCE_GATE_OPEN
+  openSpectateMenu: BLOCK_FENCE_GATE_OPEN
+  openOptionsMenu: ENTITY_BOBBER_SPLASH
+  openGlassMenu: BLOCK_GLASS_BREAK
+  openWinSoundMenu: ENTITY_FIREWORK_BLAST
+  openKillSoundMenu: ENTITY_PIG_DEATH
+  openParticleMenu: BLOCK_GRAVEL_STEP
+  openProjectileMenu: ENTITY_ARROW_SHOOT
+  openTauntMenu: ENTITY_ENDERDRAGON_FLAP
+  openKitMenu: ENTITY_PLAYER_ATTACK_SWEEP
+  openChestMenu: BLOCK_CHEST_OPEN
+  openTimeMenu: ITEM_BOTTLE_FILL_DRAGONBREATH
+  openWeatherMenu: WEATHER_RAIN
+  openModifierMenu: ENTITY_SPLASH_POTION_BREAK
+  confirmSelectionSound: ENTITY_VILLAGER_YES
+  errorSound: ENTITY_VILLAGER_NO
 signs:
   enabled: true
   blockoffline: COAL_BLOCK

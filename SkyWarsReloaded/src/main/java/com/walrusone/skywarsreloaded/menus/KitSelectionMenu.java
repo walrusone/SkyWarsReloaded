@@ -11,6 +11,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class KitSelectionMenu {
 
@@ -34,12 +35,14 @@ public class KitSelectionMenu {
                     
                 	if (kit.needPermission()) {
                 		if (!player.hasPermission("swr.kit." + kit.getFilename())) {
+                			Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                 			return;
                 		}
                 	}
                 	
                     event.setWillClose(true);
                     event.setWillDestroy(true);
+                    Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                     gMap.setKitVote(player, kit);
                 }
             });  

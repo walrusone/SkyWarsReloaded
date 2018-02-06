@@ -37,16 +37,11 @@ public class SpectateMenu {
                     return;
                 }
 
-      
                 gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(event.getName()));
                 if (gMap == null) {
                     return;
                 }
                 
-                if (gMap.getMatchState() != MatchState.WAITINGSTART) {
-                	return;
-                }
-
                 event.setWillClose(true);
                 event.setWillDestroy(true);
                 

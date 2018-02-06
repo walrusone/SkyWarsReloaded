@@ -55,12 +55,15 @@ public class LobbyListener implements Listener
         		if (e.hasItem()) {
                     if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
                     	e.setCancelled(true);
+                    	Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenOptionsMenuSound(), 0.5F, 1);
                     	new OptionsSelectionMenu(e.getPlayer());
                     } else if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("joinselect"))) {
                     	e.setCancelled(true);
+                    	Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1, 1);
                     	new JoinMenu(e.getPlayer());
                     } else if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
                     	e.setCancelled(true);
+                    	Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
                     	new SpectateMenu(e.getPlayer());
                     }
         		}

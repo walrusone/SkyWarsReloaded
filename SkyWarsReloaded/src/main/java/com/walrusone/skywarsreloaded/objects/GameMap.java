@@ -179,11 +179,13 @@ public class GameMap {
 	public boolean removePlayer(final Player player) {
     	for (int i = 1; i <= playerCards.size(); i++) {
     		PlayerCard pCard = playerCards.get(i);
-    		if(pCard.getPlayer().equals(player)) {
-    			pCard.reset();
-    			sendBungeeUpdate();
-    			updateSigns();
-    			return true;
+    		if (player != null) {
+        		if(pCard.getPlayer().equals(player)) {
+        			pCard.reset();
+        			sendBungeeUpdate();
+        			updateSigns();
+        			return true;
+        		}
     		}
     	}
     	sendBungeeUpdate();

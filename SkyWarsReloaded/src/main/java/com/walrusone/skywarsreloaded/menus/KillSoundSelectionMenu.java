@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.objects.SoundItem;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class KillSoundSelectionMenu {
 
@@ -43,7 +44,8 @@ public class KillSoundSelectionMenu {
                 }           
                 
             	if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.killsound." + sound.getKey())) {
-                    return;
+            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+            		return;
             	} else {
                     event.setWillClose(true);
                     event.setWillDestroy(true);
@@ -51,6 +53,7 @@ public class KillSoundSelectionMenu {
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
                 	ps.setKillSound(sound.getKey());
                 	DataStorage.get().saveStats(ps);
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usekill-playermsg"));
             	}   
             	

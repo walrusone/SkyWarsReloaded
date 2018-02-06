@@ -10,7 +10,6 @@ import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -210,6 +209,23 @@ public class MatchManager
 		List<ParticleEffect> effects = SkyWarsReloaded.getLM().getParticleByKey(key).getEffects();
         SkyWarsReloaded.getLM().addPlayer(player.getUniqueId(), effects);
         
+        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+        	for (final Player p : gameMap.getAlivePlayers()) {
+        		if (!p.equals(player)) {
+                    Util.get().sendTitle(p, 2, 20, 2, "", 
+                    		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+    			}
+        	}
+        } else {
+   			message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+        }
+        
+       	for (final Player p : gameMap.getAlivePlayers()) {
+    		if (!p.equals(player)) {
+    			Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getJoinSound(), 1, 1);
+    		}
+        }
+        
     	if (debug) {
     		if (gameMap.getAlivePlayers().size() < gameMap.getMinPlayers()) {
         		Util.get().logToFile(debugName + ChatColor.YELLOW + "Waiting for More Players on map " + gameMap.getName());
@@ -232,19 +248,6 @@ public class MatchManager
     }
     
     private void waitStart(final GameMap gameMap) {
-        final int waitTime = this.getWaitTime();
-        Sound sound;
-    	try {
-        	sound = Sound.valueOf(SkyWarsReloaded.getCfg().getCountdownSound());
-        } catch (IllegalArgumentException | NullPointerException e) {
-        	SkyWarsReloaded.get().getServer().getLogger().info("Countdown Sound in Config is Invalid");
-            if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-            	sound = Sound.valueOf("NOTE_BASS");
-            } else {
-            	sound = Sound.valueOf("BLOCK_NOTE_BASS");
-            }
-        }
-        final Sound toPlay = sound;
         gameMap.setTimer(this.getWaitTime());
         new BukkitRunnable() {
             public void run() {
@@ -255,11 +258,9 @@ public class MatchManager
                     if (gameMap.getTimer() <= 0) {
                         this.cancel();
                         if (gameMap.getMatchState() != MatchState.ENDING) {
-                            if (SkyWarsReloaded.getCfg().playSounds()) {
-                            	for (final Player player : gameMap.getAlivePlayers()) {
-                                	player.playSound(player.getLocation(), toPlay, 1, 1F);
-                            	}
-                            }
+                        	for (final Player player : gameMap.getAlivePlayers()) {
+                        		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 1F);
+                        	}
                             MatchManager.this.startMatch(gameMap);
                         }
                     } else {
@@ -270,19 +271,17 @@ public class MatchManager
                                     		setVariable("time", "" + gameMap.getTimer()).format("titles.warmup-title"), 
                                     		new Messaging.MessageFormatter().format("titles.warmup-subtitle"));
                         		}
-                                if (SkyWarsReloaded.getCfg().playSounds()) {
-                                    if (gameMap.getTimer() == 5) {
-                                    	player.playSound(player.getLocation(), toPlay, 1, 0.5F);
-                                    } else if (gameMap.getTimer() == 4) {
-                                    	player.playSound(player.getLocation(), toPlay, 1, 0.6F);
-                                    } else if (gameMap.getTimer() == 3) {
-                                    	player.playSound(player.getLocation(), toPlay, 1, 0.7F);
-                                    } else if (gameMap.getTimer() == 2) {
-                                    	player.playSound(player.getLocation(), toPlay, 1, 0.8F);
-                                    } else if (gameMap.getTimer() == 1) {
-                                    	player.playSound(player.getLocation(), toPlay, 1, 0.9F);
-                                    } 
-                                }
+                                if (gameMap.getTimer() == 5) {
+                                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 0.5F);
+                                } else if (gameMap.getTimer() == 4) {
+                                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 0.6F);
+                                } else if (gameMap.getTimer() == 3) {
+                                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 0.7F);
+                                } else if (gameMap.getTimer() == 2) {
+                                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 0.8F);
+                                } else if (gameMap.getTimer() == 1) {
+                                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 0.9F);
+                                } 
                             }
                         }
                         if (gameMap.getTimer() % 5 == 0 || gameMap.getTimer() <= 5) {
@@ -709,7 +708,22 @@ public class MatchManager
         } else {
         	gameMap.removePlayer(player);
 			gameMap.updateScoreboard();
-        	this.message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).format("game.left-the-game"));
+			
+	        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+	        	for (final Player p : gameMap.getAlivePlayers()) {
+	        		if (!p.equals(player)) {
+	                    Util.get().sendTitle(p, 2, 20, 2, "", 
+	                    		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.left-the-game"));
+	    			}
+	        	}
+	        } else {
+	   			message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.left-the-game"));
+	        }
+	        
+        	for (final Player p : gameMap.getAlivePlayers()) {
+        		Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getLeaveSound(), 1, 1);
+        	}
+			
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
                 playerData.restore();

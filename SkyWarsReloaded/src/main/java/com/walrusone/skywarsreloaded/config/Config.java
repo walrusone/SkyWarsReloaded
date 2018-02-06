@@ -98,6 +98,24 @@ public class Config {
 	
 	private boolean playSounds;
 	private String countdown;
+	private String joinSound;
+	private String leaveSound;
+	private String openJoinMenu;
+	private String openSpectateMenu;
+	private String openOptionsMenu;
+	private String openGlassMenu;
+	private String openWinSoundMenu;
+	private String openKillSoundMenu;
+	private String openParticleMenu;
+	private String openProjectileMenu;
+	private String openTauntMenu;
+	private String openKitMenu;
+	private String openChestMenu;
+	private String openTimeMenu;
+	private String openWeatherMenu;
+	private String openModifierMenu;
+	private String confirmSelection;
+	private String errorSound;
 	
 	private boolean spectateEnabled;
 	private int spectateDistance;
@@ -137,6 +155,20 @@ public class Config {
 			"DIAMOND_SWORD", "NOTE_BLOCK", 
 			"DRAGON_EGG", 
 			"STAINED_GLASS", "SHIELD");
+		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", 
+				"DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
+				"BARRIER", 
+				"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
+				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
+				"DRAGONS_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
+				"DIAMOND_HELMET",
+				"LEATHER_HELMET",			
+				"EYE_OF_ENDER",
+				"BLAZE_POWDER",
+				"ARROW",
+				"DIAMOND_SWORD", "NOTE_BLOCK", 
+				"DRAGON_EGG", 
+				"STAINED_GLASS", "DRAGON_EGG");
 	
 	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
 	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
@@ -231,6 +263,24 @@ public class Config {
 	    
 		playSounds = SkyWarsReloaded.get().getConfig().getBoolean("sounds.enabled");
 		countdown = SkyWarsReloaded.get().getConfig().getString("sounds.countdown");
+		joinSound = SkyWarsReloaded.get().getConfig().getString("sounds.join");
+		leaveSound = SkyWarsReloaded.get().getConfig().getString("sounds.leave");
+		openJoinMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openJoinMenu");
+		openSpectateMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openSpectateMenu");
+		openOptionsMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openOptionsMenu");
+		openGlassMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openGlassMenu");
+		openWinSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWinSoundMenu");
+		openKillSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKillSoundMenu");
+		openParticleMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openParticleMenu");
+		openProjectileMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openProjectileMenu");
+		openTauntMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTauntMenu");
+		openKitMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKitMenu");
+		openChestMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openChestMenu");
+		openTimeMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTimeMenu");
+		openWeatherMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWeatherMenu");
+		openModifierMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openModifierMenu");
+		confirmSelection = SkyWarsReloaded.get().getConfig().getString("sounds.confirmSelectionSound");
+		errorSound = SkyWarsReloaded.get().getConfig().getString("sounds.errorSound");
 				
 		enabledCommands = SkyWarsReloaded.get().getConfig().getStringList("disable-commands.exceptions");
 		disableCommands = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands.enabled");
@@ -240,7 +290,12 @@ public class Config {
 
 		for (int i = 0; i < itemNames.size(); i++) {
 			String name = itemNames.get(i);
-			String def = defItems.get(i);
+			String def;
+			if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+				def = defItems18.get(i);
+			} else {
+				def = defItems.get(i);
+			}
 			addMaterial(name, SkyWarsReloaded.get().getConfig().getString("items." + name), def);
 		}
 		
@@ -347,6 +402,24 @@ public class Config {
 		
 		SkyWarsReloaded.get().getConfig().set("sounds.enabled", playSounds);
 		SkyWarsReloaded.get().getConfig().set("sounds.countdown", countdown);
+		SkyWarsReloaded.get().getConfig().set("sounds.join", joinSound);
+		SkyWarsReloaded.get().getConfig().set("sounds.leave", leaveSound);
+		SkyWarsReloaded.get().getConfig().set("sounds.openJoinMenu", openJoinMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openSpectateMenu", openSpectateMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openOptionsMenu", openOptionsMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openGlassMenu", openGlassMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openWinSoundMenu", openWinSoundMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openKillSoundMenu", openKillSoundMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openParticleMenu", openParticleMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openProjectileMenu", openProjectileMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openTauntMenu", openTauntMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openKitMenu", openKitMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openChestMenu", openChestMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openTimeMenu", openTimeMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openWeatherMenu", openWeatherMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openModifierMenu", openModifierMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.confirmSelectionSound", confirmSelection);
+		SkyWarsReloaded.get().getConfig().set("sounds.errorSound", errorSound);
 			
 		SkyWarsReloaded.get().getConfig().set("disable-commands.exceptions", enabledCommands);
 		SkyWarsReloaded.get().getConfig().set("disable-commands.enabled", disableCommands);
@@ -422,7 +495,7 @@ public class Config {
 		return particlesEnabled;
 	}
 
-	public boolean playSounds() {
+	public boolean soundsEnabled() {
 		return playSounds;
 	}
 	
@@ -689,4 +762,77 @@ public class Config {
 	public boolean lobbyBoardEnabled() {
 		return lobbyBoardEnabled;
 	}
+	
+	public String getJoinSound() {
+		return joinSound;
+	}
+	
+	public String getLeaveSound() {
+		return leaveSound;
+	}
+
+	public String getOpenOptionsMenuSound() {
+		return openOptionsMenu;
+	}
+	
+	public String getOpenJoinMenuSound() {
+		return openJoinMenu;
+	}
+	
+	public String getOpenSpectateMenuSound() {
+		return openSpectateMenu;
+	}
+
+	public String getOpenParticleMenuSound() {
+		return openParticleMenu;
+	}
+	
+	public String getOpenProjectileMenuSound() {
+		return openProjectileMenu;
+	}
+	
+	public String getOpenKillSoundMenuSound() {
+		return openKillSoundMenu;
+	}
+	
+	public String getOpenWinSoundMenuSound() {
+		return openWinSoundMenu;
+	}
+	
+	public String getOpenGlassMenuSound() {
+		return openGlassMenu;
+	}
+	
+	public String getOpenTauntMenuSound() {
+		return openTauntMenu;
+	}
+
+	public String getOpenKitMenuSound() {
+		return openKitMenu;
+	}
+	
+	public String getOpenChestMenuSound() {
+		return openChestMenu;
+	}
+	
+	public String getOpenTimeMenuSound() {
+		return openTimeMenu;
+	}
+	
+	public String getOpenWeatherMenuSound() {
+		return openWeatherMenu;
+	}
+	
+	public String getOpenModifierMenuSound() {
+		return openModifierMenu;
+	}
+	
+	public String getConfirmeSelctionSound() {
+		return confirmSelection;
+	}
+	
+	public String getErrorSound() {
+		return errorSound;
+	}
+	
 }

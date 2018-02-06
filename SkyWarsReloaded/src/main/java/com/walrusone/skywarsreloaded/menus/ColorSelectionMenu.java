@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.GlassColor;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class ColorSelectionMenu {
 
@@ -43,7 +44,8 @@ public class ColorSelectionMenu {
                 }           
                 
             	if (player.getLevel() < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getColor())) {
-                    return;
+            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+            		return;
             	} else {
                     event.setWillClose(true);
                     event.setWillDestroy(true);
@@ -51,6 +53,7 @@ public class ColorSelectionMenu {
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
                 	ps.setGlassColor(glass.getColor());
                 	DataStorage.get().saveStats(ps);
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("color", glass.getName()).format("menu.usecolor-playermsg"));
             	}   
             	

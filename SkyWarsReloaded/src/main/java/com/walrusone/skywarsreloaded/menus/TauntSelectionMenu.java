@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.objects.Taunt;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class TauntSelectionMenu {
 
@@ -42,6 +43,7 @@ public class TauntSelectionMenu {
 	            }           
 	            
             	if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
             	} else {
                     event.setWillClose(true);
@@ -50,6 +52,7 @@ public class TauntSelectionMenu {
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
                 	ps.setTaunt(taunt.getKey());
                 	DataStorage.get().saveStats(ps);
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("taunt", taunt.getName()).format("menu.usetaunt-playermsg"));
             	}   
             	

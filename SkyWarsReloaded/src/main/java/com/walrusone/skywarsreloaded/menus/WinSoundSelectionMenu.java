@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.objects.SoundItem;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class WinSoundSelectionMenu {
 
@@ -43,6 +44,7 @@ public class WinSoundSelectionMenu {
                 }           
                 
             	if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.winsound." + sound.getKey())) {
+            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
             	} else {
                     event.setWillClose(true);
@@ -51,6 +53,7 @@ public class WinSoundSelectionMenu {
             		PlayerStat ps = PlayerStat.getPlayerStats(player);
                 	ps.setWinSound(sound.getKey());
                 	DataStorage.get().saveStats(ps);
+                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 	player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usewin-playermsg"));
             	}   
             	
