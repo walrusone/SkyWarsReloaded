@@ -140,6 +140,7 @@ menu:
   usewin-playermsg: '&aYour Victory Sound has been changed to {sound}'
   no-use: '&cUnlocked at Level {level}'
   joingame-menu-title: '&5Join Game Menu'
+  spectategame-menu-title: '&5Spectate Game Menu'
   kit-section-mnenu: '&5SELECT YOUR KIT'
   kit-voting-menu: '&5VOTE FOR KIT'
   chest-voting-menu: '&5VOTE FOR CHEST TYPE'

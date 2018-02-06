@@ -32,6 +32,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.Vote;
+import com.walrusone.skywarsreloaded.listeners.LobbyListener;
 import com.walrusone.skywarsreloaded.objects.EmptyChest;
 import com.walrusone.skywarsreloaded.objects.GameKit;
 import com.walrusone.skywarsreloaded.objects.GameMap;
@@ -98,6 +99,7 @@ public class MatchManager
         this.setGameTime(SkyWarsReloaded.getCfg().getGameTimer());
         gameMap.setMatchState(MatchState.WAITINGSTART);
         gameMap.updateSigns();
+        LobbyListener.updateJoinMenu();
         this.waitStart(gameMap);
     }
     
@@ -429,6 +431,7 @@ public class MatchManager
             return;
         }
         gameMap.setMatchState(MatchState.PLAYING);
+        LobbyListener.updateJoinMenu();
         gameMap.updateSigns();
         gameMap.sendBungeeUpdate();
         gameMap.setTimer(this.getGameTime());
@@ -560,6 +563,7 @@ public class MatchManager
         	Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Wating for teleport");
     	}
         gameMap.setMatchState(MatchState.ENDING);
+        LobbyListener.updateJoinMenu();
         gameMap.updateScoreboard();
         gameMap.updateSigns();
         gameMap.setTimer(0);
@@ -621,6 +625,7 @@ public class MatchManager
         if (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.ENDING) {
             gameMap.getDead().add(player.getUniqueId());
             gameMap.getAlivePlayers().remove(player.getUniqueId());
+            LobbyListener.updateJoinMenu();
             gameMap.sendBungeeUpdate();
             gameMap.updateScoreboard();
             PlayerCard pCard = gameMap.getPlayerCard(player);

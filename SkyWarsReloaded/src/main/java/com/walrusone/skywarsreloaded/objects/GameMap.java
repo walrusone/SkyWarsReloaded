@@ -21,6 +21,8 @@ import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.Vote;
+import com.walrusone.skywarsreloaded.listeners.LobbyListener;
+import com.walrusone.skywarsreloaded.utilities.GameMapComparator;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -163,6 +165,7 @@ public class GameMap {
     			pCard.setLevel(player.getLevel());
    			
     			MatchManager.get().teleportToArena(this, player, pCard.getSpawn());
+    			LobbyListener.updateJoinMenu();
     	        updateKitVotes();
     	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
     	        sendBungeeUpdate();
@@ -182,6 +185,7 @@ public class GameMap {
     		if (player != null) {
         		if(pCard.getPlayer().equals(player)) {
         			pCard.reset();
+        			LobbyListener.updateJoinMenu();
         			sendBungeeUpdate();
         			updateSigns();
         			return true;
@@ -298,12 +302,14 @@ public class GameMap {
 	  	}
     }
 
-	public ArrayList<GameMap> getRegisteredMaps() {
+	public static ArrayList<GameMap> getMaps() {
 		return new ArrayList<GameMap>(arenas);
 	}
 	
-	public static ArrayList<GameMap> getMaps() {
-		return new ArrayList<GameMap>(arenas);
+	public static ArrayList<GameMap> getSortedMaps() {
+		ArrayList<GameMap> sorted = new ArrayList<GameMap>(arenas);
+		Collections.sort(sorted, new GameMapComparator());
+		return sorted;
 	}
 	
 	public static void addEditMap(String name) {
