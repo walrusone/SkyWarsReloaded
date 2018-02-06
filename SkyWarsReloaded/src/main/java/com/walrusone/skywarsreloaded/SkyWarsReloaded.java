@@ -48,6 +48,7 @@ import com.walrusone.skywarsreloaded.objects.Leaderboard;
 import com.walrusone.skywarsreloaded.objects.PlayerData;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.SWRPlaceholders;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
@@ -121,6 +122,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
      
         getCommand("skywars").setExecutor(new CmdManager());
+        
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        	new SWRPlaceholders(this);
+        }
+        
         if (getCfg().bungeeMode()) {
             new BukkitRunnable() {
                 public void run() {

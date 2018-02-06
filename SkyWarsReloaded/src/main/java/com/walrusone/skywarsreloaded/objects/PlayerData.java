@@ -73,6 +73,7 @@ public class PlayerData {
 		        player.setFireTicks(0);
 		        
 		        player.setScoreboard(sb);
+		        PlayerStat.updateScoreboard(player);
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");

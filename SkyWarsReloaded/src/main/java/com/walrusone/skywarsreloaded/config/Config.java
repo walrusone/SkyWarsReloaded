@@ -42,6 +42,7 @@ public class Config {
 	private boolean killsEnabled;
 	private boolean deathsEnabled;
 	private boolean xpEnabled;
+	private boolean lobbyBoardEnabled;
 	
 	private int winnerXP;
 	private List<String> winCommands;
@@ -153,6 +154,7 @@ public class Config {
 		resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
 		promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
 		
+		lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
 		leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
 		leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
 		leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
@@ -269,6 +271,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
 		SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
 		
+		SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.length", leaderSize);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.signsEnabled", leaderSignsEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.headsEnabled", leaderHeadsEnabled);
@@ -681,5 +684,9 @@ public class Config {
 	
 	public boolean isModifierVoteEnabled() {
 		return modifierVoteEnabled;
+	}
+
+	public boolean lobbyBoardEnabled() {
+		return lobbyBoardEnabled;
 	}
 }

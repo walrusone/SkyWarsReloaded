@@ -53,7 +53,7 @@ public class DataStorage {
 	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 	            fc.set("uuid", pData.getId());
 	            fc.set("wins", pData.getWins());
-	            fc.set("losses", pData.getLosts());
+	            fc.set("losses", pData.getLosses());
 	            fc.set("kills", pData.getKills());
 	            fc.set("deaths", pData.getDeaths());
 	            fc.set("elo", pData.getElo());
@@ -89,7 +89,7 @@ public class DataStorage {
                  preparedStatement = connection.prepareStatement(queryBuilder.toString());
                  preparedStatement.setString(1, pData.getPlayerName());
                  preparedStatement.setInt(2, pData.getWins());
-                 preparedStatement.setInt(3, pData.getLosts());
+                 preparedStatement.setInt(3, pData.getLosses());
                  preparedStatement.setInt(4, pData.getKills());
                  preparedStatement.setInt(5, pData.getDeaths());
                  preparedStatement.setInt(6, pData.getElo());

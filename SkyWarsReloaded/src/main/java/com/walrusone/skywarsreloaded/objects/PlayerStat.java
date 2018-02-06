@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
@@ -11,13 +12,20 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayerStat
 {
     
 	private static ArrayList<PlayerStat> players;
+	private static HashMap<Player, Scoreboard> scoreboards = new HashMap<Player, Scoreboard>();
     private final String uuid;
     private String playername;
     private int wins;
@@ -99,6 +107,10 @@ public class PlayerStat
     	        		        player.setFireTicks(0);
     	        		        player.resetPlayerTime();
     	        		        player.resetPlayerWeather();
+    	        		        if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
+        	        		        getScoreboard(player);
+        	        		        player.setScoreboard(getPlayerScoreboard(player));
+    	        		        }
     	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
         	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
     	        		        }
@@ -201,7 +213,7 @@ public class PlayerStat
         this.elo = a1;
     }
     
-    public int getLosts() {
+    public int getLosses() {
         return this.losts;
     }
     
@@ -279,5 +291,81 @@ public class PlayerStat
 	
 	public String getTaunt(){
 		return taunt;
+	}
+	
+	//Scoreboard Methods
+	
+	public static void getScoreboard(Player player) {
+		Scoreboard scoreboard = scoreboards.get(player);
+		if (scoreboard != null) {
+            resetScoreboard(player);
+        }
+		ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
+		scoreboard = manager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("info", "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        scoreboards.put(player, scoreboard);
+		updateScoreboard(player);
+	}
+	
+	public static void updateScoreboard(Player player) {
+		Scoreboard scoreboard = scoreboards.get(player);
+		for (Objective objective: scoreboard.getObjectives()) {
+        	if (objective != null) {
+                objective.unregister();
+            }
+    	}
+		
+		Objective objective = scoreboard.registerNewObjective("info", "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        String sb = "scoreboards.lobbyboard.line";
+        
+        for (int i = 1; i < 17; i++) {
+        	if (i == 1) {
+    	        String leaderboard = getScoreboardLine(sb + i, player);
+    	        objective.setDisplayName(leaderboard);
+    		} else {
+    			String s = getScoreboardLine(sb + i, player);
+    			if (s.length() == 0) {
+    				for (int j = 0; j < i; j++) {
+    					s = s + " ";
+    				}
+    			} 
+    			if (!s.equalsIgnoreCase("remove")) {
+        			Score score = objective.getScore(s);
+    				score.setScore(17-i);
+    			}
+    		}
+        }	
+	}
+		
+	private static String getScoreboardLine(String lineNum, Player player) {
+		return new Messaging.MessageFormatter()
+				.setVariable("elo", "" + PlayerStat.getPlayerStats(player).getElo())
+				.setVariable("wins", "" + PlayerStat.getPlayerStats(player).getWins())
+				.setVariable("losses", "" + PlayerStat.getPlayerStats(player).getLosses())
+				.setVariable("kills", "" + PlayerStat.getPlayerStats(player).getKills())
+				.setVariable("deaths", "" + PlayerStat.getPlayerStats(player).getDeaths())
+				.setVariable("xp", "" + PlayerStat.getPlayerStats(player).getXp())
+				.setVariable("killdeath", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getKills()/(double)PlayerStat.getPlayerStats(player).getDeaths()))))
+				.setVariable("winloss", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getWins()/(double)PlayerStat.getPlayerStats(player).getLosses()))))
+				.format(lineNum);
+	}
+	
+    private static void resetScoreboard(Player player) {
+    	Scoreboard scoreboard = scoreboards.get(player);
+    	for (Objective objective: scoreboard.getObjectives()) {
+        	if (objective != null) {
+                objective.unregister();
+            }
+    	}
+        
+        if (scoreboard != null) {
+            scoreboard = null;
+        }
+    }
+
+	public static Scoreboard getPlayerScoreboard(Player player) {
+		return scoreboards.get(player);
 	}
 }

@@ -690,7 +690,7 @@ public class MatchManager
                 if (sendMessages) {
                 	if (gameMap.getMatchState() != MatchState.ENDING || gameMap.getMatchState() != MatchState.WAITINGSTART) {
                      	PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
-                        loserData.setLosts(loserData.getLosts() + 1);
+                        loserData.setLosts(loserData.getLosses() + 1);
                     }
                 	if (gameMap.getAlivePlayers().size() <= 1) {
                 		if (gameMap.getAlivePlayers().size() >= 1) {
