@@ -124,7 +124,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         getCommand("skywars").setExecutor(new CmdManager());
         
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        	new SWRPlaceholders(this);
+        	new SWRPlaceholders(this).hook();
         }
         
         if (getCfg().bungeeMode()) {
@@ -352,6 +352,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public static ArrayList<String> getUseable() {
     	return useable;
-    }	
+    }
+
+	public PlayerStat getPlayerStat(Player player) {
+		return PlayerStat.getPlayerStats(player);
+	}	
     
 }

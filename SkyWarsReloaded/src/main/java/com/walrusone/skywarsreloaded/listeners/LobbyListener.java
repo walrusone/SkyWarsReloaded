@@ -35,6 +35,8 @@ import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+
 public class LobbyListener implements Listener
 {
 
@@ -130,7 +132,7 @@ public class LobbyListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-    public void onClick(final PlayerInteractEvent e) {
+    public void onClick(final PlayerInteractEvent e) {	
     	if (e.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
     		e.setCancelled(true);
     		if (e.getPlayer().hasPermission("sw.alterlobby")) {

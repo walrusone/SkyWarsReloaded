@@ -4,13 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
 
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 
 public class SWRPlaceholders extends EZPlaceholderHook {
 
-	@SuppressWarnings("unused")
 	private SkyWarsReloaded swr;
 	
 	public SWRPlaceholders(Plugin plugin) {
@@ -21,42 +19,46 @@ public class SWRPlaceholders extends EZPlaceholderHook {
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier) {
 		if (identifier.equals("elo")) {
-			return "" + PlayerStat.getPlayerStats(player).getElo();
+			return "" + swr.getPlayerStat(player).getElo();
 		}
 		
 		if (identifier.equals("wins")) {
-			return "" + PlayerStat.getPlayerStats(player).getWins();
+			return "" + swr.getPlayerStat(player).getWins();
 		}
 		
 		if (identifier.equals("losses")) {
-			return "" + PlayerStat.getPlayerStats(player).getLosses();
+			return "" + swr.getPlayerStat(player).getLosses();
 		}
 		
 		if (identifier.equals("kills")) {
-			return "" + PlayerStat.getPlayerStats(player).getKills();
+			return "" + swr.getPlayerStat(player).getKills();
 		}
 		
 		if (identifier.equals("deaths")) {
-			return "" + PlayerStat.getPlayerStats(player).getDeaths();
+			return "" + swr.getPlayerStat(player).getDeaths();
 		}
 		
 		if (identifier.equals("xp")) {
-			return "" + PlayerStat.getPlayerStats(player).getXp();
+			return "" + swr.getPlayerStat(player).getXp();
 		}
 		
 		if (identifier.equals("games_played")) {
-			return "" + (PlayerStat.getPlayerStats(player).getLosses() + PlayerStat.getPlayerStats(player).getWins());
+			return "" + (swr.getPlayerStat(player).getLosses() + swr.getPlayerStat(player).getWins());
 		}
 		
 		if (identifier.equals("kill_death")) {
-			String.format("%1$,.2f", ((double)((double) PlayerStat.getPlayerStats(player).getKills() / (double) PlayerStat.getPlayerStats(player).getDeaths())));
+			double stat = (double)((double)swr.getPlayerStat(player).getKills()/(double)swr.getPlayerStat(player).getDeaths());
+			String statString = String.format("%1$,.2f", stat);
+			return statString;
 		}
 		
 		if (identifier.equals("win_loss")) {
-			String.format("%1$,.2f", ((double)((double) PlayerStat.getPlayerStats(player).getWins() / (double) PlayerStat.getPlayerStats(player).getLosses())));
+			double stat = (double)((double)swr.getPlayerStat(player).getWins()/(double)swr.getPlayerStat(player).getLosses());
+			String statString = String.format("%1$,.2f", stat);
+			return statString;
+			
 		}
 		
 		return null;
 	}
-
 }
