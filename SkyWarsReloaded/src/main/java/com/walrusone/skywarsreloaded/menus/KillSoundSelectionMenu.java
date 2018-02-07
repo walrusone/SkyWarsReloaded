@@ -15,6 +15,7 @@ import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.objects.SoundItem;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 
 public class KillSoundSelectionMenu {
 
@@ -43,20 +44,44 @@ public class KillSoundSelectionMenu {
                     return;
                 }           
                 
-            	if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.killsound." + sound.getKey())) {
-            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
-            		return;
-            	} else {
-                    event.setWillClose(true);
-                    event.setWillDestroy(true);
+                if (SkyWarsReloaded.getCfg().economyEnabled()) {
+               	 	if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.killsound." + sound.getKey())) {
+                 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+                 		return;
+               	 	} else if (player.getLevel() >= sound.getLevel() && !player.hasPermission("sw.killsound."+ sound.getKey()) && !VaultUtils.get().canBuy(player, sound.getCost())) {
+               	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+               	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
+                        event.setWillClose(true);
+                        event.setWillDestroy(true);
+                      	return;
+                    }
+                } else {
+               		if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.killsound." + sound.getKey())) {
+               		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+                    return;
+               		}
+                }
+       
+                if (SkyWarsReloaded.getCfg().economyEnabled() && !player.hasPermission("sw.killsound." + sound.getKey())) {
+               		boolean result = VaultUtils.get().payCost(player, sound.getCost());
+               		if (!result) {
+               			return;
+               		} else {
+               			PlayerStat ps = PlayerStat.getPlayerStats(player);
+               			ps.addPerm("sw.killsound." + sound.getKey(), true);
+               			player.sendMessage(new Messaging.MessageFormatter().setVariable("cost", "" + sound.getCost())
+               					.setVariable("item", sound.getName()).format("menu.purchase-killsound"));
+               		}
+                }
+                
+                event.setWillClose(true);
+                event.setWillDestroy(true);
             
-            		PlayerStat ps = PlayerStat.getPlayerStats(player);
-                	ps.setKillSound(sound.getKey());
-                	DataStorage.get().saveStats(ps);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-                	player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usekill-playermsg"));
-            	}   
-            	
+                PlayerStat ps = PlayerStat.getPlayerStats(player);
+                ps.setKillSound(sound.getKey());
+                DataStorage.get().saveStats(ps);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
+                player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usekill-playermsg")); 
             }
         });
 
@@ -73,8 +98,18 @@ public class KillSoundSelectionMenu {
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
             if (player.getLevel() >= sound.getLevel() || player.hasPermission("sw.killsound." + sound.getKey())) {
-            	loreList.add(new Messaging.MessageFormatter().format("menu.usekill-setsound"));
-            	item = new ItemStack(sound.getIcon(), 1);
+            	if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            		if (player.hasPermission("sw.killsound." + sound.getKey()) || sound.getCost() == 0) {
+            			loreList.add(new Messaging.MessageFormatter().format("menu.usekill-setsound"));
+            			item = new ItemStack(sound.getMaterial(), 1);
+            		} else {
+            			loreList.add(new Messaging.MessageFormatter().setVariable("cost", "" + sound.getCost()).format("menu.cost"));
+            			item = new ItemStack(sound.getMaterial(), 1);
+            		}
+            	} else {
+                	loreList.add(new Messaging.MessageFormatter().format("menu.usekill-setsound"));
+                	item = new ItemStack(sound.getMaterial(), 1);
+            	}
             } else {
             	loreList.add(new Messaging.MessageFormatter().setVariable("level", "" + sound.getLevel()).format("menu.no-use"));
             }

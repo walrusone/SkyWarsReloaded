@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 public class SoundItem implements Comparable<SoundItem> {
 
     private int level;
+    private int cost;
     private String key;
     private String sound;
     private String name;
@@ -16,8 +17,9 @@ public class SoundItem implements Comparable<SoundItem> {
     private float pitch;
     private boolean customSound;
     
-    public SoundItem(String key, String sound, String displayname, int level, float volume, float pitch, Material material, boolean customSound) {
+    public SoundItem(String key, String sound, String displayname, int level, int cost, float volume, float pitch, Material material, boolean customSound) {
         this.level = level;
+        this.cost = cost;
         this.key = key;
         this.sound = sound;
         this.name = displayname;
@@ -31,6 +33,10 @@ public class SoundItem implements Comparable<SoundItem> {
         return level;
     }
     
+    public int getCost() {
+        return cost;
+    }
+    
     public String getSound() {
         return sound;
     }
@@ -39,7 +45,7 @@ public class SoundItem implements Comparable<SoundItem> {
     	return name;
     }
     
-    public Material getIcon() {
+    public Material getMaterial() {
     	return icon;
     }
     

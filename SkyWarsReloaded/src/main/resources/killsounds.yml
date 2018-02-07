@@ -7,6 +7,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bPig Death"
     level: 4
+    cost: 100
   catdeath:
     sound: ENTITY_CAT_DEATH
     isCustomSound: false
@@ -15,6 +16,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bCat Death"
     level: 9
+    cost: 100
   muledeath:
     sound: ENTITY_MULE_DEATH
     isCustomSound: false
@@ -23,6 +25,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bMule Death"
     level: 14
+    cost: 100
   lightning:
     sound: ENTITY_LIGHTNING_IMPACT
     isCustomSound: false
@@ -31,6 +34,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bLightning Impact"
     level: 19
+    cost: 100
   cathiss:
     sound: ENTITY_CAT_HISS
     isCustomSound: false
@@ -38,7 +42,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bCat Hiss"
-    level: 24 
+    level: 24
+    cost: 100    
   explosion:
     sound: ENTITY_GENERIC_EXPLODE
     isCustomSound: false
@@ -46,7 +51,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bExplosion"
-    level: 29 
+    level: 29
+    cost: 100
   ghastwarn:
     sound: ENTITY_GHAST_WARN
     isCustomSound: false
@@ -55,6 +61,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bGhast Warn"
     level: 34
+    cost: 100
   wolfgrowl:
     sound: ENTITY_WOLF_GROWL
     isCustomSound: false
@@ -62,7 +69,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bWolf Growl"
-    level: 39     
+    level: 39
+    cost: 100    
   guardiancurse:
     sound: ENTITY_ELDER_GUARDIAN_CURSE
     isCustomSound: false
@@ -71,6 +79,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bGuardian Curse"
     level: 44
+    cost: 100
   zombiehorsedeath:
     sound: ENTITY_ZOMBIE_HORSE_DEATH
     isCustomSound: false
@@ -78,7 +87,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bZombie Horse Death"
-    level: 49  
+    level: 49
+    cost: 100    
   zombieconverted:
     sound: ENTITY_ZOMBIE_VILLAGER_CONVERTED
     isCustomSound: false
@@ -86,7 +96,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bCure Villager"
-    level: 54  
+    level: 54
+    cost: 100    
   zombiedeath:
     sound: ENTITY_ZOMBIE_DEATH
     isCustomSound: false
@@ -94,7 +105,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bZombie Death"
-    level: 59  
+    level: 59
+    cost: 100    
   blazedeath:
     sound: ENTITY_BLAZE_DEATH
     isCustomSound: false
@@ -103,6 +115,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bBlaze Death"
     level: 64
+    cost: 100
   guardiandeath:
     sound: ENTITY_ELDER_GUARDIAN_DEATH
     isCustomSound: false
@@ -110,7 +123,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bGuardian Death"
-    level: 69 
+    level: 69
+    cost: 100    
   endermandeath:
     sound: ENTITY_ENDERMEN_DEATH
     isCustomSound: false
@@ -118,7 +132,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bEndermen Death"
-    level: 74 
+    level: 74
+    cost: 100    
   ghasthurt:
     sound: ENTITY_GHAST_HURT
     isCustomSound: false
@@ -126,7 +141,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bGhast Hurt"
-    level: 79 
+    level: 79
+    cost: 100    
   golemdeath:
     sound: ENTITY_IRONGOLEM_DEATH 
     isCustomSound: false
@@ -134,7 +150,8 @@ sounds:
     pitch: 1
     icon: NOTE_BLOCK
     displayName: "&bIron Golem Death"
-    level: 84     
+    level: 84
+    cost: 100    
   skeletonhorsedeath:
     sound: ENTITY_SKELETON_HORSE_DEATH
     isCustomSound: false
@@ -143,6 +160,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bSkeleton Horse Death"
     level: 89
+    cost: 100
   witherdeath:
     sound: ENTITY_WITHER_DEATH
     isCustomSound: false
@@ -151,6 +169,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bWither Death"
     level: 94
+    cost: 100
   dragongrowl:
     sound: ENTITY_ENDERDRAGON_GROWL
     isCustomSound: false
@@ -159,6 +178,7 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bEnder Dragon Growl"
     level: 99
+    cost: 100
   none:
     sound: blank
     isCustomSound: true
@@ -167,3 +187,4 @@ sounds:
     icon: NOTE_BLOCK
     displayName: "&bNo Sound"
     level: 0
+    cost: 0

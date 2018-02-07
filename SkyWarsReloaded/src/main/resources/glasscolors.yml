@@ -5,105 +5,126 @@ colors:
   white: 
     displayname: "&bWhite"
     level: 1
+    cost: 100
     material: STAINED_GLASS
     datavalue: 0
   orange:
     displayname: "&bOrange"
     level: 6
+    cost: 100
     material: STAINED_GLASS
     datavalue: 1
-  cyan:
-    displayname: "&bCyan"
-    level: 46
-    material: STAINED_GLASS
-    datavalue: 9
-  purple:
-    displayname: "&bPurple"
-    level: 51
-    material: STAINED_GLASS
-    datavalue: 10
-  blue:
-    displayname: "&Blue"
-    level: 56
-    material: STAINED_GLASS
-    datavalue: 11
-  brown:
-    displayname: "&bBrown"
-    level: 61
-    material: STAINED_GLASS
-    datavalue: 12
-  green:
-    displayname: "&bGreen"
-    level: 66
-    material: STAINED_GLASS
-    datavalue: 13
   magenta:
     displayname: "&bMagenta"
     level: 11
+    cost: 100
     material: STAINED_GLASS
     datavalue: 2
   lightblue:
     displayname: "&bLight Blue"
     level: 16
+    cost: 100
     material: STAINED_GLASS
     datavalue: 3
   yellow:
     displayname: "&bYellow"
     level: 21
+    cost: 100
     material: STAINED_GLASS
     datavalue: 4
   lime:
     displayname: "&bLime"
     level: 26
+    cost: 100
     material: STAINED_GLASS
     datavalue: 5
   pink:
     displayname: "&bPink"
     level: 31
+    cost: 100
     material: STAINED_GLASS
     datavalue: 6
   gray:
     displayname: "&bGray"
     level: 36
+    cost: 100
     material: STAINED_GLASS
     datavalue: 7
   lightgray:
     displayname: "&bLight Gray"
     level: 41
+    cost: 100
     material: STAINED_GLASS
     datavalue: 8
+  cyan:
+    displayname: "&bCyan"
+    level: 46
+    cost: 100
+    material: STAINED_GLASS
+    datavalue: 9
+  purple:
+    displayname: "&bPurple"
+    level: 51
+    cost: 100
+    material: STAINED_GLASS
+    datavalue: 10
+  blue:
+    displayname: "&Blue"
+    level: 56
+    cost: 100
+    material: STAINED_GLASS
+    datavalue: 11
+  brown:
+    displayname: "&bBrown"
+    level: 61
+    cost: 100
+    material: STAINED_GLASS
+    datavalue: 12
+  green:
+    displayname: "&bGreen"
+    level: 66
+    cost: 100
+    material: STAINED_GLASS
+    datavalue: 13
   red:
     displayname: "&bRed"
     level: 71
+    cost: 100
     material: STAINED_GLASS
     datavalue: 14
   black:
     displayname: "&bBlack"
     level: 76
+    cost: 100
     material: STAINED_GLASS
     datavalue: 15
   lapis:
     displayname: "&bLapis"
     level: 81
+    cost: 100
     material: LAPIS_BLOCK
     datavalue: -1
   redstone:
     displayname: "&bRedstone"
     level: 86
+    cost: 100
     material: REDSTONE_BLOCK
     datavalue: -1
   emerald:
     displayname: "&bEmerald"
     level: 91
+    cost: 100
     material: EMERALD_BLOCK
     datavalue: -1
   diamond:
     displayname: "&bDiamond"
     level: 96
+    cost: 100
     material: DIAMOND_BLOCK
     datavalue: -1
   none:
     displayname: "&bGlass"
     level: 0
+    cost: 0
     material: GLASS
     datavalue: -1

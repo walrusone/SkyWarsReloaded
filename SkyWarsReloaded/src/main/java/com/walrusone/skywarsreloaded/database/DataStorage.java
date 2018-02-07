@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -362,4 +364,152 @@ public class DataStorage {
 			}
 		}.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
 	}
+
+	public void loadperms(PlayerStat playerStat) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled")) {
+					try {
+	    	            File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+	    	            File playerDataDirectory = new File(dataDirectory, "player_data");
+
+	    	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+	    	                return;
+	    	            }
+
+	    	            File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
+	    	            if (!playerFile.exists() && !playerFile.createNewFile()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+	    	                return;
+	    	            }
+	    	            copyDefaults(playerFile);
+	    	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+	    	            
+	    	            List<String> perms = fc.getStringList("permissions");
+	    	            for (String perm: perms) {
+	    	            	playerStat.addPerm(perm, false);
+	    	            }	    	            
+					} catch (IOException ioException) {
+	    	            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+					}
+				} else {
+					Database database = SkyWarsReloaded.getDb();
+	                if (!database.checkConnection()) {
+	                    return;
+	                }
+	                Connection connection = database.getConnection();
+	                PreparedStatement preparedStatement = null;
+	                ResultSet resultSet = null;
+
+	                try {
+	                    StringBuilder queryBuilder = new StringBuilder();
+	                    queryBuilder.append("SELECT `permissions` ");
+	                    queryBuilder.append("FROM `sw_permissions` ");
+	                    queryBuilder.append("WHERE `uuid` = ?;");
+
+	                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	                    preparedStatement.setString(1, playerStat.getId());
+	                    resultSet = preparedStatement.executeQuery();
+	                    
+	                    while (resultSet != null && resultSet.next()) {
+	                    	playerStat.addPerm(resultSet.getString("permissions"), false);
+	                    }
+	                } catch (final SQLException sqlException) {
+	                    sqlException.printStackTrace();
+
+	                } finally {
+	                    if (resultSet != null) {
+	                        try {
+	                            resultSet.close();
+	                        } catch (final SQLException ignored) {
+	                        }
+	                    }
+	                    if (preparedStatement != null) {
+	                        try {
+	                            preparedStatement.close();
+	                        } catch (final SQLException ignored) {
+	                        }
+	                    }
+	                }
+				}
+			}
+				
+		}.runTaskAsynchronously(SkyWarsReloaded.get());
+	}
+	
+	public void savePerms(PlayerStat playerStat) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled")) {
+					try {
+						File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+	    	            File playerDataDirectory = new File(dataDirectory, "player_data");
+
+	    	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+	    	                return;
+	    	            }
+
+	    	            File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
+	    	            if (!playerFile.exists() && !playerFile.createNewFile()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+	    	                return;
+	    	            }
+	    	            copyDefaults(playerFile);
+	    	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+	    	            
+	    	            List<String> perms = new ArrayList<String>();
+	    	            for (String perm: playerStat.getPerms().getPermissions().keySet()) {
+	    	            	perms.add(perm);
+	    	            }
+	    	            fc.set("permissions", perms);
+	    	            fc.save(playerFile);
+	    	            
+					} catch (IOException ioException) {
+	    	            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+					}    	            
+				} else {
+					if (playerStat.getPerms().getPermissions().size() > 0) {
+						Database database = SkyWarsReloaded.getDb();
+		                if (!database.checkConnection()) {
+		                    return;
+		                }
+						Connection connection = database.getConnection();
+						PreparedStatement preparedStatement = null;
+			            try {
+			            	if (playerStat.getPerms().getPermissions().size() >= 1) {
+			                	for (String perm: playerStat.getPerms().getPermissions().keySet()) {
+			                		StringBuilder queryBuilder = new StringBuilder();
+			                        queryBuilder.append("INSERT INTO `sw_permissions` ");
+			                        queryBuilder.append("(`uuid`, `playername`, `permissions`) ");
+			                        queryBuilder.append("VALUES (?, ?, ?) ");
+			                        queryBuilder.append("ON DUPLICATE KEY UPDATE `uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ");
+			                        
+			                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+			                        preparedStatement.setString(1, playerStat.getId());
+			                        preparedStatement.setString(2, playerStat.getPlayerName());
+			                        preparedStatement.setString(3, perm);
+			                        preparedStatement.executeUpdate();
+			                	}
+			            	}
+			            } catch (final SQLException sqlException) {
+			                sqlException.printStackTrace();
+			            } finally {
+			                if (preparedStatement != null) {
+			                    try {
+			                        preparedStatement.close();
+			                    } catch (final SQLException ignored) {
+			                    }
+			                }
+			            }
+					}
+				}
+			}
+		}.runTaskAsynchronously(SkyWarsReloaded.get());
+	}
+	
+	
 }

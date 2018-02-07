@@ -7,7 +7,7 @@ import com.walrusone.skywarsreloaded.enums.LeaderType;
 public class SWUpdateTopCmd extends BaseCmd { 
 	
 	public SWUpdateTopCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "updatetop";
 		alias = new String[]{"ut"};
 		argLength = 1; //counting cmdName

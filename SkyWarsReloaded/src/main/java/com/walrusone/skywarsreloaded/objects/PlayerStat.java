@@ -6,11 +6,13 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -41,12 +43,17 @@ public class PlayerStat
     private String winSound;
     private String taunt;
     private boolean initialized;
+    private PermissionAttachment perms;
     
     public PlayerStat(final Player player) {
     	this.initialized = false;
         this.uuid = player.getUniqueId().toString();
         this.playername = player.getName();
+        this.perms = player.addAttachment(SkyWarsReloaded.get());
         DataStorage.get().loadStats(this);
+        if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            DataStorage.get().loadperms(this);
+        }
         saveStats(uuid);
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
@@ -349,7 +356,15 @@ public class PlayerStat
 				.setVariable("xp", "" + PlayerStat.getPlayerStats(player).getXp())
 				.setVariable("killdeath", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getKills()/(double)PlayerStat.getPlayerStats(player).getDeaths()))))
 				.setVariable("winloss", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getWins()/(double)PlayerStat.getPlayerStats(player).getLosses()))))
+				.setVariable("balance", "" + getBalance(player))
 				.format(lineNum);
+	}
+	
+	private static double getBalance(Player player) {
+		if (SkyWarsReloaded.getCfg().economyEnabled()) {
+			return VaultUtils.get().getBalance(player);
+		}
+		return 0;
 	}
 	
     private static void resetScoreboard(Player player) {
@@ -367,5 +382,23 @@ public class PlayerStat
 
 	public static Scoreboard getPlayerScoreboard(Player player) {
 		return scoreboards.get(player);
+	}
+	
+	public PermissionAttachment getPerms() {
+		return perms;
+	}
+	
+	public void addPerm(String perm, boolean save) {
+		perms.setPermission(perm, true);
+		if (save) {
+			DataStorage.get().savePerms(this);
+		}
+	}
+
+	public static void removePlayer(String id) {
+		PlayerStat ps = getPlayerStats(id);
+		if (ps != null) {
+			players.remove(ps);
+		}
 	}
 }

@@ -16,6 +16,7 @@ public class Config {
 	private boolean debug;
 	
 	private boolean bungeeMode;
+	private boolean economyEnabled;
 	private String bungeeLobby;
 	
 	private String resourcePack;
@@ -181,6 +182,7 @@ public class Config {
 		debug = SkyWarsReloaded.get().getConfig().getBoolean("debugMode");
 		
 		bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
+		economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
 		bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
 		
 		resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
@@ -320,6 +322,7 @@ public class Config {
 		
 		SkyWarsReloaded.get().getConfig().set("spawn", Util.get().locationToString(spawn));
 		
+		SkyWarsReloaded.get().getConfig().set("economyEnabled", economyEnabled);
 		SkyWarsReloaded.get().getConfig().set("bungeeMode", bungeeMode);
 		SkyWarsReloaded.get().getConfig().set("bungeeLobby", bungeeLobby);
 		
@@ -833,6 +836,10 @@ public class Config {
 	
 	public String getErrorSound() {
 		return errorSound;
+	}
+
+	public boolean economyEnabled() {
+		return economyEnabled;
 	}
 	
 }

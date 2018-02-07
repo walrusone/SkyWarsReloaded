@@ -154,6 +154,13 @@ public class GameMap {
 
     }
     
+	public void update() {
+        this.updateSigns();
+        this.sendBungeeUpdate();
+        this.updateScoreboard();
+        LobbyListener.updateJoinMenu();
+	}
+    
 	/*Player Handling Methods*/
 	
 	public boolean addPlayer(final Player player) {
@@ -1361,13 +1368,6 @@ public class GameMap {
 	
 	public void setWinner(String name) {
 		winner = name;
-	}
-
-	public void update() {
-        this.updateSigns();
-        this.sendBungeeUpdate();
-        this.updateScoreboard();
-        LobbyListener.updateJoinMenu();
 	}
 
 }

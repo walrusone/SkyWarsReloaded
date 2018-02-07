@@ -64,6 +64,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\MatchState.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\ListMapCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerJoinListener.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\utilities\VaultUtils.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\UnregisterMapCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\objects\SWRSign.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\KitLoad.java

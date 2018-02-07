@@ -90,6 +90,7 @@ public class LevelManager {
                 	String name = storage.getString("colors." + key + ".displayname");
                 	String material = storage.getString("colors." + key + ".material");
                 	int level = storage.getInt("colors." + key + ".level");
+                	int cost = storage.getInt("colors." + key + ".cost");
                 	int data = storage.getInt("colors." + key + ".datavalue");
                 	                	
                 	Material mat = Material.matchMaterial(material);
@@ -102,7 +103,7 @@ public class LevelManager {
                 		}
                 		
                         if (itemStack != null) {
-                            colorList.add(new GlassColor(color, name, itemStack, level));
+                            colorList.add(new GlassColor(color, name, itemStack, level, cost));
                         }
                 	}
             	}
@@ -123,7 +124,7 @@ public class LevelManager {
     
     public GlassColor getGlassByColor(String color) {
     	for (GlassColor glassColor: colorList) {
-    		if (glassColor.getColor().equalsIgnoreCase(color)) {
+    		if (glassColor.getKey().equalsIgnoreCase(color)) {
     			return glassColor;
     		}
     	}
@@ -152,6 +153,7 @@ public class LevelManager {
                 	String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	int cost = storage.getInt("effects." + key + ".cost");
                 	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
                 	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
@@ -173,7 +175,7 @@ public class LevelManager {
                 	}
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		particleList.add(new ParticleItem(key, effects, name, mat, level));
+                		particleList.add(new ParticleItem(key, effects, name, mat, level, cost));
                     }
             	}
             }
@@ -224,6 +226,7 @@ public class LevelManager {
             		String name = storage.getString("effects." + key + ".displayname");
                 	String material = storage.getString("effects." + key + ".icon");
                 	int level = storage.getInt("effects." + key + ".level");
+                	int cost = storage.getInt("effects." + key + ".cost");
                 	List<String> particles = storage.getStringList("effects." + key + ".particles");
                 	
                 	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
@@ -246,7 +249,7 @@ public class LevelManager {
         
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		projEffectList.add(new ParticleItem(key, effects, name, mat, level));
+                		projEffectList.add(new ParticleItem(key, effects, name, mat, level, cost));
                     }
             	}
             }
@@ -297,6 +300,7 @@ public class LevelManager {
                 	int pitch = storage.getInt("sounds." + key + ".pitch");
                 	String material = storage.getString("sounds." + key + ".icon");
                 	int level = storage.getInt("sounds." + key + ".level");
+                	int cost = storage.getInt("sounds." + key + ".cost");
                 	boolean isCustom = storage.getBoolean("sounds." + key + ".isCustomSound");
                 	
                 	Material mat = Material.matchMaterial(material);
@@ -305,13 +309,13 @@ public class LevelManager {
                 			try {
                 				Sound s = Sound.valueOf(sound);
                 				if (s != null) {
-                					killSoundList.add(new SoundItem(key, sound, name, level, volume, pitch, mat, isCustom));
+                					killSoundList.add(new SoundItem(key, sound, name, level, cost, volume, pitch, mat, isCustom));
                 				}
                 			} catch (IllegalArgumentException e) {
                 				SkyWarsReloaded.get().getServer().getLogger().info(sound + " is not a valid sound in killsounds.yml");
                 			}
                 		} else {
-                			killSoundList.add(new SoundItem(key, sound, name, level, volume, pitch, mat, isCustom));
+                			killSoundList.add(new SoundItem(key, sound, name, level, cost, volume, pitch, mat, isCustom));
                 		}
                 			
                     } else {
@@ -365,6 +369,7 @@ public class LevelManager {
                 	int pitch = storage.getInt("sounds." + key + ".pitch");
                 	String material = storage.getString("sounds." + key + ".icon");
                 	int level = storage.getInt("sounds." + key + ".level");
+                	int cost = storage.getInt("sounds." + key + ".cost");
                 	boolean isCustom = storage.getBoolean("sounds." + key + ".isCustomSound");
                 	
                 	Material mat = Material.matchMaterial(material);
@@ -373,13 +378,13 @@ public class LevelManager {
                 			try {
                 				Sound s = Sound.valueOf(sound);
                 				if (s != null) {
-                    				winSoundList.add(new SoundItem(key, sound, name, level, volume, pitch, mat, isCustom));
+                    				winSoundList.add(new SoundItem(key, sound, name, level, cost, volume, pitch, mat, isCustom));
                 				}
                 			} catch (IllegalArgumentException e) {
                 				SkyWarsReloaded.get().getServer().getLogger().info(sound + " is not a valid sound in winsounds.yml");
                 			}
                 		} else {
-                			winSoundList.add(new SoundItem(key, sound, name, level, volume, pitch, mat, isCustom));
+                			winSoundList.add(new SoundItem(key, sound, name, level, cost, volume, pitch, mat, isCustom));
                 		}
                 			
                     } else {
@@ -431,6 +436,7 @@ public class LevelManager {
                 	String name = storage.getString("taunts." + key + ".name");
                 	List<String> lore = storage.getStringList("taunts." + key + ".lore");
                 	int level = storage.getInt("taunts." + key + ".level");
+                	int cost = storage.getInt("taunts." + key + ".cost");
                 	String message = storage.getString("taunts." + key + ".message");
                 	String sound = storage.getString("taunts." + key + ".sound");
                 	boolean useCustomSound = storage.getBoolean("taunts." + key + ".useCustomSound", false);
@@ -440,7 +446,7 @@ public class LevelManager {
                 	int density = storage.getInt("taunts." + key + ".particleDensity");
                 	List<String> particles = storage.getStringList("taunts." + key + ".particles");
                 	Material icon = Material.valueOf(storage.getString("taunts." + key + ".icon", "DIAMOND"));
-                	tauntList.add(new Taunt(key, name, lore, message, sound, useCustomSound, volume, pitch, speed, density, particles, icon, level));
+                	tauntList.add(new Taunt(key, name, lore, message, sound, useCustomSound, volume, pitch, speed, density, particles, icon, level, cost));
                 }
             } 
         }

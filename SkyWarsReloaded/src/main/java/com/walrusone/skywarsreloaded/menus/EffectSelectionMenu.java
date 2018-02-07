@@ -15,6 +15,7 @@ import com.walrusone.skywarsreloaded.objects.ParticleItem;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 
 public class EffectSelectionMenu {
 
@@ -41,22 +42,45 @@ public class EffectSelectionMenu {
                 ParticleItem effect = SkyWarsReloaded.getLM().getParticleByName(name);
                 if (effect == null) {
                     return;
-                }           
+                }   
                 
-            	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getEffects())) {
-            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
-                    return;
-            	} else {
-                    event.setWillClose(true);
-                    event.setWillDestroy(true);
-            
-            		PlayerStat ps = PlayerStat.getPlayerStats(player);
-                	ps.setParticleEffect(effect.getKey());
-                	DataStorage.get().saveStats(ps);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-                	player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg"));
-            	}   
-            	
+                if (SkyWarsReloaded.getCfg().economyEnabled()) {
+                	 if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getKey())) {
+                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+                        return;
+                     } else if (player.getLevel() >= effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getKey()) && !VaultUtils.get().canBuy(player, effect.getCost())) {
+                    	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+               	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
+                        event.setWillClose(true);
+                        event.setWillDestroy(true);
+                        return;
+                     }
+                } else {
+                	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.pareffect." + effect.getKey())) {
+                		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+                        return;
+                	}
+                }
+        
+                if (SkyWarsReloaded.getCfg().economyEnabled() && !player.hasPermission("sw.pareffect." + effect.getKey())) {
+                	boolean result = VaultUtils.get().payCost(player, effect.getCost());
+                	if (!result) {
+                		return;
+                	} else {
+                		PlayerStat ps = PlayerStat.getPlayerStats(player);
+                		ps.addPerm("sw.pareffect." + effect.getKey(), true);
+               			player.sendMessage(new Messaging.MessageFormatter().setVariable("cost", "" + effect.getCost())
+               					.setVariable("item", effect.getName()).format("menu.purchase-effect"));
+                	}
+                }
+                event.setWillClose(true);
+                event.setWillDestroy(true);
+        
+        		PlayerStat ps = PlayerStat.getPlayerStats(player);
+            	ps.setParticleEffect(effect.getKey());
+            	DataStorage.get().saveStats(ps);
+            	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
+            	player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg"));
             }
         });
 
@@ -72,9 +96,19 @@ public class EffectSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= effect.getLevel() || player.hasPermission("sw.pareffect." + effect.getEffects())) {
-            	loreList.add(new Messaging.MessageFormatter().format("menu.useeffect-seteffect"));
-            	item = new ItemStack(effect.getMaterial(), 1);
+            if (player.getLevel() >= effect.getLevel() || player.hasPermission("sw.pareffect." + effect.getKey())) {
+            	if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            		if (player.hasPermission("sw.pareffect." + effect.getKey()) || effect.getCost() == 0) {
+            			loreList.add(new Messaging.MessageFormatter().format("menu.useeffect-seteffect"));
+            			item = new ItemStack(effect.getMaterial(), 1);
+            		} else {
+            			loreList.add(new Messaging.MessageFormatter().setVariable("cost", "" + effect.getCost()).format("menu.cost"));
+            			item = new ItemStack(effect.getMaterial(), 1);
+            		}
+            	} else {
+                	loreList.add(new Messaging.MessageFormatter().format("menu.useeffect-seteffect"));
+                	item = new ItemStack(effect.getMaterial(), 1);
+            	}
             } else {
             	loreList.add(new Messaging.MessageFormatter().setVariable("level", "" + effect.getLevel()).format("menu.no-use"));
             }

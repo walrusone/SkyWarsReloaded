@@ -10,7 +10,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 public class SWStatsCmd extends BaseCmd { 
 	
 	public SWStatsCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "stats";
 		alias = new String[]{"s"};
 		argLength = 1; //counting cmdName

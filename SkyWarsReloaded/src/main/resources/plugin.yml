@@ -1,6 +1,7 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
 version: 3.0
+softdepend: [Vault, PlaceholderAPI]
 
 commands:
    skywars:

@@ -24,9 +24,10 @@ public class Taunt implements Comparable<Taunt>{
 	private double speed;
 	private int density;
 	private int level;
+	private int cost;
 	private List<String> stringParticles;
 	
-	public Taunt(String key, String name, List<String> lore, String message, String sound, boolean useCustomSound, double volume, double pitch, double speed, int density, List<String> particles, Material icon, int level) {
+	public Taunt(String key, String name, List<String> lore, String message, String sound, boolean useCustomSound, double volume, double pitch, double speed, int density, List<String> particles, Material icon, int level, int cost) {
 		this.key = key;
 		this.name = name;
 		this.lore = lore;
@@ -39,7 +40,8 @@ public class Taunt implements Comparable<Taunt>{
 		this.speed = speed;
 		this.icon = icon;
 		this.stringParticles = particles;
-		this.level = level;		
+		this.level = level;	
+		this.cost = cost;
 	}
 	
 	public String getName() {
@@ -50,7 +52,7 @@ public class Taunt implements Comparable<Taunt>{
 		return this.lore;
 	}
 	
-	public Material getIcon() {
+	public Material getMaterial() {
 		return this.icon;
 	}
 	
@@ -84,6 +86,10 @@ public class Taunt implements Comparable<Taunt>{
 	
 	public int getLevel() {
 		return this.level;
+	}
+	
+	public int getCost() {
+		return this.cost;
 	}
 	
 	public String getKey() {

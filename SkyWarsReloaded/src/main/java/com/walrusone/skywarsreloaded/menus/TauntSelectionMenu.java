@@ -15,6 +15,7 @@ import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.objects.Taunt;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 
 public class TauntSelectionMenu {
 
@@ -42,20 +43,44 @@ public class TauntSelectionMenu {
 	              	return;
 	            }           
 	            
-            	if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
-            		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+	            if (SkyWarsReloaded.getCfg().economyEnabled()) {
+               	 	if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+                 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+                 		return;
+               	 	} else if (player.getLevel() >= taunt.getLevel() && !player.hasPermission("sw.taunt."+ taunt.getKey()) && !VaultUtils.get().canBuy(player, taunt.getCost())) {
+               	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
+               	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
+                        event.setWillClose(true);
+                        event.setWillDestroy(true);
+                      	return;
+                    }
+                } else {
+               		if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+               		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
-            	} else {
-                    event.setWillClose(true);
-                    event.setWillDestroy(true);
+               		}
+                }
+       
+                if (SkyWarsReloaded.getCfg().economyEnabled() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+               		boolean result = VaultUtils.get().payCost(player, taunt.getCost());
+               		if (!result) {
+               			return;
+               		} else {
+               			PlayerStat ps = PlayerStat.getPlayerStats(player);
+               			ps.addPerm("sw.taunt." + taunt.getKey(), true);
+               			player.sendMessage(new Messaging.MessageFormatter().setVariable("cost", "" + taunt.getCost())
+               					.setVariable("item", taunt.getName()).format("menu.purchase-taunt"));
+               		}
+                }
+                
+                event.setWillClose(true);
+                event.setWillDestroy(true);
             
-            		PlayerStat ps = PlayerStat.getPlayerStats(player);
-                	ps.setTaunt(taunt.getKey());
-                	DataStorage.get().saveStats(ps);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-                	player.sendMessage(new Messaging.MessageFormatter().setVariable("taunt", taunt.getName()).format("menu.usetaunt-playermsg"));
-            	}   
-            	
+           		PlayerStat ps = PlayerStat.getPlayerStats(player);
+               	ps.setTaunt(taunt.getKey());
+               	DataStorage.get().saveStats(ps);
+               	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
+               	player.sendMessage(new Messaging.MessageFormatter().setVariable("taunt", taunt.getName()).format("menu.usetaunt-playermsg"));
             }
         });
 
@@ -72,9 +97,18 @@ public class TauntSelectionMenu {
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
             if (player.getLevel() >= taunt.getLevel() || player.hasPermission("sw.taunt." + taunt.getKey())) {
-            	loreList.add(new Messaging.MessageFormatter().format("menu.usetaunt-settaunt"));
-            	loreList.addAll(taunt.getLore());
-            	item = new ItemStack(taunt.getIcon(), 1);
+            	if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            		if (player.hasPermission("sw.taunt." + taunt.getKey()) || taunt.getCost() == 0) {
+            			loreList.add(new Messaging.MessageFormatter().format("menu.usetaunt-settaunt"));
+            			item = new ItemStack(taunt.getMaterial(), 1);
+            		} else {
+            			loreList.add(new Messaging.MessageFormatter().setVariable("cost", "" + taunt.getCost()).format("menu.cost"));
+            			item = new ItemStack(taunt.getMaterial(), 1);
+            		}
+            	} else {
+                	loreList.add(new Messaging.MessageFormatter().format("menu.usetaunt-settaunt"));
+                	item = new ItemStack(taunt.getMaterial(), 1);
+            	}
             } else {
             	loreList.add(new Messaging.MessageFormatter().setVariable("level", "" + taunt.getLevel()).format("menu.no-use"));
             }

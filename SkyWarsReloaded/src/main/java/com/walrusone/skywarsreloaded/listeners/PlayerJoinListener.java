@@ -30,8 +30,9 @@ public class PlayerJoinListener implements Listener
         	}.runTaskLater(SkyWarsReloaded.get(), 20);
     	}
     	
-   	 	if (PlayerStat.getPlayerStats(a1.getPlayer()) == null) {
-   	 		PlayerStat.getPlayers().add(new PlayerStat(a1.getPlayer()));
+   	 	if (PlayerStat.getPlayerStats(a1.getPlayer()) != null) {
+   	 		PlayerStat.removePlayer(a1.getPlayer().getUniqueId().toString());
    	 	}
+   	 	PlayerStat.getPlayers().add(new PlayerStat(a1.getPlayer()));
     }
 }

@@ -14,7 +14,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 public class ClearStatsCmd extends BaseCmd { 
 	
 	public ClearStatsCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "clearstats";
 		alias = new String[]{"cs", "cstats"};
 		argLength = 2; //counting cmdName
@@ -22,15 +22,15 @@ public class ClearStatsCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		Player bouncewarssPlayer = null;
+		Player swPlayer = null;
 		for (Player playerMatch: Bukkit.getOnlinePlayers()) {
 			if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {
-				bouncewarssPlayer = playerMatch;
+				swPlayer = playerMatch;
 			}
 		}
 		
-		if (bouncewarssPlayer != null) {
-			PlayerStat pStat = PlayerStat.getPlayerStats(bouncewarssPlayer);
+		if (swPlayer != null) {
+			PlayerStat pStat = PlayerStat.getPlayerStats(swPlayer);
 			pStat.clear();
 			DataStorage.get().saveStats(pStat);
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));

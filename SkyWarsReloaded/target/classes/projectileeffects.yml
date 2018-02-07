@@ -6,124 +6,145 @@ effects:
     displayname: "&bWater"
     icon: NETHER_STAR
     level: 3
+    cost: 100
     particles: 
     - 'WATER_SPLASH:0:0:0:2:2'
   flame:
     displayname: "&bFlame"
     icon: NETHER_STAR
     level: 8
+    cost: 100
     particles: 
     - 'FLAME:0:0:0:2:2'
   smoke:
     displayname: "&bSmoke"
     icon: NETHER_STAR
     level: 13
+    cost: 100
     particles: 
     - 'SMOKE_LARGE:0:0:0:2:2'
   critical:
     displayname: "&bCritical"
     icon: NETHER_STAR
     level: 18
+    cost: 100
     particles: 
     - 'CRIT:0:0:0:2:2'
   slime: 
     displayname: "&bSlime"
     icon: NETHER_STAR
     level: 23
+    cost: 100
     particles: 
     - 'SLIME:0:0:0:2:2'
   snow:     
     displayname: "&bSnow"
     icon: NETHER_STAR
     level: 28
+    cost: 100
     particles: 
     - 'SNOWBALL:0:0:0:2:2'
   magic: 
     displayname: "&bMagic"
     icon: NETHER_STAR
     level: 33
+    cost: 100
     particles: 
     - 'SPELL_WITCH:0:0:0:2:2'
   music: 
     displayname: "&bMusic"
     icon: NETHER_STAR
     level: 38
+    cost: 100
     particles: 
     - 'NOTE:0:0:-1:2:2'
   happy:
     displayname: "&bHappy"
     icon: NETHER_STAR
     level: 43
+    cost: 100
     particles: 
     - 'VILLAGER_HAPPY:0:0:0:2:2'
   angry: 
     displayname: "&bAngry"
     icon: NETHER_STAR
     level: 48
+    cost: 100
     particles: 
     - 'VILLAGER_ANGRY:0:0:0:2:2'
   potion: 
     displayname: "&bPotion"
     icon: NETHER_STAR
     level: 53
+    cost: 100
     particles: 
     - 'SPELL:0:0:0:2:2'
   poison: 
     displayname: "&bPoison"
     icon: NETHER_STAR
     level: 58
+    cost: 100
     particles:
     - 'SPELL_INSTANT:0:0:0:2:2'
   alphabet: 
     displayname: "&bAlphabet"
     icon: NETHER_STAR
     level: 63
+    cost: 100
     particles:
     - 'ENCHANTMENT_TABLE:0:0:-1:2:2'
   lava: 
     displayname: "&bLava"
     icon: NETHER_STAR
     level: 68
+    cost: 100
     particles:
     - 'LAVA:0:0:0:2:2'
   lava_drip:   
     displayname: "&bLave Drip"
     icon: NETHER_STAR
     level: 73
+    cost: 100
     particles:
     - 'DRIP_LAVA:0:0:0:2:2'
   heart:
     displayname: "&bHeart"
     icon: NETHER_STAR
     level: 78
+    cost: 100
     particles:
     - 'HEART:0:1:0:2:2'
   redstone:
     displayname: "&bRedstone"
     icon: NETHER_STAR
     level: 83
+    cost: 100
     particles:
     - 'REDSTONE:0:0:0:2:2'
   sparks: 
     displayname: "&bSparks"
     icon: NETHER_STAR
     level: 88
+    cost: 100
     particles:
     - 'FIREWORKS_SPARK:0:0:0:2:2'
   portal: 
     displayname: "&bPortal"
     icon: NETHER_STAR
     level: 93
+    cost: 100
     particles:
     - 'PORTAL:0:0:0:2:2'
   clouds: 
     displayname: "&bClouds"
     icon: NETHER_STAR
     level: 98
+    cost: 100
     particles:
     - 'CLOUD:0:0:0:2:2'
   none:
     displayname: "&bNo Particles"
     icon: NETHER_STAR
     level: 0
+    cost: 0
     particles:

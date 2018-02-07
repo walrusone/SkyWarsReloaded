@@ -9,6 +9,7 @@ teleportToSpawnOnWorldEnter: true
 resourcepack: https://www.dropbox.com/s/8scs6c911y3mqbg/taunts-resource-pack.zip?dl=1
 promptForResourcePackOnJoin: false
 lobbyBoardEnabled: true
+economyEnabled: false
 game:
   xpForWin: 5
   winCommands: 
