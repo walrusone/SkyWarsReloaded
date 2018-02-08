@@ -34,18 +34,24 @@ public class PlayerTeleportListener implements Listener
             		        player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         		        }
         		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
-        		        	if ( player.getInventory().getItem(SkyWarsReloaded.getCfg().getOptionsSlot()).equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
-                		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), new ItemStack(Material.AIR, 1));
+        		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getOptionsSlot()) != null) {
+            		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getOptionsSlot()).equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
+                    		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), new ItemStack(Material.AIR, 1));
+            		        	}
         		        	}
         		        }
         		        if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
-        		        	if ( player.getInventory().getItem(SkyWarsReloaded.getCfg().getJoinSlot()).equals(SkyWarsReloaded.getIM().getItem("joinselect"))) {
-        		        		player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(),  new ItemStack(Material.AIR, 1));
+        		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getJoinSlot()) != null) {
+            		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getJoinSlot()).equals(SkyWarsReloaded.getIM().getItem("joinselect"))) {
+            		        		player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(),  new ItemStack(Material.AIR, 1));
+            		        	}
         		        	}
         		        }
         		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
-        		        	if ( player.getInventory().getItem(SkyWarsReloaded.getCfg().getSpectateSlot()).equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
-        		        		player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(),  new ItemStack(Material.AIR, 1));
+        		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getSpectateSlot()) != null) {
+            		        	if (player.getInventory().getItem(SkyWarsReloaded.getCfg().getSpectateSlot()).equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
+            		        		player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(),  new ItemStack(Material.AIR, 1));
+            		        	}
         		        	}
         		        }
                 	}

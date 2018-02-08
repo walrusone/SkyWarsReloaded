@@ -190,6 +190,50 @@ public class GameMap {
     	updateScoreboard();
     	return false;
     }
+	
+	public boolean addParty(final Party party) {
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (UUID uuid: party.getMembers()) {
+			Player player = Bukkit.getPlayer(uuid);
+			PlayerStat ps = PlayerStat.getPlayerStats(uuid);
+			if (ps == null) {
+				PlayerStat.getPlayers().add(new PlayerStat(player));
+				return false;
+			} else if (!ps.isInitialized()) {
+				return false;
+			}
+			for (int i = 1; i <= playerCards.size(); i++) {
+	    		PlayerCard pCard = playerCards.get(i);
+	    		if (pCard.getPlayer() == null) {
+	    			pCard.setPlayer(player);
+	    			pCard.setPreElo(ps.getElo());
+	    			players.add(player);
+	    			break;
+	    		}
+			}	
+		}
+		
+		if (players.size() == party.getSize()) {
+			for (Player player: players) {
+				PlayerCard pCard = this.getPlayerCard(player);
+				MatchManager.get().teleportToArena(this, player, pCard.getSpawn());
+				if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+			        updateKitVotes();
+				}
+		        timer = SkyWarsReloaded.getCfg().getWaitTimer();
+		        this.update();
+			}
+			return true;
+		} else {
+			for (Player player: players) {
+				PlayerCard pCard = this.getPlayerCard(player);
+				pCard.reset();
+			}
+		}
+    	this.update();
+    	updateScoreboard();
+    	return false;
+	}
 
 	public boolean removePlayer(final Player player) {
     	for (int i = 1; i <= playerCards.size(); i++) {
@@ -231,6 +275,11 @@ public class GameMap {
     public boolean canAddPlayer() {
     	int playerCount = getPlayerCount();
         return (this.matchState == MatchState.WAITINGSTART && playerCount < playerCards.size());
+    }
+    
+    public boolean canAddParty(Party party) {
+    	int playerCount = getPlayerCount();
+    	return (this.matchState == MatchState.WAITINGSTART && playerCount + party.getSize()-1 < playerCards.size());
     }
     
 	/*Map Handling Methods*/

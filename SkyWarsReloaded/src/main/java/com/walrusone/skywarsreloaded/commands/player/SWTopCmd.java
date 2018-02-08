@@ -1,8 +1,9 @@
-package com.walrusone.skywarsreloaded.commands;
+package com.walrusone.skywarsreloaded.commands.player;
 
 import java.util.List;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.objects.Leaderboard.LeaderData;
 import com.walrusone.skywarsreloaded.utilities.Messaging;

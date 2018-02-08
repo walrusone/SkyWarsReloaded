@@ -441,7 +441,15 @@ public class LevelManager {
         File tauntFile = new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml");
 
         if (!tauntFile.exists()) {
-        	SkyWarsReloaded.get().saveResource("taunts.yml", false);
+        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+                	SkyWarsReloaded.get().saveResource("taunts18.yml", false);
+                	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "taunts18.yml");
+                	if (sf.exists()) {
+                		sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
+                	}
+        	} else {
+            	SkyWarsReloaded.get().saveResource("taunts.yml", false);
+        	}
         }
         
         if (tauntFile.exists()) {

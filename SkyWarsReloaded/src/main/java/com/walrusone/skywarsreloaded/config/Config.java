@@ -405,7 +405,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.optionsSlot", optionsSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.glass", glassEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.particle", particlesEnabled);
-	    SkyWarsReloaded.get().getConfig().set("eabledMenus.projectile", projectEnabled);
+	    SkyWarsReloaded.get().getConfig().set("enabledMenus.projectile", projectEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.killsound", killsoundEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.winsound", winsoundEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.taunts", tauntsEnabled);

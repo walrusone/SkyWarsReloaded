@@ -1,4 +1,4 @@
-package com.walrusone.skywarsreloaded.commands;
+package com.walrusone.skywarsreloaded.commands.player;
 
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 

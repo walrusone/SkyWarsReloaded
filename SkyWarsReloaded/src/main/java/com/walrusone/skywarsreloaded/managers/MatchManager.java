@@ -457,7 +457,9 @@ public class MatchManager
                     this.cancel();
                 } else {
                 	if (SkyWarsReloaded.getCfg().suddenDeathEnabled()) {
-                        MatchManager.this.announceTimer(gameMap, "timer.game-timer");
+                		if (gameMap.getMatchState() != MatchState.SUDDENDEATH) {
+                            MatchManager.this.announceTimer(gameMap, "timer.game-timer");
+                		}
                 	}
                 }
                 if (gameMap.isThunder()) {

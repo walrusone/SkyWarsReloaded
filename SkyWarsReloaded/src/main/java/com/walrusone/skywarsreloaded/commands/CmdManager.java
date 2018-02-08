@@ -9,6 +9,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import com.walrusone.skywarsreloaded.commands.admin.ChestAddCmd;
+import com.walrusone.skywarsreloaded.commands.admin.ClearStatsCmd;
+import com.walrusone.skywarsreloaded.commands.admin.ReloadCmd;
+import com.walrusone.skywarsreloaded.commands.admin.SWUpdateTopCmd;
+import com.walrusone.skywarsreloaded.commands.admin.SetSpawnCmd;
+import com.walrusone.skywarsreloaded.commands.admin.SetStatsCmd;
+import com.walrusone.skywarsreloaded.commands.admin.StartCmd;
 import com.walrusone.skywarsreloaded.commands.kits.KitCreate;
 import com.walrusone.skywarsreloaded.commands.kits.KitEnable;
 import com.walrusone.skywarsreloaded.commands.kits.KitIcon;
@@ -27,6 +34,10 @@ import com.walrusone.skywarsreloaded.commands.maps.RefreshMapData;
 import com.walrusone.skywarsreloaded.commands.maps.RegisterMapCmd;
 import com.walrusone.skywarsreloaded.commands.maps.SaveMapCmd;
 import com.walrusone.skywarsreloaded.commands.maps.UnregisterMapCmd;
+import com.walrusone.skywarsreloaded.commands.player.SWJoinCmd;
+import com.walrusone.skywarsreloaded.commands.player.SWQuitCmd;
+import com.walrusone.skywarsreloaded.commands.player.SWStatsCmd;
+import com.walrusone.skywarsreloaded.commands.player.SWTopCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 

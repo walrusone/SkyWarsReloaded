@@ -111,7 +111,10 @@ public class NMSHandler implements NMS {
 	}
 
 	public String getItemName(ItemStack item) {
-		return CraftItemStack.asNMSCopy(item).getName();
+		if (item != null) {
+			return CraftItemStack.asNMSCopy(item).getName();
+		}
+		return "";
 	}
 	
 	public ItemStack getMainHandItem(Player player) {

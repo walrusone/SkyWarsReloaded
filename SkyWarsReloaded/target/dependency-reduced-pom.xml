@@ -27,6 +27,7 @@
           <include>plugin.yml</include>
           <include>projectileeffects.yml</include>
           <include>taunts.yml</include>
+          <include>taunts18.yml</include>
           <include>winsounds.yml</include>
           <include>winsounds18.yml</include>
           <include>tables.sql</include>
