@@ -103,31 +103,36 @@ public class PlayerStat
     						@SuppressWarnings("deprecation")
 							@Override
     						public void run() {
-    							PlayerStat pStats = PlayerStat.getPlayerStats(player);
-    	        		        player.closeInventory();
-    	        		        player.setGameMode(GameMode.ADVENTURE);
-    	        		        Util.get().setPlayerExperience(player, pStats.getXp());
-    	        		        player.setHealth(20);
-    	        		        player.setFoodLevel(20);
-    	        		        player.setSaturation(20);
-    	        		        Util.get().clear(player);
-    	        		        player.setFireTicks(0);
-    	        		        player.resetPlayerTime();
-    	        		        player.resetPlayerWeather();
-    	        		        if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
-        	        		        getScoreboard(player);
-        	        		        player.setScoreboard(getPlayerScoreboard(player));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
-        	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
-        	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
-        	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
-    	        		        }
-    	        		        player.updateInventory();
+    							if (Util.get().isSpawnWorld(player.getWorld())) {
+    								if(SkyWarsReloaded.getCfg().protectLobby()) {
+    									player.setGameMode(GameMode.ADVENTURE);
+    									player.setHealth(20);
+            	        		        player.setFoodLevel(20);
+            	        		        player.setSaturation(20);
+            	        		        Util.get().clear(player);
+            	        		        player.setFireTicks(0);
+            	        		        player.resetPlayerTime();
+            	        		        player.resetPlayerWeather();
+    								}
+    								PlayerStat pStats = PlayerStat.getPlayerStats(player);
+    								if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+            	        		        Util.get().setPlayerExperience(player, pStats.getXp());
+    								}
+     	        		            if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
+            	        		        getScoreboard(player);
+            	        		        player.setScoreboard(getPlayerScoreboard(player));
+        	        		        }
+        	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
+        	        		        }
+        	        		        if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
+            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
+        	        		        }
+        	        		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
+            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
+        	        		        }
+        	        		        player.updateInventory();
+    							}
     						}
                 		}.runTask(SkyWarsReloaded.get());
             		} else {
@@ -326,18 +331,17 @@ public class PlayerStat
 		Objective objective = scoreboard.registerNewObjective("info", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         String sb = "scoreboards.lobbyboard.line";
-        
+        ArrayList<String> scores = new ArrayList<String>();
         for (int i = 1; i < 17; i++) {
         	if (i == 1) {
     	        String leaderboard = getScoreboardLine(sb + i, player);
     	        objective.setDisplayName(leaderboard);
     		} else {
     			String s = getScoreboardLine(sb + i, player);
-    			if (s.length() == 0) {
-    				for (int j = 0; j < i; j++) {
-    					s = s + " ";
-    				}
-    			} 
+    			while (scores.contains(s) && !s.equalsIgnoreCase("remove") ) {
+    				s = s + " ";
+    			}
+    			scores.add(s);
     			if (!s.equalsIgnoreCase("remove")) {
         			Score score = objective.getScore(s);
     				score.setScore(17-i);
@@ -347,15 +351,29 @@ public class PlayerStat
 	}
 		
 	private static String getScoreboardLine(String lineNum, Player player) {
+		PlayerStat ps = PlayerStat.getPlayerStats(player);
+		String killdeath;
+		String winloss;
+		if (ps.getWins() == 0) {
+			winloss = "0.00";
+		} else {
+			winloss = String.format("%1$,.2f", ((double)((double)ps.getWins()/(double)ps.getLosses())));
+		}
+		if (ps.getKills() == 0) {
+			killdeath = "0.00";
+		} else {
+			killdeath = String.format("%1$,.2f", ((double)((double)ps.getKills()/(double)ps.getDeaths())));
+		}
+		
 		return new Messaging.MessageFormatter()
-				.setVariable("elo", "" + PlayerStat.getPlayerStats(player).getElo())
-				.setVariable("wins", "" + PlayerStat.getPlayerStats(player).getWins())
-				.setVariable("losses", "" + PlayerStat.getPlayerStats(player).getLosses())
-				.setVariable("kills", "" + PlayerStat.getPlayerStats(player).getKills())
-				.setVariable("deaths", "" + PlayerStat.getPlayerStats(player).getDeaths())
-				.setVariable("xp", "" + PlayerStat.getPlayerStats(player).getXp())
-				.setVariable("killdeath", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getKills()/(double)PlayerStat.getPlayerStats(player).getDeaths()))))
-				.setVariable("winloss", String.format("%1$,.2f", ((double)((double)PlayerStat.getPlayerStats(player).getWins()/(double)PlayerStat.getPlayerStats(player).getLosses()))))
+				.setVariable("elo", Integer.toString(ps.getElo()))
+				.setVariable("wins", Integer.toString(ps.getWins()))
+				.setVariable("losses", Integer.toString(ps.getLosses()))
+				.setVariable("kills", Integer.toString(ps.getKills()))
+				.setVariable("deaths",Integer.toString(ps.getDeaths()))
+				.setVariable("xp", Integer.toString(ps.getXp()))
+				.setVariable("killdeath", killdeath)
+				.setVariable("winloss", winloss)
 				.setVariable("balance", "" + getBalance(player))
 				.format(lineNum);
 	}

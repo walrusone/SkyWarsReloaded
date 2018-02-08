@@ -18,6 +18,7 @@ public class Config {
 	private boolean bungeeMode;
 	private boolean economyEnabled;
 	private String bungeeLobby;
+
 	
 	private String resourcePack;
 	private boolean promptResource;
@@ -44,6 +45,8 @@ public class Config {
 	private boolean deathsEnabled;
 	private boolean xpEnabled;
 	private boolean lobbyBoardEnabled;
+	private boolean protectlobby;
+	private boolean displayPlayerExeperience;
 	
 	private int winnerXP;
 	private List<String> winCommands;
@@ -161,7 +164,7 @@ public class Config {
 				"BARRIER", 
 				"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
 				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
-				"DRAGONS_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
+				"DRAGON_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
 				"DIAMOND_HELMET",
 				"LEATHER_HELMET",			
 				"EYE_OF_ENDER",
@@ -189,6 +192,8 @@ public class Config {
 		promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
 		
 		lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
+		protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
+		displayPlayerExeperience = SkyWarsReloaded.get().getConfig().getBoolean("displayPlayerLevelOnXpBar");
 		leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
 		leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
 		leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
@@ -330,6 +335,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
 		
 		SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
+		SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
+		SkyWarsReloaded.get().getConfig().set("enabledLobbyGuard", protectlobby);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.length", leaderSize);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.signsEnabled", leaderSignsEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.headsEnabled", leaderHeadsEnabled);
@@ -841,5 +848,14 @@ public class Config {
 	public boolean economyEnabled() {
 		return economyEnabled;
 	}
-	
+
+	public boolean protectLobby() {
+		return protectlobby;
+	}
+
+	public boolean displayPlayerExeperience() {
+		return displayPlayerExeperience;
+	}	
 }
+
+

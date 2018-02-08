@@ -26,6 +26,7 @@ public class EditMapCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
+		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
 			final String worldName = args[1].toLowerCase();
 			if (GameMap.mapExists(worldName)) {
 				boolean alreadyLoaded = false;
@@ -77,5 +78,9 @@ public class EditMapCmd extends BaseCmd {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));
 				return true;
 			}
+		} else {
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.nospawn"));
+			return false;
+		}
 	}
 }

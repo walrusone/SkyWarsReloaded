@@ -35,8 +35,6 @@ import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-
 public class LobbyListener implements Listener
 {
 
@@ -121,24 +119,26 @@ public class LobbyListener implements Listener
 	 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
     public void onEntityDamage(final EntityDamageByEntityEvent e) {	
-		if (e.getEntity().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-    		e.setCancelled(true);
+		if (SkyWarsReloaded.getCfg().protectLobby() && Util.get().isSpawnWorld(e.getEntity().getWorld())) {
+			e.setCancelled(true);
     		if (e.getEntity() instanceof Player || e.getDamager() instanceof Player) {
         		if (((Player)e.getDamager()).hasPermission("sw.alterlobby")) {
         			e.setCancelled(false);
         		}
     		}
-    	}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-    public void onClick(final PlayerInteractEvent e) {	
-    	if (e.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-    		e.setCancelled(true);
-    		if (e.getPlayer().hasPermission("sw.alterlobby")) {
-    			e.setCancelled(false);
-    		}
-        	if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    public void onClick(final PlayerInteractEvent e) {
+		if (Util.get().isSpawnWorld(e.getPlayer().getWorld())) {
+			if (SkyWarsReloaded.getCfg().protectLobby()) {
+				e.setCancelled(true);
+	    		if (e.getPlayer().hasPermission("sw.alterlobby")) {
+	    			e.setCancelled(false);
+	    		}
+			}
+			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
         		if (e.hasItem()) {
                     if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
                     	e.setCancelled(true);
@@ -155,13 +155,11 @@ public class LobbyListener implements Listener
                     }
         		}
         	}
-        	
-        	Player player = e.getPlayer();
+			Player player = e.getPlayer();
         	if (e.getAction() == Action.RIGHT_CLICK_BLOCK && (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)) {
         		 if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == Material.SIGN_POST ) {
         				Sign s = (Sign) e.getClickedBlock().getState();
         			    Location loc = s.getLocation();
-        			    if (loc.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
         			    	boolean joined = false;
         			    	for (GameMap gMap : GameMap.getMaps()) {
             			    	if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
@@ -170,22 +168,23 @@ public class LobbyListener implements Listener
             			    }
     			    		if (!joined) { 
     			    			player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-    			    		}
-        			    }    
+    			    		} 
         		 }
         	}
-    	}
+		}
     }
     
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
     	Player player = (Player) e.getWhoClicked();
-    	if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-        	if (!player.hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(player)) {
-        		e.setCancelled(true);
-        	}
+    	if (Util.get().isSpawnWorld(player.getWorld())) {
+    		if (SkyWarsReloaded.getCfg().protectLobby()) {
+            	if (!player.hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(player)) {
+            		e.setCancelled(true);
+            	}
+    		}
         	int rawSlot = e.getRawSlot();
-			if (rawSlot < joinMenu.getSize() && rawSlot >= 0 && e.getInventory().equals(joinMenu)) {
+			if (e.getInventory().equals(joinMenu) && rawSlot < joinMenu.getSize() && rawSlot >= 0) {
 				e.setCancelled(true);
 				GameMap gMap = MatchManager.get().getPlayerMap(player);
                 if (gMap != null) {
@@ -210,7 +209,7 @@ public class LobbyListener implements Listener
 	                	}
 	                }
                 }
-			} else if (rawSlot < spectateMenu.getSize() && rawSlot >= 0 && e.getInventory().equals(spectateMenu)) {
+			} else if (e.getInventory().equals(spectateMenu) && rawSlot < spectateMenu.getSize() && rawSlot >= 0) {
 				e.setCancelled(true);
 				GameMap gMap = MatchManager.get().getPlayerMap(player);
                 if (gMap != null) {
@@ -228,14 +227,13 @@ public class LobbyListener implements Listener
 		                	MatchManager.get().addSpectator(gMap, player);
 	                }
                 }
-				
 			}
     	}
     }
     
     @EventHandler
     public void onPlayerDropItem(final PlayerDropItemEvent e) {
-    	if (e.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+    	if (Util.get().isSpawnWorld(e.getPlayer().getWorld())) {
     		if (!e.getPlayer().hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(e.getPlayer())) {
     			e.setCancelled(true);
     		}
@@ -244,104 +242,110 @@ public class LobbyListener implements Listener
     
     @EventHandler
     public void signPlaced(SignChangeEvent event) {
-        String[] lines = event.getLines();
-        if (lines[0].equalsIgnoreCase("[sw]") && lines.length >= 2) {
-        	if (event.getPlayer().hasPermission("sw.signs")) {
-        			Location signLocation = event.getBlock().getLocation();
-                    World w = signLocation.getWorld();
-                	Block b = w.getBlockAt(signLocation);
-                	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
-               			event.setCancelled(true);
-               			String arenaName = lines[1];
-               			GameMap gMap = GameMap.getMap(arenaName);
-               			if (gMap != null) {
-               				gMap.addSign(signLocation);
-                       		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
-                       	} else {
-                       		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
-                       	}
-                	}
-            	} else {
-            		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
-        			event.setCancelled(true);
-            } 
-       } else if (lines[0].equalsIgnoreCase("[swl]") && lines.length >= 3) {
-    	   if (event.getPlayer().hasPermission("sw.signs")) {
-   				Location signLocation = event.getBlock().getLocation();
-   				World w = signLocation.getWorld();
-               	Block b = w.getBlockAt(signLocation);
-           		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
-          			event.setCancelled(true);
-          			if (SkyWarsReloaded.getUseable().contains(lines[1].toUpperCase())) {
-          				LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
-          				if (Util.get().isInteger(lines[2])) {
-          					if (Integer.valueOf(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
-                  				SkyWarsReloaded.getLB().addLeaderSign(Integer.valueOf(lines[2]), type, signLocation);
-                          		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
-          					} else {
-          						event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
-          					}
-          				} else {
-          					event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
-          				}
-                  	} else {
-                  		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
-                  	}
-           		}
-       		} else {
-       			event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
-       			event.setCancelled(true);
-       		} 
-       }
+    	if (Util.get().isSpawnWorld(event.getBlock().getWorld())) {
+            String[] lines = event.getLines();
+            if (lines[0].equalsIgnoreCase("[sw]") && lines.length >= 2) {
+            	if (event.getPlayer().hasPermission("sw.signs")) {
+            			Location signLocation = event.getBlock().getLocation();
+                        World w = signLocation.getWorld();
+                    	Block b = w.getBlockAt(signLocation);
+                    	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+                   			event.setCancelled(true);
+                   			String arenaName = lines[1];
+                   			GameMap gMap = GameMap.getMap(arenaName);
+                   			if (gMap != null) {
+                   				gMap.addSign(signLocation);
+                           		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                           	} else {
+                           		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                           	}
+                    	}
+                	} else {
+                		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+            			event.setCancelled(true);
+                } 
+           } else if (lines[0].equalsIgnoreCase("[swl]") && lines.length >= 3) {
+        	   if (event.getPlayer().hasPermission("sw.signs")) {
+       				Location signLocation = event.getBlock().getLocation();
+       				World w = signLocation.getWorld();
+                   	Block b = w.getBlockAt(signLocation);
+               		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+              			event.setCancelled(true);
+              			if (SkyWarsReloaded.getUseable().contains(lines[1].toUpperCase())) {
+              				LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
+              				if (Util.get().isInteger(lines[2])) {
+              					if (Integer.valueOf(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
+                      				SkyWarsReloaded.getLB().addLeaderSign(Integer.valueOf(lines[2]), type, signLocation);
+                              		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
+              					} else {
+              						event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
+              					}
+              				} else {
+              					event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
+              				}
+                      	} else {
+                      		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
+                      	}
+               		}
+           		} else {
+           			event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+           			event.setCancelled(true);
+           		} 
+           }
+    	}
     }
     
     @EventHandler
     public void signRemoved(BlockBreakEvent event) {
-        Location blockLocation = event.getBlock().getLocation();
-        World w = blockLocation.getWorld();
-    	Block b = w.getBlockAt(blockLocation);
-		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
-	    	Sign sign = (Sign) b.getState();
-	    	Location loc = sign.getLocation();
-	    	boolean removed = false;
-	    	for (GameMap gMap : GameMap.getMaps()) {
-	    		if (!removed) {
-		    		removed = gMap.removeSign(loc);
-	    		}
-	    	}
-	    	if (!removed) {
-	    		removed = SkyWarsReloaded.getLB().removeLeaderSign(loc);
-	    	}
-	    	if (removed) {
-		    	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));
-	    	}
-		}
+    	if (Util.get().isSpawnWorld(event.getBlock().getWorld())) {
+    		 Location blockLocation = event.getBlock().getLocation();
+    	        World w = blockLocation.getWorld();
+    	    	Block b = w.getBlockAt(blockLocation);
+    			if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
+    		    	Sign sign = (Sign) b.getState();
+    		    	Location loc = sign.getLocation();
+    		    	boolean removed = false;
+    		    	for (GameMap gMap : GameMap.getMaps()) {
+    		    		if (!removed) {
+    			    		removed = gMap.removeSign(loc);
+    		    		}
+    		    	}
+    		    	if (!removed) {
+    		    		removed = SkyWarsReloaded.getLB().removeLeaderSign(loc);
+    		    	}
+    		    	if (removed) {
+    			    	event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));
+    		    	}
+    			}
+    	}
     }    
 
     @EventHandler
     public void onPressurePlate(final PlayerInteractEvent e) {
-    	Player player = e.getPlayer();
-    	GameMap gMap = MatchManager.get().getPlayerMap(player);
-    	if (gMap == null) {
-    		if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
-        		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
-        			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
-        			if (spawn != null) {
-        				boolean joined = MatchManager.get().joinGame(player);
-        				int count = 0;
-        				while (count < 4 && !joined) {
-        					joined = MatchManager.get().joinGame(player);
-        					count++;
-        				}
-        				if (!joined) {
-        					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
-        				}
-           	        } else {
-           				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-           				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-           			}
-             	} 
-    		}
-    	} 
+    	if (Util.get().isSpawnWorld(e.getPlayer().getWorld())) {
+    		Player player = e.getPlayer();
+        	GameMap gMap = MatchManager.get().getPlayerMap(player);
+        	if (gMap == null) {
+        		if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
+            		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
+            			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
+            			if (spawn != null) {
+            				boolean joined = MatchManager.get().joinGame(player);
+            				int count = 0;
+            				while (count < 4 && !joined) {
+            					joined = MatchManager.get().joinGame(player);
+            					count++;
+            				}
+            				if (!joined) {
+            					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
+            				}
+               	        } else {
+               				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+               				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+               			}
+                 	} 
+        		}
+        	} 
+    	}
     }
 }

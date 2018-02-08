@@ -164,15 +164,23 @@ public class GameMap {
 	/*Player Handling Methods*/
 	
 	public boolean addPlayer(final Player player) {
+		PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+		if (ps == null) {
+			PlayerStat.getPlayers().add(new PlayerStat(player));
+			return false;
+		} else if (!ps.isInitialized()) {
+			return false;
+		}
     	for (int i = 1; i <= playerCards.size(); i++) {
     		PlayerCard pCard = playerCards.get(i);
     		if (pCard.getPlayer() == null) {
     			pCard.setPlayer(player);
     			pCard.setPreElo(PlayerStat.getPlayerStats(player.getUniqueId()).getElo());
-    			pCard.setLevel(player.getLevel());
    			
     			MatchManager.get().teleportToArena(this, player, pCard.getSpawn());
-    	        updateKitVotes();
+    			if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+        	        updateKitVotes();
+    			}
     	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
     	        this.update();
     			return true;
@@ -408,7 +416,7 @@ public class GameMap {
 			                  if(!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK) 
 			                		  && !block.getType().equals(Material.DIAMOND_BLOCK)&& !block.getType().equals(Material.EMERALD_BLOCK)) {
 				                  Location loc = beacon.getLocation();
-				                  playerCards.put(countSpawns, new PlayerCard(loc, null, -1, this, 0));
+				                  playerCards.put(countSpawns, new PlayerCard(loc, null, -1, this));
 				                  countSpawns++;
 			                  }
 			            } else if (te instanceof Chest) {
@@ -438,7 +446,6 @@ public class GameMap {
 		for (PlayerCard pCard: playerCards.values()) {
 			pCard.reset();
 		}
-		availableKits.clear();
 		thunder = false;
 		forceStart = false;
 		allowRegen = true;
@@ -448,7 +455,10 @@ public class GameMap {
         setDisplayTimer(0);
         restartTimer = -1;
         winner = "";
-        addKits();
+		if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+			availableKits.clear();
+	        addKits();
+		}
         prepareMenu(chestVoteMenu, "chest");
         prepareMenu(timeVoteMenu, "time");
         prepareMenu(weatherVoteMenu, "weather");

@@ -286,7 +286,15 @@ public class LevelManager {
         File soundFile = new File(SkyWarsReloaded.get().getDataFolder(), "killsounds.yml");
 
         if (!soundFile.exists()) {
-        	SkyWarsReloaded.get().saveResource("killsounds.yml", false);
+        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+                	SkyWarsReloaded.get().saveResource("killsounds18.yml", false);
+                	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "killsounds18.yml");
+                	if (sf.exists()) {
+                		sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "killsounds.yml"));
+                	}
+        	} else {
+            	SkyWarsReloaded.get().saveResource("killsounds.yml", false);
+        	}
         }
 
         if (soundFile.exists()) {
@@ -355,7 +363,15 @@ public class LevelManager {
         File soundFile = new File(SkyWarsReloaded.get().getDataFolder(), "winsounds.yml");
 
         if (!soundFile.exists()) {
-        	SkyWarsReloaded.get().saveResource("winsounds.yml", false);
+        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+                	SkyWarsReloaded.get().saveResource("winsounds18.yml", false);
+                	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "winsounds18.yml");
+                	if (sf.exists()) {
+                		sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "winsounds.yml"));
+                	}
+        	} else {
+            	SkyWarsReloaded.get().saveResource("winsounds.yml", false);
+        	}
         }
 
         if (soundFile.exists()) {

@@ -54,9 +54,6 @@ chestItems:
       type: COOKED_BEEF
       amount: 6
     - ==: org.bukkit.inventory.ItemStack
-      type: COOKED_MUTTON
-      amount: 6
-    - ==: org.bukkit.inventory.ItemStack
       type: COOKED_CHICKEN
       amount: 6  
   '35':

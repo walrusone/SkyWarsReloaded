@@ -32,7 +32,7 @@ public class ColorSelectionMenu {
         	rowCount += menuSlotsPerRow;
         }
         menuSize = rowCount;
-
+        int level = Util.get().getPlayerLevel(player);
         SkyWarsReloaded.getIC().create(player, menuName, rowCount, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
@@ -43,12 +43,12 @@ public class ColorSelectionMenu {
                 if (glass == null) {
                     return;
                 } 
-                
+                                
                 if (SkyWarsReloaded.getCfg().economyEnabled()) {
-               	 	if (player.getLevel() < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey())) {
+               	 	if (level < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey())) {
                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                  		return;
-               	 	} else if (player.getLevel() >= glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey()) && !VaultUtils.get().canBuy(player, glass.getCost())) {
+               	 	} else if (level >= glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey()) && !VaultUtils.get().canBuy(player, glass.getCost())) {
                	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
                         event.setWillClose(true);
@@ -56,7 +56,7 @@ public class ColorSelectionMenu {
                	 		return;
                     }
                 } else {
-               		if (player.getLevel() < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey())) {
+               		if (level < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey())) {
                		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
                		}
@@ -97,7 +97,7 @@ public class ColorSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= glass.getLevel() || player.hasPermission("sw.glasscolor." + glass.getKey())) {
+            if (level >= glass.getLevel() || player.hasPermission("sw.glasscolor." + glass.getKey())) {
             	if (SkyWarsReloaded.getCfg().economyEnabled()) {
             		if (player.hasPermission("sw.glasscolor." + glass.getKey()) || glass.getCost() == 0) {
             			loreList.add(new Messaging.MessageFormatter().format("menu.usecolor-setcolor"));

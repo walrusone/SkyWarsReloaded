@@ -69,9 +69,6 @@ chestItems:
       type: COOKED_BEEF
       amount: 2
     - ==: org.bukkit.inventory.ItemStack
-      type: COOKED_MUTTON
-      amount: 2
-    - ==: org.bukkit.inventory.ItemStack
       type: COOKED_CHICKEN
       amount: 2
     - ==: org.bukkit.inventory.ItemStack
@@ -105,30 +102,6 @@ chestItems:
     - ==: org.bukkit.inventory.ItemStack
       type: ARROW
       amount: 8
-    - ==: org.bukkit.inventory.ItemStack
-      type: SPLASH_POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:leaping
-    - ==: org.bukkit.inventory.ItemStack
-      type: POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:swiftness
-    - ==: org.bukkit.inventory.ItemStack
-      type: POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:strength
-    - ==: org.bukkit.inventory.ItemStack
-      type: SPLASH_POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:harming
   '15':
     items:
     - ==: org.bukkit.inventory.ItemStack
@@ -141,30 +114,6 @@ chestItems:
       type: IRON_CHESTPLATE    
     - ==: org.bukkit.inventory.ItemStack
       type: GOLDEN_APPLE
-    - ==: org.bukkit.inventory.ItemStack
-      type: POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:regeneration
-    - ==: org.bukkit.inventory.ItemStack
-      type: SPLASH_POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:swiftness
-    - ==: org.bukkit.inventory.ItemStack
-      type: POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:leaping
-    - ==: org.bukkit.inventory.ItemStack
-      type: POTION
-      meta:
-        ==: ItemMeta
-        meta-type: POTION
-        potion-type: minecraft:healing
     - ==: org.bukkit.inventory.ItemStack
       type: IRON_AXE
     - ==: org.bukkit.inventory.ItemStack

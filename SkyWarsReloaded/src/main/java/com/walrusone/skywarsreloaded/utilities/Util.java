@@ -515,6 +515,26 @@ public class Util {
 		}
 	}
 	
+	public int getPlayerLevel(Player player) {
+	    if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+	    	return player.getLevel();
+	    } else {
+	    	PlayerStat ps = PlayerStat.getPlayerStats(player);
+	    	if (ps != null) {
+	    		int amount = ps.getXp();
+	    		if (amount <= 352) {
+	    			return (int) Math.floor(quadraticEquationRoot(1, 6, 0-amount));
+	    		} else if (amount <= 1507) {
+	    			return (int) Math.floor(quadraticEquationRoot(2.5, -40.5, 360-amount));
+	    		} else {
+	    			return (int) Math.floor(quadraticEquationRoot(4.5, -162.5, 2220-amount));
+	    		}
+	    	} else {
+	        	return 0;
+	    	}
+	    }
+	}
+		
 	public static double quadraticEquationRoot(double a, double b, double c) {    
 	    double root1, root2;
 	    root1 = (-b + Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
@@ -533,5 +553,14 @@ public class Util {
 				    TimeUnit.SECONDS.toSeconds(x) % TimeUnit.MINUTES.toSeconds(1));
 		}
 		return hms;
+	}
+
+	public boolean isSpawnWorld(World world) {
+		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
+			if (world.equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

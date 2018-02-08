@@ -14,7 +14,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class SetStatsCmd extends BaseCmd { 
 	
 	public SetStatsCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "setstat";
 		alias = new String[]{"ss", "sstats"};
 		argLength = 4; //counting cmdName
@@ -79,7 +79,9 @@ public class SetStatsCmd extends BaseCmd {
 			}  else if (args[2].equalsIgnoreCase("xp")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setXp(Integer.valueOf(args[3]));
-					Util.get().setPlayerExperience(swPlayer, Integer.valueOf(args[3]));
+					if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+						Util.get().setPlayerExperience(swPlayer, Integer.valueOf(args[3]));
+					}
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
 							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));

@@ -19,7 +19,12 @@ public class PlayerQuitListener implements Listener
     	final String id = a1.getPlayer().getUniqueId().toString();
         final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
         if (gameMap == null) {
-        	PlayerStat.removePlayer(id);
+        	new BukkitRunnable() {
+				@Override
+				public void run() {
+			   		PlayerStat.removePlayer(id);
+				}
+   			}.runTaskLater(SkyWarsReloaded.get(), 5);
             return;
         }
         
@@ -31,7 +36,7 @@ public class PlayerQuitListener implements Listener
 				public void run() {
 			   		PlayerStat.removePlayer(id);
 				}
-   			}.runTaskLater(SkyWarsReloaded.get(), 40);
+   			}.runTaskLater(SkyWarsReloaded.get(), 20);
    		}
     }
 }

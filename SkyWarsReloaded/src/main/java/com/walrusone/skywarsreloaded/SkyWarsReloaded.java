@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -93,8 +94,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     	this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
     	 
+    	if (nmsHandler.isOnePointEight()) {
+    		File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
+            if (!config.exists()) {
+            	SkyWarsReloaded.get().saveResource("config18.yml", false);
+            	config = new File(SkyWarsReloaded.get().getDataFolder(), "config18.yml");
+            	if (config.exists()) {
+            		config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
+            	}
+            } 
+    	}
+    	
     	getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
+    	saveDefaultConfig();
         saveConfig();
         reloadConfig();
         ic = new IconMenuController();

@@ -32,7 +32,7 @@ public class ProjSelectionMenu {
         	rowCount += menuSlotsPerRow;
         }
         menuSize = rowCount;
-
+        int level = Util.get().getPlayerLevel(player);
         SkyWarsReloaded.getIC().create(player, menuName, rowCount, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
@@ -45,10 +45,10 @@ public class ProjSelectionMenu {
                 }           
                 
                 if (SkyWarsReloaded.getCfg().economyEnabled()) {
-               	 	if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey())) {
+               	 	if (level < effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey())) {
                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                  		return;
-               	 	} else if (player.getLevel() >= effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey()) && !VaultUtils.get().canBuy(player, effect.getCost())) {
+               	 	} else if (level >= effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey()) && !VaultUtils.get().canBuy(player, effect.getCost())) {
                	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
                         event.setWillClose(true);
@@ -56,7 +56,7 @@ public class ProjSelectionMenu {
                       	return;
                     }
                } else {
-               		if (player.getLevel() < effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey())) {
+               		if (level < effect.getLevel() && !player.hasPermission("sw.proeffect." + effect.getKey())) {
                		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
                		}
@@ -97,7 +97,7 @@ public class ProjSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= effect.getLevel() || player.hasPermission("sw.proeffect." + effect.getKey())) {
+            if (level >= effect.getLevel() || player.hasPermission("sw.proeffect." + effect.getKey())) {
             	if (SkyWarsReloaded.getCfg().economyEnabled()) {
             		if (player.hasPermission("sw.proeffect." + effect.getKey()) || effect.getCost() == 0) {
             			loreList.add(new Messaging.MessageFormatter().format("menu.useprojeffect-seteffect"));

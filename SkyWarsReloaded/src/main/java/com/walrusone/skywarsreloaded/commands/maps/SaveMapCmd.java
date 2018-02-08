@@ -31,7 +31,7 @@ public class SaveMapCmd extends BaseCmd {
 					World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
 					for (Player player: editWorld.getPlayers()) {
 						player.teleport(respawn, TeleportCause.PLUGIN);
-					}
+					}					
 					editWorld.save();
 					SkyWarsReloaded.getWM().unloadWorld(worldName);
 					File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");

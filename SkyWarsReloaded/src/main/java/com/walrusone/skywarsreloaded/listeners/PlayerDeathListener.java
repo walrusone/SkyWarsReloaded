@@ -13,6 +13,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.objects.PlayerData;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -60,7 +61,7 @@ public class PlayerDeathListener implements Listener
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 15L);
         }
-        if (a1.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+        if (Util.get().isSpawnWorld(a1.getPlayer().getWorld())) {
         	a1.setRespawnLocation(SkyWarsReloaded.getCfg().getSpawn());
            	PlayerStat.updatePlayer(a1.getPlayer().getUniqueId().toString());
         }

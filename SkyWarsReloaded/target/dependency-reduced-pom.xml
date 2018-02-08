@@ -14,9 +14,11 @@
           <include>basicchest.yml</include>
           <include>chest.yml</include>
           <include>config.yml</include>
+          <include>config18.yml</include>
           <include>glasscolors.yml</include>
           <include>leaderboards.yml</include>
           <include>killsounds.yml</include>
+          <include>killsounds18.yml</include>
           <include>maps.yml</include>
           <include>messages.yml</include>
           <include>opchest.yml</include>
@@ -26,6 +28,7 @@
           <include>projectileeffects.yml</include>
           <include>taunts.yml</include>
           <include>winsounds.yml</include>
+          <include>winsounds18.yml</include>
           <include>tables.sql</include>
         </includes>
       </resource>

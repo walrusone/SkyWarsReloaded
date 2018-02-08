@@ -23,26 +23,32 @@ public class CreateMapCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		String worldName = args[1].toLowerCase();
-		if (!GameMap.mapExists(worldName.toLowerCase())) {
-			World newWorld = SkyWarsReloaded.getWM().createEmptyWorld(worldName);
-			if (newWorld == null) {
-				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-world-exists"));
+		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
+			String worldName = args[1].toLowerCase();
+			if (!GameMap.mapExists(worldName.toLowerCase())) {
+				World newWorld = SkyWarsReloaded.getWM().createEmptyWorld(worldName);
+				if (newWorld == null) {
+					sender.sendMessage(new Messaging.MessageFormatter().format("error.map-world-exists"));
+					return true;
+				}
+				GameMap.addEditMap(worldName);
+				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.created"));
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+					player.setGameMode(GameMode.CREATIVE);
+					player.teleport(new Location(newWorld, 0, 76, 0), TeleportCause.PLUGIN);
+					player.setAllowFlight(true);
+					player.setFlying(true);
+				}
+				return true;
+			} else {
+				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-exists"));
 				return true;
 			}
-			GameMap.addEditMap(worldName);
-			sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.created"));
-			if (sender instanceof Player) {
-				Player player = (Player) sender;
-				player.setGameMode(GameMode.CREATIVE);
-				player.teleport(new Location(newWorld, 0, 76, 0), TeleportCause.PLUGIN);
-				player.setAllowFlight(true);
-				player.setFlying(true);
-			}
-			return true;
 		} else {
-			sender.sendMessage(new Messaging.MessageFormatter().format("error.map-exists"));
-			return true;
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.nospawn"));
+			return false;
 		}
+
 	}
 }

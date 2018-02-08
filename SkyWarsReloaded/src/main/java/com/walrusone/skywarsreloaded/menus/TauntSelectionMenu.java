@@ -32,7 +32,7 @@ public class TauntSelectionMenu {
         	rowCount += menuSlotsPerRow;
         }
         menuSize = rowCount;
-
+        int level = Util.get().getPlayerLevel(player);
         SkyWarsReloaded.getIC().create(player, menuName, rowCount, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
@@ -44,10 +44,10 @@ public class TauntSelectionMenu {
 	            }           
 	            
 	            if (SkyWarsReloaded.getCfg().economyEnabled()) {
-               	 	if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+               	 	if (level < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                  		return;
-               	 	} else if (player.getLevel() >= taunt.getLevel() && !player.hasPermission("sw.taunt."+ taunt.getKey()) && !VaultUtils.get().canBuy(player, taunt.getCost())) {
+               	 	} else if (level >= taunt.getLevel() && !player.hasPermission("sw.taunt."+ taunt.getKey()) && !VaultUtils.get().canBuy(player, taunt.getCost())) {
                	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
                         event.setWillClose(true);
@@ -55,7 +55,7 @@ public class TauntSelectionMenu {
                       	return;
                     }
                 } else {
-               		if (player.getLevel() < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
+               		if (level < taunt.getLevel() && !player.hasPermission("sw.taunt." + taunt.getKey())) {
                		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
                		}
@@ -96,7 +96,7 @@ public class TauntSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= taunt.getLevel() || player.hasPermission("sw.taunt." + taunt.getKey())) {
+            if (level >= taunt.getLevel() || player.hasPermission("sw.taunt." + taunt.getKey())) {
             	if (SkyWarsReloaded.getCfg().economyEnabled()) {
             		if (player.hasPermission("sw.taunt." + taunt.getKey()) || taunt.getCost() == 0) {
             			loreList.add(new Messaging.MessageFormatter().format("menu.usetaunt-settaunt"));

@@ -9,7 +9,6 @@ public class PlayerCard {
 	
 	private Location spawn;
 	private Player player;
-	private int level;
 	private int preElo;
 	private GameMap gMap;
 	private int place;
@@ -22,13 +21,12 @@ public class PlayerCard {
 	private Vote chestVote;
 	private Vote modifier;
 
-	public PlayerCard(Location spawn, Player player, int BeginningElo, GameMap gameMap, int level) {
+	public PlayerCard(Location spawn, Player player, int BeginningElo, GameMap gameMap) {
 		this.spawn = spawn;
 		this.player = player;
 		this.preElo = BeginningElo;
 		this.gMap = gameMap;
 		this.place = 1;
-		this.level = level;
 		this.kitVote = null;
 		this.gameTime = null;
 		this.weather = null;
@@ -47,7 +45,6 @@ public class PlayerCard {
 		this.weather = null;
 		this.chestVote = null;
 		this.modifier = null;
-		this.level = 0;
 	}
 
 	public void setPlayer (Player player) {
@@ -56,14 +53,6 @@ public class PlayerCard {
 	
 	public Player getPlayer() {
 		return this.player;
-	}
-	
-	public int getLevel() {
-		return this.level;
-	}
-	
-	public void setLevel(int x) {
-		this.level = x;
 	}
 	
 	public void setPreElo(int x) {

@@ -32,7 +32,7 @@ public class WinSoundSelectionMenu {
         	rowCount += menuSlotsPerRow;
         }
         menuSize = rowCount;
-
+        int level = Util.get().getPlayerLevel(player);
         SkyWarsReloaded.getIC().create(player, menuName, rowCount, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
@@ -45,10 +45,10 @@ public class WinSoundSelectionMenu {
                 }           
                 
                 if (SkyWarsReloaded.getCfg().economyEnabled()) {
-               	 	if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.winsound." + sound.getKey())) {
+               	 	if (level < sound.getLevel() && !player.hasPermission("sw.winsound." + sound.getKey())) {
                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                  		return;
-               	 	} else if (player.getLevel() >= sound.getLevel() && !player.hasPermission("sw.winsound."+ sound.getKey()) && !VaultUtils.get().canBuy(player, sound.getCost())) {
+               	 	} else if (level >= sound.getLevel() && !player.hasPermission("sw.winsound."+ sound.getKey()) && !VaultUtils.get().canBuy(player, sound.getCost())) {
                	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
                         event.setWillClose(true);
@@ -56,7 +56,7 @@ public class WinSoundSelectionMenu {
                       	return;
                     }
                 } else {
-               		if (player.getLevel() < sound.getLevel() && !player.hasPermission("sw.winsound." + sound.getKey())) {
+               		if (level < sound.getLevel() && !player.hasPermission("sw.winsound." + sound.getKey())) {
                		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                     return;
                		}
@@ -97,7 +97,7 @@ public class WinSoundSelectionMenu {
             List<String> loreList = Lists.newLinkedList();
             ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
             
-            if (player.getLevel() >= sound.getLevel() || player.hasPermission("sw.winsound." + sound.getKey())) {
+            if (level >= sound.getLevel() || player.hasPermission("sw.winsound." + sound.getKey())) {
             	if (SkyWarsReloaded.getCfg().economyEnabled()) {
             		if (player.hasPermission("sw.winsound." + sound.getKey()) || sound.getCost() == 0) {
             			loreList.add(new Messaging.MessageFormatter().format("menu.usewin-setsound"));

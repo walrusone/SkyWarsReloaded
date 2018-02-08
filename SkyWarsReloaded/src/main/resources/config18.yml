@@ -1,5 +1,4 @@
 debugMode: false
-spawn: null
 bungeeMode: false
 bungeeLobby: lobby
 tauntCooldown: 10
@@ -14,9 +13,7 @@ enabledLobbyGuard: false
 economyEnabled: false
 game:
   xpForWin: 5
-  winCommands: 
   xpForKill: 1
-  killCommands:
   vip1Multiplier: 2
   vip2Multiplier: 3
   vip3Multiplier: 4
@@ -46,25 +43,25 @@ fireworks:
   per5Ticks: 1
 sounds:
   enabled: true
-  countdown: BLOCK_NOTE_BASS
-  join: BLOCK_WOODEN_DOOR_OPEN
-  leave: BLOCK_WOODEN_DOOR_CLOSE
-  openJoinMenu: BLOCK_FENCE_GATE_OPEN
-  openSpectateMenu: BLOCK_FENCE_GATE_OPEN
-  openOptionsMenu: ENTITY_ZOMBIE_VILLAGER_CURE
-  openGlassMenu: BLOCK_GLASS_BREAK
-  openWinSoundMenu: ENTITY_FIREWORK_BLAST
-  openKillSoundMenu: ENTITY_PIG_DEATH
-  openParticleMenu: BLOCK_GRAVEL_STEP
-  openProjectileMenu: ENTITY_ARROW_SHOOT
-  openTauntMenu: ENTITY_ENDERDRAGON_FLAP
-  openKitMenu: ENTITY_PLAYER_ATTACK_SWEEP
-  openChestMenu: BLOCK_CHEST_OPEN
-  openTimeMenu: ITEM_BOTTLE_FILL_DRAGONBREATH
-  openWeatherMenu: WEATHER_RAIN
-  openModifierMenu: ENTITY_SPLASH_POTION_BREAK
-  confirmSelectionSound: ENTITY_VILLAGER_YES
-  errorSound: ENTITY_VILLAGER_NO
+  countdown: NOTE_BASS
+  join: DOOR_OPEN
+  leave: DOOR_CLOSE
+  openJoinMenu: DOOR_OPEN
+  openSpectateMenu: DOOR_OPEN
+  openOptionsMenu: ZOMBIE_REMEDY
+  openGlassMenu: GLASS
+  openWinSoundMenu: FIREWORK_BLAST
+  openKillSoundMenu: PIG_DEATH
+  openParticleMenu: STEP_GRAVEL
+  openProjectileMenu: SHOOT_ARROW
+  openTauntMenu: ENDERDRAGON_WINGS
+  openKitMenu: SUCCESSFUL_HIT
+  openChestMenu: CHEST_OPEN
+  openTimeMenu: FUSE
+  openWeatherMenu: AMBIENCE_RAIN
+  openModifierMenu: SPLASH2
+  confirmSelectionSound: VILLAGER_YES
+  errorSound: VILLAGER_NO
 signs:
   enabled: true
   blockoffline: COAL_BLOCK
@@ -149,10 +146,10 @@ leaderboards:
   length: 10
   leaderboardUpdateInterval: 300
   signsEnabled: true
-  headsEnabled: true  
+  headsEnabled: true
   eloLeaderboardEnabled: true
   winsLeaderboardEnabled: false
-  lossesLeaderboardEnabled: false  
+  lossesLeaderboardEnabled: false
   killsLeaderboardEnabled: false
   deathsLeaderboardEnabled: false
   xpLeaderboardEnabled: false

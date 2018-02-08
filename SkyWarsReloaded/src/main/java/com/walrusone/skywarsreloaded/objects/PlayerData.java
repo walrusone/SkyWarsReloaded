@@ -3,11 +3,14 @@ package com.walrusone.skywarsreloaded.objects;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -20,18 +23,29 @@ public class PlayerData {
 	    private static ArrayList<PlayerData> playerData;
 	    private UUID uuid;
 	    private Scoreboard sb;
+	    private GameMode gm;
 		private Tagged taggedBy;
+		private Inventory inv;
+		private double health;
+		private int food;
+		private float sat;
 		private boolean beingRestored;
 	    
-	    public PlayerData(final Player a1) {
+	    public PlayerData(final Player p) {
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Creating " + a1.getName() + "'s Datafile");
+	        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Creating " + p.getName() + "'s Datafile");
 	    	}
 	    	this.beingRestored = false;
-	        this.uuid = a1.getUniqueId();
-	        this.sb = a1.getScoreboard();
+	        this.uuid = p.getUniqueId();
+	        this.sb = p.getScoreboard();
+	        this.gm = p.getGameMode();
+	        this.health = p.getHealth();
+	        this.food = p.getFoodLevel();
+	        this.sat = p.getSaturation();
+	        inv = Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
+	        inv.setContents(p.getInventory().getContents());
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	    		Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + a1.getName() + "'s Datafile has been created");
+	    		Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + p.getName() + "'s Datafile has been created");
 	    	}
 	    }
 	        
@@ -56,27 +70,30 @@ public class PlayerData {
 		            return;
 		        }
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-		        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Restoring " + player.getName());
+		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Restoring " + player.getName());
 		    	}
 		    	PlayerStat pStats = PlayerStat.getPlayerStats(player);
 		    	
 		        player.closeInventory();
-		        player.setGameMode(GameMode.ADVENTURE);
-		        Util.get().setPlayerExperience(player, pStats.getXp());
-		        player.setHealth(20);
-		        player.setFoodLevel(20);
-		        player.setSaturation(20);
+		        player.setGameMode(gm);
+		        if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+			        Util.get().setPlayerExperience(player, pStats.getXp());
+		        }
+
+		        player.getInventory().clear();
+		        player.getInventory().setContents(inv.getContents());
+		        player.setHealth(health);
+		        player.setFoodLevel(food);
+		        player.setSaturation(sat);
 		        player.resetPlayerTime();
 		        player.resetPlayerWeather();
 		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
-		        Util.get().clear(player);
 		        player.setFireTicks(0);
-		        
 		        player.setScoreboard(sb);
 		        PlayerStat.updateScoreboard(player);
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-		        	Util.get().logToFile(ChatColor.RED + "[bouncewars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
+		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
 		    	}
 		    
 		        player.teleport(respawn, TeleportCause.END_PORTAL);	       

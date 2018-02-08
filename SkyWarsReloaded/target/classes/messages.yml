@@ -71,6 +71,7 @@ error:
   chesttype: '&4[chesttype] must be either "basic", "normal", or "op"'
   chestmethod: '&4[method] must be either "hand" or "inv"'
   schematicsInUse: '&4Map commands are disabled when using schematics!'
+  nospawn: '&4Spawn must be set to create or edit maps!'
 game:
   command-disabled-spec: '&4That command is disabled while Spectating!'
   command-disabled: '&4That command is disabled during SkyWars matches!'

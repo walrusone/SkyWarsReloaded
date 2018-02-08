@@ -26,7 +26,7 @@ public class ItemsManager {
     }
     
     private void addItem(String materialref, List<String> lore, String message) {
-    	ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref)), lore, new Messaging.MessageFormatter().format(message));
+    	ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref).toUpperCase()), lore, new Messaging.MessageFormatter().format(message));
         gameItems.put(materialref, addItem);
     }
     
