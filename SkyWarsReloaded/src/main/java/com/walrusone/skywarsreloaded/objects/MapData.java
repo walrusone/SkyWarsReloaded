@@ -10,12 +10,14 @@ public class MapData {
 	private int minPlayers;
 	private String creator;
 	private List<String> signs;
+	private boolean registered;
 	
-	public MapData(String n, String dn, int mp, String c, @Nullable List<String> signs) {
+	public MapData(String n, String dn, int mp, String c, @Nullable List<String> signs, boolean registered) {
 		name = n;
 		displayName = dn;
 		minPlayers = mp;
 		creator = c;
+		this.registered = registered;
 		this.signs = signs;
 	}
 	
@@ -37,6 +39,10 @@ public class MapData {
 	
 	public List<String> getSigns() {
 		return signs;
+	}
+	
+	public boolean isRegistered() {
+		return registered;
 	}
 	
 }

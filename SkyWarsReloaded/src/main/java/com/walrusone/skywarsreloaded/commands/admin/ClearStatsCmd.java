@@ -14,10 +14,11 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ClearStatsCmd extends BaseCmd { 
 	
-	public ClearStatsCmd() {
+	public ClearStatsCmd(String t) {
+		type = t;
 		forcePlayer = false;
 		cmdName = "clearstats";
-		alias = new String[]{"cs", "cstats"};
+		alias = new String[]{"cs"};
 		argLength = 2; //counting cmdName
 	}
 

@@ -25,6 +25,9 @@ public class Config {
 	
 	private int kitvotepos;
 	private boolean kitsEnabled;
+	private int votepos;
+	private boolean voteEnabled;
+	private int exitpos;
 	private int chestvotepos;
 	private boolean chestVoteEnabled;
 	private int timevotepos;
@@ -48,6 +51,8 @@ public class Config {
 	private boolean protectlobby;
 	private boolean displayPlayerExeperience;
 	
+	private int winnerEco;
+	private int killerEco;
 	private int winnerXP;
 	private List<String> winCommands;
 	private int killerXP;
@@ -71,6 +76,10 @@ public class Config {
 	private boolean pressurePlate;
 	private boolean teleportOnJoin;
 	private boolean teleportOnWorldEnter;
+	
+	private int maxPartySize;
+	private boolean partyEnabled;
+	private List<String> lobbyWorlds;
 	
 	private boolean suddenDeathEnabled;
 	private boolean disableHealthRegen;
@@ -131,7 +140,7 @@ public class Config {
 	private List<String> enabledCommandsSpectate;
 	
 	private Map<String, String> materials = new HashMap<String, String>();
-	private final List<String> itemNames = Arrays.asList("kitvote", 
+	private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", "exitMenuItem", "exitGameItem",
 			"chestvote", "chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger", 
 			"nopermission", 
 			"timevote", "timerandom", "timedawn", "timenoon", "timedusk", "timemidnight", 
@@ -145,7 +154,7 @@ public class Config {
 			"killsoundselect", "killsounditem",
 			"winsoundselect",
 			"glassselect", "tauntselect");
-		private final List<String> defItems = Arrays.asList("EYE_OF_ENDER", 
+		private final List<String> defItems = Arrays.asList("EYE_OF_ENDER", "COMPASS", "BARRIER", "IRON_DOOR",
 			"SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
 			"BARRIER", 
 			"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
@@ -159,7 +168,7 @@ public class Config {
 			"DIAMOND_SWORD", "NOTE_BLOCK", 
 			"DRAGON_EGG", 
 			"STAINED_GLASS", "SHIELD");
-		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", 
+		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", "COMPASS", "BARRIER", "IRON_DOOR",
 				"DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
 				"BARRIER", 
 				"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
@@ -205,6 +214,8 @@ public class Config {
 		xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
 		leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 		
+		winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
+		killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
 		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
 		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
 		killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
@@ -230,8 +241,21 @@ public class Config {
 		teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
 		teleportOnWorldEnter = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnWorldEnter");
 		
+		maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
+		partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
+		lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
+		
+		if (spawn != null) {
+			if (!lobbyWorlds.contains(spawn.getWorld())) {
+				lobbyWorlds.add(spawn.getWorld().getName().toLowerCase());
+			}
+		}
+		
 		kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
 		kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
+		votepos = SkyWarsReloaded.get().getConfig().getInt("items.votingPosition");
+		voteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.voteEnabled");
+		exitpos = SkyWarsReloaded.get().getConfig().getInt("items.exitPosition");
 		chestvotepos = SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
 		chestVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
 		timevotepos = SkyWarsReloaded.get().getConfig().getInt("items.timeVotePosition");
@@ -348,6 +372,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 		
+		SkyWarsReloaded.get().getConfig().set("game.ecoForWin", winnerEco);
+		SkyWarsReloaded.get().getConfig().set("game.ecoForKill", killerEco);
 		SkyWarsReloaded.get().getConfig().set("game.xpForWin", winnerXP);
 		SkyWarsReloaded.get().getConfig().set("game.winCommands", winCommands);
 		SkyWarsReloaded.get().getConfig().set("game.xpForKill", killerXP);
@@ -372,12 +398,19 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.allowFallDamage", allowFallDamage);
 		SkyWarsReloaded.get().getConfig().set("game.kitVotingEnabled", kitVotingEnabled);
 		
+		SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
+		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
+		SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
+		
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enabled", suddenDeathEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.disableHealthRegen", disableHealthRegen);
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enableHealthDecay", enableHealthDecay);
 		
 		SkyWarsReloaded.get().getConfig().set("items.kitVotePosition", kitvotepos);
 		SkyWarsReloaded.get().getConfig().set("items.kitsEnabled", kitsEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.votingPosition", votepos);
+		SkyWarsReloaded.get().getConfig().set("items.voteEnabled", voteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.exitPosition", exitpos);
 		SkyWarsReloaded.get().getConfig().set("items.chestVotePosition", chestvotepos);
 		SkyWarsReloaded.get().getConfig().set("items.chestVoteEnabled", chestVoteEnabled);
 		SkyWarsReloaded.get().getConfig().set("items.timeVotePosition", timevotepos);
@@ -388,7 +421,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("items.modifierVoteEnabled", modifierVoteEnabled);
 		
 		SkyWarsReloaded.get().getConfig().set("tauntCooldown", cooldown);
-		
+
 		SkyWarsReloaded.get().getConfig().set("kit.randPos", randPos);
 		SkyWarsReloaded.get().getConfig().set("kit.noKitPos", noKitPos);
 		SkyWarsReloaded.get().getConfig().set("kit.randItem", randMat);
@@ -855,7 +888,39 @@ public class Config {
 
 	public boolean displayPlayerExeperience() {
 		return displayPlayerExeperience;
-	}	
+	}
+
+	public int maxPartySize() {
+		return maxPartySize;
+	}
+	
+	public boolean partyEnabled() {
+		return partyEnabled;
+	}
+
+	public List<String> getLobbyWorlds() {
+		return lobbyWorlds;
+	}
+	
+	public boolean votingEnabled() {
+		return voteEnabled;
+	}
+	
+	public int getVotingPos() {
+		return votepos;
+	}
+
+	public int getExitPos() {
+		return exitpos;
+	}
+	
+	public int getWinnerEco() {
+		return winnerEco;
+	}
+	
+	public int getKillerEco() {
+		return killerEco;
+	}
 }
 
 

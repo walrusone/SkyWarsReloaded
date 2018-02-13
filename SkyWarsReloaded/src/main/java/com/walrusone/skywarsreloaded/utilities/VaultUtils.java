@@ -63,5 +63,11 @@ public class VaultUtils {
 		}
 		return 0;
 	}
+
+	public void give(Player win, int i) {
+		if (econ != null) {
+			econ.depositPlayer(win, i);
+		}
+	}
 	
 }

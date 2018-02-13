@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -17,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
@@ -52,7 +55,7 @@ public class DataStorage {
 	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 	            fc.set("uuid", pData.getId());
 	            fc.set("wins", pData.getWins());
-	            fc.set("losses", pData.getLosts());
+	            fc.set("losses", pData.getLosses());
 	            fc.set("kills", pData.getKills());
 	            fc.set("deaths", pData.getDeaths());
 	            fc.set("elo", pData.getElo());
@@ -62,6 +65,7 @@ public class DataStorage {
 	            fc.set("glasscolor", pData.getGlassColor());
 	            fc.set("killsound", pData.getKillSound());
 	            fc.set("winsound", pData.getWinSound());
+	            fc.set("taunt", pData.getTaunt());
 	            fc.save(playerFile);
 	            
 	        } catch (IOException ioException) {
@@ -81,13 +85,13 @@ public class DataStorage {
             	 StringBuilder queryBuilder = new StringBuilder();
                  queryBuilder.append("UPDATE `sw_player` SET ");
                  queryBuilder.append("`player_name` = ?, `wins` = ?, `losses` = ?, ");
-                 queryBuilder.append("`kills` = ?, `deaths` = ?, `elo` = ?, `xp` = ?, `pareffect` = ?, `proeffect` = ?, `glasscolor` = ?,`killsound` = ?, `winsound` = ? ");
+                 queryBuilder.append("`kills` = ?, `deaths` = ?, `elo` = ?, `xp` = ?, `pareffect` = ?, `proeffect` = ?, `glasscolor` = ?,`killsound` = ?, `winsound` = ?, `taunt` = ? ");
                  queryBuilder.append("WHERE `uuid` = ?;");
                  
                  preparedStatement = connection.prepareStatement(queryBuilder.toString());
                  preparedStatement.setString(1, pData.getPlayerName());
                  preparedStatement.setInt(2, pData.getWins());
-                 preparedStatement.setInt(3, pData.getLosts());
+                 preparedStatement.setInt(3, pData.getLosses());
                  preparedStatement.setInt(4, pData.getKills());
                  preparedStatement.setInt(5, pData.getDeaths());
                  preparedStatement.setInt(6, pData.getElo());
@@ -97,7 +101,8 @@ public class DataStorage {
                  preparedStatement.setString(10, pData.getGlassColor());
                  preparedStatement.setString(11, pData.getKillSound());
                  preparedStatement.setString(12, pData.getWinSound());
-                 preparedStatement.setString(13, pData.getId());
+                 preparedStatement.setString(13, pData.getTaunt());
+                 preparedStatement.setString(14, pData.getId());
                  preparedStatement.executeUpdate();
 
             } catch (final SQLException sqlException) {
@@ -140,6 +145,7 @@ public class DataStorage {
 		                        pData.setGlassColor("none");
 		                        pData.setKillSound("none");
 		                        pData.setWinSound("none");
+		                        pData.setTaunt("none");
 			                } else {
 			                    Connection connection = database.getConnection();
 			                    PreparedStatement preparedStatement = null;
@@ -147,7 +153,7 @@ public class DataStorage {
 
 			                    try {
 			                        StringBuilder queryBuilder = new StringBuilder();
-			                        queryBuilder.append("SELECT `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound` ");
+			                        queryBuilder.append("SELECT `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` ");
 			                        queryBuilder.append("FROM `sw_player` ");
 			                        queryBuilder.append("WHERE `uuid` = ? ");
 			                        queryBuilder.append("LIMIT 1;");
@@ -168,6 +174,7 @@ public class DataStorage {
 			                            pData.setGlassColor(resultSet.getString("glasscolor"));
 			                            pData.setKillSound(resultSet.getString("killsound"));
 			                            pData.setWinSound(resultSet.getString("winsound"));
+			                            pData.setTaunt(resultSet.getString("taunt"));
 			                        }
 
 			                    } catch (final SQLException sqlException) {
@@ -216,6 +223,7 @@ public class DataStorage {
 		                        pData.setGlassColor(fc.getString("glasscolor"));
 		                        pData.setKillSound(fc.getString("killsound"));
 		                        pData.setWinSound(fc.getString("winsound"));
+		                        pData.setTaunt(fc.getString("taunt"));
 			    	        } catch (IOException ioException) {
 			    	            System.out.println("Failed to load player " + pData.getId() + ": " + ioException.getMessage());
 			    	        }
@@ -256,7 +264,7 @@ public class DataStorage {
 	            }
 	            playerFile.delete();            
 	        } catch (IOException ioException) {
-	            System.out.println("Failed to load player " + uuid + ": " + ioException.getMessage());
+	            System.out.println("Failed to load faction " + uuid + ": " + ioException.getMessage());
 	        }
 		} else {
             Database database = SkyWarsReloaded.getDb();
@@ -291,7 +299,7 @@ public class DataStorage {
 		}
 	}
 	
-	public void updateTop() {
+	public void updateTop(final LeaderType type, final int size) {
 		new BukkitRunnable() {
 
 			@Override
@@ -313,13 +321,13 @@ public class DataStorage {
 		                queryBuilder.append("SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` ");
 		                queryBuilder.append("FROM `sw_player` ");
 		                queryBuilder.append("GROUP BY `uuid` ");
-		                queryBuilder.append("ORDER BY `elo` DESC LIMIT 10;");
+		                queryBuilder.append("ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";");
 		                
 		                preparedStatement = connection.prepareStatement(queryBuilder.toString());
 		                resultSet = preparedStatement.executeQuery();
-		                SkyWarsReloaded.getLB().resetLeader();
+		                SkyWarsReloaded.getLB().resetLeader(type);
 		                while (resultSet.next()) {
-		                	SkyWarsReloaded.getLB().addLeader(Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
+		                	SkyWarsReloaded.getLB().addLeader(type, resultSet.getString(1), Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
 		                }
 		                
 		            } catch (final SQLException sqlException) {
@@ -341,7 +349,7 @@ public class DataStorage {
 			            return;
 			        }
 
-			        SkyWarsReloaded.getLB().resetLeader();
+			        SkyWarsReloaded.getLB().resetLeader(type);
 			        for (File playerFile : playerFiles) {
 			            if (!playerFile.getName().endsWith(".yml")) {
 			                continue;
@@ -349,11 +357,159 @@ public class DataStorage {
 
 			            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 			            String uuid = playerFile.getName().replace(".yml", "");
-		                SkyWarsReloaded.getLB().addLeader(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("elo"), fc.getInt("xp"));           
+		                SkyWarsReloaded.getLB().addLeader(type, uuid, Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("elo"), fc.getInt("xp"));           
 			        }
 				}
-				SkyWarsReloaded.getLB().finishedLoading();
+				SkyWarsReloaded.getLB().finishedLoading(type);
 			}
 		}.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
 	}
+
+	public void loadperms(final PlayerStat playerStat) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled")) {
+					try {
+	    	            File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+	    	            File playerDataDirectory = new File(dataDirectory, "player_data");
+
+	    	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+	    	                return;
+	    	            }
+
+	    	            File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
+	    	            if (!playerFile.exists() && !playerFile.createNewFile()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+	    	                return;
+	    	            }
+	    	            copyDefaults(playerFile);
+	    	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+	    	            
+	    	            List<String> perms = fc.getStringList("permissions");
+	    	            for (String perm: perms) {
+	    	            	playerStat.addPerm(perm, false);
+	    	            }	    	            
+					} catch (IOException ioException) {
+	    	            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+					}
+				} else {
+					Database database = SkyWarsReloaded.getDb();
+	                if (!database.checkConnection()) {
+	                    return;
+	                }
+	                Connection connection = database.getConnection();
+	                PreparedStatement preparedStatement = null;
+	                ResultSet resultSet = null;
+
+	                try {
+	                    StringBuilder queryBuilder = new StringBuilder();
+	                    queryBuilder.append("SELECT `permissions` ");
+	                    queryBuilder.append("FROM `sw_permissions` ");
+	                    queryBuilder.append("WHERE `uuid` = ?;");
+
+	                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	                    preparedStatement.setString(1, playerStat.getId());
+	                    resultSet = preparedStatement.executeQuery();
+	                    
+	                    while (resultSet != null && resultSet.next()) {
+	                    	playerStat.addPerm(resultSet.getString("permissions"), false);
+	                    }
+	                } catch (final SQLException sqlException) {
+	                    sqlException.printStackTrace();
+
+	                } finally {
+	                    if (resultSet != null) {
+	                        try {
+	                            resultSet.close();
+	                        } catch (final SQLException ignored) {
+	                        }
+	                    }
+	                    if (preparedStatement != null) {
+	                        try {
+	                            preparedStatement.close();
+	                        } catch (final SQLException ignored) {
+	                        }
+	                    }
+	                }
+				}
+			}
+				
+		}.runTaskAsynchronously(SkyWarsReloaded.get());
+	}
+	
+	public void savePerms(final PlayerStat playerStat) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled")) {
+					try {
+						File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+	    	            File playerDataDirectory = new File(dataDirectory, "player_data");
+
+	    	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+	    	                return;
+	    	            }
+
+	    	            File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
+	    	            if (!playerFile.exists() && !playerFile.createNewFile()) {
+	    	                System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+	    	                return;
+	    	            }
+	    	            copyDefaults(playerFile);
+	    	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+	    	            
+	    	            List<String> perms = new ArrayList<String>();
+	    	            for (String perm: playerStat.getPerms().getPermissions().keySet()) {
+	    	            	perms.add(perm);
+	    	            }
+	    	            fc.set("permissions", perms);
+	    	            fc.save(playerFile);
+	    	            
+					} catch (IOException ioException) {
+	    	            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+					}    	            
+				} else {
+					if (playerStat.getPerms().getPermissions().size() > 0) {
+						Database database = SkyWarsReloaded.getDb();
+		                if (!database.checkConnection()) {
+		                    return;
+		                }
+						Connection connection = database.getConnection();
+						PreparedStatement preparedStatement = null;
+			            try {
+			            	if (playerStat.getPerms().getPermissions().size() >= 1) {
+			                	for (String perm: playerStat.getPerms().getPermissions().keySet()) {
+			                		StringBuilder queryBuilder = new StringBuilder();
+			                        queryBuilder.append("INSERT INTO `sw_permissions` ");
+			                        queryBuilder.append("(`uuid`, `playername`, `permissions`) ");
+			                        queryBuilder.append("VALUES (?, ?, ?) ");
+			                        queryBuilder.append("ON DUPLICATE KEY UPDATE `uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ");
+			                        
+			                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+			                        preparedStatement.setString(1, playerStat.getId());
+			                        preparedStatement.setString(2, playerStat.getPlayerName());
+			                        preparedStatement.setString(3, perm);
+			                        preparedStatement.executeUpdate();
+			                	}
+			            	}
+			            } catch (final SQLException sqlException) {
+			                sqlException.printStackTrace();
+			            } finally {
+			                if (preparedStatement != null) {
+			                    try {
+			                        preparedStatement.close();
+			                    } catch (final SQLException ignored) {
+			                    }
+			                }
+			            }
+					}
+				}
+			}
+		}.runTaskAsynchronously(SkyWarsReloaded.get());
+	}
+	
+	
 }

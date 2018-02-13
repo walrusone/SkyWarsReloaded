@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.commands;
 import org.bukkit.Location;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SetSpawnCmd extends BaseCmd { 

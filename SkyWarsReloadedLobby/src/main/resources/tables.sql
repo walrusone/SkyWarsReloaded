@@ -22,3 +22,14 @@ CREATE TABLE IF NOT EXISTS `sw_player` (
 
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
+
+CREATE TABLE IF NOT EXISTS `sw_permissions` (
+  `uuid`  		VARCHAR(255)    NOT NULL,
+  `playername`  VARCHAR(60)     NOT NULL,
+  `permissions`	VARCHAR(60)     NOT NULL,
+  CONSTRAINT `id` PRIMARY KEY (`uuid`, `permissions`),
+  KEY (`uuid`)
+)
+
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;

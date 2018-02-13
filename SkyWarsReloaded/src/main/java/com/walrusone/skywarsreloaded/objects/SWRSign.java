@@ -44,17 +44,30 @@ public class SWRSign {
 		}
 		if (sign != null) {
 				sign.getBlock().getChunk().load();
-				sign.setLine(0, new Messaging.MessageFormatter().format("signs.line1"));
-				sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).format("signs.line3"));
 				if (gMap != null) {
-					sign.setLine(1, new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName().toUpperCase()).format("signs.line2"));
-					sign.setLine(3, new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getPlayerCount()).setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
-				}
-				sign.update();
+					sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
+							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+							setVariable("playercount", "" + gMap.getPlayerCount()).
+							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1"));
+					sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
+							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+							setVariable("playercount", "" + gMap.getPlayerCount()).
+							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2"));
+					sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
+							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+							setVariable("playercount", "" + gMap.getPlayerCount()).
+							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3"));
+					sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
+							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+							setVariable("playercount", "" + gMap.getPlayerCount()).
+							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
+					}
+					sign.update();
 		}
 	}
 	
 	private static void setMaterial(GameMap gMap, Block attachedBlock) {
+		attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
 		if (gMap == null) {
 			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockoffline")));
 		} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {

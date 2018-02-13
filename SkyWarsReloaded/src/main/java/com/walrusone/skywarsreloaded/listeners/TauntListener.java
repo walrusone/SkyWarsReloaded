@@ -55,7 +55,9 @@ public class TauntListener implements Listener {
 						String tauntName = ps.getTaunt();
 						Taunt taunt = SkyWarsReloaded.getLM().getTauntFromKey(tauntName);
 						if (taunt != null) {
-							taunt.performTaunt(e.getPlayer());
+							if (!taunt.getKey().equals("none")) {
+								taunt.performTaunt(e.getPlayer());
+							}
 						}
 						lastHandSwap.remove(uuid);
 						lastTaunt.put(uuid, System.currentTimeMillis());

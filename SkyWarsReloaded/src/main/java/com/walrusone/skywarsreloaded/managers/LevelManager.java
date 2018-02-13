@@ -204,7 +204,8 @@ public class LevelManager {
     			return pItem;
     		}
     	}
-        return null;
+        ParticleItem none = getParticleByKey("none");
+        return none;
     }
     
     

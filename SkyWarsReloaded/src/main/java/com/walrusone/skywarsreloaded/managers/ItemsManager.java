@@ -48,11 +48,23 @@ public class ItemsManager {
 		} else {
 			addItem("kitvote", lore, "items.kit-select-item");
 		}
+		addItem("votingItem", lore, "items.voting-item");
+		
+		lore.clear();
+		lore.add(new Messaging.MessageFormatter().format("items.lclick-to-open"));
 		addItem("chestvote", lore, "items.chest-item");
 		addItem("nopermission", lore, "items.no-perm");
 		addItem("timevote", lore, "items.time-item");
 		addItem("weathervote", lore, "items.weather-item");
 		addItem("modifiervote", lore, "items.modifier-item");
+	
+		lore.clear();
+		lore.add(new Messaging.MessageFormatter().format("items.lclick-to-exit"));
+		addItem("exitMenuItem", lore, "items.exit-menu-item");
+		
+		lore.clear();
+		lore.add(new Messaging.MessageFormatter().format("items.click-to-exit"));
+		addItem("exitGameItem", lore, "items.exit-door-item");
     }
     
     private void getChestVoteItems() {

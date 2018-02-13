@@ -90,7 +90,9 @@ public class PlayerData {
 		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
 		        player.setFireTicks(0);
 		        player.setScoreboard(sb);
-		        PlayerStat.updateScoreboard(player);
+		        if (SkyWarsReloaded.getCfg().lobbyBoardEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
+			        PlayerStat.updateScoreboard(player);
+		        }
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");

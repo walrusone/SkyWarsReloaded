@@ -53,11 +53,38 @@ public class Util {
         return Util.instance;
 	}
 	
-	public boolean hp(CommandSender sender, String s) {
-		if (sender.hasPermission("sw." + s)) {
-			return true;
+	public boolean hp(String t, CommandSender sender, String s) {
+		if (t.equalsIgnoreCase("sw")) {
+			if (sender.hasPermission("sw." + s)) {
+				return true;
+			}
+		} else if (t.equalsIgnoreCase("kit")) {
+			if (sender.hasPermission("sw.kit." + s)) {
+				return true;
+			}
+		} else if (t.equalsIgnoreCase("map")) {
+			if (sender.hasPermission("sw.map." + s)) {
+				return true;
+			}
+		} else if (t.equalsIgnoreCase("party")) {
+			if (sender.hasPermission("sw.party." + s)) {
+				return true;
+			}
 		}
 		return false;
+	}
+	
+	public String getMessageKey(String type) {
+		if (type.equalsIgnoreCase("sw")) {
+				return "sw";
+		} else if (type.equalsIgnoreCase("kit")) {
+				return "swkit";
+		} else if (type.equalsIgnoreCase("map")) {
+				return "swmap";
+		} else if (type.equalsIgnoreCase("party")) {
+				return "swparty";
+		}
+		return "";
 	}
 	
 	public void playSound(Player player, Location location, String sound, float volume, float pitch) {
@@ -182,6 +209,7 @@ public class Util {
         if (player == null) {
         	return true;
         }
+        
         if (player.isDead()) {
         	return true;
         }
@@ -189,12 +217,25 @@ public class Util {
     	if (MatchManager.get().isSpectating(player)) {
     		return true;
     	}
+    	
+    	boolean allowed = false;
+    	for (String world: SkyWarsReloaded.getCfg().getLobbyWorlds()) {
+    		if (world.equalsIgnoreCase(player.getWorld().getName())) {
+    			allowed = true;
+    		}
+    	}
+
+    	if (!allowed) {
+    		return true;
+    	}
         
 		PlayerStat ps = PlayerStat.getPlayerStats(player);
-		if (!ps.isInitialized()) {
+		if (ps == null) {
+			PlayerStat.getPlayers().add(new PlayerStat(player));
+			return true;
+		} else if (!ps.isInitialized()) {
 			return true;
 		}
-
     	return false;
     }
     
@@ -563,4 +604,6 @@ public class Util {
 		}
 		return false;
 	}
+
+
 }

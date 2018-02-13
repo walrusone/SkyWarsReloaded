@@ -64,10 +64,6 @@ public class NMSHandler implements NMS {
 		}
 	}
 	
-	public String getName(ItemStack stack) {
-		return CraftItemStack.asNMSCopy(stack).getName();
-	}
-	
 	public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, Type type) {
 		return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
 	}

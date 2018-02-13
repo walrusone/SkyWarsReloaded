@@ -51,7 +51,7 @@ public final class Messaging {
 
         return null;
     }
-    
+
     public static class MessageFormatter {
 
         private final static Pattern PATTERN = Pattern.compile("(?i)(\\{[a-z0-9_]+\\})");

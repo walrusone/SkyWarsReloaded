@@ -8,11 +8,13 @@ teleportToSpawnOnJoin: false
 teleportToSpawnOnWorldEnter: true
 resourcepack: https://www.dropbox.com/s/8scs6c911y3mqbg/taunts-resource-pack.zip?dl=1
 promptForResourcePackOnJoin: false
-lobbyBoardEnabled: true
+lobbyBoardEnabled: false
 displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  ecoForWin: 5
+  ecoForKill: 1
   xpForWin: 5
   winCommands: 
   xpForKill: 1
@@ -34,6 +36,9 @@ game:
     enabled: true
     disableHealthRegen: true
     enableHealthDecay: false
+parties:
+  enabled: true
+  maxPartySize: 4
 kit:
   randPos: 0
   randItem: NETHER_STAR
@@ -79,8 +84,14 @@ items:
   kitsEnabled: true
   kitVotePosition: 0
   kitvote: EYE_OF_ENDER
+  voteEnabled: true
+  votingPosition: 4
+  votingItem: COMPASS
+  exitGameItem: IRON_DOOR
+  exitPosition: 8
+  exitMenuItem: BARRIER
   chestVoteEnabled: true
-  chestVotePosition: 2
+  chestVotePosition: 10
   chestvote: SHIELD
   chestrandom: NETHER_STAR
   chestbasic: STONE_SWORD
@@ -89,7 +100,7 @@ items:
   chestscavenger: WOOD_HOE
   nopermission: BARRIER
   timeVoteEnabled: true
-  timeVotePosition: 4
+  timeVotePosition: 12
   timevote: WATCH
   timerandom: NETHER_STAR
   timedawn: WATCH
@@ -97,7 +108,7 @@ items:
   timedusk: WATCH
   timemidnight: WATCH
   weatherVoteEnabled: true
-  weatherVotePosition: 6
+  weatherVotePosition: 14
   weathervote: BLAZE_POWDER
   weatherrandom: NETHER_STAR
   weathersunny: PRISMARINE_SHARD
@@ -105,7 +116,7 @@ items:
   weatherstorm: PRISMARINE_SHARD
   weathersnow: PRISMARINE_SHARD
   modifierVoteEnabled: true
-  modifierVotePosition: 8
+  modifierVotePosition: 16
   modifiervote: DRAGONS_BREATH
   modifierspeed: BOOK
   modifierjump: BOOK

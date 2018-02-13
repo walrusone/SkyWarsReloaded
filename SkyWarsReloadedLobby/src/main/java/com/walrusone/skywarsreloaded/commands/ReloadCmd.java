@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ReloadCmd extends BaseCmd { 

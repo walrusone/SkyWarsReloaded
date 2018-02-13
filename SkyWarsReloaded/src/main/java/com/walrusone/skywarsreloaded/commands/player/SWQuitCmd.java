@@ -8,10 +8,11 @@ import com.walrusone.skywarsreloaded.objects.GameMap;
 
 public class SWQuitCmd extends BaseCmd { 
 	
-	public SWQuitCmd() {
+	public SWQuitCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "quit";
-		alias = new String[]{"q"};
+		alias = new String[]{"q", "leave", "l"};
 		argLength = 1; //counting cmdName
 	}
 

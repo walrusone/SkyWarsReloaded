@@ -14,10 +14,11 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class SetStatsCmd extends BaseCmd { 
 	
-	public SetStatsCmd() {
+	public SetStatsCmd(String t) {
+		type = t;
 		forcePlayer = false;
 		cmdName = "setstat";
-		alias = new String[]{"ss", "sstats"};
+		alias = new String[]{"ss"};
 		argLength = 4; //counting cmdName
 	}
 

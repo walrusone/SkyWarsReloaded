@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -14,7 +15,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class SetStatsCmd extends BaseCmd { 
 	
 	public SetStatsCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "setstat";
 		alias = new String[]{"ss", "sstats"};
 		argLength = 4; //counting cmdName
@@ -22,15 +23,15 @@ public class SetStatsCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		Player bouncewarssPlayer = null;
+		Player swPlayer = null;
 		for (Player playerMatch: Bukkit.getOnlinePlayers()) {
 			if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {
-				bouncewarssPlayer = playerMatch;
+				swPlayer = playerMatch;
 			}
 		}
 		
-		if (bouncewarssPlayer != null) {
-			PlayerStat pStat = PlayerStat.getPlayerStats(bouncewarssPlayer);
+		if (swPlayer != null) {
+			PlayerStat pStat = PlayerStat.getPlayerStats(swPlayer);
 			if (args[2].equalsIgnoreCase("wins")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setWins(Integer.valueOf(args[3]));
@@ -79,7 +80,9 @@ public class SetStatsCmd extends BaseCmd {
 			}  else if (args[2].equalsIgnoreCase("xp")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setXp(Integer.valueOf(args[3]));
-					Util.get().setPlayerExperience(bouncewarssPlayer, Integer.valueOf(args[3]));
+					if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+						Util.get().setPlayerExperience(swPlayer, Integer.valueOf(args[3]));
+					}
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
 							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
@@ -87,7 +90,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("pareffect")) {
-				if (SkyWarsReloaded.getNMS().isValueParticle(args[3])) {
+				if (SkyWarsReloaded.getLM().getParticleByKey(args[3]) != null) {
 					pStat.setParticleEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
@@ -96,7 +99,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
 				}
 			} else if (args[2].equalsIgnoreCase("proeffect")) {
-				if (SkyWarsReloaded.getNMS().isValueParticle(args[3])) {
+				if (SkyWarsReloaded.getLM().getProjByKey(args[3]) != null) {
 					pStat.setProjectileEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])

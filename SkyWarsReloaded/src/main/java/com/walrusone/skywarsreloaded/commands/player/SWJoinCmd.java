@@ -6,7 +6,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SWJoinCmd extends BaseCmd { 
 	
-	public SWJoinCmd() {
+	public SWJoinCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "join";
 		alias = new String[]{"j"};

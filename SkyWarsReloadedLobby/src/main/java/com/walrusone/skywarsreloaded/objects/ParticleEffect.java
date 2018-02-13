@@ -8,7 +8,7 @@ public class ParticleEffect {
 	private int amountU;
 	private int amountL;
 	
-	public ParticleEffect(String type, float offsetYL, float offsetYU, float data, int amountL, int amountU) {
+	public ParticleEffect(String type, float offsetYL, float offsetYU, float data, int amountU, int amountL) {
 		this.setType(type);
 		this.setOffsetYL(offsetYL);
 		this.setOffsetYU(offsetYU);

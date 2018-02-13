@@ -12,7 +12,8 @@ public class SWTopCmd extends BaseCmd {
 	
 	
 	
-	public SWTopCmd() {
+	public SWTopCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "top";
 		alias = new String[]{"leaderboard"};

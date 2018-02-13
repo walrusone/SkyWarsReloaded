@@ -67,7 +67,6 @@ public class IconMenuController implements Listener {
 
     public void destroyAll() {
         for (Player player : new HashSet<Player>(menu.keySet())) {
-        	player.closeInventory();
             destroy(player);
         }
     }

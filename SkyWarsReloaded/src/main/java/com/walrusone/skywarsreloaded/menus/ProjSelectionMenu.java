@@ -38,7 +38,14 @@ public class ProjSelectionMenu {
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 
                 String name = event.getName();
-            	
+                
+                if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.exit-menu-item"))) {
+                	new VotingMenu(player);
+                    event.setWillClose(false);
+                    event.setWillDestroy(true);
+                    return;
+                }
+                
                 ParticleItem effect = SkyWarsReloaded.getLM().getProjByName(name);
                 if (effect == null) {
                     return;
@@ -74,7 +81,7 @@ public class ProjSelectionMenu {
                		}
                }
         
-               event.setWillClose(true);
+               event.setWillClose(false);
                event.setWillDestroy(true);
         
                PlayerStat ps = PlayerStat.getPlayerStats(player);
@@ -82,6 +89,7 @@ public class ProjSelectionMenu {
                DataStorage.get().saveStats(ps);
                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg")); 
+               new OptionsSelectionMenu(player);
             }
         });
 
@@ -123,7 +131,13 @@ public class ProjSelectionMenu {
                         loreList.toArray(new String[loreList.size()]));
             }
          }
-                
+        List<String> loreList = SkyWarsReloaded.getIM().getItem("exitMenuItem").getItemMeta().getLore();
+        SkyWarsReloaded.getIC().setOption(
+                player,
+                menuSize-1,
+                SkyWarsReloaded.getIM().getItem("exitMenuItem"),
+                SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")),
+                loreList.toArray(new String[loreList.size()]));     
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

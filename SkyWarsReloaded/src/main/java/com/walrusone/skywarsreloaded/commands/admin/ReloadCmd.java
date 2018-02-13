@@ -6,7 +6,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ReloadCmd extends BaseCmd { 
 	
-	public ReloadCmd() {
+	public ReloadCmd(String t) {
+		type = t;
 		forcePlayer = false;
 		cmdName = "reload";
 		alias = new String[]{"r"};

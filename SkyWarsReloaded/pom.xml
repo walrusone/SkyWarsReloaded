@@ -8,7 +8,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-  <version>V3.0</version>
+  <version>V3.0.5</version>
 
    <build>
        <finalName>SkyWarsReloaded</finalName>
@@ -70,6 +70,10 @@
 	        <id>vault-repo</id>
 	        <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
+        <repository>
+    	    <id>rayzr-repo</id>
+        <url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
+</repository>
  </repositories>
   <dependencies>
   <dependency>
@@ -78,6 +82,11 @@
             <version>1.6</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>me.rayzr522</groupId>
+            <artifactId>jsonmessage</artifactId>
+            <version>1.0.0</version>
+         </dependency>
           <dependency>
          <groupId>me.clip</groupId>
           <artifactId>placeholderapi</artifactId>

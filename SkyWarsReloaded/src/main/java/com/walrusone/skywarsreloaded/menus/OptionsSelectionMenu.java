@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.menus.IconMenu.OptionClickEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -18,11 +19,10 @@ public class OptionsSelectionMenu {
 
         SkyWarsReloaded.getIC().create(player, menuName, menuSize, new IconMenu.OptionClickEventHandler() {
 			@Override
-            public void onOptionClick(IconMenu.OptionClickEvent event) {
+            public void onOptionClick(OptionClickEvent event) {
                 
                 String name = event.getName();
-                event.setWillClose(false);
-                event.setWillDestroy(false); 
+
                 if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.particle-effect-sel"))) {
                 	new EffectSelectionMenu(player);
                 	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenParticleMenuSound(), 1, 1);
@@ -44,7 +44,10 @@ public class OptionsSelectionMenu {
                 } else {
                 	return;
                 }
+                event.setWillClose(false);
+                event.setWillDestroy(true); 
             }
+
         });
 
         List<String> loreList = Lists.newLinkedList();
@@ -56,7 +59,7 @@ public class OptionsSelectionMenu {
                         player,
                         9,
                         SkyWarsReloaded.getIM().getItem("glassselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("glassselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("glassselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }
@@ -67,7 +70,7 @@ public class OptionsSelectionMenu {
                         player,
                         11,
                         SkyWarsReloaded.getIM().getItem("particleselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("particleselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("particleselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }
@@ -78,7 +81,7 @@ public class OptionsSelectionMenu {
                         player,
                         12,
                         SkyWarsReloaded.getIM().getItem("projectileselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("projectileselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("projectileselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }
@@ -89,7 +92,7 @@ public class OptionsSelectionMenu {
                         player,
                         14,
                         SkyWarsReloaded.getIM().getItem("killsoundselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("killsoundselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("killsoundselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }
@@ -100,7 +103,7 @@ public class OptionsSelectionMenu {
                         player,
                         15,
                         SkyWarsReloaded.getIM().getItem("winsoundselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("winsoundselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("winsoundselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }
@@ -111,7 +114,7 @@ public class OptionsSelectionMenu {
                         player,
                         17,
                         SkyWarsReloaded.getIM().getItem("tauntselect"),
-                        SkyWarsReloaded.getNMS().getName(SkyWarsReloaded.getIM().getItem("tauntselect")),
+                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("tauntselect")),
                         loreList.toArray(new String[loreList.size()]));
             }
         }

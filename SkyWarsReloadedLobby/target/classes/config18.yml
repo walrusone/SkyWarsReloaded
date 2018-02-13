@@ -1,0 +1,69 @@
+debugMode: false
+spawn: null
+lobbyBoardEnabled: true
+displayPlayerLevelOnXpBar: true
+enabledLobbyGuard: false
+economyEnabled: false
+sounds:
+  enabled: true
+  openJoinMenu: DOOR_OPEN
+  openOptionsMenu: ZOMBIE_REMEDY
+  openGlassMenu: GLASS
+  openWinSoundMenu: FIREWORK_BLAST
+  openKillSoundMenu: PIG_DEATH
+  openParticleMenu: STEP_GRAVEL
+  openProjectileMenu: SHOOT_ARROW
+  confirmSelectionSound: VILLAGER_YES
+  errorSound: VILLAGER_NO
+signs:
+  enabled: true
+  blockoffline: COAL_BLOCK
+  blockwaiting: EMERALD_BLOCK
+  blockplaying: REDSTONE_BLOCK
+  blockending: LAPIS_BLOCK
+  almostfull: DIAMOND_HELMET
+  threefull: GOLD_HELMET
+  halffull: IRON_HELMET
+  almostempty: LEATHER_HELMET
+items:
+  joinselect: DIAMOND_HELMET
+  nopermission: BARRIER
+  optionselect: EYE_OF_ENDER
+  particleselect: BLAZE_POWDER
+  projectileselect: ARROW
+  killsoundselect: DIAMOND_SWORD
+  killsounditem: NOTE_BLOCK
+  winsoundselect: DRAGON_EGG
+  glassselect: STAINED_GLASS
+  tauntselect: SHIELD
+enabledMenus:
+  join: true
+  joinSlot: 0
+  options: true
+  optionsSlot: 8
+  glass: true
+  particle: true
+  projectile: true
+  killsound: true
+  winsound: true
+  taunts: true
+leaderboards:
+  length: 10
+  leaderboardUpdateInterval: 300
+  signsEnabled: true
+  headsEnabled: true  
+  eloLeaderboardEnabled: true
+  winsLeaderboardEnabled: false
+  lossesLeaderboardEnabled: false  
+  killsLeaderboardEnabled: false
+  deathsLeaderboardEnabled: false
+  xpLeaderboardEnabled: false
+sqldatabase:
+  enabled: false
+  hostname: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+gameServers:
+ - "swr:Death Caves:8:25566"

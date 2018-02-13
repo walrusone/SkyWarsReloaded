@@ -42,8 +42,8 @@ public class ColorSelectionMenu {
                 GlassColor glass = SkyWarsReloaded.getLM().getGlassByName(name);
                 if (glass == null) {
                     return;
-                } 
-                                
+                }
+                                                
                 if (SkyWarsReloaded.getCfg().economyEnabled()) {
                	 	if (level < glass.getLevel() && !player.hasPermission("sw.glasscolor." + glass.getKey())) {
                  		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
@@ -74,14 +74,15 @@ public class ColorSelectionMenu {
                		}
                 }
 			
-                event.setWillClose(true);
+                event.setWillClose(false);
                 event.setWillDestroy(true);
        
                 PlayerStat ps = PlayerStat.getPlayerStats(player);
                 ps.setGlassColor(glass.getKey());
                 DataStorage.get().saveStats(ps);
                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-                player.sendMessage(new Messaging.MessageFormatter().setVariable("color", glass.getName()).format("menu.usecolor-playermsg"));      	
+                player.sendMessage(new Messaging.MessageFormatter().setVariable("color", glass.getName()).format("menu.usecolor-playermsg"));
+                new OptionsSelectionMenu(player);
             }
         });
 
@@ -122,8 +123,8 @@ public class ColorSelectionMenu {
                         glass.getName(),
                         loreList.toArray(new String[loreList.size()]));
             }
-         }
-                
+        }
+        
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

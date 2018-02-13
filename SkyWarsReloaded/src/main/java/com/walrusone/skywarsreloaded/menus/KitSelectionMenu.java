@@ -49,7 +49,7 @@ public class KitSelectionMenu {
         } 
         
         for (int iii = 0; iii < availableItems.size(); iii ++) {
-            if (iii >= menuSize || iii > 21) {
+            if (iii >= menuSize) {
                 break;
             }
 

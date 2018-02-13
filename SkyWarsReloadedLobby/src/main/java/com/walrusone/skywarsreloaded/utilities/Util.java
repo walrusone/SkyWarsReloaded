@@ -1,12 +1,22 @@
 package com.walrusone.skywarsreloaded.utilities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.objects.PlayerStat;
 
 public class Util {
 
@@ -32,6 +43,24 @@ public class Util {
 			return true;
 		}
 		return false;
+	}
+	
+	public void playSound(Player player, Location location, String sound, float volume, float pitch) {
+		if (SkyWarsReloaded.getCfg().soundsEnabled()) {
+			try {
+				if (player != null) {
+					player.playSound(location, Sound.valueOf(sound), volume, pitch);
+				}
+			} catch (IllegalArgumentException | NullPointerException e) {
+				SkyWarsReloaded.get().getLogger().info("ERROR: " + sound + " is not a valid bukkit sound. Please check your configs");
+			}
+		}
+	}
+	
+	public int getRandomNum(int max, int min) {
+		Random rand = new Random();
+	    int ii = min + rand.nextInt(((max - (min)) + 1));
+	    return ii;
 	}
 	
 	public boolean isInteger(String s) {
@@ -67,11 +96,36 @@ public class Util {
     public String locationToString(final Location location) {
         return location.getWorld().getName() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
     }
-	      
-    public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
-    	SkyWarsReloaded.getNMS().sendTitle(player, fadein, stay, fadeout, title, subtitle);
+	
+    public void copyFiles(File source, File target){
+	    try {
+	        ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
+	        if(!ignore.contains(source.getName())) {
+	            if(source.isDirectory()) {
+	                if(!target.exists())
+	                target.mkdirs();
+	                String files[] = source.list();
+	                for (String file : files) {
+	                    File srcFile = new File(source, file);
+	                    File destFile = new File(target, file);
+	                    copyFiles(srcFile, destFile);
+	                }
+	            } else {
+	                InputStream in = new FileInputStream(source);
+	                OutputStream out = new FileOutputStream(target);
+	                byte[] buffer = new byte[1024];
+	                int length;
+	                while ((length = in.read(buffer)) > 0)
+	                    out.write(buffer, 0, length);
+	                in.close();
+	                out.close();
+	            }
+	        }
+	    } catch (IOException e) {
+	 
+	    }
 	}
-    
+      
     public void clear(final Player player) {
         player.getInventory().clear();
         player.getInventory().setArmorContents((ItemStack[])null);
@@ -79,7 +133,12 @@ public class Util {
         	player.removePotionEffect(a1.getType());
         }
     }
-    
+
+     
+	public void respawnPlayer(Player player) {
+		SkyWarsReloaded.getNMS().respawnPlayer(player);
+	}
+	
 	public ItemStack name(ItemStack itemStack, String name, String... lores) {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
@@ -108,10 +167,6 @@ public class Util {
 	    bd = bd.setScale(places, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
 	}
-    
-    public void sendctionBar(Player p, String msg) {
-    	SkyWarsReloaded.getNMS().sendActionBar(p, msg);
-    }
 	
 	public byte getByteFromColor(String color) {
 		 switch (color) {
@@ -165,11 +220,39 @@ public class Util {
 		}
 	}
 	
+	public int getPlayerLevel(Player player) {
+	    if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+	    	return player.getLevel();
+	    } else {
+	    	PlayerStat ps = PlayerStat.getPlayerStats(player);
+	    	if (ps != null) {
+	    		int amount = ps.getXp();
+	    		if (amount <= 352) {
+	    			return (int) Math.floor(quadraticEquationRoot(1, 6, 0-amount));
+	    		} else if (amount <= 1507) {
+	    			return (int) Math.floor(quadraticEquationRoot(2.5, -40.5, 360-amount));
+	    		} else {
+	    			return (int) Math.floor(quadraticEquationRoot(4.5, -162.5, 2220-amount));
+	    		}
+	    	} else {
+	        	return 0;
+	    	}
+	    }
+	}
+		
 	public static double quadraticEquationRoot(double a, double b, double c) {    
 	    double root1, root2;
 	    root1 = (-b + Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
 	    root2 = (-b - Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
 	    return Math.max(root1, root2);  
 	}
-
+	
+	public boolean isSpawnWorld(World world) {
+		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
+			if (world.equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

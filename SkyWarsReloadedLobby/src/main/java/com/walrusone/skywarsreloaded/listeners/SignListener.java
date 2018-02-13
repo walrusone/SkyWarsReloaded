@@ -15,7 +15,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.objects.GameSign;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.objects.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
@@ -34,7 +34,7 @@ public class SignListener implements Listener {
                			String serverName = lines[1];
                			SWRServer server = SWRServer.getServer(serverName);
                			if (server != null) {
-               				GameSign.addSign(signLocation, server);
+               				server.addSign(signLocation);
                        		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
                        	} else {
                        		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
@@ -55,8 +55,9 @@ public class SignListener implements Listener {
 		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
 	    	Sign sign = (Sign) b.getState();
 	    	Location loc = sign.getLocation();
-	    	if (GameSign.hasGameSign(loc)) {
-	    		GameSign.removeSign(loc);
+	    	SWRServer server = SWRServer.getSign(loc);
+	    	if (server != null) {
+	    		server.removeSign(loc);
 	    		event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));
 	    	}
 		}
@@ -69,12 +70,11 @@ public class SignListener implements Listener {
     		 if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == Material.SIGN_POST ) {
     				Sign s = (Sign) e.getClickedBlock().getState();
     			    Location loc = s.getLocation();
-    			    if (GameSign.hasGameSign(loc)) {
-    			    	e.setCancelled(false);
-    			    	SWRServer server = GameSign.getSign(loc);
-    			    	if (server.isInitialized() && server.isOnline() && server.getState().equalsIgnoreCase("WAITINGSTART") && server.getPlayerCount() < server.getMaxPlayers()) {
+    			    SWRServer server = SWRServer.getSign(loc);
+    			    if (server != null) {
+    			    	if (server.getMatchState().equals(MatchState.WAITINGSTART) && server.getPlayerCount() < server.getMaxPlayers()) {
     			    		server.setPlayerCount(server.getPlayerCount() + 1);
-        			    	GameSign.updateSigns();
+        			    	server.updateSigns();
     			    		SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", server.getServerName());
     					}
     			    }

@@ -14,7 +14,8 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class ChestAddCmd extends BaseCmd { 
 	
-	public ChestAddCmd() {
+	public ChestAddCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "chestadd";
 		alias = new String[]{"ca"};

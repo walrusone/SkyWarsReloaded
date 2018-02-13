@@ -23,13 +23,19 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.walrusone.skywarsreloaded.api.NMS;
 import com.walrusone.skywarsreloaded.commands.CmdManager;
+import com.walrusone.skywarsreloaded.commands.KitCmdManager;
+import com.walrusone.skywarsreloaded.commands.MapCmdManager;
+import com.walrusone.skywarsreloaded.commands.PartyCmdManager;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.listeners.ArenaDamageListener;
+import com.walrusone.skywarsreloaded.listeners.ArenaManagerListener;
+import com.walrusone.skywarsreloaded.listeners.ChatListener;
 import com.walrusone.skywarsreloaded.listeners.IconMenuController;
 import com.walrusone.skywarsreloaded.listeners.LobbyListener;
 import com.walrusone.skywarsreloaded.listeners.ParticleEffectListener;
+import com.walrusone.skywarsreloaded.listeners.PingListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerCommandPrepocessListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerDeathListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerInteractListener;
@@ -62,13 +68,14 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private static Database db;
 	private ChestManager cm;
     private LevelManager lm;
-	private static SpectateListener sp;
 	private WorldManager wm;
 	private String servername;
 	private NMS nmsHandler;
+	private boolean loaded;
 
 	
 	public void onEnable() {
+		loaded = false;
     	instance = this;
     	
     	String packageName = this.getServer().getClass().getPackage().getName();
@@ -90,9 +97,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getLogger().info("Loading support for " + version);
     	
     	servername = "none";
-    	
-    	this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-    	this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
     	 
     	if (nmsHandler.isOnePointEight()) {
     		File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
@@ -109,10 +113,17 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	saveDefaultConfig();
         saveConfig();
         reloadConfig();
+
         ic = new IconMenuController();
         wm = new WorldManager();
 
         load();
+        
+    	if (getCfg().bungeeMode()) {
+        	this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        	this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+    		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
+    	}
 		
         this.getServer().getPluginManager().registerEvents(ic, this);
         this.getServer().getPluginManager().registerEvents(new ArenaDamageListener(), this);
@@ -123,17 +134,22 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
         this.getServer().getPluginManager().registerEvents(new LobbyListener(), this);
         this.getServer().getPluginManager().registerEvents(new TauntListener(), this);
+        this.getServer().getPluginManager().registerEvents(new SpectateListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ArenaManagerListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
         if (SkyWarsReloaded.getCfg().particlesEnabled()) {
         	this.getServer().getPluginManager().registerEvents(new ParticleEffectListener(), this);
         }
-               
-        sp = new SpectateListener();
-        this.getServer().getPluginManager().registerEvents(sp, this);
         if (config.disableCommands()) {
             this.getServer().getPluginManager().registerEvents(new PlayerCommandPrepocessListener(), this);
         }
      
         getCommand("skywars").setExecutor(new CmdManager());
+        getCommand("swkit").setExecutor(new KitCmdManager());
+        getCommand("swmap").setExecutor(new MapCmdManager());
+        if (config.partyEnabled()) {
+            getCommand("swparty").setExecutor(new PartyCmdManager());
+        }
         
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
         	new SWRPlaceholders(this).hook();
@@ -153,9 +169,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 }
             }.runTaskTimer(this, 0, 20);
         }
+        loaded = true;
 	}
 
 	public void onDisable() {
+		loaded = false;
         this.getServer().getScheduler().cancelTasks(this);
         for (final GameMap gameMap : GameMap.getMaps()) {
         	for (final UUID uuid: gameMap.getSpectators()) {
@@ -177,11 +195,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         PlayerData.getPlayerData().clear();
         for (final PlayerStat fData : PlayerStat.getPlayers()) {
         	DataStorage.get().saveStats(fData);
-        }  
-        
+        }    
 	}
 	
 	public void load() {
+		messaging = null;
 		messaging = new Messaging(this);
 		reloadConfig();
         config = new Config();
@@ -225,6 +243,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 leaderboard = new Leaderboard();
             }
         }.runTaskAsynchronously(this);
+        loaded = true;
 	}
 	
 	public static SkyWarsReloaded get() {
@@ -253,10 +272,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     
     public static Database getDb() {
     	return db;
-    }
-    
-    public static SpectateListener getSP() {
-    	return sp;
     }
            
     private void getFWDatabase() {
@@ -368,6 +383,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
 	public PlayerStat getPlayerStat(Player player) {
 		return PlayerStat.getPlayerStats(player);
+	}
+
+	public boolean serverLoaded() {
+		return loaded;
 	}	
     
 }

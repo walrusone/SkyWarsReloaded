@@ -10,9 +10,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public abstract class BaseCmd {
 
 	public BaseCmd() {
-		
 	}
-	
 	
 	public CommandSender sender;
 	public String[] args;
@@ -21,6 +19,7 @@ public abstract class BaseCmd {
 	public int argLength = 0;
 	public boolean forcePlayer = true;
 	public Player player;
+	public String type;
 
 	public boolean processCmd(CommandSender s, String[] arg) {
 		sender = s;
@@ -35,12 +34,16 @@ public abstract class BaseCmd {
 			}
 		}
 		
-		if (!Util.get().hp(sender, cmdName))
+		if (!Util.get().hp(type, sender, cmdName))
 			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		else if (argLength > arg.length)
-			s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + cmdName));
+			s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + Util.get().getMessageKey(type) + "." + cmdName));
 		else return run();
 		return true;
+	}
+	
+	public String getType() {
+		return type;
 	}
 
 	public abstract boolean run();

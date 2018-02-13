@@ -38,6 +38,7 @@ public class TauntSelectionMenu {
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                            	
 				String tauntName = event.getName();
+				
 				Taunt taunt = SkyWarsReloaded.getLM().getTauntFromName(tauntName);
 	            if (taunt == null) {
 	              	return;
@@ -73,7 +74,7 @@ public class TauntSelectionMenu {
                		}
                 }
                 
-                event.setWillClose(true);
+                event.setWillClose(false);
                 event.setWillDestroy(true);
             
            		PlayerStat ps = PlayerStat.getPlayerStats(player);
@@ -81,7 +82,8 @@ public class TauntSelectionMenu {
                	DataStorage.get().saveStats(ps);
                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                	player.sendMessage(new Messaging.MessageFormatter().setVariable("taunt", taunt.getName()).format("menu.usetaunt-playermsg"));
-            }
+               	new OptionsSelectionMenu(player);
+			}
         });
 
         ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(menuSize-1, 0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
@@ -121,8 +123,7 @@ public class TauntSelectionMenu {
                         taunt.getName(),
                         loreList.toArray(new String[loreList.size()]));
             }
-         }
-                
+         }     
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

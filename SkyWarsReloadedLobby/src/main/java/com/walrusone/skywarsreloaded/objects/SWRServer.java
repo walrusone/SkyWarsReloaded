@@ -1,13 +1,21 @@
 package com.walrusone.skywarsreloaded.objects;
 
-import com.google.common.collect.Iterables;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.listeners.LobbyListener;
 import com.walrusone.skywarsreloaded.objects.SWRServer;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 
 public class SWRServer {
     
@@ -17,37 +25,18 @@ public class SWRServer {
     private int playerCount;
     private int maxPlayers;
     private int port;
-    private String state;
-    private boolean initialized;
-	private boolean online;
+    private MatchState state;
+	private ArrayList<Location> signs;
     
-    public SWRServer(final String name, final String displayName, final int maxPlayers, final int port) {
+    public SWRServer(final String name, final int port) {
     	this.serverName = name;
-    	this.displayName = displayName;
+    	signs = new ArrayList<Location>();
+    	this.displayName = "Initializing";
     	this.playerCount = 0;
-    	this.maxPlayers = maxPlayers;
+    	this.maxPlayers = 0;
     	this.port = port;
-    	this.state = "ENDING";
-    	this.online = true;
-    	this.initialized = false;
-    	attemptInitialization();
+    	this.state = MatchState.OFFLINE;
     }
-
-	private void attemptInitialization() {
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-				Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
-				if (player != null) {
-					if (!initialized) {
-						SkyWarsReloaded.get().sendBungeeMsg(player, "PlayerCount", serverName);
-					}
-				} else {
-					attemptInitialization();
-				}
-			}
-    	}.runTaskLater(SkyWarsReloaded.get(), 20);
-	}
 
 	public static ArrayList<SWRServer> getServers() {
         return SWRServer.servers;
@@ -89,20 +78,12 @@ public class SWRServer {
 	public void setMaxPlayers(int max) {
 		this.maxPlayers = max;
 	}
-	
-	public boolean isInitialized() {
-		return this.initialized;
-	}
-	
-	public void initialize() {
-		this.initialized = true;
-	}
 
 	public static SWRServer getAvailableServer() {
 		int highestPlayers = 0;
 		SWRServer swrServer = null;
 		for (SWRServer server: getServers()) {
-			if (server.isInitialized() && server.isOnline() && server.getState().equalsIgnoreCase("WAITINGSTART") && server.getPlayerCount() < server.getMaxPlayers()) {
+			if (server.getMatchState().equals(MatchState.WAITINGSTART) && server.getPlayerCount() < server.getMaxPlayers()) {
 				if (server.getPlayerCount() >= highestPlayers) {
 					highestPlayers = server.getPlayerCount();
 					swrServer = server;
@@ -112,11 +93,11 @@ public class SWRServer {
 		return swrServer;
 	}
 
-	public void setState(String gameStarted) {
-		this.state = gameStarted;
+	public void setMatchState(String gameStarted) {
+		this.state = MatchState.valueOf(gameStarted);
 	}
 	
-	public String getState() {
+	public MatchState getMatchState() {
 		return this.state;
 	}
 	
@@ -124,15 +105,133 @@ public class SWRServer {
 		return this.displayName;
 	}
 
-	public void setOnline(boolean b) {
-		this.online = b;
-	}
-	
-	public boolean isOnline() {
-		return this.online;
-	}
-
 	public int getPort() {
 		return this.port;
 	}
+
+	public void setDisplayName(String string) {
+		this.displayName = string;
+		
+	}
+
+	public ArrayList<Location> getSigns() {
+		return signs;
+	}
+
+	public void addSign(Location loc) {
+		this.signs.add(loc);
+		saveSigns();
+	}
+	
+	public void clearSigns() {
+		signs.clear();
+	}
+	
+	public boolean hasGameSign(Location loc) {
+		if (signs.contains(loc)) {
+			return true;
+		} 
+		return false;
+	}
+	public void removeSign(Location loc) {
+		signs.remove(loc);
+		saveSigns();
+	}
+	
+	public void saveSigns() {
+		List<String> signLocs = new ArrayList<String>();
+		for (Location loc: signs) {
+				signLocs.add(Util.get().locationToString(loc));
+		}
+		SkyWarsReloaded.get().getConfig().set(this.getServerName(), signLocs);
+	}
+	
+	public static void saveAllSigns() {
+		for (SWRServer server: servers) {
+			server.saveSigns();
+		}
+	}
+	
+	
+	public static SWRServer getSign(Location loc) {
+		for (SWRServer server: servers) {
+			if (server.getSigns().contains(loc)) {
+				return server;
+			}
+		}
+		return null;
+	}
+	
+	public void updateSigns() {
+		LobbyListener.updateJoinMenu();
+		for (Location loc: signs) {
+			BlockState bs = loc.getBlock().getState();
+			Sign sign = null;
+			if (bs instanceof Sign) {
+				sign = (Sign) bs;
+			}
+			Block b = sign.getBlock();
+			org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
+			meteSign = (org.bukkit.material.Sign) b.getState().getData();
+			Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
+			setMaterial(attachedBlock);
+			String signState = "";
+			if (state.equals(MatchState.OFFLINE)) {
+				signState = new Messaging.MessageFormatter().format("signs.offline");
+			} else if (state.equals(MatchState.WAITINGSTART)) {
+				signState = new Messaging.MessageFormatter().format("signs.joinable");
+			} else if (state.equals(MatchState.PLAYING) || state.equals(MatchState.SUDDENDEATH)) {
+				signState = new Messaging.MessageFormatter().format("signs.playing");
+			} else if (state.equals(MatchState.ENDING)) {
+				signState = new Messaging.MessageFormatter().format("signs.ending");
+			}
+			if (sign != null) {
+				sign.getBlock().getChunk().load();
+					sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+							setVariable("mapname", displayName.toUpperCase()).
+							setVariable("playercount", "" + playerCount).
+							setVariable("maxplayers", "" + maxPlayers).format("signs.line1"));
+					sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+							setVariable("mapname", displayName.toUpperCase()).
+							setVariable("playercount", "" + playerCount).
+							setVariable("maxplayers", "" + maxPlayers).format("signs.line2"));
+					sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+							setVariable("mapname", displayName.toUpperCase()).
+							setVariable("playercount", "" + playerCount).
+							setVariable("maxplayers", "" + maxPlayers).format("signs.line3"));
+					sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+							setVariable("mapname", displayName.toUpperCase()).
+							setVariable("playercount", "" + playerCount).
+							setVariable("maxplayers", "" + maxPlayers).format("signs.line4"));
+					sign.update();
+			}
+		}
+	}
+	
+	private void setMaterial(Block attachedBlock) {
+		if (state.equals(MatchState.OFFLINE)) {
+			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockoffline")));
+		} else if (state.equals(MatchState.WAITINGSTART)) {
+			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockwaiting")));
+		} else if (state.equals(MatchState.PLAYING) || state.equals(MatchState.SUDDENDEATH)) {
+			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockplaying")));
+		} else if (state.equals(MatchState.ENDING)) {
+			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockending")));
+		}
+	}
+
+	public void setMatchState(MatchState serverState) {
+		state = serverState;
+	}
+
+	public static SWRServer getServerByDisplayName(String stripColor) {
+		for (SWRServer server: servers) {
+			if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', server.getDisplayName())).equalsIgnoreCase(stripColor)) {
+				return server;
+			}
+		}
+		return null;
+	}
+
+
 }

@@ -7,6 +7,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bThunder and Lighting"
     level: 5
+    cost: 100
   witherambient:
     sound: ENTITY_WITHER_AMBIENT
     isCustomSound: false
@@ -15,6 +16,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bWither Ambient"
     level: 10
+    cost: 100
   gamemusic:
     sound: MUSIC_GAME
     isCustomSound: false
@@ -23,6 +25,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bGame Music"
     level: 15
+    cost: 100
   credits:
     sound: MUSIC_CREDITS
     isCustomSound: false
@@ -31,6 +34,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bCredits Music"
     level: 20
+    cost: 100
   witherspawn:
     sound: ENTITY_WITHER_SPAWN
     isCustomSound: false
@@ -38,7 +42,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bWither Spawn"
-    level: 25 
+    level: 25
+    cost: 100    
   11:
     sound: RECORD_11
     isCustomSound: false
@@ -46,7 +51,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bRecord 11"
-    level: 30 
+    level: 30
+    cost: 100
   dragon:
     sound: MUSIC_DRAGON
     isCustomSound: false
@@ -54,7 +60,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bDragon Music"
-    level: 35 
+    level: 35
+    cost: 100    
   menu:
     sound: MUSIC_MENU
     isCustomSound: false
@@ -62,7 +69,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bMenu Music"
-    level: 40     
+    level: 40
+    cost: 100    
   13:
     sound: RECORD_13
     isCustomSound: false
@@ -70,7 +78,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bRecord 13"
-    level: 45 
+    level: 45
+    cost: 100    
   enderdragondeath:
     sound: ENTITY_ENDERDRAGON_DEATH
     isCustomSound: false
@@ -78,7 +87,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bEnder Dragon Death"
-    level: 50  
+    level: 50
+    cost: 100    
   mall:
     sound: RECORD_MALL
     isCustomSound: false
@@ -86,7 +96,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bMall Record"
-    level: 55  
+    level: 55
+    cost: 100    
   mellohi:
     sound: RECORD_MELLOHI
     isCustomSound: false
@@ -94,7 +105,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bMellohi Record"
-    level: 60  
+    level: 60
+    cost: 100    
   cat:
     sound: RECORD_CAT
     isCustomSound: false
@@ -103,6 +115,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bCat Record"
     level: 65
+    cost: 100
   stal:
     sound: RECORD_STAL
     isCustomSound: false
@@ -110,7 +123,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bStal Record"
-    level: 70 
+    level: 70
+    cost: 100    
   far:
     sound: RECORD_FAR
     isCustomSound: false
@@ -119,6 +133,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bFar Record"
     level: 75 
+    cost: 100
   blocks:
     sound: RECORD_BLOCKS
     isCustomSound: false
@@ -126,7 +141,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bBlocks Record"
-    level: 80 
+    level: 80
+    cost: 100    
   wait:
     sound: RECORD_WAIT
     isCustomSound: false
@@ -134,7 +150,8 @@ sounds:
     pitch: 1
     icon: JUKEBOX
     displayName: "&bWait Record"
-    level: 85     
+    level: 85
+    cost: 100    
   chirp:
     sound: RECORD_CHIRP
     isCustomSound: false
@@ -143,6 +160,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bChirp Record"
     level: 90
+    cost: 100
   ward:
     sound: RECORD_WARD
     isCustomSound: false
@@ -151,6 +169,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bWard Record"
     level: 95
+    cost: 100
   strad:
     sound: RECORD_STRAD
     isCustomSound: false
@@ -159,6 +178,7 @@ sounds:
     icon: JUKEBOX
     displayName: "&bStrad Record"
     level: 100
+    cost: 100
   none:
     sound: blank
     isCustomSound: true
@@ -167,3 +187,4 @@ sounds:
     icon: JUKEBOX
     displayName: "&bNo Sound"
     level: 0
+    cost: 0

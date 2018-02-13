@@ -38,7 +38,7 @@ public class WinSoundSelectionMenu {
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 
 				String name = event.getName();
-            	
+                
                 SoundItem sound = SkyWarsReloaded.getLM().getWinSoundByName(name);
                 if (sound == null) {
                     return;
@@ -74,7 +74,7 @@ public class WinSoundSelectionMenu {
                		}
                 }
                 
-                event.setWillClose(true);
+                event.setWillClose(false);
                 event.setWillDestroy(true);
             
             	PlayerStat ps = PlayerStat.getPlayerStats(player);
@@ -82,6 +82,7 @@ public class WinSoundSelectionMenu {
                 DataStorage.get().saveStats(ps);
                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usewin-playermsg"));
+                new OptionsSelectionMenu(player);
             }
         });
 
@@ -122,8 +123,7 @@ public class WinSoundSelectionMenu {
                         sound.getName(),
                         loreList.toArray(new String[loreList.size()]));
             }
-         }
-                
+         }    
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

@@ -7,14 +7,16 @@ import org.bukkit.Material;
 public class ParticleItem implements Comparable<ParticleItem> {
 
     private int level;
+    private int cost;
     private List<ParticleEffect> effects;
     private String key;
     private String name;
     private Material material;
     
-    public ParticleItem(String key, List<ParticleEffect> effects, String name, Material material, int cost) {
+    public ParticleItem(String key, List<ParticleEffect> effects, String name, Material material, int level, int cost) {
         this.key = key;
-    	this.level = cost;
+    	this.level = level;
+    	this.cost = cost;
         this.effects = effects;
         this.name = name;
         this.material = material;
@@ -22,6 +24,10 @@ public class ParticleItem implements Comparable<ParticleItem> {
 
     public int getLevel() {
         return level;
+    }
+    
+    public int getCost() {
+        return cost;
     }
     
     public List<ParticleEffect> getEffects() {

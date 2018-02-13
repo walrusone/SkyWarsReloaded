@@ -38,7 +38,7 @@ public class EffectSelectionMenu {
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 
                 String name = event.getName();
-            	
+                
                 ParticleItem effect = SkyWarsReloaded.getLM().getParticleByName(name);
                 if (effect == null) {
                     return;
@@ -73,7 +73,7 @@ public class EffectSelectionMenu {
                					.setVariable("item", effect.getName()).format("menu.purchase-effect"));
                 	}
                 }
-                event.setWillClose(true);
+                event.setWillClose(false);
                 event.setWillDestroy(true);
         
         		PlayerStat ps = PlayerStat.getPlayerStats(player);
@@ -81,6 +81,7 @@ public class EffectSelectionMenu {
             	DataStorage.get().saveStats(ps);
             	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
             	player.sendMessage(new Messaging.MessageFormatter().setVariable("effect", effect.getName()).format("menu.useeffect-playermsg"));
+            	new OptionsSelectionMenu(player);
             }
         });
 
@@ -122,7 +123,7 @@ public class EffectSelectionMenu {
                         loreList.toArray(new String[loreList.size()]));
             }
          }
-                
+    
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

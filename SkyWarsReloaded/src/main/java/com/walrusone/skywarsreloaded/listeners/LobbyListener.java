@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,6 +33,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.OptionsSelectionMenu;
 import com.walrusone.skywarsreloaded.objects.GameMap;
+import com.walrusone.skywarsreloaded.objects.Party;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -56,64 +58,66 @@ public class LobbyListener implements Listener
 		
 	public static void updateJoinMenu() {
 		if ((SkyWarsReloaded.getCfg().joinMenuEnabled() || SkyWarsReloaded.getCfg().spectateMenuEnabled()) && joinMenu != null) {
-			ArrayList<GameMap> games = GameMap.getSortedMaps();
-			
-			int menuSize = 81;
-			int rowCount = 9;
-	        while (rowCount < games.size() && rowCount < menuSize) {
-	            rowCount += 9;
-	        }
-	        
-	        for (int iii = 0; iii < games.size(); iii++) {
-	            if (iii >= joinMenu.getSize()) {
-	                break;
-	            }
+			if (!(joinMenu.getViewers().isEmpty() && spectateMenu.getViewers().isEmpty())) {
+				ArrayList<GameMap> games = GameMap.getSortedMaps();
+				
+				int menuSize = 81;
+				int rowCount = 9;
+		        while (rowCount < games.size() && rowCount < menuSize) {
+		            rowCount += 9;
+		        }
+		        
+		        for (int iii = 0; iii < games.size(); iii++) {
+		            if (iii >= joinMenu.getSize()) {
+		                break;
+		            }
 
-	            GameMap gMap = games.get(iii);
-	            	            
-	            List<String> loreList = Lists.newLinkedList();
-	            if (gMap.getMatchState() == MatchState.WAITINGSTART) {
-		            loreList.add((new Messaging.MessageFormatter().format("signs.joinable").toUpperCase()));
-	            } else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
-	           	loreList.add((new Messaging.MessageFormatter().format("signs.playing").toUpperCase()));
-	            }  else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-	            	loreList.add((new Messaging.MessageFormatter().format("signs.ending").toUpperCase()));
-	            }
-	            loreList.add((new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getAlivePlayers().size()).setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4")));
-	            for (Player p: gMap.getAllPlayers()) {
-	            	if (p != null) {
-	            		if (gMap.getAlivePlayers().contains(p)) {
-	            			loreList.add(ChatColor.GREEN + p.getName());
-	            		} else {
-	            			loreList.add(ChatColor.RED + p.getName());
-	            		}
-	            	}
-	            }
-	            
-	            double xy = ((double) (gMap.getAlivePlayers().size() / gMap.getMaxPlayers()));
-	            
-	            ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockwaiting")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	            if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
-	           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockplaying")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	            } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-	           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockending")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	            } else if (gMap.getMatchState() == MatchState.WAITINGSTART) {
-	           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("almostfull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	    	    	if (xy < 0.75) {
-	    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("threefull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	    	    	} 
-	     	    	if (xy < 0.50) {
-	    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("halffull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	    	    	} 
-	    	    	if (xy < 0.25) {
-	    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("almostempty")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-	    	    	} 
-	            }  
-	            joinMenu.setItem(iii, gameIcon);      
-	        }
-	        if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
-		        spectateMenu.setContents(joinMenu.getContents());
-	        }
+		            GameMap gMap = games.get(iii);
+		            	            
+		            List<String> loreList = Lists.newLinkedList();
+		            if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+			            loreList.add((new Messaging.MessageFormatter().format("signs.joinable").toUpperCase()));
+		            } else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+		            	loreList.add((new Messaging.MessageFormatter().format("signs.playing").toUpperCase()));
+		            }  else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+		            	loreList.add((new Messaging.MessageFormatter().format("signs.ending").toUpperCase()));
+		            }
+		            loreList.add((new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getAlivePlayers().size()).setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4")));
+		            for (Player p: gMap.getAllPlayers()) {
+		            	if (p != null) {
+		            		if (gMap.getAlivePlayers().contains(p)) {
+		            			loreList.add(ChatColor.GREEN + p.getName());
+		            		} else {
+		            			loreList.add(ChatColor.RED + p.getName());
+		            		}
+		            	}
+		            }
+		            
+		            double xy = ((double) (gMap.getAlivePlayers().size() / gMap.getMaxPlayers()));
+		            
+		            ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockwaiting")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		            if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+		           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockplaying")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		            } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+		           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockending")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		            } else if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+		           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("almostfull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		    	    	if (xy < 0.75) {
+		    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("threefull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		    	    	} 
+		     	    	if (xy < 0.50) {
+		    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("halffull")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		    	    	} 
+		    	    	if (xy < 0.25) {
+		    	    		gameIcon = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("almostempty")), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+		    	    	} 
+		            }  
+		            joinMenu.setItem(iii, gameIcon);      
+		        }
+		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+			        spectateMenu.setContents(joinMenu.getContents());
+		        }
+			}
 		}
 	}
 	 
@@ -148,10 +152,12 @@ public class LobbyListener implements Listener
                     	e.setCancelled(true);
                     	Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1, 1);
                     	e.getPlayer().openInventory(joinMenu);
+                    	LobbyListener.updateJoinMenu();
                     } else if (e.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
                     	e.setCancelled(true);
                     	Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
                     	e.getPlayer().openInventory(spectateMenu);
+                    	LobbyListener.updateJoinMenu();
                     }
         		}
         	}
@@ -163,12 +169,21 @@ public class LobbyListener implements Listener
         			    	boolean joined = false;
         			    	for (GameMap gMap : GameMap.getMaps()) {
             			    	if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-            			    		joined = gMap.addPlayer(player);
+            			    		Party party = Party.getParty(player);
+            			    		if (party != null) {
+            			    			if (party.getLeader().equals(player.getUniqueId())) {
+                			    			joined = gMap.addParty(party);
+            			    			} else {
+            			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+            			    			}
+            			    		} else {
+                			    		joined = gMap.addPlayer(player);
+                			    		if (!joined) { 
+                			    			player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+                			    		} 
+            			    		}
             			    	}
             			    }
-    			    		if (!joined) { 
-    			    			player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-    			    		} 
         		 }
         	}
 		}
@@ -203,10 +218,27 @@ public class LobbyListener implements Listener
                 
                 if (player.hasPermission("sw.join")) {
 	                if (player!= null) {
-	                	if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
-		                	player.closeInventory();
-	                		gMap.addPlayer(player);
-	                	}
+	                	boolean joined = true;
+			    		Party party = Party.getParty(player);
+			    		if (party != null) {
+			    			if(party.getLeader().equals(player.getUniqueId())) {
+			    				if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
+				    				player.closeInventory();
+					    			joined = gMap.addParty(party);
+				    			}
+			    			} else {
+			    				player.closeInventory();
+			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+			    			}
+			    		} else {
+		                	if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
+			                	player.closeInventory();
+		                		joined = gMap.addPlayer(player);
+				                if (!joined) {
+				                	player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+				                }
+		                	}
+			    		}
 	                }
                 }
 			} else if (e.getInventory().equals(spectateMenu) && rawSlot < spectateMenu.getSize() && rawSlot >= 0) {
@@ -330,14 +362,35 @@ public class LobbyListener implements Listener
             		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
             			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
             			if (spawn != null) {
-            				boolean joined = MatchManager.get().joinGame(player);
+            				boolean joined = false;
             				int count = 0;
+            				Party party = Party.getParty(player);
             				while (count < 4 && !joined) {
-            					joined = MatchManager.get().joinGame(player);
+            					if (party != null) {
+            						if (party.getLeader().equals(player.getUniqueId())) {
+            							boolean tryJoin = true;
+            							for (UUID uuid: party.getMembers()) {
+            								if (Util.get().isBusy(uuid)) {
+            									tryJoin = false;
+                								party.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", Bukkit.getPlayer(uuid).getName()).format("party.memberbusy"));
+                							}
+            							}
+            							if (tryJoin) {
+                							joined = MatchManager.get().joinGame(party);
+            							} else {
+            								break;
+            							}
+            						} else {
+            							player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+            							break;
+                    				}
+            					} else {
+            						joined = MatchManager.get().joinGame(player);
+                    				if (!joined) {
+                    					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
+                    				}
+            					}
             					count++;
-            				}
-            				if (!joined) {
-            					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
             				}
                	        } else {
                				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");

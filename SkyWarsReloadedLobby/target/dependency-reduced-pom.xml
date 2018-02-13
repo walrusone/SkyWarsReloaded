@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone</groupId>
-  <artifactId>SkyWarsLobby</artifactId>
-  <version>3.0</version>
+  <artifactId>SkyWarsReloadedLobby</artifactId>
+  <version>1.0</version>
   <build>
     <resources>
       <resource>
@@ -12,8 +12,10 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>config.yml</include>
+          <include>config18.yml</include>
           <include>glasscolors.yml</include>
           <include>killsounds.yml</include>
+          <include>killsounds18.yml</include>
           <include>messages.yml</include>
           <include>particleeffects.yml</include>
           <include>playerFile.yml</include>
@@ -21,6 +23,8 @@
           <include>projectileeffects.yml</include>
           <include>taunts.yml</include>
           <include>winsounds.yml</include>
+          <include>winsounds18.yml</include>
+          <include>leaderboards.yml</include>
           <include>tables.sql</include>
         </includes>
       </resource>
@@ -45,13 +49,35 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>placeholderapi</id>
+      <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+    </repository>
+    <repository>
+      <id>vault-repo</id>
+      <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+    </repository>
+  </repositories>
   <dependencies>
+    <dependency>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>VaultAPI</artifactId>
+      <version>1.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.8.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.9-R0.1</version>
+      <version>1.8-R0.1</version>
       <scope>system</scope>
-      <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby/lib/craftbukkit-1.9.jar</systemPath>
+      <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloadedLobby/lib/craftbukkit-1.8.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

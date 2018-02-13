@@ -3,20 +3,30 @@ package com.walrusone.skywarsreloaded.objects;
 import java.util.UUID;
 
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayerStat
 {
     
 	private static ArrayList<PlayerStat> players;
+	private static HashMap<Player, Scoreboard> scoreboards = new HashMap<Player, Scoreboard>();
     private final String uuid;
     private String playername;
     private int wins;
@@ -32,12 +42,17 @@ public class PlayerStat
     private String winSound;
     private String taunt;
     private boolean initialized;
+    private PermissionAttachment perms;
     
     public PlayerStat(final Player player) {
     	this.initialized = false;
         this.uuid = player.getUniqueId().toString();
         this.playername = player.getName();
+        this.perms = player.addAttachment(SkyWarsReloaded.get());
         DataStorage.get().loadStats(this);
+        if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            DataStorage.get().loadperms(this);
+        }
         saveStats(uuid);
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
@@ -72,36 +87,33 @@ public class PlayerStat
     						@SuppressWarnings("deprecation")
 							@Override
     						public void run() {
-    							PlayerStat pStats = PlayerStat.getPlayerStats(player);
-    	        		        player.closeInventory();
-    	        		        player.setGameMode(GameMode.ADVENTURE);
-    	        		        Util.get().setPlayerExperience(player, pStats.getXp());
-    	        		        player.setHealth(20);
-    	        		        player.setFoodLevel(20);
-    	        		        player.setSaturation(20);
-    	        		        Util.get().clear(player);
-    	        		        player.setFireTicks(0);
-    	        		        player.resetPlayerTime();
-    	        		        player.resetPlayerWeather();
-    	        		        if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
-        	        		        player.getInventory().setItem(0, SkyWarsReloaded.getIM().getItem("glassselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().particleMenuEnabled()) {
-        	        		        player.getInventory().setItem(2, SkyWarsReloaded.getIM().getItem("particleselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().projectileMenuEnabled()) {
-    	        		        	player.getInventory().setItem(3, SkyWarsReloaded.getIM().getItem("projectileselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().killsoundMenuEnabled()) {
-    	        		        	player.getInventory().setItem(5, SkyWarsReloaded.getIM().getItem("killsoundselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
-    	        		        	player.getInventory().setItem(6, SkyWarsReloaded.getIM().getItem("winsoundselect"));
-    	        		        }
-    	        		        if (SkyWarsReloaded.getCfg().tauntsMenuEnabled()) {
-    	        		        	player.getInventory().setItem(8, SkyWarsReloaded.getIM().getItem("tauntselect"));
-    	        		        }
-    	        		        player.updateInventory();
+    							if (Util.get().isSpawnWorld(player.getWorld())) {
+    								if(SkyWarsReloaded.getCfg().protectLobby()) {
+    									player.setGameMode(GameMode.ADVENTURE);
+    									player.setHealth(20);
+            	        		        player.setFoodLevel(20);
+            	        		        player.setSaturation(20);
+            	        		        Util.get().clear(player);
+            	        		        player.setFireTicks(0);
+            	        		        player.resetPlayerTime();
+            	        		        player.resetPlayerWeather();
+    								}
+    								PlayerStat pStats = PlayerStat.getPlayerStats(player);
+    								if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+            	        		        Util.get().setPlayerExperience(player, pStats.getXp());
+    								}
+     	        		            if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
+            	        		        getScoreboard(player);
+            	        		        player.setScoreboard(getPlayerScoreboard(player));
+        	        		        }
+     	        		            if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
+     	        		            	player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
+     	        		            }
+        	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
+        	        		        }
+        	        		        player.updateInventory();
+    							}
     						}
                 		}.runTask(SkyWarsReloaded.get());
             		} else {
@@ -194,7 +206,7 @@ public class PlayerStat
         this.elo = a1;
     }
     
-    public int getLosts() {
+    public int getLosses() {
         return this.losts;
     }
     
@@ -272,5 +284,120 @@ public class PlayerStat
 	
 	public String getTaunt(){
 		return taunt;
+	}
+	
+	//Scoreboard Methods
+	
+	public static void getScoreboard(Player player) {
+		Scoreboard scoreboard = scoreboards.get(player);
+		if (scoreboard != null) {
+            resetScoreboard(player);
+        }
+		ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
+		scoreboard = manager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("info", "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        scoreboards.put(player, scoreboard);
+		updateScoreboard(player);
+	}
+	
+	public static void updateScoreboard(Player player) {
+		Scoreboard scoreboard = scoreboards.get(player);
+		for (Objective objective: scoreboard.getObjectives()) {
+        	if (objective != null) {
+                objective.unregister();
+            }
+    	}
+		
+		Objective objective = scoreboard.registerNewObjective("info", "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        String sb = "scoreboards.lobbyboard.line";
+        ArrayList<String> scores = new ArrayList<String>();
+        for (int i = 1; i < 17; i++) {
+        	if (i == 1) {
+    	        String leaderboard = getScoreboardLine(sb + i, player);
+    	        objective.setDisplayName(leaderboard);
+    		} else {
+    			String s = getScoreboardLine(sb + i, player);
+    			while (scores.contains(s) && !s.equalsIgnoreCase("remove") ) {
+    				s = s + " ";
+    			}
+    			scores.add(s);
+    			if (!s.equalsIgnoreCase("remove")) {
+        			Score score = objective.getScore(s);
+    				score.setScore(17-i);
+    			}
+    		}
+        }	
+	}
+		
+	private static String getScoreboardLine(String lineNum, Player player) {
+		PlayerStat ps = PlayerStat.getPlayerStats(player);
+		String killdeath;
+		String winloss;
+		if (ps.getWins() == 0) {
+			winloss = "0.00";
+		} else {
+			winloss = String.format("%1$,.2f", ((double)((double)ps.getWins()/(double)ps.getLosses())));
+		}
+		if (ps.getKills() == 0) {
+			killdeath = "0.00";
+		} else {
+			killdeath = String.format("%1$,.2f", ((double)((double)ps.getKills()/(double)ps.getDeaths())));
+		}
+		
+		return new Messaging.MessageFormatter()
+				.setVariable("elo", Integer.toString(ps.getElo()))
+				.setVariable("wins", Integer.toString(ps.getWins()))
+				.setVariable("losses", Integer.toString(ps.getLosses()))
+				.setVariable("kills", Integer.toString(ps.getKills()))
+				.setVariable("deaths",Integer.toString(ps.getDeaths()))
+				.setVariable("xp", Integer.toString(ps.getXp()))
+				.setVariable("killdeath", killdeath)
+				.setVariable("winloss", winloss)
+				.setVariable("balance", "" + getBalance(player))
+				.format(lineNum);
+	}
+	
+	private static double getBalance(Player player) {
+		if (SkyWarsReloaded.getCfg().economyEnabled()) {
+			return VaultUtils.get().getBalance(player);
+		}
+		return 0;
+	}
+	
+    private static void resetScoreboard(Player player) {
+    	Scoreboard scoreboard = scoreboards.get(player);
+    	for (Objective objective: scoreboard.getObjectives()) {
+        	if (objective != null) {
+                objective.unregister();
+            }
+    	}
+        
+        if (scoreboard != null) {
+            scoreboard = null;
+        }
+    }
+
+	public static Scoreboard getPlayerScoreboard(Player player) {
+		return scoreboards.get(player);
+	}
+	
+	public PermissionAttachment getPerms() {
+		return perms;
+	}
+	
+	public void addPerm(String perm, boolean save) {
+		perms.setPermission(perm, true);
+		if (save) {
+			DataStorage.get().savePerms(this);
+		}
+	}
+
+	public static void removePlayer(String id) {
+		PlayerStat ps = getPlayerStats(id);
+		if (ps != null) {
+			players.remove(ps);
+		}
 	}
 }

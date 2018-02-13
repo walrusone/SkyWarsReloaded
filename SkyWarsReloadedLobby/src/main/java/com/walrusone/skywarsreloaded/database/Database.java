@@ -182,9 +182,9 @@ public class Database {
 	        try {
 	            StringBuilder queryBuilder = new StringBuilder();
 	            queryBuilder.append("INSERT INTO `sw_player` ");
-	            queryBuilder.append("(`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`) ");
+	            queryBuilder.append("(`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt`) ");
 	            queryBuilder.append("VALUES ");
-	            queryBuilder.append("(NULL, ?, ?, 0, 0, 0, 0, 1500, 0, ?, ?, ?, ?, ?);");
+	            queryBuilder.append("(NULL, ?, ?, 0, 0, 0, 0, 1500, 0, ?, ?, ?, ?, ?, ?);");
 	            preparedStatement = connection.prepareStatement(queryBuilder.toString());
 	            preparedStatement.setString(1, fId);
 	            preparedStatement.setString(2, name);
@@ -193,6 +193,7 @@ public class Database {
 	            preparedStatement.setString(5, "none");
 	            preparedStatement.setString(6, "none");
 	            preparedStatement.setString(7, "none");
+	            preparedStatement.setString(8, "none");
 	            
 	            preparedStatement.executeUpdate();
 

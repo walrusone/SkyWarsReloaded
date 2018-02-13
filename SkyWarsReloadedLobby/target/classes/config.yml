@@ -1,13 +1,34 @@
 debugMode: false
 spawn: null
-leaderboardUpdateInterval: 300
+lobbyBoardEnabled: true
+displayPlayerLevelOnXpBar: true
+enabledLobbyGuard: false
+economyEnabled: false
+sounds:
+  enabled: true
+  openJoinMenu: BLOCK_FENCE_GATE_OPEN
+  openOptionsMenu: ENTITY_ZOMBIE_VILLAGER_CURE
+  openGlassMenu: BLOCK_GLASS_BREAK
+  openWinSoundMenu: ENTITY_FIREWORK_BLAST
+  openKillSoundMenu: ENTITY_PIG_DEATH
+  openParticleMenu: BLOCK_GRAVEL_STEP
+  openProjectileMenu: ENTITY_ARROW_SHOOT
+  confirmSelectionSound: ENTITY_VILLAGER_YES
+  errorSound: ENTITY_VILLAGER_NO
 signs:
   enabled: true
   blockoffline: COAL_BLOCK
   blockwaiting: EMERALD_BLOCK
   blockplaying: REDSTONE_BLOCK
   blockending: LAPIS_BLOCK
+  almostfull: DIAMOND_HELMET
+  threefull: GOLD_HELMET
+  halffull: IRON_HELMET
+  almostempty: LEATHER_HELMET
 items:
+  joinselect: DIAMOND_HELMET
+  nopermission: BARRIER
+  optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
   projectileselect: ARROW
   killsoundselect: DIAMOND_SWORD
@@ -16,12 +37,27 @@ items:
   glassselect: STAINED_GLASS
   tauntselect: SHIELD
 enabledMenus:
+  join: true
+  joinSlot: 0
+  options: true
+  optionsSlot: 8
   glass: true
   particle: true
   projectile: true
   killsound: true
   winsound: true
   taunts: true
+leaderboards:
+  length: 10
+  leaderboardUpdateInterval: 300
+  signsEnabled: true
+  headsEnabled: true  
+  eloLeaderboardEnabled: true
+  winsLeaderboardEnabled: false
+  lossesLeaderboardEnabled: false  
+  killsLeaderboardEnabled: false
+  deathsLeaderboardEnabled: false
+  xpLeaderboardEnabled: false
 sqldatabase:
   enabled: false
   hostname: localhost

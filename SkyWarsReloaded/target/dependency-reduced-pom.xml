@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywarsreloaded</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V3.0</version>
+  <version>V3.0.5</version>
   <build>
     <resources>
       <resource>
@@ -62,6 +62,10 @@
     <repository>
       <id>vault-repo</id>
       <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+    </repository>
+    <repository>
+      <id>rayzr-repo</id>
+      <url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
     </repository>
   </repositories>
   <dependencies>

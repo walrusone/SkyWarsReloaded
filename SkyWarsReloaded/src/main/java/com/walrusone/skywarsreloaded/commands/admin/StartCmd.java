@@ -5,10 +5,11 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 
 public class StartCmd extends BaseCmd { 
 	
-	public StartCmd() {
+	public StartCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "start";
-		alias = new String[]{""};
+		alias = new String[]{"s"};
 		argLength = 1; //counting cmdName
 	}
 

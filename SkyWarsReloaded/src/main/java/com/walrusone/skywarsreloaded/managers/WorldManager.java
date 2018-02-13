@@ -34,7 +34,7 @@ public class WorldManager {
 	        world.getBlockAt(0, 75, 0).setType(Material.STONE);
 	        return world;
 		} else {
-			return Bukkit.getWorld(name);
+			return null;
 		}
     }
 

@@ -1,6 +1,6 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 3.0
+version: 3.0.5
 softdepend: [Vault, PlaceholderAPI]
 
 commands:
@@ -8,11 +8,24 @@ commands:
       description: This is the main plugin command.
       aliases: [sw]
       usage: /<command> [args]
+   swparty:
+      description: This is the main party command.
+      aliases: [swp]
+      usage: /<command> [args]
+   swkit:
+      description: This is the main party command.
+      aliases: [swk]
+      usage: /<command> [args]
+   swmap:
+      description: This is the main party command.
+      aliases: [swm]
+      usage: /<command> [args]
 permissions:
   sw.*:
     description: Gives access to all sw commands
     children:
       sw.admin: true
+      sw.party: true
       sw.maps: true
       sw.kits: true
       sw.player: true
@@ -37,33 +50,46 @@ permissions:
     description: Allows a player to use all map commands.
     default: op
     children:
-      sw.create: true
-      sw.edit: true
-      sw.listmaps: true
-      sw.save: true
-      sw.register: true
-      sw.unregister: true
-      sw.refreshmaps: true
+      sw.map.arenas: true
+      sw.map.create: true
+      sw.map.creator: true
+      sw.map.delete: true
+      sw.map.edit: true
+      sw.map.list: true
+      sw.map.minimum: true
+      sw.map.name: true
+      sw.map.refresh: true
+      sw.map.register: true
+      sw.map.save: true
+      sw.map.unregister: true
   sw.kits:
     description: Allows a player to use all kit commands.
     default: op
     children:
-      sw.kitcreate: true
-      sw.kitenable: true
-      sw.kitfall: true
-      sw.kiticon: true
-      sw.kitlockicon: true
-      sw.kitperm: true
-      sw.kitload: true
-      sw.kitlist: true
-      sw.kitlore: true
-      sw.kitname: true
-      sw.kitpos: true
-      sw.kitregen: true
-      sw.kitpvp: true
-      sw.kitsoup: true
-      sw.kitupdate: true
+      sw.kit.create: true
+      sw.kit.enable: true
+      sw.kit.icon: true
+      sw.kit.lockicon: true
+      sw.kit.perm: true
+      sw.kit.load: true
+      sw.kit.list: true
+      sw.kit.lore: true
+      sw.kit.name: true
+      sw.kit.position: true
+      sw.kit.update: true
       sw.player: true
+  sw.parties:
+    description: Allows a player to use all kit commands.
+    default: op
+    children:
+      sw.party.accept: true
+      sw.party.decline: true
+      sw.party.create: true
+      sw.party.disband: true
+      sw.party.info: true
+      sw.party.invite: true
+      sw.party.leave: true
+      sw.party.name: true
   sw.player:
     description: Allows a player to using all player commands.
     default: true
@@ -111,71 +137,95 @@ permissions:
   sw.chestadd:
     description: Allows a player to use the chestadd command.
     default: op
-  sw.create:
+  sw.map.arenas:
+    description: Allows a player to use the Arenas GUI.
+    default: op  
+  sw.map.create:
     description: Allows a player to create a arena.
     default: op
-  sw.edit: 
+  sw.map.creator:
+    description: Allows a player to set the creator for for a arena.
+    default: op
+  sw.map.edit: 
     description: Allows a player to edit a arena.
     default: op
-  sw.listmaps: 
+  sw.map.delete: 
+    description: Allows a player to delete a arena.
+    default: op
+  sw.map.list: 
     description: Allows a player to list the available maps.
     default: op
-  sw.save:
+  sw.map.save:
     description: Allows a player to save a arena.
     default: op
-  sw.register:
+  sw.map.minimum:
+    description: Allows a player to set the minimum players for a arena.
+    default: op
+  sw.map.name:
+    description: Allows a player to set the display name for a arena.
+    default: op
+  sw.map.register:
     description: Allows a player to register a arena.
     default: op
-  sw.unregister:
+  sw.map.unregister:
     description: Allows a player to unregister a arena.
     default: op
-  sw.refreshmaps:
+  sw.map.refresh:
     description: Allows a player to reload the maps data file.
     default: op     
-  sw.kitcreate: 
+  sw.kit.create: 
     description: Allows a player to use the kitcreate command.
     default: op
-  sw.kitenable: 
+  sw.kit.enable: 
     description: Allows a player to use the kitenable command.
     default: op
-  sw.kitfall: 
-    description: Allows a player to use the kitfall command.
-    default: op
-  sw.kiticon: 
+  sw.kit.icon: 
     description: Allows a player to use the kiticon command.
     default: op
-  sw.kitlockicon: 
+  sw.kit.lockicon: 
     description: Allows a player to use the kitlockicon command.
     default: op
-  sw.kitperm: 
+  sw.kit.perm: 
     description: Allows a player to use the kitperm command.
     default: op
-  sw.kitload: 
+  sw.kit.load: 
     description: Allows a player to use the kitload command.
     default: op
-  sw.kitlist: 
+  sw.kit.list: 
     description: Allows a player to use the kitlist command.
     default: op
-  sw.kitlore: 
+  sw.kit.lore: 
     description: Allows a player to use the kitlore command.
     default: op
-  sw.kitname: 
+  sw.kit.name: 
     description: Allows a player to use the kitname command.
     default: op
-  sw.kitpos: 
+  sw.kit.position: 
     description: Allows a player to use the kitpos command.
     default: op
-  sw.kitregen: 
-    description: Allows a player to use the kitregen command.
-    default: op
-  sw.kitpvp: 
-    description: Allows a player to use the kitpvp command.
-    default: op
-  sw.kitsoup: 
-    description: Allows a player to use the kitsoup command.
-    default: op
-  sw.kitupdate: 
+  sw.kit.update: 
     description: Allows a player to use the kitupdate command.
+    default: op
+  sw.party.accept:
+    description: Allows a player to accept a party invite.
+    default: op
+  sw.party.create:
+    description: Allows a player to create a party.
+    default: op
+  sw.party.disband:
+    description: Allows a player to disband a party.
+    default: op
+  sw.party.decline:
+    description: Allows a player to decline a party invite.
+    default: op
+  sw.party.info:
+    description: Allows a player to view their party info.
+    default: op
+  sw.party.invite:
+    description: Allows a player to invite others to their party.
+    default: op
+  sw.party.leave:
+    description: Allows a player to leave a party.
     default: op
   sw.vip1:
     description: Gives the player a experience multiplier.

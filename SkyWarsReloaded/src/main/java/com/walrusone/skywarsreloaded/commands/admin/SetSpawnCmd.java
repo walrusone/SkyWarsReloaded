@@ -8,7 +8,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SetSpawnCmd extends BaseCmd { 
 	
-	public SetSpawnCmd() {
+	public SetSpawnCmd(String t) {
+		type = t;
 		forcePlayer = true;
 		cmdName = "setspawn";
 		alias = new String[]{"sspawn"};

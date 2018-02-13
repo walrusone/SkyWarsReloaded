@@ -1,7 +1,5 @@
 package com.walrusone.skywarsreloaded.listeners;
 
-import java.util.UUID;
-
 import org.bukkit.event.EventHandler;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
@@ -15,19 +13,14 @@ public class PlayerQuitListener implements Listener
 {
     @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent a1) {
-    	final String id = a1.getPlayer().getUniqueId().toString();
-        
+    	final String id = a1.getPlayer().getUniqueId().toString();        
    		if (PlayerStat.getPlayerStats(id) != null) {
    			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(id)) == null) {
-			   			PlayerStat remove = PlayerStat.getPlayerStats(id);
-			   			PlayerStat.getPlayers().remove(remove);
-					}
+			   		PlayerStat.removePlayer(id);
 				}
-   				
-   			}.runTaskLater(SkyWarsReloaded.get(), 40);
+   			}.runTaskLater(SkyWarsReloaded.get(), 20);
    		}
     }
 }

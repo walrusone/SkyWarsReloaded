@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -14,7 +15,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 public class ClearStatsCmd extends BaseCmd { 
 	
 	public ClearStatsCmd() {
-		forcePlayer = true;
+		forcePlayer = false;
 		cmdName = "clearstats";
 		alias = new String[]{"cs", "cstats"};
 		argLength = 2; //counting cmdName
@@ -22,18 +23,18 @@ public class ClearStatsCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		Player bouncewarssPlayer = null;
+		Player swPlayer = null;
 		for (Player playerMatch: Bukkit.getOnlinePlayers()) {
 			if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {
-				bouncewarssPlayer = playerMatch;
+				swPlayer = playerMatch;
 			}
 		}
 		
-		if (bouncewarssPlayer != null) {
-			PlayerStat pStat = PlayerStat.getPlayerStats(bouncewarssPlayer);
+		if (swPlayer != null) {
+			PlayerStat pStat = PlayerStat.getPlayerStats(swPlayer);
 			pStat.clear();
 			DataStorage.get().saveStats(pStat);
-			player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
+			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
 			return true;
 		} else {
 			new BukkitRunnable() {
@@ -51,8 +52,7 @@ public class ClearStatsCmd extends BaseCmd {
 							@Override
 							public void run() {
 									DataStorage.get().removePlayerData(uuid);
-									DataStorage.get().updateTop();
-									player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
+									player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
 							}
 						}.runTask(SkyWarsReloaded.get());
 					} else {
