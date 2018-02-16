@@ -6,5 +6,14 @@ public enum LeaderType {
     LOSSES,
     KILLS,
     DEATHS,
-    XP,
+    XP;
+	
+	public static LeaderType matchType(String string) {
+		for (LeaderType type: LeaderType.values()) {
+			if (type.toString().equalsIgnoreCase(string)) {
+				return type;
+			}
+		}
+		return null;
+	}
 }

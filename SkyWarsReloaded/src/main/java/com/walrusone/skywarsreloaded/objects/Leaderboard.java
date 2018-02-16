@@ -41,73 +41,36 @@ public class Leaderboard {
 		loaded.put(LeaderType.LOSSES, false);
 		loaded.put(LeaderType.XP, false);
 		
-		if (SkyWarsReloaded.getCfg().eloEnabled()) {
-			leaders.put(LeaderType.ELO, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.ELO, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.ELO);
-			}
-		} 
-		if (SkyWarsReloaded.getCfg().winsEnabled()) {
-			leaders.put(LeaderType.WINS, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.WINS, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.WINS);
-			}
-		} 
-		if (SkyWarsReloaded.getCfg().lossesEnabled()) {
-			leaders.put(LeaderType.LOSSES, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.LOSSES, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.LOSSES);
-			}
-		} 
-		if (SkyWarsReloaded.getCfg().killsEnabled()) {
-			leaders.put(LeaderType.KILLS, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.KILLS, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.KILLS);
-			}
-		} 
-		if (SkyWarsReloaded.getCfg().deathsEnabled()) {
-			leaders.put(LeaderType.DEATHS, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.DEATHS, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.DEATHS);
-			}
-		} 
-		if (SkyWarsReloaded.getCfg().xpEnabled()) {
-			leaders.put(LeaderType.XP, new ArrayList<LeaderData>());
-			if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-				signs.put(LeaderType.XP, new HashMap<Integer, ArrayList<Location>>());
-				getSigns(LeaderType.XP);
+		for (LeaderType type: LeaderType.values()) {
+			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+				leaders.put(type, new ArrayList<LeaderData>());
+				if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
+					signs.put(type, new HashMap<Integer, ArrayList<Location>>());
+					getSigns(type);
+				}
 			}
 		}
-		
+				
 		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), new Runnable() {
 			@Override
 			public void run() {
-				if (SkyWarsReloaded.getCfg().eloEnabled()) {
-					DataStorage.get().updateTop(LeaderType.ELO, SkyWarsReloaded.getCfg().getLeaderSize());
-				} 
-				if (SkyWarsReloaded.getCfg().winsEnabled()) {
-					DataStorage.get().updateTop(LeaderType.WINS, SkyWarsReloaded.getCfg().getLeaderSize());
-				}
-				if (SkyWarsReloaded.getCfg().lossesEnabled()) {
-					DataStorage.get().updateTop(LeaderType.LOSSES, SkyWarsReloaded.getCfg().getLeaderSize());
-				}
-				if (SkyWarsReloaded.getCfg().killsEnabled()) {
-					DataStorage.get().updateTop(LeaderType.KILLS, SkyWarsReloaded.getCfg().getLeaderSize());
-				}
-				if (SkyWarsReloaded.getCfg().deathsEnabled()) {
-					DataStorage.get().updateTop(LeaderType.DEATHS, SkyWarsReloaded.getCfg().getLeaderSize());
-				}
-				if (SkyWarsReloaded.getCfg().xpEnabled()) {
-					DataStorage.get().updateTop(LeaderType.XP, SkyWarsReloaded.getCfg().getLeaderSize());
+				for (LeaderType type: LeaderType.values()) {
+					if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+						DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
+					}
 				}
 			}
-		}
-		, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
+		}, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
+					SkyWarsReloaded.getHoloManager().load();
+				}
+			}
+		}.runTask(SkyWarsReloaded.get());
+
 	}
 	
 	public void addLeader(LeaderType type, String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
@@ -128,8 +91,11 @@ public class Leaderboard {
 				@Override
 				public void run() {
 					updateSigns(type);
+					if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
+						SkyWarsReloaded.getHoloManager().updateLeaderHolograms(type);
+					}
 				}	
-			}.runTaskLater(SkyWarsReloaded.get(), 0);
+			}.runTaskLater(SkyWarsReloaded.get(), 1);
 		}
 	}
 	
@@ -137,7 +103,7 @@ public class Leaderboard {
 		return loaded.get(type);
 	}
     
-    public List<LeaderData> getTop(final int top, LeaderType type) {
+    private List<LeaderData> getTop(final int top, LeaderType type) {
         final ArrayList<LeaderData> pData = new ArrayList<LeaderData>();
         pData.addAll(leaders.get(type));
         Collections.<LeaderData>sort(pData, new RankComparator(type));

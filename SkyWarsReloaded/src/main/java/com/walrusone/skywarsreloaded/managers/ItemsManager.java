@@ -23,11 +23,39 @@ public class ItemsManager {
     	getModifierVoteItems();
     	getLobbyItem();
     	getOptionItems();
+    	getSignItems();
     }
     
     private void addItem(String materialref, List<String> lore, String message) {
-    	ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref).toUpperCase()), lore, new Messaging.MessageFormatter().format(message));
+    	String mat = SkyWarsReloaded.getCfg().getMaterial(materialref);
+		int data = -1;
+		String matWithData = "";
+		String[] matParts = mat.split(":");
+		if (matParts.length == 2) {
+			matWithData = matParts[0];
+			data = Integer.valueOf(matParts[1]);
+		}
+		ItemStack item;
+		if (data != -1) {
+			item = new ItemStack(Material.valueOf(matWithData.toUpperCase()), 1, (short) data);
+		} else {
+			item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref).toUpperCase()), 1);
+		}
+		
+    	ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(item, lore, new Messaging.MessageFormatter().format(message));
         gameItems.put(materialref, addItem);
+    }
+    
+    private void getSignItems() {
+        List<String> lore = new ArrayList<String>();
+        addItem("blockoffline", lore, "items.skywars-options");
+        addItem("blockwaiting", lore, "items.skywars-options");
+        addItem("blockplaying", lore, "items.skywars-options"); 
+        addItem("blockending", lore, "items.skywars-options"); 
+        addItem("almostfull", lore, "items.skywars-options"); 
+        addItem("threefull", lore, "items.skywars-options");
+        addItem("halffull", lore, "items.skywars-options"); 
+        addItem("almostempty", lore, "items.skywars-options"); 
     }
     
     private void getLobbyItem() {

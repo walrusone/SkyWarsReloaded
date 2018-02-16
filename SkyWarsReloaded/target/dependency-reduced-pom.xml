@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywarsreloaded</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V3.0.5</version>
+  <version>V3.0.9</version>
   <build>
     <resources>
       <resource>
@@ -30,6 +30,7 @@
           <include>taunts18.yml</include>
           <include>winsounds.yml</include>
           <include>winsounds18.yml</include>
+          <include>holograms.yml</include>
           <include>tables.sql</include>
         </includes>
       </resource>
@@ -87,6 +88,20 @@
       <version>1.8-R0.1</version>
       <scope>system</scope>
       <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded/lib/craftbukkit-1.8.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.gmail.filoghost</groupId>
+      <artifactId>holograaphicdisplays</artifactId>
+      <version>latest</version>
+      <scope>system</scope>
+      <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded/lib/HolographicDisplaysAPI.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.sainttx.holograms</groupId>
+      <artifactId>holograms-api</artifactId>
+      <version>latest</version>
+      <scope>system</scope>
+      <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded/lib/Holograms-2.5.0-SNAPSHOT.jar</systemPath>
     </dependency>
   </dependencies>
   <properties>

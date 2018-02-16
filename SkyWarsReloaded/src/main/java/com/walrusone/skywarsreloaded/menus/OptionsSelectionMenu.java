@@ -1,10 +1,9 @@
 package com.walrusone.skywarsreloaded.menus;
 
-import java.util.List;
-
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
-import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.menus.IconMenu.OptionClickEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -16,8 +15,32 @@ public class OptionsSelectionMenu {
     private static final String menuName = new Messaging.MessageFormatter().format("menu.options-menu-title");
     
     public OptionsSelectionMenu(final Player player) {
+    	
+    	Inventory inv = Bukkit.createInventory(null, menuSize, menuName);
 
-        SkyWarsReloaded.getIC().create(player, menuName, menuSize, new IconMenu.OptionClickEventHandler() {
+        if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
+        	inv.setItem(9, SkyWarsReloaded.getIM().getItem("glassselect"));
+        }
+        	
+        if (SkyWarsReloaded.getCfg().particleMenuEnabled()) {
+        	inv.setItem(11, SkyWarsReloaded.getIM().getItem("particleselect"));
+        }
+        if (SkyWarsReloaded.getCfg().projectileMenuEnabled()) {
+        	inv.setItem(12, SkyWarsReloaded.getIM().getItem("projectileselect"));
+        }
+        if (SkyWarsReloaded.getCfg().killsoundMenuEnabled()) {
+        	inv.setItem(14, SkyWarsReloaded.getIM().getItem("killsoundselect"));
+        }
+        if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
+        	inv.setItem(15, SkyWarsReloaded.getIM().getItem("winsoundselect"));
+        }
+        if (SkyWarsReloaded.getCfg().tauntsMenuEnabled()) {
+        	inv.setItem(17, SkyWarsReloaded.getIM().getItem("tauntselect"));
+        }
+        
+        inv.setItem(menuSize-1, SkyWarsReloaded.getIM().getItem("exitMenuItem"));
+
+        SkyWarsReloaded.getIC().create(player, inv, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(OptionClickEvent event) {
                 
@@ -25,99 +48,30 @@ public class OptionsSelectionMenu {
 
                 if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.particle-effect-sel"))) {
                 	new EffectSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenParticleMenuSound(), 1, 1);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenParticleMenuSound(), 1, 1);
                 } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.projectile-effect-sel"))) {
-                	new ProjSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenProjectileMenuSound(), 1, 1);
+		            new ProjSelectionMenu(player);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenProjectileMenuSound(), 1, 1);
                 } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.killsound-sel"))) {
-                	new KillSoundSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKillSoundMenuSound(), 1, 1);
+		            new KillSoundSelectionMenu(player);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKillSoundMenuSound(), 1, 1);
                 } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.winsound-sel"))) {
-                	new WinSoundSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenWinSoundMenuSound(), 1, 1);
+		            new WinSoundSelectionMenu(player);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenWinSoundMenuSound(), 1, 1);
                 } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.glass-sel"))) {
-                	new ColorSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenGlassMenuSound(), 1, 1);
+                    new ColorSelectionMenu(player);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenGlassMenuSound(), 1, 1);
                 } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.taunt-sel"))) {
-                	new TauntSelectionMenu(player);
-                	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenTauntMenuSound(), 1, 1);
+		            new TauntSelectionMenu(player);
+		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenTauntMenuSound(), 1, 1);
+                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.exit-menu-item"))) {
+                	player.closeInventory();
                 } else {
                 	return;
                 }
-                event.setWillClose(false);
-                event.setWillDestroy(true); 
             }
-
+			
         });
-
-        List<String> loreList = Lists.newLinkedList();
-
-        if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("glassselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        9,
-                        SkyWarsReloaded.getIM().getItem("glassselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("glassselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
-        if (SkyWarsReloaded.getCfg().particleMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("particleselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        11,
-                        SkyWarsReloaded.getIM().getItem("particleselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("particleselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
-        if (SkyWarsReloaded.getCfg().projectileMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("projectileselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        12,
-                        SkyWarsReloaded.getIM().getItem("projectileselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("projectileselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
-        if (SkyWarsReloaded.getCfg().killsoundMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("killsoundselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        14,
-                        SkyWarsReloaded.getIM().getItem("killsoundselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("killsoundselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
-        if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("winsoundselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        15,
-                        SkyWarsReloaded.getIM().getItem("winsoundselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("winsoundselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
-        if (SkyWarsReloaded.getCfg().tauntsMenuEnabled()) {
-        	if (player != null) {
-                loreList = SkyWarsReloaded.getIM().getItem("tauntselect").getItemMeta().getLore();
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        17,
-                        SkyWarsReloaded.getIM().getItem("tauntselect"),
-                        SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("tauntselect")),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-        }
                 
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);

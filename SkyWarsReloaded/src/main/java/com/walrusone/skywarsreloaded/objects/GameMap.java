@@ -171,7 +171,7 @@ public class GameMap {
 		}
     	for (int i = 1; i <= playerCards.size(); i++) {
     		PlayerCard pCard = playerCards.get(i);
-    		if (pCard.getPlayer() == null) {
+    		if (pCard.getPlayer() == null && pCard.getSpawn() != null) {
     			pCard.setPlayer(player);
     			pCard.setPreElo(PlayerStat.getPlayerStats(player.getUniqueId()).getElo());
    			
@@ -585,7 +585,12 @@ public class GameMap {
         matchState = MatchState.WAITINGSTART;
         getScoreBoard();
         MatchManager.get().start(this);
-        update();
+        new BukkitRunnable() {
+			@Override
+			public void run() {
+				update();
+			}
+        }.runTaskLater(SkyWarsReloaded.get(), 20);   
 	}
 	
 	/*Inventories*/
@@ -1088,8 +1093,11 @@ public class GameMap {
         
         for (int i = 1; i < 17; i++) {
         	if (i == 1) {
-    	        String leaderboard = getScoreboardLine(sb + i);
-    	        objective.setDisplayName(leaderboard);
+    	        String title = getScoreboardLine(sb + i);
+    	        if (title.length() > 32) {
+    	        	title = title.substring(0, 31);
+    	        }
+    	        objective.setDisplayName(title);
     		} else {
     			String s = "";
     			if (getScoreboardLine(sb + i).length() == 0) {
@@ -1100,6 +1108,9 @@ public class GameMap {
     				s = getScoreboardLine(sb + i);
     			}
     			if (!s.equalsIgnoreCase("remove")) {
+    				if (s.length() > 40) {
+    	    	        s = s.substring(0, 39);
+    				}
         			Score score = objective.getScore(s);
     				score.setScore(17-i);
     			}

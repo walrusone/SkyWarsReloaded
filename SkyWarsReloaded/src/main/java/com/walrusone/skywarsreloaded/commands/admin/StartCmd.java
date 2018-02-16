@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.objects.GameMap;
 
 public class StartCmd extends BaseCmd { 
 	
@@ -15,7 +16,10 @@ public class StartCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		MatchManager.get().forceStart(player);
+		GameMap gMap = MatchManager.get().getPlayerMap(player);
+		if (gMap != null) {
+			MatchManager.get().forceStart(player);
+		}
 		return true;
 	}
 

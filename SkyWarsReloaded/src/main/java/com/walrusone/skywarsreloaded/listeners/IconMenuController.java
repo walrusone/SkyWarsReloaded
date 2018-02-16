@@ -1,7 +1,9 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.google.common.collect.Maps;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.menus.IconMenu;
+import com.walrusone.skywarsreloaded.menus.IconMenu.OptionClickEventHandler;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,12 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Map;
 
-//https://github.com/Wietje/SkyWars/blob/master/src/main/java/vc/pvp/skywars/controllers/IconMenuController.java/
 public class IconMenuController implements Listener {
 
     private final Map<Player, IconMenu> menu = Maps.newHashMap();
@@ -22,10 +24,9 @@ public class IconMenuController implements Listener {
     public IconMenuController() {
     }
 
-    public void create(Player player, String name, int size, IconMenu.OptionClickEventHandler handler) {
+    public void create(Player player, Inventory inv, OptionClickEventHandler optionClickEventHandler) {
         if (player != null) {
-        	destroy(player);
-            menu.put(player, new IconMenu(name, size, handler));
+            menu.put(player, new IconMenu(inv, optionClickEventHandler));
         }
     }
 
@@ -35,33 +36,13 @@ public class IconMenuController implements Listener {
     
     public void show(Player player) {
         if (menu.containsKey(player)) {
-            menu.get(player).open(player);
+            player.openInventory(menu.get(player).getInventory());
         }
-    }
-    
-    public void update(final Player player) {
-        if (menu.containsKey(player)) {
-            menu.get(player).update(player);
-        }
-    }
-
-    public void setOption(Player player, int position, ItemStack icon, String name, String[] info) {
-        if (menu.containsKey(player)) {
-            menu.get(player).setOption(position, icon, name, info);
-        }
-    }
-    
-    public String[] getOptions(Player player) {
-        if (menu.containsKey(player)) {
-            return menu.get(player).getOptions();
-        }
-        return null;
     }
 
     public void destroy(Player player) {
         if (menu.containsKey(player)) {
-            menu.remove(player).destroy();
-            player.getOpenInventory().close();
+            menu.remove(player);
         }
     }
 
@@ -85,7 +66,14 @@ public class IconMenuController implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getPlayer() instanceof Player && menu.containsKey(event.getPlayer())) {
-                destroy((Player) event.getPlayer());
+        	new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (event.getPlayer().getOpenInventory().equals(menu.get(event.getPlayer()).getInventory())) {
+						destroy((Player) event.getPlayer());
+					}
+				}
+        	}.runTaskLater(SkyWarsReloaded.get(), 5);
         }
     }
 }

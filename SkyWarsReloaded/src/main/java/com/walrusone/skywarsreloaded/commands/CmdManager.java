@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 
 import com.walrusone.skywarsreloaded.commands.admin.ChestAddCmd;
 import com.walrusone.skywarsreloaded.commands.admin.ClearStatsCmd;
+import com.walrusone.skywarsreloaded.commands.admin.HoloAddCmd;
+import com.walrusone.skywarsreloaded.commands.admin.HoloRemoveCmd;
 import com.walrusone.skywarsreloaded.commands.admin.ReloadCmd;
 import com.walrusone.skywarsreloaded.commands.admin.UpdateTopCmd;
 import com.walrusone.skywarsreloaded.commands.admin.SetSpawnCmd;
@@ -27,7 +29,6 @@ public class CmdManager implements CommandExecutor {
 	private List<BaseCmd> admincmds = new ArrayList<BaseCmd>();
 	private List<BaseCmd> pcmds = new ArrayList<BaseCmd>();
 
-	//Add New Commands Here
 	public CmdManager() {
 		admincmds.add(new ReloadCmd("sw"));
 		admincmds.add(new ChestAddCmd("sw"));
@@ -36,6 +37,8 @@ public class CmdManager implements CommandExecutor {
 		admincmds.add(new SetSpawnCmd("sw"));
 		admincmds.add(new StartCmd("sw"));
 		admincmds.add(new UpdateTopCmd("sw"));
+		admincmds.add(new HoloAddCmd("sw"));
+		admincmds.add(new HoloRemoveCmd("sw"));
 		
 		pcmds.add(new SWJoinCmd("sw"));
 		pcmds.add(new SWQuitCmd("sw"));

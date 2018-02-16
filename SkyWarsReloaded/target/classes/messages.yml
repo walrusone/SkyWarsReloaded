@@ -113,7 +113,7 @@ game:
   votekit: '&3{player} &4voted for Kit: {kit}'
   votechest: '&3{player} &4voted for Chest: {chest}'
   votetime: '&3{player} &4voted for Time: {time}'
-  voteweather: '&3{player} &4voted for Weather: {chest}'
+  voteweather: '&3{player} &4voted for Weather: {weather}'
   votemodifier: '&3{player} &4voted for Modifier: {mod}'
   broadcast-win: '&6{player1} won a SkyWars Match on the map {map}'
   won: '&aYou won {score} SkyWars on the map {map}'
@@ -121,6 +121,7 @@ game:
   left-the-game: '&6{player} &4has left the game!'
   joined-the-game: '&6{player} &4has joined the game!'
   unlock-kit: '&a{player} has unlocked the kit {kit}'
+  select-kit: '&4You selected the kit {kit}!'
   scoreboard-title: '&4&l{mapname}'
   vote-display: '&eVOTES: {number}'
   death:
@@ -336,6 +337,7 @@ leaderboard:
   footer: '&9>>>&3==&1==&3==&1==&3==&1==&3==&1==&3==&1==&9<<<'
   updating: '&4The leaderboard is currently being updated. Try again later!'
   invalidtype: '&4Leaderboard [stat] must be either: {validtypes}'
+  invalidformat: '&Holographic leaderboard [format] must be either: {validtypes}'
   signformats:
     elo:
       line1: '&L&0{position}'
@@ -384,6 +386,8 @@ helpList:
     quit: '&a/sw quit &e- &2Quits from the current game'
     stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'
     top: '&a/sw top [stat] &e- &2Displays SkyWars leaderboard'
+    hologram: '&a/sw hologram [stat] [format] &e- &2Creates a leaderboard hologram at your eye location.'
+    holoremove: '&a/sw holoremove &e- &2Removes the closest hologram leaderboard.'
   swmap: 
     header1: '&7-----------------[&aMap Commands&7]-----------------'
     create: '&a/swmap create &e[mapname] &e- &2Creates a map named &e[mapname]'
@@ -397,7 +401,7 @@ helpList:
     register: '&a/swmap register &e[mapname] &e- &2Registers a map named &e[mapname]'
     unregister: '&a/swmap unregister &e[mapname] &e- &2Unregisters a map named &e[mapname]'
     save: '&a/swmap save &e[mapname] &e- &2Saves a open map named &e[mapname]'
-    arena: '&a/swmap arenas &e- &2Opens the Arenas GUI'
+    arenas: '&a/swmap arenas &e- &2Opens the Arenas GUI'
   swkit:
     header1: '&7-----------------[&aKit Commands&7]-----------------'
     create: '&a/swkit create &e[kitname] &e- &2Create a kit using the items in your inventory'
@@ -414,6 +418,7 @@ helpList:
   swparty:
     header1: '&7-----------------[&aParty Commands&7]-----------------'
     accept: '&a/swparty accept &e- &2Accepts your current party invitation'
+    decline: '&a/swparty decline &e- &2Declines your current party invitation'
     create: '&a/swparty create &e[partyname] &e- &2Creates a party named &e[partyname]'
     disband: '&a/swparty disband &e- &2Disbands your current party'
     invite: '&a/swparty invite &e[player] &e- &2Invites [player] to join your party'

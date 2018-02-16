@@ -26,56 +26,64 @@ public class SWRSign {
 		Sign sign = null;
 		if (bs instanceof Sign) {
 			sign = (Sign) bs;
-		}
-		Block b = sign.getBlock();
-		org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
-		meteSign = (org.bukkit.material.Sign) b.getState().getData();
-		Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
-		setMaterial(gMap, attachedBlock);
-		String state = "";
-		if (gMap == null) {
-			state = new Messaging.MessageFormatter().format("signs.offline");
-		} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-			state = new Messaging.MessageFormatter().format("signs.joinable");
-		} else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
-			state =  new Messaging.MessageFormatter().format("signs.playing");
-		} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-			state =  new Messaging.MessageFormatter().format("signs.ending");;
-		}
-		if (sign != null) {
-				sign.getBlock().getChunk().load();
-				if (gMap != null) {
-					sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
-							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-							setVariable("playercount", "" + gMap.getPlayerCount()).
-							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1"));
-					sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
-							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-							setVariable("playercount", "" + gMap.getPlayerCount()).
-							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2"));
-					sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
-							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-							setVariable("playercount", "" + gMap.getPlayerCount()).
-							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3"));
-					sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
-							setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-							setVariable("playercount", "" + gMap.getPlayerCount()).
-							setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
-					}
-					sign.update();
+			Block b = sign.getBlock();
+			org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
+			meteSign = (org.bukkit.material.Sign) b.getState().getData();
+			Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
+			setMaterial(gMap, attachedBlock);
+			String state = "";
+			if (gMap == null || gMap.getMatchState().equals(MatchState.OFFLINE)) {
+				state = new Messaging.MessageFormatter().format("signs.offline");
+			} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+				state = new Messaging.MessageFormatter().format("signs.joinable");
+			} else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+				state =  new Messaging.MessageFormatter().format("signs.playing");
+			} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+				state =  new Messaging.MessageFormatter().format("signs.ending");;
+			}
+			if (sign != null) {
+					sign.getBlock().getChunk().load();
+					if (gMap != null) {
+						sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
+								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+								setVariable("playercount", "" + gMap.getPlayerCount()).
+								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1"));
+						sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
+								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+								setVariable("playercount", "" + gMap.getPlayerCount()).
+								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2"));
+						sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
+								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+								setVariable("playercount", "" + gMap.getPlayerCount()).
+								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3"));
+						sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
+								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+								setVariable("playercount", "" + gMap.getPlayerCount()).
+								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
+						}
+						sign.update();
+			}
 		}
 	}
 	
 	private static void setMaterial(GameMap gMap, Block attachedBlock) {
 		attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
 		if (gMap == null) {
-			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockoffline")));
+			updateBlock(attachedBlock, "blockoffline");
 		} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockwaiting")));
+			updateBlock(attachedBlock, "blockwaiting");
 		} else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
-			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockplaying")));
+			updateBlock(attachedBlock, "blockplaying");
 		} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-			attachedBlock.setType(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("blockending")));
+			updateBlock(attachedBlock, "blockending");
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static void updateBlock(Block block, String item) {
+		block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
+		if (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.WOOL) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.STAINED_GLASS) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.STAINED_CLAY)) {
+			block.setData(SkyWarsReloaded.getIM().getItem(item).getData().getData());
 		}
 	}
 	

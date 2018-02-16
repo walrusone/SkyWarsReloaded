@@ -55,8 +55,7 @@ public class SWRPlaceholders extends EZPlaceholderHook {
 		if (identifier.equals("win_loss")) {
 			double stat = (double)((double)swr.getPlayerStat(player).getWins()/(double)swr.getPlayerStat(player).getLosses());
 			String statString = String.format("%1$,.2f", stat);
-			return statString;
-			
+			return statString;	
 		}
 		
 		return null;

@@ -10,6 +10,7 @@ import com.walrusone.skywarsreloaded.objects.Taunt;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -115,7 +116,7 @@ public class LevelManager {
        
     public GlassColor getGlassByName(String color) {
     	for (GlassColor glassColor: colorList) {
-    		if (glassColor.getName().equalsIgnoreCase(color)) {
+    		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', glassColor.getName())).equalsIgnoreCase(ChatColor.stripColor(color))) {
     			return glassColor;
     		}
     	}
@@ -187,7 +188,7 @@ public class LevelManager {
  
     public ParticleItem getParticleByName(String name) {
     	for (ParticleItem pi: particleList) {
-    		if (pi.getName().equalsIgnoreCase(name)) {
+    		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pi.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pi;
     		}
     	}
@@ -261,7 +262,7 @@ public class LevelManager {
     
     public ParticleItem getProjByName(String name) {
     	for (ParticleItem pi: projEffectList) {
-    		if (pi.getName().equalsIgnoreCase(name)) {
+    		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pi.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pi;
     		}
     	}
@@ -339,7 +340,7 @@ public class LevelManager {
     
     public SoundItem getKillSoundByName(String name) {
     	for (SoundItem pi: killSoundList) {
-    		if (pi.getName().equalsIgnoreCase(name)) {
+    		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pi.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pi;
     		}
     	}
@@ -415,7 +416,7 @@ public class LevelManager {
     
     public SoundItem getWinSoundByName(String name) {
     	for (SoundItem pi: winSoundList) {
-    		if (pi.getName().equalsIgnoreCase(name)) {
+    		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pi.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pi;
     		}
     	}
@@ -486,7 +487,7 @@ public class LevelManager {
     
 	public Taunt getTauntFromName(String name) {
 		for (Taunt taunt: tauntList) {
-			if (taunt.getName().equalsIgnoreCase(name)) {
+			if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', taunt.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
 				return taunt;
 			}
 		}

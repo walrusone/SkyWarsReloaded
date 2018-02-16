@@ -5,6 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
@@ -37,17 +39,17 @@ public class PlayerInteractListener implements Listener
         	if (a1.getAction() == Action.RIGHT_CLICK_AIR || a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
         		if (a1.hasItem()) {
         			Player player = a1.getPlayer();
-                    if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("kitvote"))) {
+                    if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("kitvote"))) {
                     	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
                         	a1.getPlayer().openInventory(gameMap.getKitsVoteMenu());
                     	} else {
                     		new KitSelectionMenu(a1.getPlayer());
                     	}
                     	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKitMenuSound(), 1, 1);
-                    } else if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("votingItem")) && a1.getPlayer().hasPermission("sw.chestvote")) {
+                    } else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("votingItem")) && a1.getPlayer().hasPermission("sw.chestvote")) {
                     	new VotingMenu(a1.getPlayer());
                     	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenChestMenuSound(), 1, 1);
-                    }  else if (a1.getItem().getType() == Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("exitGameItem"))) {
+                    }  else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
                     	MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true);
                     } 
         		}
@@ -80,7 +82,7 @@ public class PlayerInteractListener implements Listener
 				if (kitItem != null && !kitItem.getType().equals(Material.AIR)) {
 					GameKit kit = GameKit.getKit(kitItem.getItemMeta().getDisplayName());
 					if (gameMap.isKitLocked(kit)) {
-						if (((Player) event.getWhoClicked()).hasPermission("swr.kit." + kit.getFilename())) {
+						if (((Player) event.getWhoClicked()).hasPermission("sw.kit." + kit.getFilename())) {
 							gameMap.loadKit((Player) event.getWhoClicked(), gameMap, kit);
 						} else {
 							return;
@@ -113,7 +115,6 @@ public class PlayerInteractListener implements Listener
 					cVote = Vote.CHESTSCAVENGER;
 					type = new Messaging.MessageFormatter().format("items.chest-scavenger");
 				} else if (rawSlot == 26) {
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
@@ -122,7 +123,6 @@ public class PlayerInteractListener implements Listener
 					gameMap.setVote((Player) event.getWhoClicked(), cVote, "chest");
 					gameMap.updateVotes("chest");
 					Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
@@ -149,7 +149,6 @@ public class PlayerInteractListener implements Listener
 					cVote = Vote.TIMEMIDNIGHT;
 					type = new Messaging.MessageFormatter().format("items.time-midnight");
 				} else if (rawSlot == 26) {
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
@@ -158,7 +157,6 @@ public class PlayerInteractListener implements Listener
 					gameMap.setVote((Player) event.getWhoClicked(), cVote, "time");
 					gameMap.updateVotes("time");
 					Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					} 
@@ -185,7 +183,6 @@ public class PlayerInteractListener implements Listener
 					cVote = Vote.WEATHERSNOW;
 					type = new Messaging.MessageFormatter().format("items.weather-snow");
 				} else if (rawSlot == 26) {
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
@@ -194,7 +191,6 @@ public class PlayerInteractListener implements Listener
 					gameMap.setVote((Player) event.getWhoClicked(), cVote, "weather");
 					gameMap.updateVotes("weather");
 					Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					} 
@@ -216,12 +212,11 @@ public class PlayerInteractListener implements Listener
 					type = new Messaging.MessageFormatter().format("items.modifier-jump");
 				} else if (rawSlot == 15) {
 					cVote = Vote.MODIFIERSTRENGTH;
-					type = new Messaging.MessageFormatter().format("items.modifier-strenght");
+					type = new Messaging.MessageFormatter().format("items.modifier-strength");
 				} else if (rawSlot == 17) {
 					cVote = Vote.MODIFIERNONE;
 					type = new Messaging.MessageFormatter().format("items.modifier-none");
 				} else if (rawSlot == 26) {
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
@@ -230,17 +225,15 @@ public class PlayerInteractListener implements Listener
 					gameMap.setVote((Player) event.getWhoClicked(), cVote, "modifier");
 					gameMap.updateVotes("modifier");
 					Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
-					player.closeInventory();
 					if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 						new VotingMenu(player);
 					}
 					MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
 							.setVariable("player", player.getName())
-							.setVariable("weather", type).format("game.votemodifier"));
+							.setVariable("mod", type).format("game.votemodifier"));
 				}
-			}
-			if (SkyWarsReloaded.getIC().has((Player) event.getWhoClicked())) {
-				event.setCancelled(false);
+			} else if (SkyWarsReloaded.getIC().has((Player) event.getWhoClicked()) && rawSlot < SkyWarsReloaded.getIC().getMenu(player).getInventory().getSize() && rawSlot >= 0) {
+					event.setCancelled(false);
 			}
 		}
     }
@@ -254,6 +247,23 @@ public class PlayerInteractListener implements Listener
 		if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
 			event.setCancelled(true);
 		}
+    }
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+    	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
+    	if (gMap == null) {
+    		return;
+    	}
+    	if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+    			e.setCancelled(true);
+    			new BukkitRunnable() {
+					@Override
+					public void run() {
+		    			e.getPlayer().teleport(gMap.getPlayerCard(e.getPlayer()).getSpawn());
+					}
+    			}.runTaskLater(SkyWarsReloaded.get(), 2);
+   		}
     }
     
 }

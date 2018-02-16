@@ -39,6 +39,8 @@ game:
 parties:
   enabled: true
   maxPartySize: 4
+holograms: 
+  enabled: false
 kit:
   randPos: 0
   randItem: NETHER_STAR

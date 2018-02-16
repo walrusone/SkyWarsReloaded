@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class Config {
@@ -80,6 +81,8 @@ public class Config {
 	private int maxPartySize;
 	private boolean partyEnabled;
 	private List<String> lobbyWorlds;
+	
+	private boolean useHolograms;
 	
 	private boolean suddenDeathEnabled;
 	private boolean disableHealthRegen;
@@ -245,6 +248,8 @@ public class Config {
 		partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
 		lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 		
+		useHolograms = SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
+		
 		if (spawn != null) {
 			if (!lobbyWorlds.contains(spawn.getWorld())) {
 				lobbyWorlds.add(spawn.getWorld().getName().toLowerCase());
@@ -338,12 +343,24 @@ public class Config {
 	}
 	
 	private void addMaterial(String key, String mat, String def) {
-		Material material = Material.matchMaterial(mat);
+		int data = -1;
+		String matWithData = "";
+		String[] matParts = mat.split(":");
+		if (matParts.length == 2) {
+			matWithData = matParts[0];
+			data = Integer.valueOf(matParts[1]);
+		}	
+		Material material = null;
+		if (data != -1) {
+			material = Material.matchMaterial(matWithData);
+		} else {
+			material = Material.matchMaterial(mat);
+		}
 		if (material == null) {
 			materials.put(key, def);
 		} else {
 			materials.put(key, mat);
-		}	
+		}
 	}
 
 	public void save() {
@@ -401,6 +418,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
 		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
 		SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
+		
+		SkyWarsReloaded.get().getConfig().set("holograms.enabled", useHolograms);
 		
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enabled", suddenDeathEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.suddendeath.disableHealthRegen", disableHealthRegen);
@@ -718,30 +737,6 @@ public class Config {
 		return leaderSize;
 	}
 
-	public boolean eloEnabled() {
-		return eloEnabled;
-	}
-
-	public boolean winsEnabled() {
-		return winsEnabled;
-	}
-
-	public boolean lossesEnabled() {
-		return lossesEnabled;
-	}
-
-	public boolean killsEnabled() {
-		return killsEnabled;
-	}
-
-	public boolean deathsEnabled() {
-		return deathsEnabled;
-	}
-
-	public boolean xpEnabled() {
-		return xpEnabled;
-	}
-
 	public boolean leaderSignsEnabled() {
 		return leaderSignsEnabled;
 	}
@@ -920,6 +915,30 @@ public class Config {
 	
 	public int getKillerEco() {
 		return killerEco;
+	}
+
+	public void setEconomyEnabled(boolean b) {
+		economyEnabled = false;
+	}
+
+	public boolean hologramsEnabled() {
+		return useHolograms;
+	}
+
+	public void setHologramsEnabled(boolean b) {
+		useHolograms = b;
+	}
+
+	public boolean isTypeEnabled(LeaderType type) {
+		switch (type) {
+		case ELO: return eloEnabled;
+		case WINS: return winsEnabled;
+		case LOSSES: return lossesEnabled;
+		case KILLS: return killsEnabled;
+		case DEATHS: return deathsEnabled;
+		case XP: return xpEnabled;
+		default: return false;
+		}
 	}
 }
 

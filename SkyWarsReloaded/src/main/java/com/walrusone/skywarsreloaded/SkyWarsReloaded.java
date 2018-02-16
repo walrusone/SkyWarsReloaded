@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +30,7 @@ import com.walrusone.skywarsreloaded.commands.PartyCmdManager;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.listeners.ArenaDamageListener;
 import com.walrusone.skywarsreloaded.listeners.ArenaManagerListener;
 import com.walrusone.skywarsreloaded.listeners.ChatListener;
@@ -56,6 +58,10 @@ import com.walrusone.skywarsreloaded.objects.PlayerData;
 import com.walrusone.skywarsreloaded.objects.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRPlaceholders;
+import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
+import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
@@ -72,6 +78,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private String servername;
 	private NMS nmsHandler;
 	private boolean loaded;
+	private static HologramsUtil hu;
 
 	
 	public void onEnable() {
@@ -214,24 +221,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         	getFWDatabase();
         }
         useable.clear();
-        if (SkyWarsReloaded.getCfg().eloEnabled()) {
-			useable.add("ELO");
-		} 
-        if (SkyWarsReloaded.getCfg().winsEnabled()) {
-			useable.add("WINS");
-		}
-        if (SkyWarsReloaded.getCfg().lossesEnabled()) {
-			useable.add("LOSSES");
-		}
-        if (SkyWarsReloaded.getCfg().killsEnabled()) {
-			useable.add("KILLS");
-		}
-        if (SkyWarsReloaded.getCfg().deathsEnabled()) {
-			useable.add("DEATHS");
-		}
-        if (SkyWarsReloaded.getCfg().xpEnabled()) {
-			useable.add("XP");
-		}
+        
+        for (LeaderType type: LeaderType.values()) {
+			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+				useable.add(type.toString());
+			}
+        }
 
         new BukkitRunnable() {
             public void run() {
@@ -243,6 +238,26 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 leaderboard = new Leaderboard();
             }
         }.runTaskAsynchronously(this);
+        
+        if (SkyWarsReloaded.getCfg().economyEnabled()) {
+    		if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+    			SkyWarsReloaded.getCfg().setEconomyEnabled(false);
+            }
+            RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+            if (rsp == null) {
+                SkyWarsReloaded.getCfg().setEconomyEnabled(false);
+            }
+        }
+
+		if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
+			hu = null;
+        	if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+        		hu = new HoloDisUtil();
+        	}
+        	if (hu == null) {
+        		SkyWarsReloaded.getCfg().setHologramsEnabled(false);
+        	}
+		}
         loaded = true;
 	}
 	
@@ -387,6 +402,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
 	public boolean serverLoaded() {
 		return loaded;
-	}	
+	}
+	
+	public static HologramsUtil getHoloManager() {
+		return hu;
+	}
     
 }

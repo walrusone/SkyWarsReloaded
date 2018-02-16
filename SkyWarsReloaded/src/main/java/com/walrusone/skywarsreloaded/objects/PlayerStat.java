@@ -109,7 +109,6 @@ public class PlayerStat
     									player.setHealth(20);
             	        		        player.setFoodLevel(20);
             	        		        player.setSaturation(20);
-            	        		        Util.get().clear(player);
             	        		        player.setFireTicks(0);
             	        		        player.resetPlayerTime();
             	        		        player.resetPlayerWeather();

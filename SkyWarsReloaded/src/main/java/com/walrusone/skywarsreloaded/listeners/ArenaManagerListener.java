@@ -153,7 +153,6 @@ public class ArenaManagerListener implements Listener
        				player.closeInventory();
        				GameMap.editMap(gMap, player);
        			} else if (e.getClick().equals(ClickType.LEFT) && rawSlot == e.getInventory().getSize()-1) {
-       				player.closeInventory();
        				GameMap.openArenasManager(player);
        			}
        		}       		

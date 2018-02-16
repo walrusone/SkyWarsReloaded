@@ -141,8 +141,13 @@ public class MatchManager
     }
            
     public void teleportToArena(final GameMap gameMap, Player player, Location spawn) {
-    	preparePlayer(player, gameMap);
     	doTeleport(player, gameMap, spawn);
+    	new BukkitRunnable() {
+			@Override
+			public void run() {
+		    	preparePlayer(player, gameMap);
+			}
+    	}.runTaskLater(SkyWarsReloaded.get(), 2);
     }
     
     private void preparePlayer(Player player, GameMap gameMap) {
@@ -177,10 +182,8 @@ public class MatchManager
             player.getInventory().setItem(SkyWarsReloaded.getCfg().getVotingPos(), timeItem);
         }
         
-        if (SkyWarsReloaded.getCfg().votingEnabled()) {
-            ItemStack exitItem = SkyWarsReloaded.getIM().getItem("exitGameItem");
-            player.getInventory().setItem(SkyWarsReloaded.getCfg().getExitPos(), exitItem);
-        }
+        ItemStack exitItem = SkyWarsReloaded.getIM().getItem("exitGameItem");
+        player.getInventory().setItem(SkyWarsReloaded.getCfg().getExitPos(), exitItem);
 
     	if (debug) {
     		Util.get().logToFile(debugName + ChatColor.YELLOW + "Finished Preparing " + player.getName() + " for SkyWars on map " + gameMap.getName());

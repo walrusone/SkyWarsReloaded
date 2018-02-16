@@ -23,7 +23,6 @@ public class PlayerData {
 	    private static ArrayList<PlayerData> playerData;
 	    private UUID uuid;
 	    private Scoreboard sb;
-	    private GameMode gm;
 		private Tagged taggedBy;
 		private Inventory inv;
 		private double health;
@@ -38,7 +37,6 @@ public class PlayerData {
 	    	this.beingRestored = false;
 	        this.uuid = p.getUniqueId();
 	        this.sb = p.getScoreboard();
-	        this.gm = p.getGameMode();
 	        this.health = p.getHealth();
 	        this.food = p.getFoodLevel();
 	        this.sat = p.getSaturation();
@@ -69,17 +67,17 @@ public class PlayerData {
 		        if (player == null) {
 		            return;
 		        }
-		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
+		        
+				if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Restoring " + player.getName());
 		    	}
 		    	PlayerStat pStats = PlayerStat.getPlayerStats(player);
-		    	
 		        player.closeInventory();
-		        player.setGameMode(gm);
+		        player.setGameMode(GameMode.SURVIVAL);
 		        if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
 			        Util.get().setPlayerExperience(player, pStats.getXp());
 		        }
-
+		        Util.get().clear(player);
 		        player.getInventory().clear();
 		        player.getInventory().setContents(inv.getContents());
 		        player.setHealth(health);
@@ -87,18 +85,19 @@ public class PlayerData {
 		        player.setSaturation(sat);
 		        player.resetPlayerTime();
 		        player.resetPlayerWeather();
-		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
+		        
 		        player.setFireTicks(0);
 		        player.setScoreboard(sb);
 		        if (SkyWarsReloaded.getCfg().lobbyBoardEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
 			        PlayerStat.updateScoreboard(player);
 		        }
 		        
+		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
+		        player.teleport(respawn, TeleportCause.END_PORTAL);	
+		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
-		    	}
-		    
-		        player.teleport(respawn, TeleportCause.END_PORTAL);	       
+		    	}		        		           
 	        	if (SkyWarsReloaded.getCfg().bungeeMode()) {
 			        new BukkitRunnable() {
 						@Override

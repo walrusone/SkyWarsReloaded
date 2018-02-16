@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Lists;
@@ -33,7 +35,40 @@ public class WinSoundSelectionMenu {
         }
         menuSize = rowCount;
         int level = Util.get().getPlayerLevel(player);
-        SkyWarsReloaded.getIC().create(player, menuName, rowCount, new IconMenu.OptionClickEventHandler() {
+        Inventory inv = Bukkit.createInventory(null, menuSize, menuName);
+        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(menuSize-1, 0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
+        		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
+        
+        for (int iii = 0; iii < availableItems.size(); iii ++) {
+        	if (iii >= menuSize || iii > 21) {
+                break;
+            }
+
+            SoundItem sound = availableItems.get(iii);
+            List<String> loreList = Lists.newLinkedList();
+            ItemStack item = SkyWarsReloaded.getIM().getItem("nopermission");
+            
+            if (level >= sound.getLevel() || player.hasPermission("sw.winsound." + sound.getKey())) {
+            	if (SkyWarsReloaded.getCfg().economyEnabled()) {
+            		if (player.hasPermission("sw.winsound." + sound.getKey()) || sound.getCost() == 0) {
+            			loreList.add(new Messaging.MessageFormatter().format("menu.usewin-setsound"));
+            			item = new ItemStack(sound.getMaterial(), 1);
+            		} else {
+            			loreList.add(new Messaging.MessageFormatter().setVariable("cost", "" + sound.getCost()).format("menu.cost"));
+            			item = new ItemStack(sound.getMaterial(), 1);
+            		}
+            	} else {
+                	loreList.add(new Messaging.MessageFormatter().format("menu.usewin-setsound"));
+                	item = new ItemStack(sound.getMaterial(), 1);
+            	}
+            } else {
+            	loreList.add(new Messaging.MessageFormatter().setVariable("level", "" + sound.getLevel()).format("menu.no-use"));
+            }
+
+            inv.setItem(placement.get(iii), SkyWarsReloaded.getNMS().getItemStack(item, loreList, ChatColor.translateAlternateColorCodes('&', sound.getName())));
+        } 
+        
+        SkyWarsReloaded.getIC().create(player, inv, new IconMenu.OptionClickEventHandler() {
 			@Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 
@@ -51,8 +86,7 @@ public class WinSoundSelectionMenu {
                	 	} else if (level >= sound.getLevel() && !player.hasPermission("sw.winsound."+ sound.getKey()) && !VaultUtils.get().canBuy(player, sound.getCost())) {
                	 		Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                	 		player.sendMessage(new Messaging.MessageFormatter().format("menu.insufficientfunds"));
-                        event.setWillClose(true);
-                        event.setWillDestroy(true);
+               	 		player.closeInventory();
                       	return;
                     }
                 } else {
@@ -73,9 +107,6 @@ public class WinSoundSelectionMenu {
                					.setVariable("item", sound.getName()).format("menu.purchase-winsound"));
                		}
                 }
-                
-                event.setWillClose(false);
-                event.setWillDestroy(true);
             
             	PlayerStat ps = PlayerStat.getPlayerStats(player);
                 ps.setWinSound(sound.getKey());
@@ -84,46 +115,7 @@ public class WinSoundSelectionMenu {
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("sound", sound.getName()).format("menu.usewin-playermsg"));
                 new OptionsSelectionMenu(player);
             }
-        });
-
-        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(menuSize-1, 0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
-        		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
-        
-        for (int iii = 0; iii < availableItems.size(); iii ++) {
-        	if (iii >= menuSize || iii > 21) {
-                break;
-            }
-
-            SoundItem sound = availableItems.get(iii);
-            List<String> loreList = Lists.newLinkedList();
-            ItemStack item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial("nopermission")), 1);
-            
-            if (level >= sound.getLevel() || player.hasPermission("sw.winsound." + sound.getKey())) {
-            	if (SkyWarsReloaded.getCfg().economyEnabled()) {
-            		if (player.hasPermission("sw.winsound." + sound.getKey()) || sound.getCost() == 0) {
-            			loreList.add(new Messaging.MessageFormatter().format("menu.usewin-setsound"));
-            			item = new ItemStack(sound.getMaterial(), 1);
-            		} else {
-            			loreList.add(new Messaging.MessageFormatter().setVariable("cost", "" + sound.getCost()).format("menu.cost"));
-            			item = new ItemStack(sound.getMaterial(), 1);
-            		}
-            	} else {
-                	loreList.add(new Messaging.MessageFormatter().format("menu.usewin-setsound"));
-                	item = new ItemStack(sound.getMaterial(), 1);
-            	}
-            } else {
-            	loreList.add(new Messaging.MessageFormatter().setVariable("level", "" + sound.getLevel()).format("menu.no-use"));
-            }
-
-            if (player != null) {
-                SkyWarsReloaded.getIC().setOption(
-                        player,
-                        placement.get(iii),
-                        item,
-                        sound.getName(),
-                        loreList.toArray(new String[loreList.size()]));
-            }
-         }    
+        });   
         if (player != null) {
             SkyWarsReloaded.getIC().show(player);
         }

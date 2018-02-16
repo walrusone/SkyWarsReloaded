@@ -17,23 +17,10 @@ public class UpdateTopCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		if (SkyWarsReloaded.getCfg().eloEnabled()) {
-			DataStorage.get().updateTop(LeaderType.ELO, SkyWarsReloaded.getCfg().getLeaderSize());
-		} 
-		if (SkyWarsReloaded.getCfg().winsEnabled()) {
-			DataStorage.get().updateTop(LeaderType.WINS, SkyWarsReloaded.getCfg().getLeaderSize());
-		}
-		if (SkyWarsReloaded.getCfg().lossesEnabled()) {
-			DataStorage.get().updateTop(LeaderType.LOSSES, SkyWarsReloaded.getCfg().getLeaderSize());
-		}
-		if (SkyWarsReloaded.getCfg().killsEnabled()) {
-			DataStorage.get().updateTop(LeaderType.KILLS, SkyWarsReloaded.getCfg().getLeaderSize());
-		}
-		if (SkyWarsReloaded.getCfg().deathsEnabled()) {
-			DataStorage.get().updateTop(LeaderType.DEATHS, SkyWarsReloaded.getCfg().getLeaderSize());
-		}
-		if (SkyWarsReloaded.getCfg().xpEnabled()) {
-			DataStorage.get().updateTop(LeaderType.XP, SkyWarsReloaded.getCfg().getLeaderSize());
+		for (LeaderType type: LeaderType.values()) {
+			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+				DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
+			}
 		}
 		return true;
 	}
