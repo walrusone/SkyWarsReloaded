@@ -137,6 +137,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         wm = new WorldManager();
         
         if (!nmsHandler.isOnePointEight()) {
+        	this.getLogger().info("WTF");
         	this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
         }
         this.getServer().getPluginManager().registerEvents(ic, this);

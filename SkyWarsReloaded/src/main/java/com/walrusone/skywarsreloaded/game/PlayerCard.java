@@ -144,7 +144,7 @@ public class PlayerCard {
 	            int curELO   = preElo;
 	            
 	            for (PlayerCard pCard: gMap.getPlayerCards()) {
-	                if (pCard.getPlayer() != null && pCard.getPlayer().equals(getPlayer())) {
+	                if (pCard.getUUID() != null && !pCard.getUUID().equals(uuid)) {
 	                    int opponentPlace = pCard.getPlace();
 	                    int opponentELO   = pCard.getPreElo();
 	                    
