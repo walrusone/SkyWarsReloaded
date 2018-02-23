@@ -1,8 +1,8 @@
 package com.walrusone.skywarsreloaded.commands.party;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.objects.Party;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Party;
 
 public class CreateCmd extends BaseCmd { 
 	

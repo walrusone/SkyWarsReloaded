@@ -21,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Skull;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
@@ -150,5 +151,9 @@ public class NMSHandler implements NMS {
 	@Override 
 	public void updateSkull(Skull skull, UUID uuid) {
 		skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
+	}
+	
+	public void setMaxHealth(Player player, int health) {
+		player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 	}
 }

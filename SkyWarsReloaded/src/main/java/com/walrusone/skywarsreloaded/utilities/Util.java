@@ -40,7 +40,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 
 public class Util {
 

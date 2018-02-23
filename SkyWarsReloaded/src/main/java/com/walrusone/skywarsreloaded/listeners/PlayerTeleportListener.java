@@ -12,9 +12,9 @@ import org.bukkit.event.Listener;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 
 public class PlayerTeleportListener implements Listener
 {

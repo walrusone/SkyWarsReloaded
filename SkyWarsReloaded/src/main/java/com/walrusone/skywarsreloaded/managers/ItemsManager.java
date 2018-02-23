@@ -18,6 +18,7 @@ public class ItemsManager {
     public ItemsManager() {
     	getMatchStartItems();
     	getChestVoteItems();
+    	getHealthVoteItems();
     	getTimeVoteItems();
     	getWeatherVoteItems();
     	getModifierVoteItems();
@@ -81,6 +82,7 @@ public class ItemsManager {
 		lore.clear();
 		lore.add(new Messaging.MessageFormatter().format("items.lclick-to-open"));
 		addItem("chestvote", lore, "items.chest-item");
+		addItem("healthvote", lore, "items.health-item");
 		addItem("nopermission", lore, "items.no-perm");
 		addItem("timevote", lore, "items.time-item");
 		addItem("weathervote", lore, "items.weather-item");
@@ -89,6 +91,8 @@ public class ItemsManager {
 		lore.clear();
 		lore.add(new Messaging.MessageFormatter().format("items.lclick-to-exit"));
 		addItem("exitMenuItem", lore, "items.exit-menu-item");
+		addItem("nextPageItem", lore, "items.next-page-item");
+		addItem("prevPageItem", lore, "items.prev-page-item");
 		
 		lore.clear();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-exit"));
@@ -104,6 +108,17 @@ public class ItemsManager {
 		addItem("chestnormal", lore, "items.chest-normal");
 		addItem("chestop", lore, "items.chest-op");
 		addItem("chestscavenger", lore, "items.chest-scavenger");
+	}
+    
+    private void getHealthVoteItems() {
+    	List<String> lore = new ArrayList<String>();
+		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
+		
+		addItem("healthrandom", lore, "items.health-random");
+		addItem("healthfive", lore, "items.health-five");
+		addItem("healthten", lore, "items.health-ten");
+		addItem("healthfifteen", lore, "items.health-fifteen");
+		addItem("healthtwenty", lore, "items.health-twenty");
 	}
     
     private void getTimeVoteItems() {

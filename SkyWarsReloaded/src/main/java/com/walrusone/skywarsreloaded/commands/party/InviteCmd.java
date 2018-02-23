@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.objects.Party;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Party;
 
 public class InviteCmd extends BaseCmd { 
 	

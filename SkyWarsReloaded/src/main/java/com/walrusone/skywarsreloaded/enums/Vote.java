@@ -23,7 +23,12 @@ public enum Vote {
 	MODIFIERSPEED,
 	MODIFIERJUMP,
 	MODIFIERSTRENGTH,
-	MODIFIERNONE;
+	MODIFIERNONE,
+	HEALTHRANDOM,
+	HEALTHFIVE,
+	HEALTHTEN,
+	HEALTHFIFTEEN,
+	HEALTHTWENTY;
     
 	public static Vote getRandom(String type) {
 		ArrayList<Vote> list = new ArrayList<Vote>();
@@ -47,6 +52,11 @@ public enum Vote {
 			list.add(Vote.MODIFIERJUMP);
 			list.add(Vote.MODIFIERSTRENGTH);
 			list.add(Vote.MODIFIERNONE);
+		} else if (type.equalsIgnoreCase("health")) {
+			list.add(Vote.HEALTHFIVE);
+			list.add(Vote.HEALTHTEN);
+			list.add(Vote.HEALTHFIFTEEN);
+			list.add(Vote.HEALTHTWENTY);
 		}
 		return list.get(new Random().nextInt(4));	
 	}

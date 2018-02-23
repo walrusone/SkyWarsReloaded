@@ -6,13 +6,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 
 public class PlayerJoinListener implements Listener
 {
 	@EventHandler
     public void onJoin(final PlayerJoinEvent a1) {
-    	new BukkitRunnable() {
+		new BukkitRunnable() {
 			@Override
 			public void run() {
 				if (SkyWarsReloaded.getCfg().getSpawn() != null && SkyWarsReloaded.getCfg().teleportOnJoin()) {

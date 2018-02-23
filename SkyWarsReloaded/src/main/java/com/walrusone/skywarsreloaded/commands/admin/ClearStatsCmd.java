@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ClearStatsCmd extends BaseCmd { 

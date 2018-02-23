@@ -12,6 +12,8 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  snowballDamage: 1
+  eggDamage: 1
   ecoForWin: 5
   ecoForKill: 1
   xpForWin: 5
@@ -29,6 +31,11 @@ game:
   spectateDistance: 75
   allowFallDamage: false
   maxMapSize: 400
+  tauntsEnabled: true
+  modifierLevel:
+    speed:
+    strength:
+    jump: 
   suddendeath:
     enabled: true
     disableHealthRegen: true
@@ -40,6 +47,7 @@ holograms:
   enabled: false
 kit:
   randPos: 0
+  menuSize: 45
   randItem: NETHER_STAR
   noKitPos: 44
   noKitItem: GLASS
@@ -64,6 +72,7 @@ sounds:
   openTauntMenu: ENDERDRAGON_WINGS
   openKitMenu: SUCCESSFUL_HIT
   openChestMenu: CHEST_OPEN
+  openHealthMenu: EAT
   openTimeMenu: FUSE
   openWeatherMenu: AMBIENCE_RAIN
   openModifierMenu: SPLASH2
@@ -89,6 +98,8 @@ items:
   exitGameItem: IRON_DOOR
   exitPosition: 8
   exitMenuItem: BARRIER
+  prevPageItem: FEATHER
+  nextPageItem: FEATHER
   chestVoteEnabled: true
   chestVotePosition: 10
   chestvote: SHIELD
@@ -97,6 +108,14 @@ items:
   chestnormal: IRON_SWORD
   chestop: DIAMOND_SWORD
   chestscavenger: WOOD_HOE
+  healthVoteEnabled: true
+  healthVotePosition: 11
+  healthvote: EXP_BOTTLE
+  healthrandom: NETHER_STAR
+  healthfive: REDSTONE
+  healthten: REDSTONE
+  healthfifteen: REDSTONE
+  healthtwenty: REDSTONE
   nopermission: BARRIER
   timeVoteEnabled: true
   timeVotePosition: 12
@@ -126,12 +145,18 @@ items:
   spectateselect: LEATHER_HELMET
   optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
+  particleselectslot: 11
   projectileselect: ARROW
+  projectileselectslot: 12 
   killsoundselect: DIAMOND_SWORD
+  killsoundselectslot: 14
   killsounditem: NOTE_BLOCK
   winsoundselect: DRAGON_EGG
+  winsoundselectslot: 15
   glassselect: STAINED_GLASS
+  glassselectslot: 9 
   tauntselect: SHIELD
+  tauntselectslot: 17
 particles:
   enabled: true
   ticksperupdate: 3

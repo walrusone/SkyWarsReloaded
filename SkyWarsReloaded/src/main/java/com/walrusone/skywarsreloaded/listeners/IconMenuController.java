@@ -14,19 +14,29 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class IconMenuController implements Listener {
 
     private final Map<Player, IconMenu> menu = Maps.newHashMap();
+    private final Map<String, IconMenu> persistantMenus = Maps.newHashMap();
 
     public IconMenuController() {
     }
 
-    public void create(Player player, Inventory inv, OptionClickEventHandler optionClickEventHandler) {
+    public void create(Player player, ArrayList<Inventory> invs, OptionClickEventHandler optionClickEventHandler) {
         if (player != null) {
-            menu.put(player, new IconMenu(inv, optionClickEventHandler));
+            menu.put(player, new IconMenu(invs, optionClickEventHandler));
+        }
+    }
+    
+    public void create(String key, ArrayList<Inventory> invs, OptionClickEventHandler optionClickEventHandler) {
+        if (key != null) {
+            persistantMenus.put(key, new IconMenu(invs, optionClickEventHandler));
         }
     }
 
@@ -34,32 +44,72 @@ public class IconMenuController implements Listener {
     	return menu.get(player);
     }
     
-    public void show(Player player) {
-        if (menu.containsKey(player)) {
-            player.openInventory(menu.get(player).getInventory());
-        }
+    public IconMenu getMenu(String string) {
+    	return persistantMenus.get(string);
+    }
+    
+    public boolean hasViewers(String key) {
+    	if (persistantMenus.get(key) != null) {
+        	for (Inventory inv: persistantMenus.get(key).getInventories()) {
+        		if (!inv.getViewers().isEmpty()) {
+        			return true;
+        		}
+        	}
+    	}
+    	return false;
+    }
+    
+    public void show(Player player, @Nullable String key) {
+    	if (key != null) {
+    		if (persistantMenus.containsKey(key)) {
+                persistantMenus.get(key).openInventory(player, 0);;
+            }
+    	} else {
+            if (menu.containsKey(player)) {
+                menu.get(player).openInventory(player, 0);;
+            }
+    	}
     }
 
-    public void destroy(Player player) {
-        if (menu.containsKey(player)) {
-            menu.remove(player);
+    public void destroy(Player key) {
+        if (menu.containsKey(key)) {
+            menu.remove(key);
+        }
+    }
+    
+    public void destroy(String key) {
+        if (persistantMenus.containsKey(key)) {
+            persistantMenus.remove(key);
         }
     }
 
     public void destroyAll() {
-        for (Player player : new HashSet<Player>(menu.keySet())) {
-            destroy(player);
+        for (String key : new HashSet<String>(persistantMenus.keySet())) {
+            destroy(key);
+        }
+        for (Player key : new HashSet<Player>(menu.keySet())) {
+            destroy(key);
         }
     }
 
     public boolean has(Player player) {
         return menu.containsKey(player);
     }
+    
+    public boolean has(String key) {
+    	return persistantMenus.containsKey(key);
+    }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player && menu.containsKey(event.getWhoClicked())) {
             menu.get(event.getWhoClicked()).onInventoryClick(event);
+        }
+        for (IconMenu menu: persistantMenus.values()) {
+        	if (menu.getInventories().contains(event.getInventory())) {
+        		menu.onInventoryClick(event);
+        		break;
+        	}
         }
     }
 
@@ -69,8 +119,8 @@ public class IconMenuController implements Listener {
         	new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (event.getPlayer().getOpenInventory().equals(menu.get(event.getPlayer()).getInventory())) {
-						destroy((Player) event.getPlayer());
+					if (menu.get(event.getPlayer()).getInventories().contains(event.getPlayer().getOpenInventory())) {
+						destroy(((Player) event.getPlayer()));
 					}
 				}
         	}.runTaskLater(SkyWarsReloaded.get(), 5);

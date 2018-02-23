@@ -144,4 +144,8 @@ public class NMSHandler implements NMS {
 	public void updateSkull(Skull skull, UUID uuid) {
 		skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
 	}
+	
+	public void setMaxHealth(Player player, int health) {
+		player.setMaxHealth(health);
+	}
 }

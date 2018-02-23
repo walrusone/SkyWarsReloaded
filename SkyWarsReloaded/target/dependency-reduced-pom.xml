@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywarsreloaded</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V3.0.9</version>
+  <version>V3.1</version>
   <build>
     <resources>
       <resource>
@@ -61,12 +61,21 @@
       <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
     </repository>
     <repository>
+      <id>mvdw-software</id>
+      <name>MVdW Public Repositories</name>
+      <url>http://repo.mvdw-software.be/content/groups/public/</url>
+    </repository>
+    <repository>
       <id>vault-repo</id>
       <url>http://nexus.hc.to/content/repositories/pub_releases</url>
     </repository>
     <repository>
       <id>rayzr-repo</id>
       <url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
+    </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -90,6 +99,12 @@
       <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded/lib/craftbukkit-1.8.jar</systemPath>
     </dependency>
     <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.9-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.gmail.filoghost</groupId>
       <artifactId>holograaphicdisplays</artifactId>
       <version>latest</version>
@@ -102,6 +117,18 @@
       <version>latest</version>
       <scope>system</scope>
       <systemPath>D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded/lib/Holograms-2.5.0-SNAPSHOT.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>be.maximvdw</groupId>
+      <artifactId>MVdWPlaceholderAPI</artifactId>
+      <version>2.3.1-SNAPSHOT</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>MVdWUpdater</artifactId>
+          <groupId>be.maximvdw</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <properties>

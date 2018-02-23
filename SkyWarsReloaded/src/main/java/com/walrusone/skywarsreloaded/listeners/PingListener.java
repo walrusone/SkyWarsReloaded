@@ -6,7 +6,7 @@ import org.bukkit.event.server.ServerListPingEvent;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.objects.GameMap;
+import com.walrusone.skywarsreloaded.game.GameMap;
 
 public class PingListener implements Listener {
 

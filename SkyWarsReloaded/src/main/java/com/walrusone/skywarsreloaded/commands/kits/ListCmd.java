@@ -3,7 +3,7 @@ package com.walrusone.skywarsreloaded.commands.kits;
 import org.bukkit.ChatColor;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.objects.GameKit;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ListCmd extends BaseCmd { 

@@ -9,10 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
-import com.walrusone.skywarsreloaded.objects.Taunt;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.playeroptions.TauntOption;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class TauntListener implements Listener {
@@ -50,20 +50,16 @@ public class TauntListener implements Listener {
 							lastTaunt.remove(uuid);
 						}
 					}
-					if (e.getPlayer().hasPermission("taunts.use")) {
-						PlayerStat ps = PlayerStat.getPlayerStats(e.getPlayer());
-						String tauntName = ps.getTaunt();
-						Taunt taunt = SkyWarsReloaded.getLM().getTauntFromKey(tauntName);
-						if (taunt != null) {
-							if (!taunt.getKey().equals("none")) {
-								taunt.performTaunt(e.getPlayer());
-							}
+					PlayerStat ps = PlayerStat.getPlayerStats(e.getPlayer());
+					String tauntName = ps.getTaunt();
+					TauntOption taunt = (TauntOption) TauntOption.getPlayerOptionByKey(tauntName);
+					if (taunt != null) {
+						if (!taunt.getKey().equals("none")) {
+							taunt.performTaunt(e.getPlayer());
 						}
-						lastHandSwap.remove(uuid);
-						lastTaunt.put(uuid, System.currentTimeMillis());
-					} else {
-						e.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.taunt-no-perm"));
 					}
+					lastHandSwap.remove(uuid);
+					lastTaunt.put(uuid, System.currentTimeMillis());
 				} else {
 					lastHandSwap.put(uuid, System.currentTimeMillis());
 				}

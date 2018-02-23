@@ -6,43 +6,33 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.WeatherType;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
+import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.WinSoundOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.objects.EmptyChest;
-import com.walrusone.skywarsreloaded.objects.GameKit;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.ParticleEffect;
-import com.walrusone.skywarsreloaded.objects.ParticleItem;
-import com.walrusone.skywarsreloaded.objects.Party;
-import com.walrusone.skywarsreloaded.objects.PlayerCard;
-import com.walrusone.skywarsreloaded.objects.PlayerData;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
-import com.walrusone.skywarsreloaded.objects.SoundItem;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.PlayerCard;
+import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 
@@ -140,14 +130,16 @@ public class MatchManager
         }
     }
            
-    public void teleportToArena(final GameMap gameMap, Player player, Location spawn) {
-    	doTeleport(player, gameMap, spawn);
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-		    	preparePlayer(player, gameMap);
-			}
-    	}.runTaskLater(SkyWarsReloaded.get(), 2);
+    public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
+    	if (pCard.getPlayer() != null) {
+        	doTeleport(pCard.getPlayer(), gameMap, pCard.getSpawn());
+        	new BukkitRunnable() {
+    			@Override
+    			public void run() {
+    		    	preparePlayer(pCard.getPlayer(), gameMap);
+    			}
+        	}.runTaskLater(SkyWarsReloaded.get(), 5);
+    	}
     }
     
     private void preparePlayer(Player player, GameMap gameMap) {
@@ -198,15 +190,18 @@ public class MatchManager
         gameMap.setGlassColor(player, pStat.getGlassColor());
         World world = getWorld(gameMap);
 		Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5);
+		if (!world.isChunkLoaded(world.getChunkAt(newSpawn))) {
+			world.loadChunk(world.getChunkAt(newSpawn));
+		}
         player.teleport(newSpawn, TeleportCause.END_PORTAL);
         
         String key = PlayerStat.getPlayerStats(player.getUniqueId()).getParticleEffect();
-        ParticleItem effect = SkyWarsReloaded.getLM().getParticleByKey(key);
+        ParticleEffectOption effect = (ParticleEffectOption) ParticleEffectOption.getPlayerOptionByKey(key);
         if (effect != null) {
     		List<ParticleEffect> effects = effect.getEffects();
-            SkyWarsReloaded.getLM().addPlayer(player.getUniqueId(), effects);
+            SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
         }
-        
+        Util.get().clear(player);
         if (SkyWarsReloaded.getCfg().titlesEnabled()) {
         	for (final Player p : gameMap.getAlivePlayers()) {
         		if (!p.equals(player)) {
@@ -308,107 +303,18 @@ public class MatchManager
         if (gameMap.getMatchState() != MatchState.ENDING) {
         	this.matchCountdown(gameMap);
         }
-        fillChests(gameMap);
-        selectTime(gameMap);
-        selectWeather(gameMap);
-        selectModifier(gameMap);
+        gameMap.getChestOption().completeOption();
+        gameMap.getTimeOption().completeOption();
+        gameMap.getWeatherOption().completeOption();
+        gameMap.getModifierOption().completeOption();
+        gameMap.getHealthOption().completeOption();
 		selectKit(gameMap);
     	gameMap.removeSpawnHousing();
     }
     
-    private void fillChests(GameMap gameMap) {
-    	World mapWorld = getWorld(gameMap);
-        Vote cVote = gameMap.getVoted("chest");
-        for (EmptyChest eChest: gameMap.getChests().values()) {
-			Location loc;
-			int x = eChest.getX();
-			int y = eChest.getY();
-			int z = eChest.getZ();
-			loc = new Location (mapWorld, x, y, z);
-			Chest chest = (Chest) loc.getBlock().getState();
-			SkyWarsReloaded.getCM().populateChest(chest, cVote);
-		}
-		for (EmptyChest eChest: gameMap.getDoubleChests().values()) {
-			Location loc;
-			int x = eChest.getX();
-			int y = eChest.getY();
-			int z = eChest.getZ();
-			loc = new Location (mapWorld, x, y, z);
-			Chest chest = (Chest) loc.getBlock().getState();
-            InventoryHolder ih = chest.getInventory().getHolder();
-            DoubleChest dc = (DoubleChest) ih;
-			SkyWarsReloaded.getCM().populateChest(dc, cVote);
-		}
-    }
-    
-    private void selectTime(GameMap gameMap) {
-    	Vote time = gameMap.getVoted("time");
-		int t = 0;
-		if (time == Vote.TIMENOON) {
-			t = 6000;
-		} else if (time == Vote.TIMEDUSK) {
-			t = 12000;
-		} else if (time == Vote.TIMEMIDNIGHT) {
-			t = 18000;
-		}
-		for (Player player: gameMap.getAllPlayers()) {
-			player.setPlayerTime(t, false);
-		}
-    }
-    
-    @SuppressWarnings("deprecation")
-	private void selectWeather(GameMap gameMap) {
-    	int max;
-		int min;
-		int size = SkyWarsReloaded.getCfg().getMaxMapSize()/2;
-		min = 0 - size;
-		max = 0 + size;	
-		Vote weather = gameMap.getVoted("weather");
-		WeatherType w = WeatherType.CLEAR;
-		if (weather != Vote.WEATHERSUN) {
-			w = WeatherType.DOWNFALL;
-		} 
-		if (weather == Vote.WEATHERTHUNDER) {
-			gameMap.setThunderStorm(true);
-			gameMap.setNextStrike(Util.get().getRandomNum(20, 3));
-			gameMap.setStrikeCounter(0);
-		} else if (weather == Vote.WEATHERSNOW) {
-			World world = gameMap.getAlivePlayers().get(0).getWorld();
-			for (int x = min; x < max; x++) {
-				for (int z = min; z < max; z++) {
-					world.setBiome(x, z, Biome.ICE_MOUNTAINS);
-				}
-			}
-			List<Chunk> chunks = Util.get().getChunks(world);
-			for (Chunk chunk: chunks) {
-				world.refreshChunk(chunk.getX(), chunk.getZ());
-			}
-		}
-		for (Player player: gameMap.getAllPlayers()) {
-			player.setPlayerWeather(w);
-		}
-    }
-    
-    private void selectModifier(GameMap gameMap) {
-    	Vote modifier = gameMap.getVoted("modifier");
-		if (modifier == Vote.MODIFIERSPEED) {
-	    	for (Player player: gameMap.getAlivePlayers()) {
-	    		player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2, true, false));
-	    	}
-		} else if (modifier ==  Vote.MODIFIERJUMP) {
-	    	for (Player player: gameMap.getAlivePlayers()) {
-	    		player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 2, true, false));
-	    	}
-		} else if (modifier ==  Vote.MODIFIERSTRENGTH) {
-	    	for (Player player: gameMap.getAlivePlayers()) {
-	    		player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 2, true, false));
-	    	}
-		} 
-    }
-    
     private void selectKit(GameMap gameMap) {
     	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-        	gameMap.getVotedKit();
+        	gameMap.getKitVoteOption().getVotedKit();
         	for (final Player player : gameMap.getAlivePlayers()) {
         		GameKit.giveKit(player, gameMap.getKit());         
         	}
@@ -512,7 +418,7 @@ public class MatchManager
             	VaultUtils.get().give(win, multiplier * SkyWarsReloaded.getCfg().getWinnerEco());
             }
             
-            SoundItem sound = SkyWarsReloaded.getLM().getKillSoundByKey(winnerData.getWinSound());
+            WinSoundOption sound = (WinSoundOption) WinSoundOption.getPlayerOptionByKey(winnerData.getWinSound());
             if (sound != null) {
             	sound.playSound(win.getLocation());
             } 
@@ -544,7 +450,7 @@ public class MatchManager
                 new BukkitRunnable() {
     				@Override
     				public void run() {
-    					Util.get().sendActionBar(win, ChatColor.GREEN + "WIN: " + ChatColor.AQUA + "+" + (multiplier * SkyWarsReloaded.getCfg().getWinnerXP()) + " XP" );
+    					Util.get().sendActionBar(win, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getWinnerXP()).format("game.win-actionbar"));
     			        Util.get().doCommands(SkyWarsReloaded.getCfg().getWinCommands(), win);
     					win.setAllowFlight(true);
     					win.setFlying(true);
@@ -613,7 +519,8 @@ public class MatchManager
     }
     
     public void playerLeave(final Player player, DamageCause dCause, final boolean leftGame, boolean sendMessages) {
-    	SkyWarsReloaded.getLM().removePlayer(player.getUniqueId());
+    	SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
+    	UUID playerUuid = player.getUniqueId();
     	
     	final GameMap gameMap = this.getPlayerMap(player);
         if (gameMap == null) {
@@ -705,7 +612,7 @@ public class MatchManager
             	prepareSpectateInv(spec, gameMap);
             }
         } else {
-        	gameMap.removePlayer(player);
+        	gameMap.removePlayer(playerUuid);
 			
 	        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
 	        	for (final Player p : gameMap.getAlivePlayers()) {
@@ -745,10 +652,10 @@ public class MatchManager
 		if (SkyWarsReloaded.getCfg().economyEnabled()) {
 			VaultUtils.get().give(killer, multiplier * SkyWarsReloaded.getCfg().getKillerEco());
 		}
-		Util.get().sendActionBar(killer, ChatColor.GREEN + "KILL: " + ChatColor.AQUA + "+" + (multiplier * SkyWarsReloaded.getCfg().getKillerXP()) + " XP" );
+		Util.get().sendActionBar(killer, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getKillerXP()).format("game.kill-actionbar"));
 		Util.get().doCommands(SkyWarsReloaded.getCfg().getKillCommands(), killer);
 		
-		SoundItem sound = SkyWarsReloaded.getLM().getKillSoundByKey(killerData.getKillSound());
+		KillSoundOption sound = (KillSoundOption) KillSoundOption.getPlayerOptionByKey(killerData.getKillSound());
 	    if (sound != null) {
 	    	sound.playSound(killer.getLocation());
 	    }
@@ -891,13 +798,13 @@ public class MatchManager
         final int v1 = gameMap.getTimer();
         String time;
         if (v1 % 60 == 0) {
-            time = v1 / 60 + " " + ((v1 > 60) ? "minutes" : "minute");
+            time = v1 / 60 + " " + ((v1 > 60) ? new Messaging.MessageFormatter().format("timer.minutes") :  new Messaging.MessageFormatter().format("timer.minute"));
         }
         else {
             if (v1 >= 60 || (v1 % 10 != 0 && v1 >= 10) || v1 <= 0) {
                 return;
             }
-            time = v1 + " " + ((v1 > 1) ? "seconds" : "second");
+            time = v1 + " " + ((v1 > 1) ? new Messaging.MessageFormatter().format("timer.seconds") :  new Messaging.MessageFormatter().format("timer.second"));
         }
         this.message(gameMap, new Messaging.MessageFormatter().setVariable("time", time).format(message));
     }

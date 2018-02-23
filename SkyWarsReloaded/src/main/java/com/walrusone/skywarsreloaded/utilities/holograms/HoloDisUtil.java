@@ -57,52 +57,54 @@ public class HoloDisUtil extends HologramsUtil {
 	
 	@Override
 	public void updateLeaderHolograms(LeaderType type) {
-		if (holograms.get(type) == null) {
-			holograms.put(type, new HashMap<String, ArrayList<Hologram>>());
-		}
-		if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-			if (fc == null) {
-				getFC();
+		if (SkyWarsReloaded.get().serverLoaded()) {
+			if (holograms.get(type) == null) {
+				holograms.put(type, new HashMap<String, ArrayList<Hologram>>());
 			}
-			if (fc != null) {
-				for (String key: holograms.get(type).keySet()) {
-					for (Hologram hologram : holograms.get(type).get(key)) {
-						hologram.clearLines();
-						List<String> format = fc.getStringList("leaderboard." + type.toString().toLowerCase() + "." + key + ".format");
-						for (int i = 0; i < format.size(); i++) {
-						String line = getFormattedString(format.get(i), type);
-							if (line.startsWith("item:")) {
-								ItemStack item = null;
-								String mat = line.substring(5);
-								if (mat.contains("playerhead")) {
-									String num = mat.substring(12, mat.length()-1);
-									if (Util.get().isInteger(num)  && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(num)-1) {
-										Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(num)-1).getUUID());
-										if (player != null) {
-											item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-								    		SkullMeta meta1 = (SkullMeta)item.getItemMeta();
-								    		meta1.setOwner(player.getName());
-								    		meta1.setDisplayName(ChatColor.YELLOW + player.getName());
-								    		item.setItemMeta(meta1);
+			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+				if (fc == null) {
+					getFC();
+				}
+				if (fc != null) {
+					for (String key: holograms.get(type).keySet()) {
+						for (Hologram hologram : holograms.get(type).get(key)) {
+							hologram.clearLines();
+							List<String> format = fc.getStringList("leaderboard." + type.toString().toLowerCase() + "." + key + ".format");
+							for (int i = 0; i < format.size(); i++) {
+							String line = getFormattedString(format.get(i), type);
+								if (line.startsWith("item:")) {
+									ItemStack item = null;
+									String mat = line.substring(5);
+									if (mat.contains("playerhead")) {
+										String num = mat.substring(12, mat.length()-1);
+										if (Util.get().isInteger(num)  && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(num)-1) {
+											Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(num)-1).getUUID());
+											if (player != null) {
+												item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+									    		SkullMeta meta1 = (SkullMeta)item.getItemMeta();
+									    		meta1.setOwner(player.getName());
+									    		meta1.setDisplayName(ChatColor.YELLOW + player.getName());
+									    		item.setItemMeta(meta1);
+											}
+										}
+									} else {
+										Material material = Material.matchMaterial(mat);
+										if (material != null) {
+											item = new ItemStack(material, 1);
 										}
 									}
-								} else {
-									Material material = Material.matchMaterial(mat);
-									if (material != null) {
-										item = new ItemStack(material, 1);
+									if (item != null) {
+										hologram.insertItemLine(i, item);
+									} else {
+										hologram.insertTextLine(i, "  ");
 									}
-								}
-								if (item != null) {
-									hologram.insertItemLine(i, item);
 								} else {
-									hologram.insertTextLine(i, "  ");
+									hologram.insertTextLine(i, ChatColor.translateAlternateColorCodes('&', line));
 								}
-							} else {
-								hologram.insertTextLine(i, ChatColor.translateAlternateColorCodes('&', line));
 							}
-						}
-					}	
-				}		
+						}	
+					}		
+				}
 			}
 		}
 	}

@@ -158,4 +158,8 @@ public class NMSHandler implements NMS {
 		skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
 	}
 	
+	public void setMaxHealth(Player player, int health) {
+		player.setMaxHealth(health);
+	}
+	
 }

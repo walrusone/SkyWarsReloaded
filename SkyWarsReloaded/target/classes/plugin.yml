@@ -1,7 +1,7 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 3.0.9
-softdepend: [Vault, PlaceholderAPI, HolographicDisplays]
+version: 3.1
+softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays]
 
 commands:
    skywars:
@@ -112,6 +112,24 @@ permissions:
     default: true
   sw.quit: 
     description: Allows a player to use sw quit command.
+    default: true
+  sw.winsound:
+    description: Allows a player to use sw winsound command.
+    default: true
+  sw.killsound:
+    description: Allows a player to use sw killsound command.
+    default: true
+  sw.glass:
+    description: Allows a player to use sw glass command.
+    default: true
+  sw.taunt:
+    description: Allows a player to use sw tuant command.
+    default: true
+  sw.projectile:
+    description: Allows a player to use sw projectile command.
+    default: true
+  sw.particle:
+    description: Allows a player to use sw particle command.
     default: true
   sw.setspawn:
     description: Allows a player to set a set the lobby spawn.
@@ -241,4 +259,22 @@ permissions:
     default: op
   sw.vip5:
     description: Gives the player a experience multiplier.
+    default: op
+  sw.chestvote:
+    description: Allows a person to use the chest voting menu.
+    default: op
+  sw.healthvote:
+    description: Allows a person to use the chest voting menu.
+    default: op
+  sw.timevote:
+    description: Allows a person to use the time voting menu.
+    default: op
+  sw.weathervote:
+    description: Allows a person to use the weather voting menu.
+    default: op
+  sw.modifiervote:
+    description: Allows a person to use the modifier voting menu.
+    default: op
+  sw.votemenu:
+    description: Allows a person to opening the voting menu.
     default: op

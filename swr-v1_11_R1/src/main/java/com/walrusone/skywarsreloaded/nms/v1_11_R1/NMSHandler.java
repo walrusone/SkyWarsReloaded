@@ -17,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Skull;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -151,5 +152,9 @@ public class NMSHandler implements NMS, Listener {
 	@Override 
 	public void updateSkull(Skull skull, UUID uuid) {
 		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+	}
+	
+	public void setMaxHealth(Player player, int health) {
+		player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 	}
 }

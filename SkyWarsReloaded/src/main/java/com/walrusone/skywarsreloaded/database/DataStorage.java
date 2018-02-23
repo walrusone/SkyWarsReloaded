@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 public class DataStorage {

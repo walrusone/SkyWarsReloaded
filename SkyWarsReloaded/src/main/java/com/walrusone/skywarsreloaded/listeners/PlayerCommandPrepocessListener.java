@@ -6,8 +6,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.Listener;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class PlayerCommandPrepocessListener implements Listener

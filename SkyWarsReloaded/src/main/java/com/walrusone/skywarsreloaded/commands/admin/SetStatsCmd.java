@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.ProjectileEffectOption;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -91,7 +93,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("pareffect")) {
-				if (SkyWarsReloaded.getLM().getParticleByKey(args[3]) != null) {
+				if (ParticleEffectOption.getPlayerOptionByKey(args[3]) != null) {
 					pStat.setParticleEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
@@ -100,7 +102,7 @@ public class SetStatsCmd extends BaseCmd {
 					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
 				}
 			} else if (args[2].equalsIgnoreCase("proeffect")) {
-				if (SkyWarsReloaded.getLM().getProjByKey(args[3]) != null) {
+				if (ProjectileEffectOption.getPlayerOptionByKey(args[3]) != null) {
 					pStat.setProjectileEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])

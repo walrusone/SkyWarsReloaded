@@ -29,4 +29,5 @@ public interface NMS {
 	public ItemStack getItemStack(ItemStack item, List<String> lore, String message);
 	public boolean isValueParticle(String string);
 	void updateSkull(Skull skull, UUID uuid);
+	public void setMaxHealth(Player player, int health);
 }

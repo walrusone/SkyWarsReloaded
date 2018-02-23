@@ -31,12 +31,20 @@ public class Config {
 	private int exitpos;
 	private int chestvotepos;
 	private boolean chestVoteEnabled;
+	private int healthvotepos;
+	private boolean healthVoteEnabled;
 	private int timevotepos;
 	private boolean timeVoteEnabled;
 	private int weathervotepos;
 	private boolean weatherVoteEnabled;
 	private int modifiervotepos;
 	private boolean modifierVoteEnabled;
+	private int particleselectslot;
+	private int projectileselectslot;
+	private int killsoundselectslot;
+	private int winsoundselectslot;
+	private int glassselectslot;
+	private int tauntselectslot;
 	
 	private int leaderSize;
 	private boolean leaderSignsEnabled;
@@ -54,6 +62,8 @@ public class Config {
 	
 	private int winnerEco;
 	private int killerEco;
+	private int snowballDamage;
+	private int eggDamage;
 	private int winnerXP;
 	private List<String> winCommands;
 	private int killerXP;
@@ -63,11 +73,15 @@ public class Config {
 	private int vip3;
 	private int vip4;
 	private int vip5;
+	private boolean tauntsEnabled;
 	private boolean titlesEnabled;
 	private boolean allowFallDamage;
 	private boolean kitVotingEnabled;
 	private int gameTimer;
 	private int waitTimer;
+	private int strength;
+	private int speed;
+	private int jump;
 
 	private int timeAfterMatch;
 	private boolean fireworksEnabled;
@@ -90,6 +104,7 @@ public class Config {
 	
 	private int cooldown;
 	
+	private int kitMenuSize;
 	private int randPos;
 	private int noKitPos;
 	private String randMat;
@@ -109,7 +124,7 @@ public class Config {
     private boolean projectEnabled;
     private boolean killsoundEnabled;
     private boolean winsoundEnabled;
-    private boolean tauntsEnabled;
+    private boolean tauntsMenuEnabled;
 	
 	
 	private boolean playSounds;
@@ -129,6 +144,7 @@ public class Config {
 	private String openChestMenu;
 	private String openTimeMenu;
 	private String openWeatherMenu;
+	private String openHealthMenu;
 	private String openModifierMenu;
 	private String confirmSelection;
 	private String errorSound;
@@ -143,8 +159,11 @@ public class Config {
 	private List<String> enabledCommandsSpectate;
 	
 	private Map<String, String> materials = new HashMap<String, String>();
-	private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", "exitMenuItem", "exitGameItem",
+	private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", 
+			"exitMenuItem", "nextPageItem", "prevPageItem",
+			"exitGameItem",
 			"chestvote", "chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger", 
+			"healthvote", "healthrandom", "healthfive", "healthten", "healthfifteen", "healthtwenty",
 			"nopermission", 
 			"timevote", "timerandom", "timedawn", "timenoon", "timedusk", "timemidnight", 
 			"weathervote", "weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow", 
@@ -157,8 +176,11 @@ public class Config {
 			"killsoundselect", "killsounditem",
 			"winsoundselect",
 			"glassselect", "tauntselect");
-		private final List<String> defItems = Arrays.asList("EYE_OF_ENDER", "COMPASS", "BARRIER", "IRON_DOOR",
+		private final List<String> defItems = Arrays.asList("EYE_OF_ENDER", "COMPASS", 
+			"BARRIER", "FEATHER", "FEATHER", 
+			"IRON_DOOR",
 			"SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
+			"EXP_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
 			"BARRIER", 
 			"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
 			"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
@@ -171,8 +193,11 @@ public class Config {
 			"DIAMOND_SWORD", "NOTE_BLOCK", 
 			"DRAGON_EGG", 
 			"STAINED_GLASS", "SHIELD");
-		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", "COMPASS", "BARRIER", "IRON_DOOR",
-				"DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
+		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
+				"BARRIER",  "FEATHER", "FEATHER", 
+				"IRON_DOOR",
+				"DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE",
+				"EXP_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
 				"BARRIER", 
 				"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
 				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
@@ -220,6 +245,8 @@ public class Config {
 		winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
 		killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
 		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
+		snowballDamage = SkyWarsReloaded.get().getConfig().getInt("game.snowballDamage");
+		eggDamage = SkyWarsReloaded.get().getConfig().getInt("game.eggDamage");
 		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
 		killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
 		killCommands = SkyWarsReloaded.get().getConfig().getStringList("game.killCommands");
@@ -234,6 +261,7 @@ public class Config {
 		fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
 		gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
 		waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
+		tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.tauntsEnabled");
 		titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
 		allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
 		kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
@@ -243,6 +271,9 @@ public class Config {
 		pressurePlate = SkyWarsReloaded.get().getConfig().getBoolean("enablePressurePlateJoin");
 		teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
 		teleportOnWorldEnter = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnWorldEnter");
+		strength = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.strength");
+		speed = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.speed");
+		jump = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.jump");
 		
 		maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
 		partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
@@ -263,12 +294,20 @@ public class Config {
 		exitpos = SkyWarsReloaded.get().getConfig().getInt("items.exitPosition");
 		chestvotepos = SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
 		chestVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
+		healthvotepos = SkyWarsReloaded.get().getConfig().getInt("items.healthVotePosition");
+		healthVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.healthVoteEnabled");
 		timevotepos = SkyWarsReloaded.get().getConfig().getInt("items.timeVotePosition");
 		timeVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.timeVoteEnabled");
 		weathervotepos = SkyWarsReloaded.get().getConfig().getInt("items.weatherVotePosition");
 		weatherVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.weatherVoteEnabled");
 		modifiervotepos = SkyWarsReloaded.get().getConfig().getInt("items.modifierVotePosition");
 		modifierVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.modifierVoteEnabled");
+		particleselectslot = SkyWarsReloaded.get().getConfig().getInt("items.particleselectslot");
+		projectileselectslot = SkyWarsReloaded.get().getConfig().getInt("items.projectileselectslot");
+		killsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.killsoundselectslot");
+		winsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.winsoundselectslot");
+		glassselectslot = SkyWarsReloaded.get().getConfig().getInt("items.glassselectslot");
+		tauntselectslot = SkyWarsReloaded.get().getConfig().getInt("items.tauntselectslot");
 		
 		suddenDeathEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enabled");
 		disableHealthRegen = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.disableHealthRegen");
@@ -277,6 +316,7 @@ public class Config {
 		cooldown = SkyWarsReloaded.get().getConfig().getInt("tauntCooldown");
 		
 		randPos = SkyWarsReloaded.get().getConfig().getInt("kit.randPos");
+		kitMenuSize = SkyWarsReloaded.get().getConfig().getInt("kit.menuSize");
 		noKitPos = SkyWarsReloaded.get().getConfig().getInt("kit.noKitPos");
 		randMat = SkyWarsReloaded.get().getConfig().getString("kit.randItem");
 		noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
@@ -295,7 +335,7 @@ public class Config {
 	    projectEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.projectile");
 	    killsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.killsound");
 	    winsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.winsound");
-	    tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.taunts");
+	    tauntsMenuEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.taunts");
 	    
 		playSounds = SkyWarsReloaded.get().getConfig().getBoolean("sounds.enabled");
 		countdown = SkyWarsReloaded.get().getConfig().getString("sounds.countdown");
@@ -312,6 +352,7 @@ public class Config {
 		openTauntMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTauntMenu");
 		openKitMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKitMenu");
 		openChestMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openChestMenu");
+		openHealthMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openHealthMenu");
 		openTimeMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTimeMenu");
 		openWeatherMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWeatherMenu");
 		openModifierMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openModifierMenu");
@@ -391,6 +432,8 @@ public class Config {
 		
 		SkyWarsReloaded.get().getConfig().set("game.ecoForWin", winnerEco);
 		SkyWarsReloaded.get().getConfig().set("game.ecoForKill", killerEco);
+		SkyWarsReloaded.get().getConfig().set("game.snowballDamage", snowballDamage);
+		SkyWarsReloaded.get().getConfig().set("game.eggDamage", eggDamage);
 		SkyWarsReloaded.get().getConfig().set("game.xpForWin", winnerXP);
 		SkyWarsReloaded.get().getConfig().set("game.winCommands", winCommands);
 		SkyWarsReloaded.get().getConfig().set("game.xpForKill", killerXP);
@@ -409,11 +452,15 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.spectateEnabled", spectateEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.spectateDistance", spectateDistance);
 		SkyWarsReloaded.get().getConfig().set("game.maxMapSize", maxMapSize);
+		SkyWarsReloaded.get().getConfig().set("game.tauntsEnabled", tauntsEnabled);
 		SkyWarsReloaded.get().getConfig().set("enablePressurePlateJoin", pressurePlate);
 		SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnJoin", teleportOnJoin);
 		SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnWorldEnter", teleportOnWorldEnter);
 		SkyWarsReloaded.get().getConfig().set("game.allowFallDamage", allowFallDamage);
 		SkyWarsReloaded.get().getConfig().set("game.kitVotingEnabled", kitVotingEnabled);
+		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.strength", strength);
+		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.speed", speed);
+		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.jump", jump);
 		
 		SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
 		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
@@ -432,16 +479,25 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("items.exitPosition", exitpos);
 		SkyWarsReloaded.get().getConfig().set("items.chestVotePosition", chestvotepos);
 		SkyWarsReloaded.get().getConfig().set("items.chestVoteEnabled", chestVoteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.healthVotePosition", healthvotepos);
+		SkyWarsReloaded.get().getConfig().set("items.healthVoteEnabled", healthVoteEnabled);
 		SkyWarsReloaded.get().getConfig().set("items.timeVotePosition", timevotepos);
 		SkyWarsReloaded.get().getConfig().set("items.timeVoteEnabled", timeVoteEnabled);
 		SkyWarsReloaded.get().getConfig().set("items.weatherVotePosition", weathervotepos);
 		SkyWarsReloaded.get().getConfig().set("items.weatherVoteEnabled", weatherVoteEnabled);
 		SkyWarsReloaded.get().getConfig().set("items.modifierVotePosition", modifiervotepos);
 		SkyWarsReloaded.get().getConfig().set("items.modifierVoteEnabled", modifierVoteEnabled);
+		SkyWarsReloaded.get().getConfig().set("items.particleselectslot", particleselectslot);
+		SkyWarsReloaded.get().getConfig().set("items.projectileselectslot", projectileselectslot);
+		SkyWarsReloaded.get().getConfig().set("items.killsoundselectslot", killsoundselectslot);
+		SkyWarsReloaded.get().getConfig().set("items.winsoundselectslot", winsoundselectslot);
+		SkyWarsReloaded.get().getConfig().set("items.glassselectslot", glassselectslot);
+		SkyWarsReloaded.get().getConfig().set("items.tauntselectslot", tauntselectslot);
 		
 		SkyWarsReloaded.get().getConfig().set("tauntCooldown", cooldown);
 
 		SkyWarsReloaded.get().getConfig().set("kit.randPos", randPos);
+		SkyWarsReloaded.get().getConfig().set("kit.menuSize", kitMenuSize);
 		SkyWarsReloaded.get().getConfig().set("kit.noKitPos", noKitPos);
 		SkyWarsReloaded.get().getConfig().set("kit.randItem", randMat);
 		SkyWarsReloaded.get().getConfig().set("kit.noKitItem", noKitMat);
@@ -460,7 +516,7 @@ public class Config {
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.projectile", projectEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.killsound", killsoundEnabled);
 	    SkyWarsReloaded.get().getConfig().set("enabledMenus.winsound", winsoundEnabled);
-	    SkyWarsReloaded.get().getConfig().set("enabledMenus.taunts", tauntsEnabled);
+	    SkyWarsReloaded.get().getConfig().set("enabledMenus.taunts", tauntsMenuEnabled);
 		
 		SkyWarsReloaded.get().getConfig().set("sounds.enabled", playSounds);
 		SkyWarsReloaded.get().getConfig().set("sounds.countdown", countdown);
@@ -477,6 +533,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("sounds.openTauntMenu", openTauntMenu);
 		SkyWarsReloaded.get().getConfig().set("sounds.openKitMenu", openKitMenu);
 		SkyWarsReloaded.get().getConfig().set("sounds.openChestMenu", openChestMenu);
+		SkyWarsReloaded.get().getConfig().set("sounds.openHealthMenu", openHealthMenu);
 		SkyWarsReloaded.get().getConfig().set("sounds.openTimeMenu", openTimeMenu);
 		SkyWarsReloaded.get().getConfig().set("sounds.openWeatherMenu", openWeatherMenu);
 		SkyWarsReloaded.get().getConfig().set("sounds.openModifierMenu", openModifierMenu);
@@ -666,7 +723,7 @@ public class Config {
 	}
 	
 	public boolean tauntsMenuEnabled() {
-		return tauntsEnabled;
+		return tauntsMenuEnabled;
 	}
 	
 	public boolean optionsMenuEnabled() {
@@ -771,6 +828,14 @@ public class Config {
 	
 	public boolean isChestVoteEnabled() {
 		return chestVoteEnabled;
+	}
+	
+	public int getHealthVotePos() {
+		return healthvotepos;
+	}
+	
+	public boolean isHealthVoteEnabled() {
+		return healthVoteEnabled;
 	}
 	
 	public int getTimeVotePos() {
@@ -939,6 +1004,62 @@ public class Config {
 		case XP: return xpEnabled;
 		default: return false;
 		}
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public int getJump() {
+		return jump;
+	}
+
+	public int getStrength() {
+		return strength;
+	}
+
+	public boolean tauntsEnabled() {
+		return tauntsEnabled;
+	}
+
+	public String getOpenHealthMenuSound() {
+		return openHealthMenu;
+	}
+
+	public int getKitMenuSize() {
+		return kitMenuSize;
+	}
+
+	public int getGlassSlot() {
+		return glassselectslot;
+	}
+
+	public int getParticleSlot() {
+		return particleselectslot;
+	}
+
+	public int getProjectileSlot() {
+		return projectileselectslot;
+	}
+
+	public int getKillSoundSlot() {
+		return killsoundselectslot;
+	}
+
+	public int getWinSoundSlot() {
+		return winsoundselectslot;
+	}
+
+	public int getTauntSlot() {
+		return tauntselectslot;
+	}
+
+	public double getSnowDamage() {
+		return snowballDamage;
+	}
+
+	public double getEggDamage() {
+		return eggDamage;
 	}
 }
 

@@ -13,6 +13,8 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  snowballDamage: 1
+  eggDamage: 1
   ecoForWin: 5
   ecoForKill: 1
   xpForWin: 5
@@ -32,6 +34,11 @@ game:
   spectateDistance: 75
   allowFallDamage: false
   maxMapSize: 400
+  tauntsEnabled: true
+  modifierLevel:
+    speed:
+    strength:
+    jump: 
   suddendeath:
     enabled: true
     disableHealthRegen: true
@@ -42,6 +49,7 @@ parties:
 holograms: 
   enabled: false
 kit:
+  menuSize: 45
   randPos: 0
   randItem: NETHER_STAR
   noKitPos: 44
@@ -67,6 +75,7 @@ sounds:
   openTauntMenu: ENTITY_ENDERDRAGON_FLAP
   openKitMenu: ENTITY_PLAYER_ATTACK_SWEEP
   openChestMenu: BLOCK_CHEST_OPEN
+  openHealthMenu: ENTITY_SPLASH_POTION_BREAK
   openTimeMenu: ITEM_BOTTLE_FILL_DRAGONBREATH
   openWeatherMenu: WEATHER_RAIN
   openModifierMenu: ENTITY_SPLASH_POTION_BREAK
@@ -92,17 +101,27 @@ items:
   exitGameItem: IRON_DOOR
   exitPosition: 8
   exitMenuItem: BARRIER
+  prevPageItem: FEATHER
+  nextPageItem: FEATHER
   chestVoteEnabled: true
-  chestVotePosition: 10
+  chestVotePosition: 9
   chestvote: SHIELD
   chestrandom: NETHER_STAR
   chestbasic: STONE_SWORD
   chestnormal: IRON_SWORD
   chestop: DIAMOND_SWORD
   chestscavenger: WOOD_HOE
+  healthVoteEnabled: true
+  healthVotePosition: 11
+  healthvote: EXP_BOTTLE
+  healthrandom: NETHER_STAR
+  healthfive: REDSTONE
+  healthten: REDSTONE
+  healthfifteen: REDSTONE
+  healthtwenty: REDSTONE
   nopermission: BARRIER
   timeVoteEnabled: true
-  timeVotePosition: 12
+  timeVotePosition: 13
   timevote: WATCH
   timerandom: NETHER_STAR
   timedawn: WATCH
@@ -110,7 +129,7 @@ items:
   timedusk: WATCH
   timemidnight: WATCH
   weatherVoteEnabled: true
-  weatherVotePosition: 14
+  weatherVotePosition: 15
   weathervote: BLAZE_POWDER
   weatherrandom: NETHER_STAR
   weathersunny: PRISMARINE_SHARD
@@ -118,7 +137,7 @@ items:
   weatherstorm: PRISMARINE_SHARD
   weathersnow: PRISMARINE_SHARD
   modifierVoteEnabled: true
-  modifierVotePosition: 16
+  modifierVotePosition: 17
   modifiervote: DRAGONS_BREATH
   modifierspeed: BOOK
   modifierjump: BOOK
@@ -129,12 +148,18 @@ items:
   spectateselect: LEATHER_HELMET
   optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
+  particleselectslot: 11
   projectileselect: ARROW
+  projectileselectslot: 12 
   killsoundselect: DIAMOND_SWORD
+  killsoundselectslot: 14
   killsounditem: NOTE_BLOCK
   winsoundselect: DRAGON_EGG
+  winsoundselectslot: 15
   glassselect: STAINED_GLASS
+  glassselectslot: 9 
   tauntselect: SHIELD
+  tauntselectslot: 17
 particles:
   enabled: true
   ticksperupdate: 3

@@ -122,4 +122,5 @@ public abstract class HologramsUtil {
 	public List<String> getFormats(LeaderType type) {
 		return formats.get(type);
 	}
+
 }

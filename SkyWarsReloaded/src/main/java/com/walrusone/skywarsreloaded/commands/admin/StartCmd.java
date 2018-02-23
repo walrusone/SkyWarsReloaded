@@ -1,8 +1,8 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
 
 public class StartCmd extends BaseCmd { 
 	

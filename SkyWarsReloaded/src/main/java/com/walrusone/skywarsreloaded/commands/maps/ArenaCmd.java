@@ -2,7 +2,7 @@ package com.walrusone.skywarsreloaded.commands.maps;
 
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.objects.GameMap;
+import com.walrusone.skywarsreloaded.game.GameMap;
 
 public class ArenaCmd extends BaseCmd {
 

@@ -12,10 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
-import com.walrusone.skywarsreloaded.objects.ParticleEffect;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.playeroptions.ProjectileEffectOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
 
 public class ParticleEffectListener implements Listener{
 
@@ -28,10 +29,10 @@ public class ParticleEffectListener implements Listener{
 				 GameMap gMap = MatchManager.get().getPlayerMap(player);
 				 if (gMap != null) {
 					 String key = PlayerStat.getPlayerStats(player.getUniqueId()).getProjectileEffect();
-					 List<ParticleEffect> effects = SkyWarsReloaded.getLM().getProjByKey(key).getEffects();
+					 List<ParticleEffect> effects = ((ProjectileEffectOption) ProjectileEffectOption.getPlayerOptionByKey(key)).getEffects();
 					 if (key != null) {
 						 if (!key.equalsIgnoreCase("none")) {
-							 SkyWarsReloaded.getLM().addProjectile(projectile, effects);
+							 SkyWarsReloaded.getOM().addProjectile(projectile, effects);
 						 }
 					 } 
 				 }

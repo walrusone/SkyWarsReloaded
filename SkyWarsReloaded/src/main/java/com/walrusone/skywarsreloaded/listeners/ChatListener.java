@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.objects.GameMap;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class ChatListener implements Listener {
@@ -40,7 +40,7 @@ public class ChatListener implements Listener {
 							gMap.update();
 						}
 					}.runTask(SkyWarsReloaded.get());
-					gMap.openArenaManager(player);
+					SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
 				} else if (setting.equalsIgnoreCase("creator")) {
 					gMap.setCreator(variable);
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getName()).setVariable("creator", variable).format("maps.creator"));
@@ -50,7 +50,7 @@ public class ChatListener implements Listener {
 							gMap.update();
 						}
 					}.runTask(SkyWarsReloaded.get());
-					gMap.openArenaManager(player);
+					SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
 				}
 				ChatListener.toChange.remove(uuid);
 			} else {

@@ -31,8 +31,9 @@ import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.ArenaDamageListener;
-import com.walrusone.skywarsreloaded.listeners.ArenaManagerListener;
 import com.walrusone.skywarsreloaded.listeners.ChatListener;
 import com.walrusone.skywarsreloaded.listeners.IconMenuController;
 import com.walrusone.skywarsreloaded.listeners.LobbyListener;
@@ -45,21 +46,23 @@ import com.walrusone.skywarsreloaded.listeners.PlayerJoinListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerQuitListener;
 import com.walrusone.skywarsreloaded.listeners.PlayerTeleportListener;
 import com.walrusone.skywarsreloaded.listeners.SpectateListener;
+import com.walrusone.skywarsreloaded.listeners.SwapHandListener;
 import com.walrusone.skywarsreloaded.listeners.TauntListener;
 import com.walrusone.skywarsreloaded.managers.ChestManager;
-import com.walrusone.skywarsreloaded.managers.LevelManager;
+import com.walrusone.skywarsreloaded.managers.PlayerOptionsManager;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.managers.ItemsManager;
+import com.walrusone.skywarsreloaded.managers.Leaderboard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.WorldManager;
-import com.walrusone.skywarsreloaded.objects.GameKit;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.Leaderboard;
-import com.walrusone.skywarsreloaded.objects.PlayerData;
-import com.walrusone.skywarsreloaded.objects.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.JoinMenu;
+import com.walrusone.skywarsreloaded.menus.SpectateMenu;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.SWRPlaceholders;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
 import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
+import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
+import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -70,15 +73,15 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private Leaderboard leaderboard;
 	private IconMenuController ic;
 	private ItemsManager im;
+	private PlayerOptionsManager pom;
 	private Config config;
 	private static Database db;
 	private ChestManager cm;
-    private LevelManager lm;
 	private WorldManager wm;
 	private String servername;
 	private NMS nmsHandler;
-	private boolean loaded;
 	private static HologramsUtil hu;
+	private boolean loaded;
 
 	
 	public void onEnable() {
@@ -121,17 +124,21 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         saveConfig();
         reloadConfig();
 
+        config = new Config();   
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        	new SWRPlaceholderAPI(this).hook();
+        }
+        
+        if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
+        	new SWRMVdWPlaceholder(this);
+        }
+
         ic = new IconMenuController();
         wm = new WorldManager();
-
-        load();
         
-    	if (getCfg().bungeeMode()) {
-        	this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        	this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
-    		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
-    	}
-		
+        if (!nmsHandler.isOnePointEight()) {
+        	this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
+        }
         this.getServer().getPluginManager().registerEvents(ic, this);
         this.getServer().getPluginManager().registerEvents(new ArenaDamageListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
@@ -140,28 +147,35 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
         this.getServer().getPluginManager().registerEvents(new LobbyListener(), this);
-        this.getServer().getPluginManager().registerEvents(new TauntListener(), this);
         this.getServer().getPluginManager().registerEvents(new SpectateListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ArenaManagerListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        this.getServer().getPluginManager().registerEvents(new ChatListener(), this);        
+        if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
+			hu = null;
+        	if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+        		hu = new HoloDisUtil();
+        		hu.load();
+        	}
+        	if (hu == null) {
+        		SkyWarsReloaded.getCfg().setHologramsEnabled(false);
+        	}
+		}
+        
+        load();
+        if (SkyWarsReloaded.getCfg().tauntsEnabled()) {
+            this.getServer().getPluginManager().registerEvents(new TauntListener(), this);
+        }
         if (SkyWarsReloaded.getCfg().particlesEnabled()) {
         	this.getServer().getPluginManager().registerEvents(new ParticleEffectListener(), this);
         }
         if (config.disableCommands()) {
             this.getServer().getPluginManager().registerEvents(new PlayerCommandPrepocessListener(), this);
         }
-     
-        getCommand("skywars").setExecutor(new CmdManager());
-        getCommand("swkit").setExecutor(new KitCmdManager());
-        getCommand("swmap").setExecutor(new MapCmdManager());
-        if (config.partyEnabled()) {
-            getCommand("swparty").setExecutor(new PartyCmdManager());
-        }
         
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        	new SWRPlaceholders(this).hook();
-        }
-        
+    	if (getCfg().bungeeMode()) {
+        	this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        	this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+    		Bukkit.getPluginManager().registerEvents(new PingListener(), this);
+    	}
         if (getCfg().bungeeMode()) {
             new BukkitRunnable() {
                 public void run() {
@@ -176,7 +190,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 }
             }.runTaskTimer(this, 0, 20);
         }
-        loaded = true;
 	}
 
 	public void onDisable() {
@@ -212,7 +225,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         config = new Config();
         cm = new ChestManager();
         im = new ItemsManager();
-        lm = new LevelManager();
+        pom = new PlayerOptionsManager();
         GameKit.loadkits();
         GameMap.loadMaps();
         
@@ -227,7 +240,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 				useable.add(type.toString());
 			}
         }
-
+        
         new BukkitRunnable() {
             public void run() {
                 for (final Player v : getServer().getOnlinePlayers()) {
@@ -235,6 +248,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         PlayerStat.getPlayers().add(new PlayerStat(v));
                     }
                 }
+                leaderboard = null;
                 leaderboard = new Leaderboard();
             }
         }.runTaskAsynchronously(this);
@@ -249,15 +263,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
         }
 
-		if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
-			hu = null;
-        	if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-        		hu = new HoloDisUtil();
-        	}
-        	if (hu == null) {
-        		SkyWarsReloaded.getCfg().setHologramsEnabled(false);
-        	}
-		}
+        if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
+	        new JoinMenu();
+        }
+        if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+	        new SpectateMenu();
+        }
+        
+        getCommand("skywars").setExecutor(new CmdManager());
+        getCommand("swkit").setExecutor(new KitCmdManager());
+        getCommand("swmap").setExecutor(new MapCmdManager());
+        if (config.partyEnabled()) {
+            getCommand("swparty").setExecutor(new PartyCmdManager());
+        }
         loaded = true;
 	}
 	
@@ -311,11 +329,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	public static ItemsManager getIM() {
 		return instance.im;
 	}
-	
-	public static LevelManager getLM() {
-		return instance.lm;
-	}
-		
+
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
 		if (!channel.equals("BungeeCord")) {
 			return;
@@ -406,6 +420,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	
 	public static HologramsUtil getHoloManager() {
 		return hu;
+	}
+	
+	public static PlayerOptionsManager getOM() {
+		return instance.pom;
 	}
     
 }

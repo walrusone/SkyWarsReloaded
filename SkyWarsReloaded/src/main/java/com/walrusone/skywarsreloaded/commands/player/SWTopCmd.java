@@ -5,7 +5,7 @@ import java.util.List;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.objects.Leaderboard.LeaderData;
+import com.walrusone.skywarsreloaded.managers.Leaderboard.LeaderData;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SWTopCmd extends BaseCmd { 

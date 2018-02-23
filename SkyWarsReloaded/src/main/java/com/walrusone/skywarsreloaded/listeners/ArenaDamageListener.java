@@ -1,9 +1,11 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,10 +17,11 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.objects.GameMap;
-import com.walrusone.skywarsreloaded.objects.PlayerData;
 
 public class ArenaDamageListener implements Listener {
 	
@@ -38,6 +41,12 @@ public class ArenaDamageListener implements Listener {
 						event.setCancelled(false);
 						if (damager instanceof Projectile) {
 							Projectile proj = (Projectile) damager;
+							if (damager instanceof Snowball) {
+								event.setDamage(SkyWarsReloaded.getCfg().getSnowDamage());
+							}
+							if (damager instanceof Egg) {
+								event.setDamage(SkyWarsReloaded.getCfg().getEggDamage());
+							}
 							if (proj.getShooter() instanceof Player) {
 								hitter = (Player) proj.getShooter();
 								if (hitter != null) {

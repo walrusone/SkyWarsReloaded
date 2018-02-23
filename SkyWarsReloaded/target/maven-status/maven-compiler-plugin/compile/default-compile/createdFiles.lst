@@ -1,9 +1,5 @@
-com\walrusone\skywarsreloaded\objects\Leaderboard$3.class
-com\walrusone\skywarsreloaded\objects\Leaderboard$2.class
-com\walrusone\skywarsreloaded\objects\Leaderboard$4.class
-com\walrusone\skywarsreloaded\listeners\ArenaManagerListener$1.class
+com\walrusone\skywarsreloaded\menus\playeroptions\OptionSelectionMenu$2.class
 com\walrusone\skywarsreloaded\config\Config$1.class
-com\walrusone\skywarsreloaded\objects\GameMap$2.class
-com\walrusone\skywarsreloaded\objects\GameMap$3.class
-com\walrusone\skywarsreloaded\objects\GameMap$4.class
-com\walrusone\skywarsreloaded\objects\GameMap$5.class
+com\walrusone\skywarsreloaded\managers\Leaderboard$3.class
+com\walrusone\skywarsreloaded\menus\ArenaMenu$3.class
+com\walrusone\skywarsreloaded\menus\gameoptions\GameOption$2.class

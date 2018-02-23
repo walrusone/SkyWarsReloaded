@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.objects.ChestItem;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.ChestItem;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 import org.bukkit.block.Chest;
