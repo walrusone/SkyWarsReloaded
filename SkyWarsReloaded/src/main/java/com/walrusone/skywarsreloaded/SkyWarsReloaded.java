@@ -222,7 +222,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 		messaging = null;
 		messaging = new Messaging(this);
 		reloadConfig();
-        config = new Config();
+		config.load();
         cm = new ChestManager();
         im = new ItemsManager();
         pom = new PlayerOptionsManager();

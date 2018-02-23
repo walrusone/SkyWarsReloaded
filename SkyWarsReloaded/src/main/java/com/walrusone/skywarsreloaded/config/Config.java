@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -214,173 +215,189 @@ public class Config {
 	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
 	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
 	
+	boolean loading = false;
+	
 	public Config() {
 		load();
 	}
 	
-	private void load() {
-		debug = SkyWarsReloaded.get().getConfig().getBoolean("debugMode");
-		
-		bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
-		economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
-		bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
-		
-		resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
-		promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
-		
-		lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
-		protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
-		displayPlayerExeperience = SkyWarsReloaded.get().getConfig().getBoolean("displayPlayerLevelOnXpBar");
-		leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
-		leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
-		leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
-		eloEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.eloLeaderboardEnabled");
-		winsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.winsLeaderboardEnabled");
-		lossesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.lossesLeaderboardEnabled");
-		killsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.killsLeaderboardEnabled");
-		deathsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.deathsLeaderboardEnabled");
-		xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
-		leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
-		
-		winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
-		killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
-		winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
-		snowballDamage = SkyWarsReloaded.get().getConfig().getInt("game.snowballDamage");
-		eggDamage = SkyWarsReloaded.get().getConfig().getInt("game.eggDamage");
-		winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
-		killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
-		killCommands = SkyWarsReloaded.get().getConfig().getStringList("game.killCommands");
-		vip1 = SkyWarsReloaded.get().getConfig().getInt("game.vip1Multiplier");
-		vip2 = SkyWarsReloaded.get().getConfig().getInt("game.vip2Multiplier");
-		vip3 = SkyWarsReloaded.get().getConfig().getInt("game.vip3Multiplier");
-		vip4 = SkyWarsReloaded.get().getConfig().getInt("game.vip4Multiplier");
-		vip5 = SkyWarsReloaded.get().getConfig().getInt("game.vip5Multiplier");
-		spawn = Util.get().stringToLocation(SkyWarsReloaded.get().getConfig().getString("spawn"));
-		timeAfterMatch = SkyWarsReloaded.get().getConfig().getInt("game.timeAfterMatch");
-		fireworksPer5Tick = SkyWarsReloaded.get().getConfig().getInt("fireworks.per5Ticks");
-		fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
-		gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
-		waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
-		tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.tauntsEnabled");
-		titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
-		allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
-		kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
-		spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
-		spectateDistance = SkyWarsReloaded.get().getConfig().getInt("game.spectateDistance");
-		maxMapSize = SkyWarsReloaded.get().getConfig().getInt("game.maxMapSize");
-		pressurePlate = SkyWarsReloaded.get().getConfig().getBoolean("enablePressurePlateJoin");
-		teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
-		teleportOnWorldEnter = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnWorldEnter");
-		strength = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.strength");
-		speed = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.speed");
-		jump = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.jump");
-		
-		maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
-		partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
-		lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
-		
-		useHolograms = SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
-		
-		if (spawn != null) {
-			if (!lobbyWorlds.contains(spawn.getWorld())) {
-				lobbyWorlds.add(spawn.getWorld().getName().toLowerCase());
+	public void load() {
+		if (!loading) {
+			loading = true;
+			debug = SkyWarsReloaded.get().getConfig().getBoolean("debugMode");
+			
+			bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
+			economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
+			bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
+			
+			resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
+			promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
+			
+			lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
+			protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
+			displayPlayerExeperience = SkyWarsReloaded.get().getConfig().getBoolean("displayPlayerLevelOnXpBar");
+			leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
+			leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
+			leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
+			eloEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.eloLeaderboardEnabled");
+			winsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.winsLeaderboardEnabled");
+			lossesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.lossesLeaderboardEnabled");
+			killsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.killsLeaderboardEnabled");
+			deathsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.deathsLeaderboardEnabled");
+			xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
+			leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
+			
+			winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
+			killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
+			winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
+			snowballDamage = SkyWarsReloaded.get().getConfig().getInt("game.snowballDamage");
+			eggDamage = SkyWarsReloaded.get().getConfig().getInt("game.eggDamage");
+			winCommands = SkyWarsReloaded.get().getConfig().getStringList("game.winCommands");
+			killerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForKill");
+			killCommands = SkyWarsReloaded.get().getConfig().getStringList("game.killCommands");
+			vip1 = SkyWarsReloaded.get().getConfig().getInt("game.vip1Multiplier");
+			vip2 = SkyWarsReloaded.get().getConfig().getInt("game.vip2Multiplier");
+			vip3 = SkyWarsReloaded.get().getConfig().getInt("game.vip3Multiplier");
+			vip4 = SkyWarsReloaded.get().getConfig().getInt("game.vip4Multiplier");
+			vip5 = SkyWarsReloaded.get().getConfig().getInt("game.vip5Multiplier");
+			spawn = Util.get().stringToLocation(SkyWarsReloaded.get().getConfig().getString("spawn"));
+			timeAfterMatch = SkyWarsReloaded.get().getConfig().getInt("game.timeAfterMatch");
+			fireworksPer5Tick = SkyWarsReloaded.get().getConfig().getInt("fireworks.per5Ticks");
+			fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
+			gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
+			waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
+			tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.tauntsEnabled");
+			titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
+			allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
+			kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
+			spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
+			spectateDistance = SkyWarsReloaded.get().getConfig().getInt("game.spectateDistance");
+			maxMapSize = SkyWarsReloaded.get().getConfig().getInt("game.maxMapSize");
+			pressurePlate = SkyWarsReloaded.get().getConfig().getBoolean("enablePressurePlateJoin");
+			teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
+			teleportOnWorldEnter = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnWorldEnter");
+			strength = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.strength");
+			speed = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.speed");
+			jump = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.jump");
+			
+			maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
+			partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
+			lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
+			
+			useHolograms = SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
+			
+			boolean requireSave = false;
+			
+			if (spawn != null) {
+				if (lobbyWorlds == null) {
+					lobbyWorlds = new ArrayList<String>();
+				}
+				if (!lobbyWorlds.contains(spawn.getWorld().getName())) {
+					lobbyWorlds.add(spawn.getWorld().getName());
+					requireSave = true;
+				}
+			}
+			
+			kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
+			kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
+			votepos = SkyWarsReloaded.get().getConfig().getInt("items.votingPosition");
+			voteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.voteEnabled");
+			exitpos = SkyWarsReloaded.get().getConfig().getInt("items.exitPosition");
+			chestvotepos = SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
+			chestVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
+			healthvotepos = SkyWarsReloaded.get().getConfig().getInt("items.healthVotePosition");
+			healthVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.healthVoteEnabled");
+			timevotepos = SkyWarsReloaded.get().getConfig().getInt("items.timeVotePosition");
+			timeVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.timeVoteEnabled");
+			weathervotepos = SkyWarsReloaded.get().getConfig().getInt("items.weatherVotePosition");
+			weatherVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.weatherVoteEnabled");
+			modifiervotepos = SkyWarsReloaded.get().getConfig().getInt("items.modifierVotePosition");
+			modifierVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.modifierVoteEnabled");
+			particleselectslot = SkyWarsReloaded.get().getConfig().getInt("items.particleselectslot");
+			projectileselectslot = SkyWarsReloaded.get().getConfig().getInt("items.projectileselectslot");
+			killsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.killsoundselectslot");
+			winsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.winsoundselectslot");
+			glassselectslot = SkyWarsReloaded.get().getConfig().getInt("items.glassselectslot");
+			tauntselectslot = SkyWarsReloaded.get().getConfig().getInt("items.tauntselectslot");
+			
+			suddenDeathEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enabled");
+			disableHealthRegen = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.disableHealthRegen");
+			enableHealthDecay = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enableHealthDecay");
+			
+			cooldown = SkyWarsReloaded.get().getConfig().getInt("tauntCooldown");
+			
+			randPos = SkyWarsReloaded.get().getConfig().getInt("kit.randPos");
+			kitMenuSize = SkyWarsReloaded.get().getConfig().getInt("kit.menuSize");
+			noKitPos = SkyWarsReloaded.get().getConfig().getInt("kit.noKitPos");
+			randMat = SkyWarsReloaded.get().getConfig().getString("kit.randItem");
+			noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
+
+			particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
+			ticksPerUpdate = SkyWarsReloaded.get().getConfig().getInt("particles.ticksperupdate");
+			
+			spectateMenuEnabled= SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
+			spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
+			joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
+			joinSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.joinSlot");
+			optionsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.options");
+			optionsSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.optionsSlot");
+			glassEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.glass");
+		    particleEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.particle");
+		    projectEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.projectile");
+		    killsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.killsound");
+		    winsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.winsound");
+		    tauntsMenuEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.taunts");
+		    
+			playSounds = SkyWarsReloaded.get().getConfig().getBoolean("sounds.enabled");
+			countdown = SkyWarsReloaded.get().getConfig().getString("sounds.countdown");
+			joinSound = SkyWarsReloaded.get().getConfig().getString("sounds.join");
+			leaveSound = SkyWarsReloaded.get().getConfig().getString("sounds.leave");
+			openJoinMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openJoinMenu");
+			openSpectateMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openSpectateMenu");
+			openOptionsMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openOptionsMenu");
+			openGlassMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openGlassMenu");
+			openWinSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWinSoundMenu");
+			openKillSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKillSoundMenu");
+			openParticleMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openParticleMenu");
+			openProjectileMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openProjectileMenu");
+			openTauntMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTauntMenu");
+			openKitMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKitMenu");
+			openChestMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openChestMenu");
+			openHealthMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openHealthMenu");
+			openTimeMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTimeMenu");
+			openWeatherMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWeatherMenu");
+			openModifierMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openModifierMenu");
+			confirmSelection = SkyWarsReloaded.get().getConfig().getString("sounds.confirmSelectionSound");
+			errorSound = SkyWarsReloaded.get().getConfig().getString("sounds.errorSound");
+					
+			enabledCommands = SkyWarsReloaded.get().getConfig().getStringList("disable-commands.exceptions");
+			disableCommands = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands.enabled");
+			
+			disableCommandsSpectate = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands-spectate.enabled");
+			enabledCommandsSpectate = SkyWarsReloaded.get().getConfig().getStringList("disable-commands-spectate.exceptions");
+
+			for (int i = 0; i < itemNames.size(); i++) {
+				String name = itemNames.get(i);
+				String def;
+				if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+					def = defItems18.get(i);
+				} else {
+					def = defItems.get(i);
+				}
+				addMaterial(name, SkyWarsReloaded.get().getConfig().getString("items." + name), def);
+			}
+			
+			for (int i = 0; i < signItems.size(); i++) {
+				String name = signItems.get(i);
+				String def = signDef.get(i);
+				addMaterial(name, SkyWarsReloaded.get().getConfig().getString("signs." + name), def);
+			}
+			
+			if (requireSave) {
+				save();
 			}
 		}
-		
-		kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
-		kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
-		votepos = SkyWarsReloaded.get().getConfig().getInt("items.votingPosition");
-		voteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.voteEnabled");
-		exitpos = SkyWarsReloaded.get().getConfig().getInt("items.exitPosition");
-		chestvotepos = SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
-		chestVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
-		healthvotepos = SkyWarsReloaded.get().getConfig().getInt("items.healthVotePosition");
-		healthVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.healthVoteEnabled");
-		timevotepos = SkyWarsReloaded.get().getConfig().getInt("items.timeVotePosition");
-		timeVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.timeVoteEnabled");
-		weathervotepos = SkyWarsReloaded.get().getConfig().getInt("items.weatherVotePosition");
-		weatherVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.weatherVoteEnabled");
-		modifiervotepos = SkyWarsReloaded.get().getConfig().getInt("items.modifierVotePosition");
-		modifierVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.modifierVoteEnabled");
-		particleselectslot = SkyWarsReloaded.get().getConfig().getInt("items.particleselectslot");
-		projectileselectslot = SkyWarsReloaded.get().getConfig().getInt("items.projectileselectslot");
-		killsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.killsoundselectslot");
-		winsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.winsoundselectslot");
-		glassselectslot = SkyWarsReloaded.get().getConfig().getInt("items.glassselectslot");
-		tauntselectslot = SkyWarsReloaded.get().getConfig().getInt("items.tauntselectslot");
-		
-		suddenDeathEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enabled");
-		disableHealthRegen = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.disableHealthRegen");
-		enableHealthDecay = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enableHealthDecay");
-		
-		cooldown = SkyWarsReloaded.get().getConfig().getInt("tauntCooldown");
-		
-		randPos = SkyWarsReloaded.get().getConfig().getInt("kit.randPos");
-		kitMenuSize = SkyWarsReloaded.get().getConfig().getInt("kit.menuSize");
-		noKitPos = SkyWarsReloaded.get().getConfig().getInt("kit.noKitPos");
-		randMat = SkyWarsReloaded.get().getConfig().getString("kit.randItem");
-		noKitMat = SkyWarsReloaded.get().getConfig().getString("kit.noKitItem");
-
-		particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
-		ticksPerUpdate = SkyWarsReloaded.get().getConfig().getInt("particles.ticksperupdate");
-		
-		spectateMenuEnabled= SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
-		spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
-		joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
-		joinSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.joinSlot");
-		optionsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.options");
-		optionsSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.optionsSlot");
-		glassEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.glass");
-	    particleEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.particle");
-	    projectEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.projectile");
-	    killsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.killsound");
-	    winsoundEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.winsound");
-	    tauntsMenuEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.taunts");
-	    
-		playSounds = SkyWarsReloaded.get().getConfig().getBoolean("sounds.enabled");
-		countdown = SkyWarsReloaded.get().getConfig().getString("sounds.countdown");
-		joinSound = SkyWarsReloaded.get().getConfig().getString("sounds.join");
-		leaveSound = SkyWarsReloaded.get().getConfig().getString("sounds.leave");
-		openJoinMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openJoinMenu");
-		openSpectateMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openSpectateMenu");
-		openOptionsMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openOptionsMenu");
-		openGlassMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openGlassMenu");
-		openWinSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWinSoundMenu");
-		openKillSoundMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKillSoundMenu");
-		openParticleMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openParticleMenu");
-		openProjectileMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openProjectileMenu");
-		openTauntMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTauntMenu");
-		openKitMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openKitMenu");
-		openChestMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openChestMenu");
-		openHealthMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openHealthMenu");
-		openTimeMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openTimeMenu");
-		openWeatherMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openWeatherMenu");
-		openModifierMenu = SkyWarsReloaded.get().getConfig().getString("sounds.openModifierMenu");
-		confirmSelection = SkyWarsReloaded.get().getConfig().getString("sounds.confirmSelectionSound");
-		errorSound = SkyWarsReloaded.get().getConfig().getString("sounds.errorSound");
-				
-		enabledCommands = SkyWarsReloaded.get().getConfig().getStringList("disable-commands.exceptions");
-		disableCommands = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands.enabled");
-		
-		disableCommandsSpectate = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands-spectate.enabled");
-		enabledCommandsSpectate = SkyWarsReloaded.get().getConfig().getStringList("disable-commands-spectate.exceptions");
-
-		for (int i = 0; i < itemNames.size(); i++) {
-			String name = itemNames.get(i);
-			String def;
-			if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-				def = defItems18.get(i);
-			} else {
-				def = defItems.get(i);
-			}
-			addMaterial(name, SkyWarsReloaded.get().getConfig().getString("items." + name), def);
-		}
-		
-		for (int i = 0; i < signItems.size(); i++) {
-			String name = signItems.get(i);
-			String def = signDef.get(i);
-			addMaterial(name, SkyWarsReloaded.get().getConfig().getString("signs." + name), def);
-		}
+		loading = false;
 	}
 	
 	private void addMaterial(String key, String mat, String def) {
@@ -636,6 +653,10 @@ public class Config {
 
 	public void setSpawn(Location location) {
 		this.spawn = location;
+		if (!lobbyWorlds.contains(spawn.getWorld().getName())) {
+			lobbyWorlds.add(spawn.getWorld().getName());
+			save();
+		}
 	}
 	
 	public Location getSpawn() {
