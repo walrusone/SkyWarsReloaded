@@ -39,17 +39,13 @@ public class KitVoteOption {
 	public void createMenu(String key, String name) {
 		this.key = key;
 		ArrayList<Inventory> invs = new ArrayList<Inventory>();
-		Inventory inv = Bukkit.createInventory(null, 36, name);
-		invs.add(inv);
 		for (GameKit gameKit: GameKit.getAvailableKits()) {
         	int page = gameKit.getPage() - 1;
-        	
             if(invs.isEmpty() || invs.size() < page + 1) {
             	while (invs.size() < page + 1) {
             		invs.add(Bukkit.createInventory(null, menuSize + 9, name));
             	}
             }
-            loadKit(null, null, gameKit); 
 		}
 		
 		SkyWarsReloaded.getIC().create(key, invs, new IconMenu.OptionClickEventHandler() {
@@ -75,6 +71,10 @@ public class KitVoteOption {
 			}
 		});
 		iconMenu = SkyWarsReloaded.getIC().getMenu(key);
+		for (GameKit gameKit: GameKit.getAvailableKits()) {
+			loadKit(null, null, gameKit); 
+		}
+
 	}
 	
 	public void restore() {
@@ -142,7 +142,7 @@ public class KitVoteOption {
 			kit.setAmount(votes.get(gKit) == 0 ? 1 : votes.get(gKit));
 			kit = SkyWarsReloaded.getNMS().getItemStack(kit, lores, ChatColor.translateAlternateColorCodes('&', gKit.getColorName()));
 
-			iconMenu.getInventories().get(gKit.getPage()).setItem(gKit.getPosition(), kit);
+			iconMenu.getInventories().get(gKit.getPage()-1).setItem(gKit.getPosition(), kit);
 		}
 		
 	}
