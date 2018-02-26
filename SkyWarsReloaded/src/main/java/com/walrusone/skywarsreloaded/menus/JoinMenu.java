@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -31,9 +32,15 @@ public class JoinMenu {
     	Runnable update = new Runnable() {
 			@Override
 			public void run() {
-				if (!(SkyWarsReloaded.getIC().hasViewers("joinmenu") && SkyWarsReloaded.getIC().hasViewers("spectatemenu"))) {
-					ArrayList<GameMap> games = GameMap.getSortedMaps();
+				if ((SkyWarsReloaded.getIC().hasViewers("joinmenu") || SkyWarsReloaded.getIC().hasViewers("spectatemenu"))) {
+					ArrayList<GameMap> games = GameMap.getPlayableArenas();
 					ArrayList<Inventory> invs = SkyWarsReloaded.getIC().getMenu("joinmenu").getInventories();
+					
+					for (Inventory inv: invs) {
+						for (int i = 0; i < menuSize; i++) {
+							inv.setItem(i, new ItemStack(Material.AIR, 1));
+						}
+					}
 			        
 			        for (int iii = 0; iii < games.size(); iii++) {
 			        	int invent = Math.floorDiv(iii, menuSize);
@@ -133,7 +140,7 @@ public class JoinMenu {
 			    			if(party.getLeader().equals(player.getUniqueId())) {
 			    				if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
 				    				player.closeInventory();
-					    			joined = gMap.addParty(party);
+					    			joined = gMap.addPlayers(party);
 				    			}
 			    			} else {
 			    				player.closeInventory();
@@ -142,7 +149,7 @@ public class JoinMenu {
 			    		} else {
 		                	if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
 			                	player.closeInventory();
-		                		joined = gMap.addPlayer(player);
+		                		joined = gMap.addPlayers(player);
 				                if (!joined) {
 				                	player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
 				                }

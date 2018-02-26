@@ -16,7 +16,7 @@ public class NameCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-			String worldName = args[1].toLowerCase();
+			String worldName = args[1];
 			String displayName = "";
 			for (int i = 2; i < args.length; i++) {
 				displayName = displayName + args[i] + " ";

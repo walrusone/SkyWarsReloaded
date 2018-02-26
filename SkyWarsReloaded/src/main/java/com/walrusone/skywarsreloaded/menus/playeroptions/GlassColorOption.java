@@ -70,7 +70,7 @@ public class GlassColorOption extends PlayerOption {
         }
         
         Collections.<PlayerOption>sort(playerOptions);
-        if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0) {
+        if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
        	 	FileConfiguration storage = YamlConfiguration.loadConfiguration(glassFile);
        	 	updateFile(glassFile, storage);
         }

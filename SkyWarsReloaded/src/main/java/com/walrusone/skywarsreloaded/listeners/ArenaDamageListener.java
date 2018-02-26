@@ -79,8 +79,8 @@ public class ArenaDamageListener implements Listener {
 	public void playerDamaged(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			if (MatchManager.get().getPlayerMap(player) != null) {
-				GameMap gameMap = MatchManager.get().getPlayerMap(player);
+			GameMap gameMap = MatchManager.get().getPlayerMap(player);
+			if (gameMap != null) {
 				if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART) {
 					event.setCancelled(true);
 					return;

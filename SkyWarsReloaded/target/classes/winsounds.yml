@@ -9,6 +9,7 @@ sounds:
     level: 5
     cost: 100
     position: 2
+    page: 1
   witherambient:
     sound: ENTITY_WITHER_AMBIENT
     isCustomSound: false
@@ -19,6 +20,7 @@ sounds:
     level: 10
     cost: 100
     position: 4
+    page: 1
   gamemusic:
     sound: MUSIC_GAME
     isCustomSound: false
@@ -29,6 +31,7 @@ sounds:
     level: 15
     cost: 100
     position: 6
+    page: 1
   credits:
     sound: MUSIC_CREDITS
     isCustomSound: false
@@ -39,6 +42,7 @@ sounds:
     level: 20
     cost: 100
     position: 8
+    page: 1
   witherspawn:
     sound: ENTITY_WITHER_SPAWN
     isCustomSound: false
@@ -49,6 +53,7 @@ sounds:
     level: 25
     cost: 100
     position: 9
+    page: 1
   '11':
     sound: RECORD_11
     isCustomSound: false
@@ -59,6 +64,7 @@ sounds:
     level: 30
     cost: 100
     position: 11
+    page: 1
   dragon:
     sound: MUSIC_DRAGON
     isCustomSound: false
@@ -69,6 +75,7 @@ sounds:
     level: 35
     cost: 100
     position: 13
+    page: 1
   menu:
     sound: MUSIC_MENU
     isCustomSound: false
@@ -79,6 +86,7 @@ sounds:
     level: 40
     cost: 100
     position: 15
+    page: 1
   '13':
     sound: RECORD_13
     isCustomSound: false
@@ -89,6 +97,7 @@ sounds:
     level: 45
     cost: 100
     position: 17
+    page: 1
   enderdragondeath:
     sound: ENTITY_ENDERDRAGON_DEATH
     isCustomSound: false
@@ -99,6 +108,7 @@ sounds:
     level: 50
     cost: 100
     position: 18
+    page: 1
   mall:
     sound: RECORD_MALL
     isCustomSound: false
@@ -109,6 +119,7 @@ sounds:
     level: 55
     cost: 100
     position: 20
+    page: 1
   mellohi:
     sound: RECORD_MELLOHI
     isCustomSound: false
@@ -119,6 +130,7 @@ sounds:
     level: 60
     cost: 100
     position: 22
+    page: 1
   cat:
     sound: RECORD_CAT
     isCustomSound: false
@@ -129,6 +141,7 @@ sounds:
     level: 65
     cost: 100
     position: 24
+    page: 1
   stal:
     sound: RECORD_STAL
     isCustomSound: false
@@ -139,6 +152,7 @@ sounds:
     level: 70
     cost: 100
     position: 26
+    page: 1
   far:
     sound: RECORD_FAR
     isCustomSound: false
@@ -149,6 +163,7 @@ sounds:
     level: 75
     cost: 100
     position: 27
+    page: 1
   blocks:
     sound: RECORD_BLOCKS
     isCustomSound: false
@@ -159,6 +174,7 @@ sounds:
     level: 80
     cost: 100
     position: 29
+    page: 1
   wait:
     sound: RECORD_WAIT
     isCustomSound: false
@@ -169,6 +185,7 @@ sounds:
     level: 85
     cost: 100
     position: 31
+    page: 1
   chirp:
     sound: RECORD_CHIRP
     isCustomSound: false
@@ -179,6 +196,7 @@ sounds:
     level: 90
     cost: 100
     position: 33
+    page: 1
   ward:
     sound: RECORD_WARD
     isCustomSound: false
@@ -189,6 +207,7 @@ sounds:
     level: 95
     cost: 100
     position: 35
+    page: 1
   strad:
     sound: RECORD_STRAD
     isCustomSound: false
@@ -199,6 +218,7 @@ sounds:
     level: 100
     cost: 100
     position: 36
+    page: 1
   none:
     sound: blank
     isCustomSound: true
@@ -209,3 +229,5 @@ sounds:
     level: 0
     cost: 0
     position: 0
+    page: 1
+menuSize: 45

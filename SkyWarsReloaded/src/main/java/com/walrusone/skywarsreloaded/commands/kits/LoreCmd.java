@@ -31,7 +31,7 @@ public class LoreCmd extends BaseCmd {
 		if (Util.get().isInteger(args[2])) {
 			kit.setLoreLine(Integer.valueOf(args[2]), message);
 		} else if (args[2].equalsIgnoreCase("locked")) {
-			kit.setLockedLore(args[2]);
+			kit.setLockedLore(message);
 		} else {
 			player.sendMessage(new Messaging.MessageFormatter().format("command.kit-loreerror"));
 		}

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywarsreloaded</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V3.1.3</version>
+  <version>V3.2.1</version>
   <build>
     <resources>
       <resource>
@@ -19,7 +19,7 @@
           <include>leaderboards.yml</include>
           <include>killsounds.yml</include>
           <include>killsounds18.yml</include>
-          <include>maps.yml</include>
+          <include>mapFile.yml</include>
           <include>messages.yml</include>
           <include>opchest.yml</include>
           <include>particleeffects.yml</include>

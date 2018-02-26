@@ -52,6 +52,10 @@ public class KitVoteOption {
 			@Override
 	        public void onOptionClick(IconMenu.OptionClickEvent event) {
 				String itemName = event.getName();
+                if (itemName.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
+	            	event.getPlayer().closeInventory();
+	            	return;
+	            }
 				GameKit kit = GameKit.getKit(itemName);
 				if (isKitLocked(kit)) {
 					if (event.getPlayer().hasPermission("sw.kit." + kit.getFilename())) {

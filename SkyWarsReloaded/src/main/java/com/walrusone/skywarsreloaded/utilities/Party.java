@@ -62,7 +62,7 @@ public class Party {
 	}
 	
 	public void removeMember(Player player) {
-		if (!members.contains(player.getUniqueId())) {
+		if (members.contains(player.getUniqueId())) {
 			members.remove(player.getUniqueId());
 			this.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.left"));
 		}

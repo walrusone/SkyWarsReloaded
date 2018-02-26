@@ -240,11 +240,11 @@ public class GameKit {
 		        }
 		              
 		        player.getInventory().setArmorContents(kit.getArmor());
+		        
+		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
+		    		Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + player.getName() + " has recieved kit " + kit.getColorName());
+		    	}
 	       }
-        
-	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
-	    		Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + player.getName() + " has recieved kit " + kit.getColorName());
-	    	}
 		}
 	
 	public static void newKit(Player player, String kitName) {

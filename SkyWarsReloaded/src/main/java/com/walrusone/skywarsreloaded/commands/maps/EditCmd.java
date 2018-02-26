@@ -20,7 +20,7 @@ public class EditCmd extends BaseCmd {
 	@Override
 	public boolean run() {
 		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
-			final String worldName = args[1].toLowerCase();
+			final String worldName = args[1];
 			GameMap gMap = GameMap.getMap(worldName);
 			if (gMap == null) {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));

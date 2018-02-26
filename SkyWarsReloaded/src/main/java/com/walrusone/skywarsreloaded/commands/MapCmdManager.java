@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import com.walrusone.skywarsreloaded.commands.maps.AddSpawnCmd;
 import com.walrusone.skywarsreloaded.commands.maps.ArenaCmd;
 import com.walrusone.skywarsreloaded.commands.maps.CreateCmd;
 import com.walrusone.skywarsreloaded.commands.maps.CreatorCmd;
@@ -41,6 +42,7 @@ public class MapCmdManager implements CommandExecutor {
 		mapcmds.add(new MinimumCmd("map"));
 		mapcmds.add(new CreatorCmd("map"));
 		mapcmds.add(new ArenaCmd("map"));
+		mapcmds.add(new AddSpawnCmd("map"));
 	}
 
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 

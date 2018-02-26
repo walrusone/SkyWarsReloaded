@@ -21,6 +21,7 @@ taunts:
     - LAVA
     - SMOKE_NORMAL
     position: 2
+    page: 1
   chicken:
     name: '&4Who''s a Chicken'
     icon: EGG
@@ -42,6 +43,7 @@ taunts:
     - SNOWBALL
     - VILLAGER_ANGRY
     position: 4
+    page: 1
   pig:
     name: '&4Here Piggy Piggy'
     icon: PORK
@@ -63,6 +65,7 @@ taunts:
     - SNOWBALL
     - VILLAGER_ANGRY
     position: 6
+    page: 1
   dragon:
     name: '&4Fear Me!'
     icon: DRAGON_EGG
@@ -83,6 +86,7 @@ taunts:
     - DRAGON_BREATH
     - SMOKE_NORMAL
     position: 8
+    page: 1
   seekdestroy:
     name: '&eSeek and Destroy'
     icon: GOLD_AXE
@@ -105,6 +109,7 @@ taunts:
     - PORTAL
     - REDSTONE
     position: 9
+    page: 1
   comeoutplay:
     name: '&eCome Out and Play'
     icon: RABBIT_FOOT
@@ -126,6 +131,7 @@ taunts:
     - SPELL_WITCH
     - VILLAGER_HAPPY
     position: 11
+    page: 1
   none:
     name: '&eNo Taunt'
     icon: NETHER_STAR
@@ -141,3 +147,5 @@ taunts:
     particleSpeed: 0.5
     particleDensity: 30
     position: 0
+    page: 1
+menuSize: 45

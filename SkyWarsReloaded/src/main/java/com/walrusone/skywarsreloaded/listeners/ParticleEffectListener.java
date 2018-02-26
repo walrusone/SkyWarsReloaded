@@ -30,7 +30,7 @@ public class ParticleEffectListener implements Listener{
 				 if (gMap != null) {
 					 String key = PlayerStat.getPlayerStats(player.getUniqueId()).getProjectileEffect();
 					 List<ParticleEffect> effects = ((ProjectileEffectOption) ProjectileEffectOption.getPlayerOptionByKey(key)).getEffects();
-					 if (key != null) {
+					 if (key != null && effects != null) {
 						 if (!key.equalsIgnoreCase("none")) {
 							 SkyWarsReloaded.getOM().addProjectile(projectile, effects);
 						 }

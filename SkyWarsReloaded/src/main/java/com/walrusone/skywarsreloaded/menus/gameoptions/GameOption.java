@@ -195,6 +195,11 @@ public abstract class GameOption {
 		case MODIFIERJUMP: return new Messaging.MessageFormatter().format("items.modifier-jump");
 		case MODIFIERSTRENGTH: return new Messaging.MessageFormatter().format("items.modifier-strength");
 		case MODIFIERNONE: return new Messaging.MessageFormatter().format("items.modifier-none");
+		case HEALTHRANDOM: return new Messaging.MessageFormatter().format("items.health-random");
+		case HEALTHFIVE: return new Messaging.MessageFormatter().format("items.health-five");
+		case HEALTHTEN: return new Messaging.MessageFormatter().format("items.health-ten");
+		case HEALTHFIFTEEN: return new Messaging.MessageFormatter().format("items.health-fifteen");
+		case HEALTHTWENTY: return new Messaging.MessageFormatter().format("items.health-twenty");
 		default: return "";
 		}
 	}

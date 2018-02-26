@@ -16,7 +16,7 @@ import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.EmptyChest;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -108,25 +108,20 @@ public class ChestOption extends GameOption {
 	public void completeOption() {
 		World mapWorld = getWorld(gameMap);
         Vote cVote = gameMap.getChestOption().getVoted();
-        for (EmptyChest eChest: gameMap.getChests().values()) {
+        for (CoordLoc eChest: gameMap.getChests()) {
 			Location loc;
 			int x = eChest.getX();
 			int y = eChest.getY();
 			int z = eChest.getZ();
 			loc = new Location (mapWorld, x, y, z);
 			Chest chest = (Chest) loc.getBlock().getState();
-			SkyWarsReloaded.getCM().populateChest(chest, cVote);
-		}
-		for (EmptyChest eChest: gameMap.getDoubleChests().values()) {
-			Location loc;
-			int x = eChest.getX();
-			int y = eChest.getY();
-			int z = eChest.getZ();
-			loc = new Location (mapWorld, x, y, z);
-			Chest chest = (Chest) loc.getBlock().getState();
-            InventoryHolder ih = chest.getInventory().getHolder();
-            DoubleChest dc = (DoubleChest) ih;
-			SkyWarsReloaded.getCM().populateChest(dc, cVote);
+			InventoryHolder ih = chest.getInventory().getHolder();
+			if (ih instanceof DoubleChest) {
+				DoubleChest dc = (DoubleChest) ih;
+				SkyWarsReloaded.getCM().populateChest(dc, cVote);
+			} else {
+				SkyWarsReloaded.getCM().populateChest(chest, cVote);
+			}
 		}
 	}
 

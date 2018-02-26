@@ -35,7 +35,7 @@ public class ClearStatsCmd extends BaseCmd {
 			PlayerStat pStat = PlayerStat.getPlayerStats(swPlayer);
 			pStat.clear();
 			DataStorage.get().saveStats(pStat);
-			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
+			sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
 			return true;
 		} else {
 			new BukkitRunnable() {
@@ -53,14 +53,14 @@ public class ClearStatsCmd extends BaseCmd {
 							@Override
 							public void run() {
 									DataStorage.get().removePlayerData(uuid);
-									player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.stats-cleared"));
+									sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
 							}
 						}.runTask(SkyWarsReloaded.get());
 					} else {
 						new BukkitRunnable() {
 							@Override
 							public void run() {
-								player.sendMessage(new Messaging.MessageFormatter().format("command.player-not-found"));
+								sender.sendMessage(new Messaging.MessageFormatter().format("command.player-not-found"));
 							}
 						}.runTask(SkyWarsReloaded.get());
 					}

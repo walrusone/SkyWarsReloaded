@@ -53,6 +53,14 @@ public class OptionSelectionMenu {
         	int page = option.getPage() - 1;
         	int position = option.getPosition();
         	
+        	if (page < 0) {
+        		option.setPage(1);
+        	}
+        	
+        	if (position < 0 || position >= menuSize) {
+        		position = 1;
+        	}
+        	
             if(invs.isEmpty() || invs.size() < page + 1) {
             	while (invs.size() < page + 1) {
                 	invs.add(Bukkit.createInventory(null, menuSize + 9, menuName));
@@ -153,8 +161,8 @@ public class OptionSelectionMenu {
                		}
                 }
        
-                PlayerStat ps = PlayerStat.getPlayerStats(player);
-                ps.setGlassColor(option.getKey());
+                PlayerStat ps = PlayerStat.getPlayerStats(player);               
+                option.setEffect(ps);
                 DataStorage.get().saveStats(ps);
                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 player.sendMessage(option.getUseMessage());

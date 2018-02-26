@@ -17,7 +17,7 @@ public class MinimumCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-			String worldName = args[1].toLowerCase();
+			String worldName = args[1];
 			if (!Util.get().isInteger(args[2])) {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-min-be-int"));
 				return false;

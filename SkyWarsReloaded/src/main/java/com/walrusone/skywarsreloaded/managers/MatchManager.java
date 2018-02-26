@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
@@ -51,12 +52,6 @@ public class MatchManager
         }
         return MatchManager.instance;
     }
-    
-    public World getWorld(GameMap gameMap) {
-        World mapWorld;
-		mapWorld = SkyWarsReloaded.get().getServer().getWorld(gameMap.getName() + "_" + gameMap.getMapCount());
-		return mapWorld;
-    }
        
     public boolean joinGame(Player player) {
     	GameMap.shuffle();
@@ -70,7 +65,7 @@ public class MatchManager
         }
         boolean joined = false;
 		if (map != null) {
-			joined = map.addPlayer(player);
+			joined = map.addPlayers(player);
 		}
 		if (!joined) {
 			return false;
@@ -91,7 +86,7 @@ public class MatchManager
         }
         boolean joined = false;
 		if (map != null) {
-			joined = map.addParty(party);
+			joined = map.addPlayers(party);
 		}
 		if (!joined) {
 			return false;
@@ -131,14 +126,75 @@ public class MatchManager
     }
            
     public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
-    	if (pCard.getPlayer() != null) {
-        	doTeleport(pCard.getPlayer(), gameMap, pCard.getSpawn());
-        	new BukkitRunnable() {
+    	if (pCard.getPlayer() != null && pCard.getSpawn() != null && gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+    		Player player = pCard.getPlayer();
+    		CoordLoc spawn = pCard.getSpawn();
+    		if (debug) {     	
+            	Util.get().logToFile(debugName + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
+            }
+            World world = gameMap.getCurrentWorld();
+    		Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5);
+    		if (!world.isChunkLoaded(world.getChunkAt(newSpawn))) {
+    			world.loadChunk(world.getChunkAt(newSpawn));
+    		}
+            player.teleport(newSpawn, TeleportCause.END_PORTAL);
+            new BukkitRunnable() {
     			@Override
     			public void run() {
-    		    	preparePlayer(pCard.getPlayer(), gameMap);
+    		    	preparePlayer(player, gameMap);
     			}
         	}.runTaskLater(SkyWarsReloaded.get(), 5);
+        	new BukkitRunnable() {
+     			@Override
+     			public void run() {
+     				if (player.getLocation().getY() < (spawn.getY()+1) || player.getLocation().getY() > (spawn.getY() + 3)) {
+     					player.teleport(newSpawn, TeleportCause.END_PORTAL);
+     				}
+    			}
+         	}.runTaskLater(SkyWarsReloaded.get(), 10);
+            String key = PlayerStat.getPlayerStats(player.getUniqueId()).getParticleEffect();
+            ParticleEffectOption effect = (ParticleEffectOption) ParticleEffectOption.getPlayerOptionByKey(key);
+            if (effect != null) {
+        		List<ParticleEffect> effects = effect.getEffects();
+                SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
+            }
+            Util.get().clear(player);
+            if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+            	for (final Player p : gameMap.getAlivePlayers()) {
+            		if (!p.equals(player)) {
+                        Util.get().sendTitle(p, 2, 20, 2, "", 
+                        		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+        			}
+            	}
+            } 
+       		message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+            
+           	for (final Player p : gameMap.getAlivePlayers()) {
+        		if (!p.equals(player)) {
+        			Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getJoinSound(), 1, 1);
+        		}
+            }
+            
+        	if (debug) {
+        		if (gameMap.getAlivePlayers().size() < gameMap.getMinPlayers()) {
+            		Util.get().logToFile(debugName + ChatColor.YELLOW + "Waiting for More Players on map " + gameMap.getName());
+        		} else {
+        			Util.get().logToFile(debugName + ChatColor.YELLOW + "Starting Countdown for SkyWars Match on map " + gameMap.getName());
+        		}
+        	}
+        	gameMap.setMatchState(MatchState.WAITINGSTART);
+        	String designer; 
+        	if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+            	if (gameMap.getDesigner() != null && gameMap.getDesigner().length() > 0) {
+            		designer = new Messaging.MessageFormatter().setVariable("designer", gameMap.getDesigner()).format("titles.start-subtitle");
+            	} else {
+            		designer = "";
+            	}
+                Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-title"), 
+                		designer);
+        	}
+    	} else {
+    		pCard.reset();
     	}
     }
     
@@ -179,62 +235,6 @@ public class MatchManager
 
     	if (debug) {
     		Util.get().logToFile(debugName + ChatColor.YELLOW + "Finished Preparing " + player.getName() + " for SkyWars on map " + gameMap.getName());
-    	}
-    }
-    
-    private void doTeleport(Player player, GameMap gameMap, Location spawn){
-    	if (debug) {     	
-        	Util.get().logToFile(debugName + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
-        }
-        PlayerStat pStat = PlayerStat.getPlayerStats(player);
-        gameMap.setGlassColor(player, pStat.getGlassColor());
-        World world = getWorld(gameMap);
-		Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5);
-		if (!world.isChunkLoaded(world.getChunkAt(newSpawn))) {
-			world.loadChunk(world.getChunkAt(newSpawn));
-		}
-        player.teleport(newSpawn, TeleportCause.END_PORTAL);
-        
-        String key = PlayerStat.getPlayerStats(player.getUniqueId()).getParticleEffect();
-        ParticleEffectOption effect = (ParticleEffectOption) ParticleEffectOption.getPlayerOptionByKey(key);
-        if (effect != null) {
-    		List<ParticleEffect> effects = effect.getEffects();
-            SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
-        }
-        Util.get().clear(player);
-        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-        	for (final Player p : gameMap.getAlivePlayers()) {
-        		if (!p.equals(player)) {
-                    Util.get().sendTitle(p, 2, 20, 2, "", 
-                    		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
-    			}
-        	}
-        } 
-   		message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
-        
-       	for (final Player p : gameMap.getAlivePlayers()) {
-    		if (!p.equals(player)) {
-    			Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getJoinSound(), 1, 1);
-    		}
-        }
-        
-    	if (debug) {
-    		if (gameMap.getAlivePlayers().size() < gameMap.getMinPlayers()) {
-        		Util.get().logToFile(debugName + ChatColor.YELLOW + "Waiting for More Players on map " + gameMap.getName());
-    		} else {
-    			Util.get().logToFile(debugName + ChatColor.YELLOW + "Starting Countdown for SkyWars Match on map " + gameMap.getName());
-    		}
-    	}
-    	gameMap.setMatchState(MatchState.WAITINGSTART);
-    	String designer; 
-    	if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-        	if (gameMap.getDesigner() != null && gameMap.getDesigner().length() > 0) {
-        		designer = new Messaging.MessageFormatter().setVariable("designer", gameMap.getDesigner()).format("titles.start-subtitle");
-        	} else {
-        		designer = "";
-        	}
-            Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName().toUpperCase()).format("titles.start-title"), 
-            		designer);
     	}
     }
     
@@ -367,7 +367,7 @@ public class MatchManager
                 }
                 if (gameMap.isThunder()) {
                 	if (gameMap.getStrikeCounter() == gameMap.getNextStrike()) {
-    					World mapWorld = getWorld(gameMap);
+    					World mapWorld = gameMap.getCurrentWorld();
         				int hitPlayer = new Random().nextInt(100);
         				if (hitPlayer <= 10) {
         					int size = gameMap.getAlivePlayers().size();
@@ -727,11 +727,10 @@ public class MatchManager
     
 	public void addSpectator(final GameMap gameMap, final Player player) {
         if (player != null) {
-        	World world = getWorld(gameMap);
-			Location spectateSpawn = new Location(world, 0, 95, 0);
+        	World world = gameMap.getCurrentWorld();
+        	CoordLoc ss = gameMap.getSpectateSpawn();
+			Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
             player.teleport(spectateSpawn, TeleportCause.END_PORTAL);
-            player.setAllowFlight(true);
-            player.setFlying(true);
             
             new BukkitRunnable() {
 				@Override
@@ -745,10 +744,6 @@ public class MatchManager
 		            player.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
 		            player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
 		            player.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
-		            player.setFoodLevel(20);
-		            player.setHealth(20.0);
-		            player.setExp(0.0f);
-		            player.setLevel(0);
 		            player.setGameMode(GameMode.SPECTATOR);
 		            player.setScoreboard(gameMap.getScoreboard());
 		            

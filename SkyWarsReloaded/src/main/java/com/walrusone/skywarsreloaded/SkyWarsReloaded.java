@@ -137,7 +137,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         wm = new WorldManager();
         
         if (!nmsHandler.isOnePointEight()) {
-        	this.getLogger().info("WTF");
         	this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
         }
         this.getServer().getPluginManager().registerEvents(ic, this);
@@ -197,6 +196,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 		loaded = false;
         this.getServer().getScheduler().cancelTasks(this);
         for (final GameMap gameMap : GameMap.getMaps()) {
+        	if (gameMap.isEditing()) {
+        		gameMap.saveMap(null);
+        	}
         	for (final UUID uuid: gameMap.getSpectators()) {
         		final Player player = getServer().getPlayer(uuid);
         		if (player != null) {

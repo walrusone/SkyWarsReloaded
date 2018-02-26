@@ -17,7 +17,9 @@ public class RefreshData extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		GameMap.loadMapData();
+		for (GameMap gMap: GameMap.getMaps()) {
+			gMap.loadArenaData();
+		}
 		sender.sendMessage(new Messaging.MessageFormatter().format("maps.refreshed"));
 		return true;
 	}

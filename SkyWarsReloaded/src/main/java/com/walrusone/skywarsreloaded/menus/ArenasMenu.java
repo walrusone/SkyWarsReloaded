@@ -28,9 +28,15 @@ public class ArenasMenu {
     	Runnable update = new Runnable() {
 			@Override
 			public void run() {
-				if (!(SkyWarsReloaded.getIC().hasViewers("arenasmenu"))) {				
+				if ((SkyWarsReloaded.getIC().hasViewers("arenasmenu"))) {				
 					ArrayList<GameMap> maps = GameMap.getSortedArenas();
 					ArrayList<Inventory> invs = SkyWarsReloaded.getIC().getMenu("arenasmenu").getInventories();
+					
+					for (Inventory inv: invs) {
+						for (int i = 0; i < menuSize; i++) {
+							inv.setItem(i, new ItemStack(Material.AIR, 1));
+						}
+					}
 										
 					List<String> lores = new ArrayList<String>();
 					int i = 0;
@@ -85,7 +91,7 @@ public class ArenasMenu {
 							public void run() {
 								gMap.updateArenaManager();
 							}
-   						}.runTaskLater(SkyWarsReloaded.get(), 3);	
+   						}.runTaskLater(SkyWarsReloaded.get(), 2);	
    					}
 				}
 			}

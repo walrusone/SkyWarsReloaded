@@ -39,46 +39,46 @@ public class SetStatsCmd extends BaseCmd {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setWins(Integer.valueOf(args[3]));
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("losses")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setLosts(Integer.valueOf(args[3]));
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("kills")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setKills(Integer.valueOf(args[3]));
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("deaths")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setDeaths(Integer.valueOf(args[3]));
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("elo")) {
 				if (Util.get().isInteger(args[3])) {
 					pStat.setElo(Integer.valueOf(args[3]));
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			}  else if (args[2].equalsIgnoreCase("xp")) {
 				if (Util.get().isInteger(args[3])) {
@@ -87,37 +87,37 @@ public class SetStatsCmd extends BaseCmd {
 						Util.get().setPlayerExperience(swPlayer, Integer.valueOf(args[3]));
 					}
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
 				}
 			} else if (args[2].equalsIgnoreCase("pareffect")) {
 				if (ParticleEffectOption.getPlayerOptionByKey(args[3]) != null) {
 					pStat.setParticleEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
 				}
 			} else if (args[2].equalsIgnoreCase("proeffect")) {
 				if (ProjectileEffectOption.getPlayerOptionByKey(args[3]) != null) {
 					pStat.setProjectileEffect(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.invalid-effect"));
 				}
 			} else if (args[2].equalsIgnoreCase("glasscolor")) {
 				if (Util.get().getByteFromColor(args[3]) != -1) {
 					pStat.setGlassColor(args[3].toLowerCase());
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} else {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-color"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.invalid-color"));
 				}
 			} else if (args[2].equalsIgnoreCase("killsound")) {
 				try {
@@ -125,10 +125,10 @@ public class SetStatsCmd extends BaseCmd {
 					Sound sound = Sound.valueOf(args[3].toUpperCase());
 					pStat.setKillSound(args[3].toUpperCase());
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} catch(IllegalArgumentException e) {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-sound"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.invalid-sound"));
 				}
 			} else if (args[2].equalsIgnoreCase("winsound")) {
 				try {
@@ -136,16 +136,16 @@ public class SetStatsCmd extends BaseCmd {
 					Sound sound = Sound.valueOf(args[3].toUpperCase());
 					pStat.setWinSound(args[3].toUpperCase());
 					DataStorage.get().saveStats(pStat);
-					player.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-							.setVariable("stat", args[2]).setVariable("ammount", args[3]).format("command.setstat"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
+							.setVariable("stat", args[2]).setVariable("amount", args[3]).format("command.setstat"));
 				} catch(IllegalArgumentException e) {
-					player.sendMessage(new Messaging.MessageFormatter().format("command.invalid-sound"));
+					sender.sendMessage(new Messaging.MessageFormatter().format("command.invalid-sound"));
 				}
 			} else {
-				player.sendMessage(new Messaging.MessageFormatter().format("command.stat-types"));
+				sender.sendMessage(new Messaging.MessageFormatter().format("command.stat-types"));
 			}
 		} else {
-			player.sendMessage(new Messaging.MessageFormatter().format("command.must-be-online"));
+			sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-online"));
 		}
 
 		return true;

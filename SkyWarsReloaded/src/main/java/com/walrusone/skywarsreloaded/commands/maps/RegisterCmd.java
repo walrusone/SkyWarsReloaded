@@ -16,11 +16,11 @@ public class RegisterCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-			String worldName = args[1].toLowerCase();
+			String worldName = args[1];
 			GameMap gMap = GameMap.getMap(worldName);
 			if (gMap != null) {
 				gMap.setRegistered(true);
-				boolean registered = gMap.attemptRegistration();
+				boolean registered = gMap.registerMap();
 				if (registered) {
 					sender.sendMessage(new Messaging.MessageFormatter().format("maps.registered"));
 				} else {

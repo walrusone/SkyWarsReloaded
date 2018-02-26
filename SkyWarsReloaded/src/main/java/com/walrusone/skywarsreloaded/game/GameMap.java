@@ -12,7 +12,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.managers.WorldManager;
@@ -25,7 +24,7 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.KitVoteOption;
 import com.walrusone.skywarsreloaded.menus.gameoptions.ModifierOption;
 import com.walrusone.skywarsreloaded.menus.gameoptions.TimeOption;
 import com.walrusone.skywarsreloaded.menus.gameoptions.WeatherOption;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.EmptyChest;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
@@ -37,6 +36,8 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
@@ -55,10 +56,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class GameMap {
@@ -67,7 +69,6 @@ public class GameMap {
 		new ArenasMenu();
 	}
 	private static ArrayList<GameMap> arenas;
-	private static Map<String, MapData> mapData = new HashMap<String, MapData>();
 
 	private boolean forceStart;
 	private boolean allowFallDamage;
@@ -97,59 +98,55 @@ public class GameMap {
     private TimeOption timeOption;
     private WeatherOption weatherOption;
     private ModifierOption modifierOption;
-	private Map<Integer, EmptyChest> chests = Maps.newHashMap();
-	private Map<Integer, EmptyChest> doubleChests = Maps.newHashMap();
+	private ArrayList<CoordLoc> chests;
 	private int mapUseCount;
 	private String displayName;
 	private String designedBy;
 	private ArrayList<SWRSign> signs;
 	private Scoreboard scoreboard;
 	private Objective objective;
-	private MapData mp;
 	private boolean registered;
 	private String arenakey;
+	private GameQueue joinQueue;
+	private boolean inEditing = false;
+	private CoordLoc spectateSpawn;
+	private boolean legacy = false;
 		
-    public GameMap(final String name, boolean forceRegister, boolean startup) {
+    public GameMap(final String name) {
+    	this.name = name;
+    	this.matchState = MatchState.OFFLINE;
     	playerCards = new ArrayList<PlayerCard>();
-    	mp = mapData.get(name);
-        if (mp == null) {
-        	mapData.put(name, new MapData(name, name, ((int) playerCards.size()/2) >= 2 ? (int) playerCards.size()/2 : 2 , "", null, forceRegister));
-         	saveMapData();
-         	mp = mapData.get(name);
-        }
-         
-        this.minPlayers = mp.getMinPlayers() >= 2 ? mp.getMinPlayers() : 2;
-        this.displayName = mp.getDisplayName();
-        this.designedBy = mp.getCreator();
-        signs = new ArrayList<SWRSign>();
-		this.name = name.toLowerCase();
-		
+    	signs = new ArrayList<SWRSign>();
+    	chests = new ArrayList<CoordLoc>();
+    	loadArenaData();
         this.thunder = false;
         allowRegen = true;
-        
-        if(startup) {
-        	this.registered = mp.isRegistered();
-        } else {
-        	this.registered = forceRegister;
-        }
-        this.matchState = MatchState.OFFLINE;
         timer = SkyWarsReloaded.getCfg().getWaitTimer();
         mapUseCount = 0;
-        
+        joinQueue = new GameQueue(this);
         arenakey = name + "menu";
-        new ArenaMenu(arenakey, this);
-        
-        if (mp.getSigns() != null) {
-        	for (String sign: mp.getSigns()) {
-        		signs.add(new SWRSign(this.getName(), Util.get().stringToLocation(sign)));
-        	}
+        if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+			kitVoteOption = new KitVoteOption(this, name + "kitVote");
         }
-                   
+        chestOption = new ChestOption(this, name + "chest");
+        healthOption = new HealthOption(this, name + "health");
+        timeOption =  new TimeOption(this, name + "time");
+        weatherOption = new WeatherOption(this, name + "weather");
+        modifierOption = new ModifierOption(this, name + "modifier");
+        if (legacy) {
+        	 boolean loaded = loadWorldForScanning(name);
+             if (loaded) {
+             	ChunkIterator();
+      			SkyWarsReloaded.getWM().deleteWorld(name);
+      			saveArenaData();
+             }
+        }
         if (registered) {
-        	attemptRegistration();
-        } 
+        	registerMap();
+        }
+        new ArenaMenu(arenakey, this);
     }
-   
+
 	public void update() {
 		updateArenasManager();
 		this.updateArenaManager();
@@ -165,7 +162,7 @@ public class GameMap {
    
 	/*Player Handling Methods*/
 	
-	public boolean addPlayer(final Player player) {
+	public boolean addPlayers(final Player player) {
 		if (Util.get().isBusy(player.getUniqueId())) {
 			return false;
 		}
@@ -176,13 +173,17 @@ public class GameMap {
     			pCard.setPlayer(player);
     			pCard.setPreElo(PlayerStat.getPlayerStats(player.getUniqueId()).getElo());
    			
-    			MatchManager.get().teleportToArena(this, pCard);
-    			if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-    				kitVoteOption.updateKitVotes();
-    			}
-    	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
-    	        this.update();
-    			return true;
+    			PlayerStat pStat = PlayerStat.getPlayerStats(player);
+    	        boolean glassReader = this.setGlassColor(pCard, pStat.getGlassColor());
+    	        if (glassReader) {
+    	        	joinQueue.add(pCard);
+        			if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+        				kitVoteOption.updateKitVotes();
+        			}
+        	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
+        	        this.update();
+        			return true;
+    	        }
     		}  		
 		}
     	this.update();
@@ -190,7 +191,7 @@ public class GameMap {
     	return false;
     }
 	
-	public boolean addParty(final Party party) {
+	public boolean addPlayers(final Party party) {
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (UUID uuid: party.getMembers()) {
 			Player player = Bukkit.getPlayer(uuid);
@@ -213,7 +214,7 @@ public class GameMap {
 		if (players.size() == party.getSize()) {
 			for (Player player: players) {
 				PlayerCard pCard = this.getPlayerCard(player);
-				MatchManager.get().teleportToArena(this, pCard);
+				joinQueue.add(pCard);
 				if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
 			        kitVoteOption.updateKitVotes();
 				}
@@ -289,7 +290,7 @@ public class GameMap {
 	public static GameMap getMap(final String mapName) {
     	shuffle();
     	for (final GameMap map : GameMap.arenas) {
-            if (map.name.equalsIgnoreCase(ChatColor.stripColor(mapName))) {
+            if (map.name.equals(ChatColor.stripColor(mapName))) {
                 return map;
             }
         }
@@ -297,38 +298,180 @@ public class GameMap {
     }
 	
 	public static boolean addMap(String name, boolean forceRegister, boolean startup) {
-		GameMap gMap = new GameMap(name, forceRegister, startup);
-		arenas.add(new GameMap(name, forceRegister, startup));
+		GameMap gMap = new GameMap(name);
+		arenas.add(gMap);
 		return gMap.isRegistered();
 	}
 	
 	public void removeMap() {
 		unregister();
-		mapData.remove(name);
 		File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
 		File target = new File (dataDirectory, name);
 		SkyWarsReloaded.getWM().deleteWorld(target);
+
+        File mapDataDirectory = new File(dataDirectory, "mapsData");
+        if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
+        	return;
+        }
+        File mapFile = new File(mapDataDirectory, name + ".yml");
+        mapFile.delete();
 		arenas.remove(this);
-		saveMapData();
 	}
         
     public static void loadMaps() {
-    	loadMapData();
+    	File mapFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps.yml");
+        if (mapFile.exists()) {
+        	updateMapData();
+        }
     	arenas.clear();
     	File dataDirectory = SkyWarsReloaded.get().getDataFolder();
 		File maps = new File (dataDirectory, "maps");
 		if (maps.exists() && maps.isDirectory()) {
 			for (File map : maps.listFiles()) {
 				if (map.isDirectory()) {
-					addMap(map.getName().toLowerCase(), true, true);
+					addMap(map.getName(), true, true);
 				} 
 			}
 		} else {
 			SkyWarsReloaded.get().getLogger().info("Maps directory is missing or no Maps were found!");
 		} 
-		saveMapData();
     }
     
+	private static void updateMapData() {
+		 File mapFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps.yml");       
+	        if (mapFile.exists()) {
+	            FileConfiguration storage = YamlConfiguration.loadConfiguration(mapFile);
+
+	            if (storage.getConfigurationSection("maps") != null) {
+	                for (String key: storage.getConfigurationSection("maps").getKeys(false)) {
+	                	String name = key;
+	                	String displayname = storage.getString("maps." + key + ".displayname");
+	                	int minplayers = storage.getInt("maps." + key + ".minplayers");
+	                	String creator = storage.getString("maps." + key + ".creator");
+	                	List<String> signs = storage.getStringList("maps." + key + ".signs");
+	                	boolean registered = storage.getBoolean("maps." + key + ".registered");
+	                	
+	            		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+	                    File mapDataDirectory = new File(dataDirectory, "mapsData");
+
+	                    if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
+	                    	return;
+	                    }
+
+	                    File newMapFile = new File(mapDataDirectory, name + ".yml");
+	                    copyDefaults(newMapFile);
+	                    FileConfiguration fc = YamlConfiguration.loadConfiguration(newMapFile);
+	                    fc.set("displayname", displayname);
+	    	            fc.set("minplayers", minplayers);
+	    	            fc.set("creator", creator);
+	    	            fc.set("signs", signs);
+	    	            fc.set("registered", registered);
+	    	            fc.set("spectateSpawn", "0:95:0");
+	    	            fc.set("legacy", true);
+	    	            try {
+							fc.save(newMapFile);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	                }
+	            }
+	            mapFile.delete();
+	        }
+	}
+	
+	public void saveArenaData() {
+		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+        File mapDataDirectory = new File(dataDirectory, "mapsData");
+
+        if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
+        	return;
+        }
+
+        File mapFile = new File(mapDataDirectory, name + ".yml");
+        if (!mapFile.exists()) {
+        	SkyWarsReloaded.get().getLogger().info("File doesn't exist!");
+        	return;
+        }
+        copyDefaults(mapFile);
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
+        fc.set("displayname", displayName);
+        fc.set("minplayers", minPlayers);
+        fc.set("creator", designedBy);
+        fc.set("registered", registered);
+        fc.set("spectateSpawn", spectateSpawn.getLocation());
+       
+        List<String> spawns = new ArrayList<String>();
+        for (PlayerCard pCard: playerCards) {
+        	spawns.add(pCard.getSpawn().getLocation());
+        }
+        fc.set("spawns", spawns);
+        
+        List<String> stringSigns = new ArrayList<String>();
+   	 	for (SWRSign s: signs) {
+   	 		stringSigns.add(Util.get().locationToString(s.getLocation()));
+   	 	}
+   	 	fc.set("signs", stringSigns);
+
+   	 	List<String> stringChests = new ArrayList<String>();
+   	 	for (CoordLoc chest: chests) {
+   	 		stringChests.add(chest.getLocation());
+   	 	}
+   	 	fc.set("chests", stringChests);
+   	 	fc.set("legacy", null);
+   	 	try {
+			fc.save(mapFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadArenaData() {
+		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+        File mapDataDirectory = new File(dataDirectory, "mapsData");
+
+        if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
+        	return;
+        }
+
+        File mapFile = new File(mapDataDirectory, name + ".yml");
+        copyDefaults(mapFile);
+        
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
+        displayName = fc.getString("displayname", name);
+        designedBy = fc.getString("creator", "");
+        registered = fc.getBoolean("registered", false);
+        spectateSpawn = Util.get().getCoordLocFromString(fc.getString("spectateSpawn", "0:95:0"));
+        legacy = fc.getBoolean("legacy");
+        
+        List<String> spawns = fc.getStringList("spawns");
+        List<String> stringSigns = fc.getStringList("signs");
+        List<String> stringChests = fc.getStringList("chests");
+       
+        for (String spawn: spawns) {
+        	addPlayerCard(Util.get().getCoordLocFromString(spawn));
+        }
+        int def = 2;
+        if (playerCards.size() > 4) {
+        	def = playerCards.size()/2;
+        }
+        minPlayers = fc.getInt("minplayers", def);
+        
+   	 	for (String s: stringSigns) {
+   	 		signs.add(new SWRSign(name, Util.get().stringToLocation(s)));
+   	 	}
+
+   	 	for (String chest: stringChests) {
+   	 		addChest(Util.get().getCoordLocFromString(chest));
+   	 	}
+   	 	try {
+			fc.save(mapFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static World createNewMap(String mapName) {
     	World newWorld = SkyWarsReloaded.getWM().createEmptyWorld(mapName);
 		if (newWorld == null) {
@@ -346,9 +489,24 @@ public class GameMap {
 		return SkyWarsReloaded.get().getServer().getWorld(mapName);
 	}
 	
+	public boolean registerMap() {
+		if (inEditing) {
+			saveMap(null);
+		}
+    	if (playerCards.size() > 1) {
+    		registered = true;
+            refreshMap();
+            SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
+    	} else {
+    		registered = false;
+    		SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have at least 2 Spawn Points");
+    	}
+    	return registered;
+	}
+	
 	public void unregister() {
 		this.registered = false;
-		saveMapData();
+		saveArenaData();
 		stopGameInProgress();
 	}
 	
@@ -366,39 +524,6 @@ public class GameMap {
         	}
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName() + "_" + this.getMapCount());
-	}
-	
-	public boolean attemptRegistration() {
-		if (!this.matchState.equals(MatchState.OFFLINE)) {
-			stopGameInProgress();
-		}
-    	SkyWarsReloaded.get().getLogger().info("Attempting to register Map: " + name);
-        boolean loaded = loadWorldForScanning(name);
-        if (loaded) {
-        	ChunkIterator();
- 			SkyWarsReloaded.getWM().deleteWorld(name);
-            if (playerCards.size() >= 2 && registered) {
-                if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-                	kitVoteOption = new KitVoteOption(this, name + "kitVote");
-                }
-                chestOption = new ChestOption(this, name + "chest");
-                healthOption = new HealthOption(this, name + "health");
-                timeOption =  new TimeOption(this, name + "time");
-                weatherOption = new WeatherOption(this, name + "weather");
-                modifierOption = new ModifierOption(this, name + "modifier");
-               
-                refreshMap();
-                SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
-                return true;
-            } else {
-            	this.registered = false;
-             	saveMapData();
-             	SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have at least 2 Spawn Points");
-             	return false;
-            }
-        } else {
-        	return false;
-        }  
 	}
     
     public static boolean loadWorldForScanning(String name) {
@@ -434,7 +559,7 @@ public class GameMap {
 		return new ArrayList<GameMap>(arenas);
 	}
 	
-	public static ArrayList<GameMap> getSortedMaps() {
+	public static ArrayList<GameMap> getPlayableArenas() {
 		ArrayList<GameMap> sorted = new ArrayList<GameMap>();
 		for (GameMap gMap: arenas) {
 			if (gMap.isRegistered()) {
@@ -456,7 +581,7 @@ public class GameMap {
 	
 	public static boolean mapRegistered(String name) {
 		for (GameMap gMap: arenas) {
-			if (gMap.getName().equalsIgnoreCase(name)) {
+			if (gMap.getName().equals(name)) {
 				return gMap.isRegistered();
 			}
 		}
@@ -514,8 +639,8 @@ public class GameMap {
 		Block max = chunkWorld.getBlockAt(max1, 0, max1);
 		Chunk cMin = min.getChunk();
 		Chunk cMax = max.getChunk();
-		int countChests = 0;
-		int countDChests = 0;
+		playerCards.clear();
+		chests.clear();
 		
 		for(int cx = cMin.getX(); cx < cMax.getX(); cx++) {
 			for(int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {
@@ -529,30 +654,65 @@ public class GameMap {
 			                  if(!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK) 
 			                		  && !block.getType().equals(Material.DIAMOND_BLOCK)&& !block.getType().equals(Material.EMERALD_BLOCK)) {
 				                  Location loc = beacon.getLocation();
-				                  playerCards.add(new PlayerCard(loc, null, -1, this));
+				                  playerCards.add(new PlayerCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), null, -1, this));
 			                  }
 			            } else if (te instanceof Chest) {
 				                  Chest chest = (Chest) te;
-				                  InventoryHolder ih = chest.getInventory().getHolder();
-				                  if (ih instanceof DoubleChest){
-				                      int x = chest.getX();
-					                  int z = chest.getZ();
-					                  int y = chest.getY();	
-					                  doubleChests.put(countDChests, new EmptyChest(x, y, z));
-						              countDChests++;
-					              } else {
-					                  int x = chest.getX();
-					                  int z = chest.getZ();
-					                  int y = chest.getY();
-				                	  chests.put(countChests, new EmptyChest(x, y, z));
-					                  countChests++;
-				                  }
+				                  addChest(chest);
 			            } 
 		           }
 		        }
 	     }
 		
 	}
+	
+	public static void editMap(GameMap gMap, Player player) {
+		gMap.unregister();
+		gMap.setEditing(true);
+		String worldName = gMap.getName();
+		boolean loaded = false;
+		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
+			if (world.getName().equals(worldName)) {
+				loaded = true;
+			}
+		} 
+		
+		if (!loaded) {
+			File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
+			File source = new File (dataDirectory, worldName);
+			File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
+			boolean mapExists = false;
+			if(target.isDirectory()) {			 
+				if(target.list().length > 0) {
+		 			mapExists = true;
+				}	 
+			}
+			if (mapExists) {
+				SkyWarsReloaded.getWM().deleteWorld(worldName);
+			}
+			SkyWarsReloaded.getWM().copyWorld(source, target);
+		}
+		loaded = SkyWarsReloaded.getWM().loadWorld(worldName);
+		if (loaded) {
+			World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
+			for (PlayerCard pCard: gMap.getPlayerCards()) {
+				if (pCard.getSpawn() != null) {
+					editWorld.getBlockAt(pCard.getSpawn().getX(), pCard.getSpawn().getY(), pCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
+				}
+			}
+			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
+				public void run() {
+					player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
+					player.setGameMode(GameMode.CREATIVE);
+					player.setAllowFlight(true);
+					player.setFlying(true);
+				}
+			}, 20);
+		} else {
+			player.sendMessage(new Messaging.MessageFormatter().format("error.map-fail-load"));
+		}
+	}
+
 	
 	public void refreshMap() {
 		for (PlayerCard pCard: playerCards) {
@@ -745,9 +905,9 @@ public class GameMap {
 	
 	public void createSpawnPlatforms(World world) {
     	for(PlayerCard pCard: playerCards) {
-            int x = pCard.getSpawn().getBlockX();
-            int y = pCard.getSpawn().getBlockY();
-            int z = pCard.getSpawn().getBlockZ();
+            int x = pCard.getSpawn().getX();
+            int y = pCard.getSpawn().getY();
+            int z = pCard.getSpawn().getZ();
 
             world.getBlockAt(x, y, z).setType(Material.GLASS);
             world.getBlockAt(x, y + 1, z + 1).setType(Material.GLASS);
@@ -767,22 +927,14 @@ public class GameMap {
     }
 	
 	@SuppressWarnings("deprecation")
-	public void setGlassColor(Player player, String color) {
-		if (matchState == MatchState.WAITINGSTART) {
-			PlayerCard pCard = null;
-			for (PlayerCard playerCard: playerCards) {
-				if (playerCard.getPlayer() != null && playerCard.getPlayer().equals(player)) {
-					pCard = playerCard;
-					break;
-				}
-			}
-			
+	public boolean setGlassColor(PlayerCard pCard, String color) {
+		if (matchState == MatchState.WAITINGSTART) {			
 			if (pCard != null) {
 				World mapWorld;
 				mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName() + "_" + this.getMapCount());
-	            int x = pCard.getSpawn().getBlockX();
-	            int y = pCard.getSpawn().getBlockY();
-	            int z = pCard.getSpawn().getBlockZ();
+	            int x = pCard.getSpawn().getX();
+	            int y = pCard.getSpawn().getY();
+	            int z = pCard.getSpawn().getZ();
 	            
 				byte cByte = Util.get().getByteFromColor(color.toLowerCase());
 				if (cByte <= -1) {
@@ -835,8 +987,10 @@ public class GameMap {
 		            mapWorld.getBlockAt(x, y + 4, z).setType(Material.STAINED_GLASS);
 		            mapWorld.getBlockAt(x, y + 4, z).setData(cByte);
 				}
+				return true;
 			}
 		}
+		return false;
 	}
     
     public void removeSpawnHousing() {
@@ -847,16 +1001,13 @@ public class GameMap {
         new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (kit != null) {
-					gMap.allowFallDamage = SkyWarsReloaded.getCfg().allowFallDamage();
-				}
+				gMap.allowFallDamage = SkyWarsReloaded.getCfg().allowFallDamage();
 			}
-        	
-        }.runTaskLater(SkyWarsReloaded.get(), 20L);
+        }.runTaskLater(SkyWarsReloaded.get(), 100L);
     	for(PlayerCard pCard: playerCards) {
-            int x = pCard.getSpawn().getBlockX();
-            int y = pCard.getSpawn().getBlockY();
-            int z = pCard.getSpawn().getBlockZ();
+            int x = pCard.getSpawn().getX();
+            int y = pCard.getSpawn().getY();
+            int z = pCard.getSpawn().getZ();
             
             mapWorld.getBlockAt(x, y, z).setType(Material.AIR);
             mapWorld.getBlockAt(x, y + 1, z + 1).setType(Material.AIR);
@@ -895,95 +1046,7 @@ public class GameMap {
 				SkyWarsReloaded.get().sendSWRMessage(player, SkyWarsReloaded.getCfg().getBungeeLobby(), messages);
 			}
 		}
-	}
-	
-	
-	/*Mapdata Methods*/
-	
-	public static Map<String, MapData> getMapData() {
-		return mapData;
-	}
-	
-	public static void loadMapData() {
-		mapData.clear();
-        File mapFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps.yml");
-
-        if (!mapFile.exists()) {
-        	SkyWarsReloaded.get().saveResource("maps.yml", false);
-        }
-        
-        if (mapFile.exists()) {
-            FileConfiguration storage = YamlConfiguration.loadConfiguration(mapFile);
-
-            if (storage.getConfigurationSection("maps") != null) {
-                for (String key: storage.getConfigurationSection("maps").getKeys(false)) {
-                	String name = key;
-                	String displayname = storage.getString("maps." + key + ".displayname");
-                	int minplayers = storage.getInt("maps." + key + ".minplayers");
-                	String creator = storage.getString("maps." + key + ".creator");
-                	List<String> signs = storage.getStringList("maps." + key + ".signs");
-                	boolean registered = storage.getBoolean("maps." + key + ".registered");
-                	mapData.put(key, new MapData(name, displayname, minplayers, creator, signs, registered));
-                }
-            }
-        }
-        
-        for (GameMap gMap: arenas) {
-            gMap.setMapData(mapData.get(gMap.getName()));
-        }
-	}
-	
-	private void setMapData(MapData mpdata) {
-		this.mp = mpdata;
-		
-		if (mp == null) {
-        	mapData.put(name, new MapData(name, name, ((int) playerCards.size()/2) >= 2 ? (int) playerCards.size()/2 : 2 , "", null, false));
-        	saveMapData();
-        	mp = mapData.get(name);
-        }
-        
-        this.minPlayers = mp.getMinPlayers() >= 2 ? mp.getMinPlayers() : 2;
-        this.displayName = mp.getDisplayName();
-        this.designedBy = mp.getCreator();
-        this.registered = mp.isRegistered();
-        
-        if (mp.getSigns() != null) {
-        	for (String sign: mp.getSigns()) {
-        		signs.add(new SWRSign(this.getName(), Util.get().stringToLocation(sign)));
-        	}
-        }
-	}
-	
-	private static void saveMapData() {
-		try {
-			 File mapFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps.yml");
-
-			 if (!mapFile.exists()) {
-				 SkyWarsReloaded.get().saveResource("maps.yml", false);
-		     }
-		        
-		     if (mapFile.exists()) {
-		         FileConfiguration storage = YamlConfiguration.loadConfiguration(mapFile);
-		         storage.set("maps", null);
-		         for (GameMap gMap: arenas) {
-		        	 storage.set("maps." + gMap.getName() + ".displayname", gMap.getDisplayName());
-		        	 storage.set("maps." + gMap.getName() + ".minplayers", gMap.getMinPlayers());
-		        	 storage.set("maps." + gMap.getName() + ".creator", gMap.getDesigner());
-		        	 storage.set("maps." + gMap.getName() + ".registered", gMap.isRegistered());
-		        	 List<String> stringSigns = new ArrayList<String>();
-		        	 for (SWRSign s: gMap.getSigns()) {
-		        		 stringSigns.add(Util.get().locationToString(s.getLocation()));
-		        	 }
-		        	 storage.set("maps." + gMap.getName() + ".signs", stringSigns);
-		         }
-		         storage.save(mapFile);
-		     }
-        } catch (IOException ioException) {
-            System.out.println("Failed to save mapData");
-        }
-	}
-	
-	
+	}	
 	
     /*Sign Methods*/
 	
@@ -1016,7 +1079,7 @@ public class GameMap {
 		}
 		if (sign != null) {
 			signs.remove(sign);
-			saveMapData();
+			saveArenaData();
 			updateSigns();
 			return true;
 		}
@@ -1025,7 +1088,7 @@ public class GameMap {
 	
 	public void addSign(Location loc) {
 		signs.add(new SWRSign(name, loc));
-		saveMapData();
+		saveArenaData();
 		updateSigns();
 	}
 	
@@ -1045,12 +1108,8 @@ public class GameMap {
     	return mapUseCount;
     }
     
-    public Map<Integer, EmptyChest> getChests(){
+    public ArrayList<CoordLoc> getChests(){
 		return chests;
-	}
-	
-	public Map<Integer, EmptyChest> getDoubleChests(){
-		return doubleChests;
 	}
 	
 	public boolean containsSpawns() {
@@ -1087,7 +1146,7 @@ public class GameMap {
     
     public void setMinPlayers(int x) {
     	minPlayers = x;
-    	saveMapData();
+    	saveArenaData();
     }
         
     public int getTimer() {
@@ -1218,63 +1277,18 @@ public class GameMap {
 
 	public void setRegistered(boolean b) {
 		registered = b;
-		saveMapData();
+		saveArenaData();
+		update();
 	}
 
 	public void setCreator(String creator) {
 		this.designedBy = creator;
-		saveMapData();
+		saveArenaData();
 	}
 
 	public void setDisplayName(String displayName2) {
 		this.displayName = displayName2;
-		saveMapData();
-	}
-
-	public static void editMap(GameMap gMap, Player player) {
-		gMap.unregister();
-		String worldName = gMap.getName();
-		boolean alreadyLoaded = false;
-		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
-			if (world.getName().equalsIgnoreCase(worldName)) {
-				alreadyLoaded = true;
-				World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-				player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
-				player.setGameMode(GameMode.CREATIVE);
-				player.setAllowFlight(true);
-				player.setFlying(true);
-			}
-		} 
-		
-		if (!alreadyLoaded) {
-			File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
-			File source = new File (dataDirectory, worldName);
-			File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
-			boolean mapExists = false;
-			if(target.isDirectory()) {			 
-				if(target.list().length > 0) {
-		 			mapExists = true;
-				}	 
-			}
-			if (mapExists) {
-				SkyWarsReloaded.getWM().deleteWorld(worldName);
-			}
-			SkyWarsReloaded.getWM().copyWorld(source, target);
-			boolean loaded = SkyWarsReloaded.getWM().loadWorld(worldName);
-			if (loaded) {
-				SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-					public void run() {
-						World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-						player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
-						player.setGameMode(GameMode.CREATIVE);
-						player.setAllowFlight(true);
-						player.setFlying(true);
-					}
-				}, 20);
-			} else {
-				player.sendMessage(new Messaging.MessageFormatter().format("error.map-fail-load"));
-			}
-		}
+		saveArenaData();
 	}
 
 	public String getArenaKey() {
@@ -1329,4 +1343,142 @@ public class GameMap {
 		return healthOption;
 	}
 
+	public void setEditing(boolean b) {
+		inEditing = b;
+	}
+	
+	public boolean isEditing() {
+		return inEditing;
+	}
+	
+	private static void copyDefaults(File mapFile) {
+        FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(mapFile);
+		Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("mapFile.yml"));
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			playerConfig.options().copyDefaults(true);
+			playerConfig.setDefaults(defConfig);
+			try {
+				playerConfig.save(mapFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public World getCurrentWorld() {
+        World mapWorld;
+		mapWorld = SkyWarsReloaded.get().getServer().getWorld(name + "_" + mapUseCount);
+		return mapWorld;
+	}
+
+	public void setSpectateSpawn(Location location) {
+		spectateSpawn = new CoordLoc(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		saveArenaData();
+	}
+
+	public void addPlayerCard(Location loc) {
+		addPlayerCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		saveArenaData();
+	}
+	
+	public void addPlayerCard(CoordLoc loc) {
+		playerCards.add(new PlayerCard(loc, null, -1, this));
+	}
+	
+	public boolean removePlayerCard(Location loc) {
+		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		PlayerCard toRemove = null;
+		for (PlayerCard pCard: playerCards) {
+			if (pCard.getSpawn().equals(remove)) {
+				toRemove = pCard;
+			}
+		}
+		if (toRemove != null) {
+			playerCards.remove(toRemove);
+			return true;
+		}
+		return false;
+	}
+	
+	public void addChest(Chest chest) {
+		InventoryHolder ih = chest.getInventory().getHolder();
+        if (ih instanceof DoubleChest) {
+        	DoubleChest dc = (DoubleChest) ih;
+			Chest left = (Chest) dc.getLeftSide();
+			Chest right = (Chest) dc.getRightSide();
+			CoordLoc locLeft = new CoordLoc(left.getX(), left.getY(), left.getZ());
+			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
+			if (!(chests.contains(locLeft) || chests.contains(locRight))) {
+				addChest(locLeft);
+			}
+        } else {
+        	CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
+            if (!chests.contains(loc)){
+      	  		addChest(loc);
+            }
+        }  
+	}
+	
+	public void addChest(CoordLoc loc) {
+		chests.add(loc);
+	}
+	
+	public void removeChest(Chest chest) {
+		InventoryHolder ih = chest.getInventory().getHolder();
+		if (ih instanceof DoubleChest) {
+			DoubleChest dc = (DoubleChest) ih;
+			Chest left = (Chest) dc.getLeftSide();
+			Chest right = (Chest) dc.getRightSide();
+			CoordLoc locLeft = new CoordLoc(left.getX(), left.getY(), left.getZ());
+			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
+			if (chests.contains(locLeft)) {
+				chests.remove(locLeft);
+			}
+			if (chests.contains(locRight)) {
+				chests.remove(locRight);
+			}
+		} else {
+			CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
+			if (chests.contains(loc)) {
+				chests.remove(loc);
+			}
+		}
+
+	}
+
+	public CoordLoc getSpectateSpawn() {
+		return spectateSpawn;
+	}
+
+	public boolean saveMap(@Nullable Player mess) {
+		Location respawn = SkyWarsReloaded.getCfg().getSpawn();
+		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
+			if (world.getName().equals(name)) {
+				World editWorld = SkyWarsReloaded.get().getServer().getWorld(world.getName());
+				for (Player player: editWorld.getPlayers()) {
+					player.teleport(respawn, TeleportCause.PLUGIN);
+				}					
+				editWorld.save();
+				SkyWarsReloaded.getWM().unloadWorld(world.getName());
+				File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
+				File target = new File (dataDirectory, world.getName());
+				SkyWarsReloaded.getWM().deleteWorld(target);
+				File source = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), world.getName());
+				SkyWarsReloaded.getWM().copyWorld(source, target);
+				SkyWarsReloaded.getWM().deleteWorld(source);
+				if (mess != null) {
+					mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", world.getName()).format("maps.saved"));
+					mess.sendMessage(new Messaging.MessageFormatter().format("maps.register-reminder"));
+				}
+				saveArenaData();
+				return true;
+			} 	
+		}
+		if (mess != null) {
+			mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("error.map-not-in-edit"));
+		}
+		return false;
+	}
 }

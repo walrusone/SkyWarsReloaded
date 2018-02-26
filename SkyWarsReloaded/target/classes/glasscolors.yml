@@ -9,6 +9,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 0
     position: 2
+    page: 1
   orange:
     displayname: '&bOrange'
     level: 6
@@ -16,6 +17,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 1
     position: 4
+    page: 1
   magenta:
     displayname: '&bMagenta'
     level: 11
@@ -23,6 +25,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 2
     position: 6
+    page: 1
   lightblue:
     displayname: '&bLight Blue'
     level: 16
@@ -30,6 +33,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 3
     position: 8
+    page: 1
   yellow:
     displayname: '&bYellow'
     level: 21
@@ -37,6 +41,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 4
     position: 9
+    page: 1
   lime:
     displayname: '&bLime'
     level: 26
@@ -44,6 +49,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 5
     position: 11
+    page: 1
   pink:
     displayname: '&bPink'
     level: 31
@@ -51,6 +57,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 6
     position: 13
+    page: 1
   gray:
     displayname: '&bGray'
     level: 36
@@ -58,6 +65,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 7
     position: 15
+    page: 3
   lightgray:
     displayname: '&bLight Gray'
     level: 41
@@ -65,6 +73,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 8
     position: 17
+    page: 1
   cyan:
     displayname: '&bCyan'
     level: 46
@@ -72,6 +81,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 9
     position: 18
+    page: 1
   purple:
     displayname: '&bPurple'
     level: 51
@@ -79,6 +89,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 10
     position: 20
+    page: 1
   blue:
     displayname: '&Blue'
     level: 56
@@ -86,6 +97,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 11
     position: 22
+    page: 1
   brown:
     displayname: '&bBrown'
     level: 61
@@ -93,6 +105,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 12
     position: 24
+    page: 1
   green:
     displayname: '&bGreen'
     level: 66
@@ -100,6 +113,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 13
     position: 26
+    page: 1
   red:
     displayname: '&bRed'
     level: 71
@@ -107,6 +121,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 14
     position: 27
+    page: 1
   black:
     displayname: '&bBlack'
     level: 76
@@ -114,6 +129,7 @@ colors:
     material: STAINED_GLASS
     datavalue: 15
     position: 29
+    page: 2
   lapis:
     displayname: '&bLapis'
     level: 81
@@ -121,6 +137,7 @@ colors:
     material: LAPIS_BLOCK
     datavalue: -1
     position: 31
+    page: 1
   redstone:
     displayname: '&bRedstone'
     level: 86
@@ -128,6 +145,7 @@ colors:
     material: REDSTONE_BLOCK
     datavalue: -1
     position: 33
+    page: 1
   emerald:
     displayname: '&bEmerald'
     level: 91
@@ -135,6 +153,7 @@ colors:
     material: EMERALD_BLOCK
     datavalue: -1
     position: 35
+    page: 4
   diamond:
     displayname: '&bDiamond'
     level: 96
@@ -142,6 +161,7 @@ colors:
     material: DIAMOND_BLOCK
     datavalue: -1
     position: 36
+    page: 1
   none:
     displayname: '&bGlass'
     level: 0
@@ -149,3 +169,5 @@ colors:
     material: GLASS
     datavalue: -1
     position: 0
+    page: 1
+menuSize: 45

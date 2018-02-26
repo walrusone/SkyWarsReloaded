@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
@@ -125,6 +126,12 @@ public class ArenaMenu {
 				String name = event.getName();
 	            if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
 	            	SkyWarsReloaded.getIC().show(player, "arenasmenu");
+	            	new BukkitRunnable() {
+						@Override
+						public void run() {
+							GameMap.updateArenasManager();
+						}
+					}.runTaskLater(SkyWarsReloaded.get(), 2);
 	            	return;
 	            }
 				if(player.hasPermission("sw.map.arenas")) {       			       		
@@ -134,7 +141,7 @@ public class ArenaMenu {
 	       					gMap.unregister();
 	       				} else {
 	       					gMap.setRegistered(true);
-	       					gMap.attemptRegistration();
+	       					gMap.registerMap();
 	       				}
 	       				gMap.update();
 	       			} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 2) {
@@ -215,7 +222,7 @@ public class ArenaMenu {
 	           				gMap.stopGameInProgress();
 	           				gMap.refreshMap();
 	       				}
-	       			} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 14) {
+	       			} else if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 14) {
 	       				player.closeInventory();
 	       				GameMap.editMap(gMap, player);
 	       			}

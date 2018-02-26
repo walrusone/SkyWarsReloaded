@@ -41,6 +41,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 
 public class Util {
 
@@ -603,6 +604,18 @@ public class Util {
 			}
 		}
 		return false;
+	}
+
+	public CoordLoc getCoordLocFromString(String location) {
+		if (location != null) {
+        	final String[] locationParts = location.split(":");
+            if (locationParts.length != 3) {
+            	return null;
+            } else {
+            	 return new CoordLoc(Integer.valueOf(locationParts[0]), Integer.valueOf(locationParts[1]),Integer.valueOf(locationParts[2]));   
+            }
+    	}
+    	return null;
 	}
 
 

@@ -3,15 +3,15 @@ package com.walrusone.skywarsreloaded.game;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.enums.Vote;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 
 public class PlayerCard {
 	
-	private Location spawn;
+	private CoordLoc spawn;
 	private UUID uuid;
 	private int preElo;
 	private GameMap gMap;
@@ -26,7 +26,7 @@ public class PlayerCard {
 	private Vote modifier;
 	private Vote health;
 
-	public PlayerCard(Location spawn, UUID uuid, int BeginningElo, GameMap gameMap) {
+	public PlayerCard(CoordLoc spawn, UUID uuid, int BeginningElo, GameMap gameMap) {
 		this.spawn = spawn;
 		this.uuid = uuid;
 		this.preElo = BeginningElo;
@@ -73,7 +73,7 @@ public class PlayerCard {
 		return this.preElo;
 	}
 	
-	public Location getSpawn() {
+	public CoordLoc getSpawn() {
 		return this.spawn;
 	}
 	

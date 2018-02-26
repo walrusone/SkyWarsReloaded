@@ -4,15 +4,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,6 +28,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.KitSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.VotingMenu;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.OptionsSelectionMenu;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -91,12 +97,12 @@ public class PlayerInteractListener implements Listener
                 			    		Party party = Party.getParty(player);
                 			    		if (party != null) {
                 			    			if (party.getLeader().equals(player.getUniqueId())) {
-                    			    			joined = gMap.addParty(party);
+                    			    			joined = gMap.addPlayers(party);
                 			    			} else {
                 			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                 			    			}
                 			    		} else {
-                    			    		joined = gMap.addPlayer(player);
+                    			    		joined = gMap.addPlayers(player);
                     			    		if (!joined) { 
                     			    			player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                     			    		} 
@@ -192,6 +198,40 @@ public class PlayerInteractListener implements Listener
     public void onBlockBreak(BlockBreakEvent e) {
     	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
     	if (gMap == null) {
+    		if(e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+    			GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+    			if (map == null) {
+    				return;
+    			}
+    			if (map.isEditing()) {
+    				if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
+    					Chest chest = (Chest) e.getBlock().getState();
+    					map.removeChest(chest);
+    					InventoryHolder ih = chest.getInventory().getHolder();
+    					if (ih instanceof DoubleChest) {
+    						DoubleChest dc = (DoubleChest) ih;
+    						Chest left = (Chest) dc.getLeftSide();
+    						Chest right = (Chest) dc.getRightSide();
+    						Location locLeft = left.getLocation();
+    						Location locRight = right.getLocation();
+    						World world = e.getBlock().getWorld();
+    						new BukkitRunnable() {
+								@Override
+								public void run() {
+									world.getBlockAt(locLeft).setType(Material.AIR);
+									world.getBlockAt(locRight).setType(Material.AIR);
+								}
+    						}.runTaskLater(SkyWarsReloaded.get(), 2L);
+    					}
+    					e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
+    				} else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+    					boolean result = map.removePlayerCard(e.getBlock().getLocation());
+    					if (result) {
+    						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getMaxPlayers() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.spawnRemoved"));	
+    					}
+    				} 
+    			}
+    		}
     		return;
     	}
     	if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
@@ -199,10 +239,36 @@ public class PlayerInteractListener implements Listener
     			new BukkitRunnable() {
 					@Override
 					public void run() {
-		    			e.getPlayer().teleport(gMap.getPlayerCard(e.getPlayer()).getSpawn());
+						CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getSpawn();
+		    			e.getPlayer().teleport(new Location(gMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
 					}
     			}.runTaskLater(SkyWarsReloaded.get(), 2);
    		}
+    }
+    
+    @EventHandler
+    public void onBlockPlaced(BlockPlaceEvent e) {
+    	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
+    	if (gMap == null) {
+    		if (e.getBlockPlaced().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
+        		GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+        		if (map == null) {
+        			return;
+        		}
+    			if (map.isEditing()) {
+    				Location loc = e.getBlock().getLocation();
+    				Player player = e.getPlayer();
+    				new BukkitRunnable() {
+						@Override
+						public void run() {
+							map.addChest((Chest) loc.getBlock().getState());
+							player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addChest"));
+						}
+    				}.runTaskLater(SkyWarsReloaded.get(), 2L);
+    			}
+    		}
+    	}
+    	
     }
     
 }
