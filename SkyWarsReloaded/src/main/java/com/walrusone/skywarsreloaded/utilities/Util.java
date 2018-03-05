@@ -46,12 +46,21 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 public class Util {
 
 	private static Util instance;
+	private Random rand;
 	
 	public static Util get() {
         if (Util.instance == null) {
             Util.instance = new Util();
         }
         return Util.instance;
+	}
+	
+	public Util() {
+		rand = new Random();
+	}
+	
+	public int getRandomNum(int min, int max) {
+		return rand.nextInt((max - min) + 1) + min;
 	}
 	
 	public boolean hp(String t, CommandSender sender, String s) {
@@ -98,12 +107,6 @@ public class Util {
 				SkyWarsReloaded.get().getLogger().info("ERROR: " + sound + " is not a valid bukkit sound. Please check your configs");
 			}
 		}
-	}
-	
-	public int getRandomNum(int max, int min) {
-		Random rand = new Random();
-	    int ii = min + rand.nextInt(((max - (min)) + 1));
-	    return ii;
 	}
 	
 	public int getMultiplier(Player player) {
@@ -407,7 +410,7 @@ public class Util {
 	}
 	
     public List<Chunk> getChunks(World mapWorld) {
-		int size = SkyWarsReloaded.getCfg().getMaxMapSize();
+		int size = 400;
 		int maxX = size/2;
 		int minX = -size/2;
 		int maxZ = size/2;

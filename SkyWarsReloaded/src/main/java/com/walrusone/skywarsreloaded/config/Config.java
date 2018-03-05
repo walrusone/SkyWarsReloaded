@@ -78,7 +78,6 @@ public class Config {
 	private boolean titlesEnabled;
 	private boolean allowFallDamage;
 	private boolean kitVotingEnabled;
-	private int gameTimer;
 	private int waitTimer;
 	private int strength;
 	private int speed;
@@ -97,12 +96,11 @@ public class Config {
 	private boolean partyEnabled;
 	private List<String> lobbyWorlds;
 	
+	private int maxChest;
+	private int maxDoubleChest;
+	
 	private boolean useHolograms;
-	
-	private boolean suddenDeathEnabled;
-	private boolean disableHealthRegen;
-	private boolean enableHealthDecay;
-	
+		
 	private int cooldown;
 	
 	private int kitMenuSize;
@@ -264,7 +262,6 @@ public class Config {
 			timeAfterMatch = SkyWarsReloaded.get().getConfig().getInt("game.timeAfterMatch");
 			fireworksPer5Tick = SkyWarsReloaded.get().getConfig().getInt("fireworks.per5Ticks");
 			fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
-			gameTimer = SkyWarsReloaded.get().getConfig().getInt("game.gameTimer");
 			waitTimer = SkyWarsReloaded.get().getConfig().getInt("game.waitTimer");
 			tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.tauntsEnabled");
 			titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
@@ -283,6 +280,9 @@ public class Config {
 			maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
 			partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
 			lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
+			
+			maxChest =SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
+			maxDoubleChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsDoubleChest");
 			
 			useHolograms = SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
 			
@@ -319,11 +319,7 @@ public class Config {
 			winsoundselectslot = SkyWarsReloaded.get().getConfig().getInt("items.winsoundselectslot");
 			glassselectslot = SkyWarsReloaded.get().getConfig().getInt("items.glassselectslot");
 			tauntselectslot = SkyWarsReloaded.get().getConfig().getInt("items.tauntselectslot");
-			
-			suddenDeathEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enabled");
-			disableHealthRegen = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.disableHealthRegen");
-			enableHealthDecay = SkyWarsReloaded.get().getConfig().getBoolean("game.suddendeath.enableHealthDecay");
-			
+					
 			cooldown = SkyWarsReloaded.get().getConfig().getInt("tauntCooldown");
 			
 			randPos = SkyWarsReloaded.get().getConfig().getInt("kit.randPos");
@@ -461,7 +457,6 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.vip4Multiplier", vip4);
 		SkyWarsReloaded.get().getConfig().set("game.vip5Multiplier", vip5);
 		SkyWarsReloaded.get().getConfig().set("titles.enabled", titlesEnabled);
-		SkyWarsReloaded.get().getConfig().set("game.gameTimer", gameTimer);
 		SkyWarsReloaded.get().getConfig().set("game.waitTimer", waitTimer);
 		SkyWarsReloaded.get().getConfig().set("game.timeAfterMatch", timeAfterMatch);
 		SkyWarsReloaded.get().getConfig().set("fireworks.per5Ticks", fireworksPer5Tick);
@@ -483,12 +478,12 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
 		SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
 		
+		SkyWarsReloaded.get().getConfig().set("chests.maxItemsChest", maxChest);
+		SkyWarsReloaded.get().getConfig().set("chests.maxItemsDoubleChest", maxDoubleChest);
+		
+		
 		SkyWarsReloaded.get().getConfig().set("holograms.enabled", useHolograms);
-		
-		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enabled", suddenDeathEnabled);
-		SkyWarsReloaded.get().getConfig().set("game.suddendeath.disableHealthRegen", disableHealthRegen);
-		SkyWarsReloaded.get().getConfig().set("game.suddendeath.enableHealthDecay", enableHealthDecay);
-		
+				
 		SkyWarsReloaded.get().getConfig().set("items.kitVotePosition", kitvotepos);
 		SkyWarsReloaded.get().getConfig().set("items.kitsEnabled", kitsEnabled);
 		SkyWarsReloaded.get().getConfig().set("items.votingPosition", votepos);
@@ -571,18 +566,6 @@ public class Config {
 		SkyWarsReloaded.get().saveConfig();
 	}
 	
-	public boolean suddenDeathEnabled() {
-		return suddenDeathEnabled;
-	}
-	
-	public boolean disableHealthRegen() {
-		return disableHealthRegen;
-	}
-	
-	public boolean enableHealthDecay() {
-		return enableHealthDecay;
-	}
-	
 	public List<String> getEnabledCommands() {
 		return enabledCommands;
 	}
@@ -601,10 +584,6 @@ public class Config {
 	
 	public boolean disableCommandsSpectate() {
 		return disableCommandsSpectate;
-	}
-	
-	public int getGameTimer() {
-		return gameTimer;
 	}
 	
 	public int getWaitTimer() {
@@ -1081,6 +1060,14 @@ public class Config {
 
 	public double getEggDamage() {
 		return eggDamage;
+	}
+
+	public int getMaxDoubleChest() {
+		return maxChest;
+	}
+
+	public int getMaxChest() {
+		return maxDoubleChest;
 	}
 }
 

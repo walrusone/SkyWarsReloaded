@@ -106,11 +106,6 @@ public class WeatherOption extends GameOption {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void completeOption() {
-		int max;
-		int min;
-		int size = SkyWarsReloaded.getCfg().getMaxMapSize()/2;
-		min = 0 - size;
-		max = 0 + size;	
 		Vote weather = gameMap.getWeatherOption().getVoted();
 		WeatherType w = WeatherType.CLEAR;
 		if (weather != Vote.WEATHERSUN) {
@@ -118,12 +113,12 @@ public class WeatherOption extends GameOption {
 		} 
 		if (weather == Vote.WEATHERTHUNDER) {
 			gameMap.setThunderStorm(true);
-			gameMap.setNextStrike(Util.get().getRandomNum(20, 3));
+			gameMap.setNextStrike(Util.get().getRandomNum(3, 20));
 			gameMap.setStrikeCounter(0);
 		} else if (weather == Vote.WEATHERSNOW) {
 			World world = gameMap.getAlivePlayers().get(0).getWorld();
-			for (int x = min; x < max; x++) {
-				for (int z = min; z < max; z++) {
+			for (int x = -200; x < 200; x++) {
+				for (int z = -200; z < 200; z++) {
 					world.setBiome(x, z, Biome.ICE_MOUNTAINS);
 				}
 			}

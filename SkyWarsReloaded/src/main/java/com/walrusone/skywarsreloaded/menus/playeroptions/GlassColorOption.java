@@ -115,7 +115,6 @@ public class GlassColorOption extends PlayerOption {
 				.setVariable("item", name).format("menu.purchase-glass");
 	}
 
-
 	@Override
 	public String getUseMessage() {
 		return new Messaging.MessageFormatter().setVariable("color", name).format("menu.usecolor-playermsg");

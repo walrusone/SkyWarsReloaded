@@ -36,8 +36,10 @@ public class AddSpawnCmd extends BaseCmd {
 			} else if (type.equalsIgnoreCase("spec") || type.equalsIgnoreCase("s")) {
 				gMap.setSpectateSpawn(player.getLocation());
 				player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.specSpawn"));
-			} else if (type.equalsIgnoreCase("death") || type.equalsIgnoreCase("d")) {
-				
+			} else if (type.equalsIgnoreCase("deathmatch") || type.equalsIgnoreCase("dm") || type.equalsIgnoreCase("d")) {
+				gMap.addDeathMatchSpawn(player.getLocation());
+				player.getLocation().getBlock().setType(Material.EMERALD_BLOCK);
+				player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getDeathMatchSpawns().size()).setVariable("mapname", gMap.getDisplayName()).format("maps.addDeathSpawn"));
 			} else {
 				player.sendMessage(ChatColor.RED + "Type must be: " + "player OR spec");
 			}

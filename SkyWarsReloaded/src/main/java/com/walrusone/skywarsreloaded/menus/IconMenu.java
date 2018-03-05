@@ -138,8 +138,7 @@ public class IconMenu {
         
         public int getSlot() {
         	return slot;
-        }
-        
+        }       
     }
     
 

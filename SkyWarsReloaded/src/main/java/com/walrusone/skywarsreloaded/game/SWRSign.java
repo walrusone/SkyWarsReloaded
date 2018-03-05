@@ -36,7 +36,7 @@ public class SWRSign {
 				state = new Messaging.MessageFormatter().format("signs.offline");
 			} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 				state = new Messaging.MessageFormatter().format("signs.joinable");
-			} else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+			} else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
 				state =  new Messaging.MessageFormatter().format("signs.playing");
 			} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
 				state =  new Messaging.MessageFormatter().format("signs.ending");;
@@ -72,7 +72,7 @@ public class SWRSign {
 			updateBlock(attachedBlock, "blockoffline");
 		} else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
 			updateBlock(attachedBlock, "blockwaiting");
-		} else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+		} else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
 			updateBlock(attachedBlock, "blockplaying");
 		} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
 			updateBlock(attachedBlock, "blockending");

@@ -156,7 +156,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         		hu.load();
         	}
         	if (hu == null) {
-        		SkyWarsReloaded.getCfg().setHologramsEnabled(false);
+        		config.setHologramsEnabled(false);
+        		config.save();
         	}
 		}
         
@@ -210,7 +211,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false);
             	}
             }
-            getWM().deleteWorld(gameMap.getName() + "_" + gameMap.getMapCount());
+            getWM().deleteWorld(gameMap.getName());
         }
         for (final PlayerData playerData : PlayerData.getPlayerData()) {
             playerData.restore();

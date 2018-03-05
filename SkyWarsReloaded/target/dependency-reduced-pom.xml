@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.walrusone.skywarsreloaded</groupId>
   <artifactId>SkyWarsReloadedPlugin</artifactId>
-  <version>V3.2.1</version>
+  <version>V3.3.1</version>
   <build>
     <resources>
       <resource>
@@ -31,6 +31,7 @@
           <include>winsounds.yml</include>
           <include>winsounds18.yml</include>
           <include>holograms.yml</include>
+          <include>crates.yml</include>
           <include>tables.sql</include>
         </includes>
       </resource>

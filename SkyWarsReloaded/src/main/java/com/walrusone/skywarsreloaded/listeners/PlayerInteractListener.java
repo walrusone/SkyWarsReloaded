@@ -2,9 +2,12 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Sign;
@@ -15,8 +18,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.Listener;
@@ -24,6 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.Crate;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.KitSelectionMenu;
@@ -34,8 +41,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
-public class PlayerInteractListener implements Listener
-{
+public class PlayerInteractListener implements Listener {
+	
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onClick(final PlayerInteractEvent a1) {
     	final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
@@ -142,9 +149,52 @@ public class PlayerInteractListener implements Listener
         	}
         	return;
         }
+    	if (gameMap.getMatchState() == MatchState.PLAYING) {
+    		if (a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    			Block block = a1.getClickedBlock();
+    			if (block.getType().equals(Material.ENDER_CHEST)) {
+    				for (GameMap gMap: GameMap.getPlayableArenas()) {
+    					for (Crate crate: gMap.getCrates()) {
+    						if (crate.getLocation().equals(block.getLocation())) {
+    							a1.setCancelled(true);
+    							if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.CHEST_OPEN, 1, 1);
+    							} else {
+    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("BLOCK_CHEST_OPEN"), 1, 1);
+    							}
+    							a1.getPlayer().openInventory(crate.getInventory());
+    							SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
+    							return;
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
 		if (gameMap.getMatchState() == MatchState.ENDING) {
 			a1.setCancelled(true);
 		}
+    }
+    
+    @EventHandler 
+    public void onInventoryClose(InventoryCloseEvent e) {
+    	Inventory inv = e.getInventory();
+    	if (inv.getTitle().equals(new Messaging.MessageFormatter().format("event.crateInv"))) {
+    		for (GameMap gMap: GameMap.getPlayableArenas()) {
+    			for (Crate crate: gMap.getCrates()) {
+    				if(crate.getInventory().equals(inv) && inv.getViewers().size() <= 1) {
+						if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.CHEST_CLOSE, 1, 1);
+						} else {
+							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.valueOf("BLOCK_CHEST_CLOSE"), 1, 1);
+						}
+    					SkyWarsReloaded.getNMS().playEnderChestAction(e.getPlayer().getWorld().getBlockAt(crate.getLocation()), false);
+    					return;
+    				}
+    			}
+    		}
+    	}
+    	
     }
     
     @EventHandler
@@ -198,7 +248,7 @@ public class PlayerInteractListener implements Listener
     public void onBlockBreak(BlockBreakEvent e) {
     	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
     	if (gMap == null) {
-    		if(e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+    		if(e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
     			GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
     			if (map == null) {
     				return;
@@ -229,6 +279,11 @@ public class PlayerInteractListener implements Listener
     					if (result) {
     						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getMaxPlayers() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.spawnRemoved"));	
     					}
+    				} else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
+    					boolean result = map.removeDeathMatchSpawn(e.getBlock().getLocation());
+    					if (result) {
+    						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getDeathMatchSpawns().size() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.deathSpawnRemoved"));	
+    					}
     				} 
     			}
     		}
@@ -244,6 +299,17 @@ public class PlayerInteractListener implements Listener
 					}
     			}.runTaskLater(SkyWarsReloaded.get(), 2);
    		}
+    	if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+    		Block block = e.getBlock();
+			if (block.getType().equals(Material.ENDER_CHEST)) {
+				for (Crate crate: gMap.getCrates()) {
+					if (crate.getLocation().equals(block.getLocation())) {
+						e.setCancelled(true);
+						return;
+					}
+				}
+			}
+    	}
     }
     
     @EventHandler
@@ -269,6 +335,18 @@ public class PlayerInteractListener implements Listener
     		}
     	}
     	
+    }
+    
+    @EventHandler
+    public void onPlayerWalk(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        for (GameMap gMap: GameMap.getPlayableArenas()) {
+        	 if (gMap.getDeathMatchWaiters().contains(player.getUniqueId().toString())) {
+                 if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
+                     event.setCancelled(true);
+                 }
+             }
+        } 
     }
     
 }

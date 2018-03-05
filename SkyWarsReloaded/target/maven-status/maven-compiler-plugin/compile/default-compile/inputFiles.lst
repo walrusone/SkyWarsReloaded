@@ -4,6 +4,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\ArenaCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\CreateCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\LeaderType.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\ChestRefillEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\game\MapData.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\EnableCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\WinSoundOption.java
@@ -20,6 +21,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\JoinMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerCommandPrepocessListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\player\SWTauntCmd.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\WitherEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\game\PlayerData.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\OptionsSelectionMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\party\InfoCmd.java
@@ -44,6 +46,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\LoadCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\objects\GlassColor.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\KillSoundOption.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\EnderDragonEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\database\Database.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\SpectateListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\IconMenu.java
@@ -55,10 +58,12 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\utilities\VaultUtils.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\KitCmdManager.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\NameCmd.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\EventsMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\admin\ReloadCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\player\SWProjectileCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\PlayerOption.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\objects\SoundItem.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\DeathMatchEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\SkyWarsReloaded.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\UpdateCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\game\GameQueue.java
@@ -72,13 +77,16 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\player\SWJoinCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\ParticleEffectListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\admin\ClearStatsCmd.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\ArrowRainEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\admin\SetSpawnCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\enums\Vote.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\game\GameMapComparator.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\DisableRegenEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\gameoptions\KitVoteOption.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\NameCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\CreateCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\SaveCmd.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\AnvilRainEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\gameoptions\KitSelectionMenu.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\IconMenuController.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\ListCmd.java
@@ -93,11 +101,13 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PingListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\gameoptions\objects\GameKit.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\MapCmdManager.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\game\Crate.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\ParticleEffectOption.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\utilities\placeholders\SWRMVdWPlaceholder.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\DeleteCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\party\NameCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\MinimumCmd.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\MobSpawnEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\PartyCmdManager.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\maps\CreatorCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\ChatListener.java
@@ -108,6 +118,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\party\AcceptCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\PlayerInteractListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\gameoptions\objects\ChestItem.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\HealthDecayEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\managers\Leaderboard.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\managers\PlayerStat.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\managers\MatchManager.java
@@ -123,6 +134,7 @@ D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\player\SWTopCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\gameoptions\WeatherOption.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\menus\playeroptions\OptionSelectionMenu.java
+D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\matchevents\CrateDropEvent.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\kits\LockedIconCmd.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\listeners\ArenaDamageListener.java
 D:\Russell\Spigot_Development\Workspace\swr-parent\SkyWarsReloaded\src\main\java\com\walrusone\skywarsreloaded\commands\CmdManager.java

@@ -50,7 +50,7 @@ public class PlayerDeathListener implements Listener
         final PlayerData pData = PlayerData.getPlayerData(a1.getPlayer().getUniqueId());
         if (pData != null) {
         	final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
-        	World world = SkyWarsReloaded.get().getServer().getWorld(gMap.getName() + "_" + gMap.getMapCount());
+        	World world = gMap.getCurrentWorld();
 	        Location respawn = new Location(world, 0, 95, 0);
             a1.setRespawnLocation(respawn);
             new BukkitRunnable() {

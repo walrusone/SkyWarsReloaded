@@ -21,6 +21,7 @@ public class SaveCmd extends BaseCmd {
 			GameMap gMap = GameMap.getMap(worldName);
 			if (gMap == null) {
 				player.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));
+				return true;
 			}
 			gMap.saveMap(player);
 	        return true;

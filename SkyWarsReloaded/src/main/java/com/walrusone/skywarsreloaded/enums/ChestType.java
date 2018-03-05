@@ -4,4 +4,5 @@ public enum ChestType {
 	BASIC,
     OP, 
     NORMAL,
+    CRATE;
 }

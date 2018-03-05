@@ -38,7 +38,10 @@ kit:
   vote-nokit: '&1No Kit'
   nokit-lore: '&cBare Bones!'
 taunt:
-  prefix: "&5TAUNT: &b<{player}>"
+  prefix: '&5TAUNT: &b<{player}>'
+event:
+  announce: '&c{event} &bEvent starting in {time}'
+  crateInv: '&bSkyWars Crate'
 maps:
   created: '&bMap {mapname} has been Created!'
   creator: '&bThe creator for map {mapname} has been set to {creator}!'   
@@ -55,7 +58,9 @@ maps:
   changename: '&bEnter the new display name in chat, including color codes'
   changecreator: '&bEnter the new creator in chat, including color codes'
   addSpawn: '&bSpawn #{num} added to map {mapname}'
+  addDeathSpawn: '&bDeathMatch Spawn #{num} added to map {mapname}'
   spawnRemoved: '&bSpawn #{num} removed from  {mapname}'
+  deathSpawnRemoved: '&bDeathMatch Spawn #{num} removed from  {mapname}'
   specSpawn: '&bSpecator Spawn set to your location for {mapname}'
   addChest: '&bChest added to map {mapname}'
   removeChest: '&bChest removed from map {mapname}'
@@ -109,7 +114,7 @@ error:
   cooldown: '&4You cant use your taunt for another &e{timeleft}!'
   chestpercent: '&4[percentage] must be an integer between 1 and 100!'
   position: '&4[position] must be an integer between 0 and 35!'
-  chesttype: '&4[chesttype] must be either "basic", "normal", or "op"'
+  chesttype: '&4[chesttype] must be either "basic", "normal", "op", or "crate"'
   chestmethod: '&4[method] must be either "hand" or "inv"'
   schematicsInUse: '&4Map commands are disabled when using schematics!'
   nospawn: '&4Spawn must be set to create or edit maps!'
@@ -431,7 +436,7 @@ helpList:
     unregister: '&a/swmap unregister &e[mapname] &e- &2Unregisters a map named &e[mapname]'
     save: '&a/swmap save &e[mapname] &e- &2Saves a open map named &e[mapname]'
     arenas: '&a/swmap arenas &e- &2Opens the Arenas GUI'
-    spawn: '&a/swmap spawn [type] &e- &2Sets a spawn point for a arena. Type can be player or spec'
+    spawn: '&a/swmap spawn [type] &e- &2Sets a spawn point for a arena. Type can be player, spec, or deathmatch'
   swkit:
     header1: '&7-----------------[&aKit Commands&7]-----------------'
     create: '&a/swkit create &e[kitname] &e- &2Create a kit using the items in your inventory'

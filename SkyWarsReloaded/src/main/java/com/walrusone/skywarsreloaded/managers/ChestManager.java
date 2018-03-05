@@ -26,6 +26,7 @@ public class ChestManager {
     private final List<ChestItem> chestItemList = Lists.newArrayList();
     private final List<ChestItem> opChestItemList = Lists.newArrayList();
     private final List<ChestItem> basicChestItemList = Lists.newArrayList();
+    private final List<ChestItem> crateItemList = Lists.newArrayList();
     private final Random random = new Random();
    
     private List<Integer> randomLoc = new ArrayList<Integer>();
@@ -36,6 +37,7 @@ public class ChestManager {
         load(chestItemList, "chest.yml");
         load(opChestItemList, "opchest.yml");
         load(basicChestItemList, "basicchest.yml");
+        load(crateItemList, "crates.yml");
         for (int i = 0; i < 27; i++) {
         	randomLoc.add(i);
         }
@@ -52,6 +54,8 @@ public class ChestManager {
     		toAddTo = opChestItemList;
     	} else if (ct == ChestType.NORMAL) {
     		toAddTo = chestItemList;
+    	} else if (ct == ChestType.CRATE) {
+    		toAddTo = crateItemList;
     	}
     	for (ItemStack item: items) {
     		toAddTo.add(new ChestItem(item, percent));
@@ -182,7 +186,8 @@ public class ChestManager {
             	if (chest instanceof Chest) {
                     if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                         inventory.setItem(randomLoc.get(added), chestItem.getItem());
-                        if (added++ >= inventory.getSize() - 1) {
+                        added++;
+                        if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxChest()) {
                             break;
                         }
                     }
@@ -190,9 +195,28 @@ public class ChestManager {
                 if (chest instanceof DoubleChest) {
                     if (random.nextInt(100) + 1 <= chestItem.getChance()) {
                         inventory.setItem(randomDLoc.get(added), chestItem.getItem());
-                        if (added++ >= inventory.getSize() - 1) {
+                        added++;
+                        if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxDoubleChest()) {
                             break;
                         }
+                    }
+                }
+            }	
+    	}
+    }
+    
+    public void fillCrate(Inventory inventory, int max) {
+    	if (inventory != null) {
+    		inventory.clear();
+            int added = 0;
+            Collections.shuffle(randomLoc);
+
+            for (ChestItem chestItem : crateItemList) {
+                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
+                    inventory.setItem(randomLoc.get(added), chestItem.getItem());
+                    added++;
+                    if (added >= inventory.getSize() - 1 || added >= max) {
+                        break;
                     }
                 }
             }	

@@ -1,14 +1,17 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -19,6 +22,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.Crate;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -150,5 +154,34 @@ public class ArenaDamageListener implements Listener {
 				}
 			}
 		}
-	}	
+	}
+	
+	@EventHandler
+	public void onAnvilLand(EntityChangeBlockEvent event) {
+		if (event.getEntity() instanceof FallingBlock) {
+			FallingBlock fb = (FallingBlock) event.getEntity();
+			if (fb.getMaterial().equals(Material.ANVIL)) {
+				for (GameMap gMap: GameMap.getPlayableArenas()) {
+					if (gMap.getAnvils().contains(event.getEntity().getUniqueId().toString())) {
+						event.setCancelled(true);
+						gMap.getAnvils().remove(event.getEntity().getUniqueId().toString());
+						return;
+					}
+				}
+			} else if (fb.getMaterial().equals(Material.SAND)) {
+				for (GameMap gMap: GameMap.getPlayableArenas()) {
+					for (Crate crate: gMap.getCrates()) {
+						if (fb.equals(crate.getEntity())) {
+							event.setCancelled(true);
+							fb.setDropItem(false);
+							fb.getWorld().getBlockAt(fb.getLocation()).setType(Material.ENDER_CHEST);
+							crate.setLocation(fb.getWorld().getBlockAt(fb.getLocation()));
+							fb.remove();
+						}
+					}
+
+				}
+			}
+        }
+	}
 }

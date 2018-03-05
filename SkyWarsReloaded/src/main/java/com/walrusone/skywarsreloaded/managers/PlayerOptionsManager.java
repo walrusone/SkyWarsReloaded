@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.managers;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.Crate;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
@@ -17,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -26,9 +29,12 @@ public class PlayerOptionsManager {
 
 	private final Map<Projectile, List<ParticleEffect>> projectileMap = Maps.newConcurrentMap();
 	private final Map<UUID, List<ParticleEffect>> playerMap = Maps.newConcurrentMap();
+	private final List<ParticleEffect> crateEffects = new ArrayList<ParticleEffect>();
 
     public PlayerOptionsManager() {
     	if (SkyWarsReloaded.getCfg().particlesEnabled()) {
+    		crateEffects.add(new ParticleEffect("CRIT", 0, 2, 0, 8, 4));
+    		crateEffects.add(new ParticleEffect("CRIT_MAGIC", 0, 2, 0, 8, 4));
             SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), new Runnable() {
     			public void run() {
     				for (Projectile projectile: projectileMap.keySet()) {
@@ -46,6 +52,12 @@ public class PlayerOptionsManager {
     					} else {
     						List<ParticleEffect> effects = playerMap.get(p);
     						doEffects(player.getLocation(), effects, false);
+    					}
+    				}
+    				
+    				for (GameMap gMap: GameMap.getPlayableArenas()) {
+    					for (Crate crate: gMap.getCrates()) {
+    						doEffects(crate.getEntity().getLocation(), crateEffects, false);
     					}
     				}
     			}

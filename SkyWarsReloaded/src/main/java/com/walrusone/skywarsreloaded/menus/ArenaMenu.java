@@ -107,6 +107,21 @@ public class ArenaMenu {
 						}
 						ItemStack edit = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.WORKBENCH, 1), lores, "Edit Map");
 						
+						lores.clear();
+						
+						if (gMap.isEditing()) {
+							lores.add(ChatColor.AQUA + "Shift Left Click to Save Map!");
+							lores.add(ChatColor.RED + "Saving will close map");
+							lores.add(ChatColor.RED + "from editing!");
+						} else {
+							lores.add(ChatColor.RED + "Map is not being edited!");
+						}
+						ItemStack save = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.BOOK, 1), lores, "Save Map");
+						
+						lores.clear();
+						lores.add(ChatColor.AQUA + "Left Click to view events!");
+						ItemStack events = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.JUKEBOX, 1), lores, "Events");
+						
 						menu.setItem(0, status);
 						menu.setItem(2, display);
 						menu.setItem(4, creator);
@@ -114,7 +129,9 @@ public class ArenaMenu {
 						menu.setItem(8, signs);
 						menu.setItem(10, spectate);
 						menu.setItem(12, end);
-						menu.setItem(14, edit);		
+						menu.setItem(14, edit);	
+						menu.setItem(16, save);	
+						menu.setItem(22, events);	
 				}
 			}   		
     	};
@@ -225,6 +242,11 @@ public class ArenaMenu {
 	       			} else if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 14) {
 	       				player.closeInventory();
 	       				GameMap.editMap(gMap, player);
+	       			} else if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 16) {
+	       				player.closeInventory();
+	       				gMap.saveMap(player);
+	       			} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 22) {
+	       				new EventsMenu(player, gMap);
 	       			}
 	       		
 	       		}

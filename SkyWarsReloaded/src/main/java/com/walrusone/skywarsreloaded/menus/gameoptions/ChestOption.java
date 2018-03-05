@@ -106,7 +106,7 @@ public class ChestOption extends GameOption {
 
 	@Override
 	public void completeOption() {
-		World mapWorld = getWorld(gameMap);
+		World mapWorld = gameMap.getCurrentWorld();
         Vote cVote = gameMap.getChestOption().getVoted();
         for (CoordLoc eChest: gameMap.getChests()) {
 			Location loc;

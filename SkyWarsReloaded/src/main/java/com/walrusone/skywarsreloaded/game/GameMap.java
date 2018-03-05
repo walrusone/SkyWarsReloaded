@@ -15,6 +15,17 @@ import com.google.common.collect.Iterables;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.managers.WorldManager;
+import com.walrusone.skywarsreloaded.matchevents.AnvilRainEvent;
+import com.walrusone.skywarsreloaded.matchevents.ArrowRainEvent;
+import com.walrusone.skywarsreloaded.matchevents.ChestRefillEvent;
+import com.walrusone.skywarsreloaded.matchevents.CrateDropEvent;
+import com.walrusone.skywarsreloaded.matchevents.DeathMatchEvent;
+import com.walrusone.skywarsreloaded.matchevents.DisableRegenEvent;
+import com.walrusone.skywarsreloaded.matchevents.EnderDragonEvent;
+import com.walrusone.skywarsreloaded.matchevents.HealthDecayEvent;
+import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
+import com.walrusone.skywarsreloaded.matchevents.MobSpawnEvent;
+import com.walrusone.skywarsreloaded.matchevents.WitherEvent;
 import com.walrusone.skywarsreloaded.menus.ArenaMenu;
 import com.walrusone.skywarsreloaded.menus.ArenasMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.ChestOption;
@@ -70,6 +81,7 @@ public class GameMap {
 	}
 	private static ArrayList<GameMap> arenas;
 
+	private ArrayList<Crate> crates = new ArrayList<Crate>();
 	private boolean forceStart;
 	private boolean allowFallDamage;
 	private boolean allowRegen;
@@ -83,7 +95,6 @@ public class GameMap {
     private ArrayList<UUID> spectators = new ArrayList<UUID>();
     private String name;
     private int timer;
-    private int displayTimer = 0;
     private int restartTimer = -1;
     private int minPlayers;
     private GameKit kit;
@@ -99,7 +110,6 @@ public class GameMap {
     private WeatherOption weatherOption;
     private ModifierOption modifierOption;
 	private ArrayList<CoordLoc> chests;
-	private int mapUseCount;
 	private String displayName;
 	private String designedBy;
 	private ArrayList<SWRSign> signs;
@@ -110,19 +120,23 @@ public class GameMap {
 	private GameQueue joinQueue;
 	private boolean inEditing = false;
 	private CoordLoc spectateSpawn;
+	private ArrayList<CoordLoc> deathMatchSpawns;
 	private boolean legacy = false;
+	private ArrayList<MatchEvent> events = new ArrayList<MatchEvent>();
+	private ArrayList<String> deathMatchWaiters = new ArrayList<String>();
+	private ArrayList<String> anvils = new ArrayList<String>();
 		
     public GameMap(final String name) {
     	this.name = name;
     	this.matchState = MatchState.OFFLINE;
     	playerCards = new ArrayList<PlayerCard>();
+    	deathMatchSpawns = new ArrayList<CoordLoc>();
     	signs = new ArrayList<SWRSign>();
     	chests = new ArrayList<CoordLoc>();
     	loadArenaData();
         this.thunder = false;
         allowRegen = true;
         timer = SkyWarsReloaded.getCfg().getWaitTimer();
-        mapUseCount = 0;
         joinQueue = new GameQueue(this);
         arenakey = name + "menu";
         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -141,11 +155,34 @@ public class GameMap {
       			saveArenaData();
              }
         }
+        loadEvents();
         if (registered) {
         	registerMap();
         }
         new ArenaMenu(arenakey, this);
     }
+
+	private void loadEvents() {
+		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+        File mapDataDirectory = new File(dataDirectory, "mapsData");
+
+        if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
+        	return;
+        }
+
+        File mapFile = new File(mapDataDirectory, name + ".yml");
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
+       	events.add(new DisableRegenEvent(this, fc.getBoolean("events.DisableRegenEvent.enabled")));
+       	events.add(new HealthDecayEvent(this, fc.getBoolean("events.HealthDecayEvent.enabled")));
+       	events.add(new EnderDragonEvent(this, fc.getBoolean("events.EnderDragonEvent.enabled")));
+       	events.add(new WitherEvent(this, fc.getBoolean("events.WitherEvent.enabled")));
+       	events.add(new MobSpawnEvent(this, fc.getBoolean("events.MobSpawnEvent.enabled")));
+        events.add(new ChestRefillEvent(this, fc.getBoolean("events.ChestRefillEvent.enabled")));
+       	events.add(new DeathMatchEvent(this, fc.getBoolean("events.DeathMatchEvent.enabled")));
+       	events.add(new ArrowRainEvent(this, fc.getBoolean("events.ArrowRainEvent.enabled")));
+        events.add(new AnvilRainEvent(this, fc.getBoolean("events.AnvilRainEvent.enabled")));
+       	events.add(new CrateDropEvent(this, fc.getBoolean("events.CrateDropEvent.enabled")));
+	}
 
 	public void update() {
 		updateArenasManager();
@@ -367,6 +404,7 @@ public class GameMap {
 	    	            fc.set("signs", signs);
 	    	            fc.set("registered", registered);
 	    	            fc.set("spectateSpawn", "0:95:0");
+	    	            fc.set("deathMatchSpawns", null);
 	    	            fc.set("legacy", true);
 	    	            try {
 							fc.save(newMapFile);
@@ -407,6 +445,12 @@ public class GameMap {
         }
         fc.set("spawns", spawns);
         
+        List<String> dSpawns = new ArrayList<String>();
+        for (CoordLoc loc: deathMatchSpawns) {
+        	dSpawns.add(loc.getLocation());
+        }
+        fc.set("deathMatchSpawns", dSpawns);
+        
         List<String> stringSigns = new ArrayList<String>();
    	 	for (SWRSign s: signs) {
    	 		stringSigns.add(Util.get().locationToString(s.getLocation()));
@@ -446,6 +490,7 @@ public class GameMap {
         legacy = fc.getBoolean("legacy");
         
         List<String> spawns = fc.getStringList("spawns");
+        List<String> dSpawns = fc.getStringList("deathMatchSpawns");
         List<String> stringSigns = fc.getStringList("signs");
         List<String> stringChests = fc.getStringList("chests");
        
@@ -457,6 +502,10 @@ public class GameMap {
         	def = playerCards.size()/2;
         }
         minPlayers = fc.getInt("minplayers", def);
+        
+        for (String dSpawn: dSpawns) {
+        	deathMatchSpawns.add(Util.get().getCoordLocFromString(dSpawn));
+        }
         
    	 	for (String s: stringSigns) {
    	 		signs.add(new SWRSign(name, Util.get().stringToLocation(s)));
@@ -523,7 +572,7 @@ public class GameMap {
                 MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false);
         	}
         }
-        SkyWarsReloaded.getWM().deleteWorld(this.getName() + "_" + this.getMapCount());
+        SkyWarsReloaded.getWM().deleteWorld(this.getName());
 	}
     
     public static boolean loadWorldForScanning(String name) {
@@ -590,7 +639,7 @@ public class GameMap {
 	   
 	public boolean loadMap() {
 			WorldManager wm = SkyWarsReloaded.getWM();
-			String mapName = name + "_" + mapUseCount;
+			String mapName = name;
 			boolean mapExists = false;
 	    	File dataDirectory = SkyWarsReloaded.get().getDataFolder();
 			File maps = new File (dataDirectory, "maps");
@@ -700,6 +749,9 @@ public class GameMap {
 					editWorld.getBlockAt(pCard.getSpawn().getX(), pCard.getSpawn().getY(), pCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
 				}
 			}
+			for (CoordLoc cl: gMap.getDeathMatchSpawns()) {
+					editWorld.getBlockAt(cl.getX(), cl.getY(), cl.getZ()).setType(Material.EMERALD_BLOCK);
+			}
 			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
 				public void run() {
 					player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
@@ -723,19 +775,21 @@ public class GameMap {
 		allowRegen = true;
         dead.clear();
         kit = null;
-        setDisplayTimer(0);
         restartTimer = -1;
         winner = "";
+        deathMatchWaiters.clear();
 		if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
 			kitVoteOption.restore();
+		}
+		for (MatchEvent event: events) {
+			event.reset();
 		}
 		healthOption.restore();
         chestOption.restore();
         timeOption.restore();
         weatherOption.restore();
         modifierOption.restore();
-        SkyWarsReloaded.getWM().deleteWorld(name + "_" + mapUseCount);
-        mapUseCount++;
+        SkyWarsReloaded.getWM().deleteWorld(name);
         this.loadMap();
         final GameMap gMap = this;
         if (SkyWarsReloaded.get().isEnabled()) {
@@ -814,7 +868,7 @@ public class GameMap {
             String sb = "";
             if (matchState.equals(MatchState.WAITINGSTART)) {
             	sb = "scoreboards.waitboard.line";
-            } else if (matchState.equals(MatchState.PLAYING) || matchState.equals(MatchState.SUDDENDEATH)) {
+            } else if (matchState.equals(MatchState.PLAYING)) {
             	sb = "scoreboards.playboard.line";
             } else if (matchState.equals(MatchState.ENDING)) {
             	sb = "scoreboards.endboard.line";
@@ -872,7 +926,7 @@ public class GameMap {
 	private String getScoreboardLine(String lineNum) {
 		return new Messaging.MessageFormatter()
 				.setVariable("mapname", displayName)
-				.setVariable("time", "" + Util.get().getFormattedTime(displayTimer))
+				.setVariable("time", "" + Util.get().getFormattedTime(timer))
 				.setVariable("players", "" + getAlivePlayers().size())
 				.setVariable("maxplayers", "" + playerCards.size())
 				.setVariable("winner", winner)
@@ -931,7 +985,7 @@ public class GameMap {
 		if (matchState == MatchState.WAITINGSTART) {			
 			if (pCard != null) {
 				World mapWorld;
-				mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName() + "_" + this.getMapCount());
+				mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName());
 	            int x = pCard.getSpawn().getX();
 	            int y = pCard.getSpawn().getY();
 	            int z = pCard.getSpawn().getZ();
@@ -995,7 +1049,7 @@ public class GameMap {
     
     public void removeSpawnHousing() {
     	World mapWorld;
-		mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName() + "_" + this.getMapCount());
+		mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName());
 		final GameMap gMap = this;
 		this.allowFallDamage = false;
         new BukkitRunnable() {
@@ -1102,10 +1156,6 @@ public class GameMap {
     
     public String getDesigner() {
     	return this.designedBy;
-    }
-    
-    public int getMapCount() {
-    	return mapUseCount;
     }
     
     public ArrayList<CoordLoc> getChests(){
@@ -1251,14 +1301,6 @@ public class GameMap {
 		return null;
 	}
 
-	public int getDisplayTimer() {
-		return displayTimer;
-	}
-
-	public void setDisplayTimer(int displayTimer) {
-		this.displayTimer = displayTimer;
-	}
-
 	public void setAllowRegen(boolean b) {
 		allowRegen = b;
 	}
@@ -1369,7 +1411,7 @@ public class GameMap {
 
 	public World getCurrentWorld() {
         World mapWorld;
-		mapWorld = SkyWarsReloaded.get().getServer().getWorld(name + "_" + mapUseCount);
+		mapWorld = SkyWarsReloaded.get().getServer().getWorld(name);
 		return mapWorld;
 	}
 
@@ -1402,7 +1444,22 @@ public class GameMap {
 		return false;
 	}
 	
-	public void addChest(Chest chest) {
+	public void addDeathMatchSpawn(Location loc) {
+		addDeathMatchSpawn(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		saveArenaData();
+	}
+	
+	public void addDeathMatchSpawn(CoordLoc loc) {
+		deathMatchSpawns.add(loc);
+	}
+	
+	public boolean removeDeathMatchSpawn(Location loc) {
+		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		boolean removed = deathMatchSpawns.remove(remove);
+		return removed;
+	}
+	
+	public boolean addChest(Chest chest) {
 		InventoryHolder ih = chest.getInventory().getHolder();
         if (ih instanceof DoubleChest) {
         	DoubleChest dc = (DoubleChest) ih;
@@ -1412,13 +1469,16 @@ public class GameMap {
 			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
 			if (!(chests.contains(locLeft) || chests.contains(locRight))) {
 				addChest(locLeft);
+				return true;
 			}
         } else {
         	CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
             if (!chests.contains(loc)){
       	  		addChest(loc);
+      	  		return true;
             }
-        }  
+        }
+        return false;
 	}
 	
 	public void addChest(CoordLoc loc) {
@@ -1480,5 +1540,56 @@ public class GameMap {
 			mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("error.map-not-in-edit"));
 		}
 		return false;
+	}
+
+	public ArrayList<MatchEvent> getEvents() {
+		return events;
+	}
+
+	public  ArrayList<CoordLoc> getDeathMatchSpawns() {
+		return deathMatchSpawns;
+	}
+
+	public void removeDMSpawnBlocks() {
+		for (CoordLoc loc: deathMatchSpawns) {
+			World world = getCurrentWorld();
+			Location loca = new Location(world, loc.getX(), loc.getY(), loc.getZ());
+			world.getBlockAt(loca).setType(Material.AIR);
+		}
+	}
+	
+	public ArrayList<String> getDeathMatchWaiters() {
+	   	return deathMatchWaiters;
+	}
+	    
+	public void addDeathMatchWaiter(Player player) {
+	  	if (player != null) {
+	       	deathMatchWaiters.add(player.getUniqueId().toString());
+	   	}
+	}
+	    
+	public void clearDeathMatchWaiters() {
+		deathMatchWaiters.clear();	
+	}
+
+	public ArrayList<String> getAnvils() {
+		return anvils;
+	}
+	
+	public void addCrate(Location loc, int max) {
+		crates.add(new Crate(loc, max));
+	}
+	
+	public void removeCrates() {
+		for (Crate crate: crates) {
+			if (crate.getLocation() != null) {
+				crate.getLocation().getWorld().getBlockAt(crate.getLocation()).setType(Material.AIR);
+			}
+		}
+		crates.clear();
+	}
+
+	public ArrayList<Crate> getCrates() {
+		return crates;
 	}
 }

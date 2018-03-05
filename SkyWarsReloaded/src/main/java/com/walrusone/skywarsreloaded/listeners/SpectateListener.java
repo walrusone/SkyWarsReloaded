@@ -54,7 +54,7 @@ public class SpectateListener implements Listener{
 			}
 			e.setCancelled(true);
 			if (e.getCause() == DamageCause.VOID) {
-				World world = SkyWarsReloaded.get().getServer().getWorld(gameMap.getName() + "_" + gameMap.getMapCount());
+				World world = gameMap.getCurrentWorld();
 				Location spectateSpawn = new Location(world, 0, 0, 0);
 				player.teleport(spectateSpawn);
 			}

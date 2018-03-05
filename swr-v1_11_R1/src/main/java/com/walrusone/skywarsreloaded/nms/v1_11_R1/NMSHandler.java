@@ -1,13 +1,21 @@
 package com.walrusone.skywarsreloaded.nms.v1_11_R1;
 
+import net.minecraft.server.v1_11_R1.DragonControllerPhase;
+import net.minecraft.server.v1_11_R1.EntityEnderDragon;
+import net.minecraft.server.v1_11_R1.EntityFallingBlock;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.EnumParticle;
 import net.minecraft.server.v1_11_R1.IChatBaseComponent;
 import net.minecraft.server.v1_11_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles;
 import net.minecraft.server.v1_11_R1.PlayerConnection;
+import net.minecraft.server.v1_11_R1.WorldServer;
 import net.minecraft.server.v1_11_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_11_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_11_R1.EntityCreature;
+import net.minecraft.server.v1_11_R1.EntityLiving;
+import net.minecraft.server.v1_11_R1.BlockPosition;
+import net.minecraft.server.v1_11_R1.TileEntityEnderChest;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +26,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,8 +34,13 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_11_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
@@ -156,5 +170,39 @@ public class NMSHandler implements NMS, Listener {
 	
 	public void setMaxHealth(Player player, int health) {
 		player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
+	}
+	
+	@Override
+	public void spawnDragon(World world, Location loc) {
+		WorldServer w = ((CraftWorld) world).getHandle();
+		EntityEnderDragon dragon = new EntityEnderDragon(w);
+		dragon.getDragonControllerManager().setControllerPhase(DragonControllerPhase.c);
+		dragon.setLocation(loc.getX(), loc.getY(), loc.getZ(), w.random.nextFloat() * 360.0F, 0.0F);
+		w.addEntity(dragon);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
+		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, mat, (byte) 0);
+		block.setDropItem(false);
+		EntityFallingBlock fb = ((CraftFallingBlock) block).getHandle();
+		fb.a(damage);
+		return block;
+	}
+	
+	@Override
+	public void playEnderChestAction(Block block, boolean open) {
+        Location location = block.getLocation();
+        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
+        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
+        TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
+        world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
+    }
+	
+	@Override
+	public void setEntityTarget(Entity ent, Player player) {
+		EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
+		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
 	}
 }

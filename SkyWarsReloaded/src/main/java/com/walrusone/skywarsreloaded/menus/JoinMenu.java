@@ -54,7 +54,7 @@ public class JoinMenu {
 			            if (gMap.getMatchState() != MatchState.OFFLINE) {
 			            	 if (gMap.getMatchState() == MatchState.WAITINGSTART) {
 						            loreList.add((new Messaging.MessageFormatter().format("signs.joinable").toUpperCase()));
-					            } else if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+					            } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
 					            	loreList.add((new Messaging.MessageFormatter().format("signs.playing").toUpperCase()));
 					            }  else if (gMap.getMatchState().equals(MatchState.ENDING)) {
 					            	loreList.add((new Messaging.MessageFormatter().format("signs.ending").toUpperCase()));
@@ -73,7 +73,7 @@ public class JoinMenu {
 					            double xy = ((double) (gMap.getAlivePlayers().size() / gMap.getMaxPlayers()));
 					            
 					            ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockwaiting"), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-					            if (gMap.getMatchState().equals(MatchState.PLAYING) || gMap.getMatchState().equals(MatchState.SUDDENDEATH)) {
+					            if (gMap.getMatchState().equals(MatchState.PLAYING)) {
 					           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockplaying"), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
 					            } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
 					           	 gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockending"), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));

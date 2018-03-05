@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -207,12 +206,6 @@ public abstract class GameOption {
 	public String getKey() {
 		return key;
 	}
-	
-    public World getWorld(GameMap gameMap) {
-        World mapWorld;
-		mapWorld = SkyWarsReloaded.get().getServer().getWorld(gameMap.getName() + "_" + gameMap.getMapCount());
-		return mapWorld;
-    }
 }
 
 

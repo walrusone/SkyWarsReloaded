@@ -27,7 +27,6 @@ game:
   vip4Multiplier: 5
   vip5Multiplier: 10
   timeAfterMatch: 15
-  gameTimer: 900
   waitTimer: 10
   kitVotingEnabled: false
   spectateEnabled: true
@@ -39,15 +38,14 @@ game:
     speed:
     strength:
     jump: 
-  suddendeath:
-    enabled: true
-    disableHealthRegen: true
-    enableHealthDecay: false
 parties:
   enabled: true
   maxPartySize: 4
 holograms: 
   enabled: false
+chests:
+  maxItemsChest: 26
+  maxItemsDoubleChest: 53 
 kit:
   menuSize: 45
   randPos: 0
