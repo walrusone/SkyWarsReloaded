@@ -1,21 +1,26 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>swr-api</artifactId>
-  <version>API</version>
-  <name>SWR API</name>
-  
-  <parent>
-    <groupId>com.walrusone.skywarsreloaded</groupId>
-    <artifactId>swr-parent</artifactId>
-    <version>parent</version>
-  </parent>
-  <dependencies>
-<dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.8.0-R0.1-SHAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/craftbukkit-1.8.jar</systemPath>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.walrusone.skywarsreloaded</groupId>
+        <artifactId>skywarsreloaded-nms</artifactId>
+        <version>3.3.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>skywarsreloaded-nms-interfaces</artifactId>
+
+    <name>SkyWarsReloaded NMS Interfaces</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot-api.version}</version>
+            <scope>provided</scope>
         </dependency>
-  </dependencies>
+    </dependencies>
+
 </project>
