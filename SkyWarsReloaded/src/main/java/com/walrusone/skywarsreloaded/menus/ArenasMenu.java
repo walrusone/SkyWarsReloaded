@@ -61,6 +61,7 @@ public class ArenasMenu {
 						lores.add(ChatColor.AQUA + "Minimum Players: " + ChatColor.GOLD + gMap.getMinPlayers());
 						lores.add(ChatColor.AQUA + "Current Players: " + ChatColor.GOLD + gMap.getAlivePlayers().size() + " of " + gMap.getMaxPlayers());
 						lores.add(ChatColor.AQUA + "Number of Join Signs: " + ChatColor.GOLD + gMap.getSigns().size());
+						lores.add(ChatColor.AQUA + "Cage Type: " + ChatColor.GOLD + gMap.getCage().getType().toString());
 						invs.get(index).setItem(i % menuSize, SkyWarsReloaded.getNMS().getItemStack(item, lores, ChatColor.DARK_PURPLE + gMap.getName()));
 						i++;
 					}

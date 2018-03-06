@@ -22,6 +22,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.SWRSign;
+import com.walrusone.skywarsreloaded.game.cages.CageType;
 import com.walrusone.skywarsreloaded.listeners.ChatListener;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -119,6 +120,16 @@ public class ArenaMenu {
 						ItemStack save = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.BOOK, 1), lores, "Save Map");
 						
 						lores.clear();
+						lores.add(ChatColor.GOLD + gMap.getCage().getType().toString());
+						if (gMap.isRegistered()) {
+							lores.add(ChatColor.RED + "Cage Type cannot be");
+							lores.add(ChatColor.RED + "Changed while registered!");
+						} else {
+							lores.add(ChatColor.AQUA + "Left Click to Change Cage Type!");
+						}
+						ItemStack cage = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.IRON_FENCE, 1), lores, "Cage Type");
+						
+						lores.clear();
 						lores.add(ChatColor.AQUA + "Left Click to view events!");
 						ItemStack events = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.JUKEBOX, 1), lores, "Events");
 						
@@ -131,6 +142,7 @@ public class ArenaMenu {
 						menu.setItem(12, end);
 						menu.setItem(14, edit);	
 						menu.setItem(16, save);	
+						menu.setItem(20, cage);	
 						menu.setItem(22, events);	
 				}
 			}   		
@@ -245,7 +257,12 @@ public class ArenaMenu {
 	       			} else if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 16) {
 	       				player.closeInventory();
 	       				gMap.saveMap(player);
-	       			} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 22) {
+	       			} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 20) {
+	       				if (!gMap.isRegistered()) {
+	       					gMap.setCage(CageType.getNext(gMap.getCage().getType()));
+               				gMap.update();
+	       				}
+	       			}  else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 22) {
 	       				new EventsMenu(player, gMap);
 	       			}
 	       		

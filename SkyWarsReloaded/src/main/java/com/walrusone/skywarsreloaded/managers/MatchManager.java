@@ -103,6 +103,7 @@ public class MatchManager
         if (gameMap == null) {
             return;
         }
+        gameMap.removeSpawnBlocks();
     	gameMap.removeDMSpawnBlocks();
         this.setWaitTime(SkyWarsReloaded.getCfg().getWaitTimer());
         this.setGameTime(0);
@@ -309,7 +310,7 @@ public class MatchManager
         gameMap.getModifierOption().completeOption();
         gameMap.getHealthOption().completeOption();
 		selectKit(gameMap);
-    	gameMap.removeSpawnHousing();
+    	gameMap.getCage().removeSpawnHousing(gameMap);
     }
     
     private void selectKit(GameMap gameMap) {

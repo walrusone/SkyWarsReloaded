@@ -2,6 +2,7 @@ displayName:
 minplayers:
 creator:
 registered:
+cage: standard
 events:
   DisableRegenEvent:
     enabled: false

@@ -37,10 +37,16 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.TimeOption;
 import com.walrusone.skywarsreloaded.menus.gameoptions.WeatherOption;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
-import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.cages.Cage;
+import com.walrusone.skywarsreloaded.game.cages.CageType;
+import com.walrusone.skywarsreloaded.game.cages.CubeCage;
+import com.walrusone.skywarsreloaded.game.cages.DomeCage;
+import com.walrusone.skywarsreloaded.game.cages.PyramidCage;
+import com.walrusone.skywarsreloaded.game.cages.SphereCage;
+import com.walrusone.skywarsreloaded.game.cages.StandardCage;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -98,6 +104,7 @@ public class GameMap {
     private int restartTimer = -1;
     private int minPlayers;
     private GameKit kit;
+    private Cage cage;
     private String currentTime;
     private String currentHealth;
     private String currentChest;
@@ -211,7 +218,7 @@ public class GameMap {
     			pCard.setPreElo(PlayerStat.getPlayerStats(player.getUniqueId()).getElo());
    			
     			PlayerStat pStat = PlayerStat.getPlayerStats(player);
-    	        boolean glassReader = this.setGlassColor(pCard, pStat.getGlassColor());
+    	        boolean glassReader = cage.setGlassColor(this, pCard, pStat.getGlassColor());
     	        if (glassReader) {
     	        	joinQueue.add(pCard);
         			if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -438,6 +445,7 @@ public class GameMap {
         fc.set("creator", designedBy);
         fc.set("registered", registered);
         fc.set("spectateSpawn", spectateSpawn.getLocation());
+        fc.set("cage", cage.getType().toString().toLowerCase());
        
         List<String> spawns = new ArrayList<String>();
         for (PlayerCard pCard: playerCards) {
@@ -488,6 +496,10 @@ public class GameMap {
         registered = fc.getBoolean("registered", false);
         spectateSpawn = Util.get().getCoordLocFromString(fc.getString("spectateSpawn", "0:95:0"));
         legacy = fc.getBoolean("legacy");
+     
+        String cage = fc.getString("cage");
+        CageType ct = CageType.matchType(cage.toUpperCase());
+        setCage(ct);		
         
         List<String> spawns = fc.getStringList("spawns");
         List<String> dSpawns = fc.getStringList("deathMatchSpawns");
@@ -673,7 +685,7 @@ public class GameMap {
 		        world.setGameRuleValue("mobGriefing", "false");
 		        world.setGameRuleValue("doFireTick", "false");
 		        world.setGameRuleValue("showDeathMessages", "false");
-		        createSpawnPlatforms(world);
+		        cage.createSpawnPlatforms(this);
 			}
 			return loaded;
 	}
@@ -952,135 +964,6 @@ public class GameMap {
 	public Scoreboard getScoreboard() {
 		return scoreboard;
 	}
-
-	
-	
-	/*Glass Color Handling Methods*/
-	
-	public void createSpawnPlatforms(World world) {
-    	for(PlayerCard pCard: playerCards) {
-            int x = pCard.getSpawn().getX();
-            int y = pCard.getSpawn().getY();
-            int z = pCard.getSpawn().getZ();
-
-            world.getBlockAt(x, y, z).setType(Material.GLASS);
-            world.getBlockAt(x, y + 1, z + 1).setType(Material.GLASS);
-            world.getBlockAt(x, y + 1, z - 1).setType(Material.GLASS);
-            world.getBlockAt(x + 1, y + 1, z).setType(Material.GLASS);
-            world.getBlockAt(x - 1, y + 1, z).setType(Material.GLASS);
-            world.getBlockAt(x, y + 2, z + 1).setType(Material.GLASS);
-            world.getBlockAt(x, y + 2, z - 1).setType(Material.GLASS);
-            world.getBlockAt(x + 1, y + 2, z).setType(Material.GLASS);
-            world.getBlockAt(x - 1, y + 2, z).setType(Material.GLASS);
-            world.getBlockAt(x, y + 3, z + 1).setType(Material.GLASS);
-            world.getBlockAt(x, y + 3, z - 1).setType(Material.GLASS);
-            world.getBlockAt(x + 1, y + 3, z).setType(Material.GLASS);
-            world.getBlockAt(x - 1, y + 3, z).setType(Material.GLASS);
-            world.getBlockAt(x, y + 4, z).setType(Material.GLASS);
-    	}
-    }
-	
-	@SuppressWarnings("deprecation")
-	public boolean setGlassColor(PlayerCard pCard, String color) {
-		if (matchState == MatchState.WAITINGSTART) {			
-			if (pCard != null) {
-				World mapWorld;
-				mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName());
-	            int x = pCard.getSpawn().getX();
-	            int y = pCard.getSpawn().getY();
-	            int z = pCard.getSpawn().getZ();
-	            
-				byte cByte = Util.get().getByteFromColor(color.toLowerCase());
-				if (cByte <= -1) {
-					Material material = Material.GLASS;
-					GlassColorOption gColor = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(color.toLowerCase());
-					if (gColor != null) {
-						material = gColor.getItem().getType();
-					}
-					 mapWorld.getBlockAt(x, y, z).setType(material);
-					 mapWorld.getBlockAt(x, y + 1, z + 1).setType(material);
-			         mapWorld.getBlockAt(x, y + 1, z - 1).setType(material);
-			         mapWorld.getBlockAt(x + 1, y + 1, z).setType(material);
-			         mapWorld.getBlockAt(x - 1, y + 1, z).setType(material);
-			         mapWorld.getBlockAt(x, y + 2, z + 1).setType(material);
-			         mapWorld.getBlockAt(x, y + 2, z - 1).setType(material);
-			         mapWorld.getBlockAt(x + 1, y + 2, z).setType(material);
-			         mapWorld.getBlockAt(x - 1, y + 2, z).setType(material);
-			         mapWorld.getBlockAt(x, y + 3, z + 1).setType(material);
-			         mapWorld.getBlockAt(x, y + 3, z - 1).setType(material);
-			         mapWorld.getBlockAt(x + 1, y + 3, z).setType(material);
-			         mapWorld.getBlockAt(x - 1, y + 3, z).setType(material);
-			         mapWorld.getBlockAt(x, y + 4, z).setType(material);
-				} else {
-		            mapWorld.getBlockAt(x, y, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y, z).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 1, z + 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 1, z + 1).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 1, z - 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 1, z - 1).setData(cByte);
-		            mapWorld.getBlockAt(x + 1, y + 1, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x + 1, y + 1, z).setData(cByte);
-		            mapWorld.getBlockAt(x - 1, y + 1, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x - 1, y + 1, z).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 2, z + 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 2, z + 1).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 2, z - 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 2, z - 1).setData(cByte);
-		            mapWorld.getBlockAt(x + 1, y + 2, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x + 1, y + 2, z).setData(cByte);
-		            mapWorld.getBlockAt(x - 1, y + 2, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x - 1, y + 2, z).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 3, z + 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 3, z + 1).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 3, z - 1).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 3, z - 1).setData(cByte);
-		            mapWorld.getBlockAt(x + 1, y + 3, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x + 1, y + 3, z).setData(cByte);
-		            mapWorld.getBlockAt(x - 1, y + 3, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x - 1, y + 3, z).setData(cByte);
-		            mapWorld.getBlockAt(x, y + 4, z).setType(Material.STAINED_GLASS);
-		            mapWorld.getBlockAt(x, y + 4, z).setData(cByte);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-    
-    public void removeSpawnHousing() {
-    	World mapWorld;
-		mapWorld = SkyWarsReloaded.get().getServer().getWorld(this.getName());
-		final GameMap gMap = this;
-		this.allowFallDamage = false;
-        new BukkitRunnable() {
-			@Override
-			public void run() {
-				gMap.allowFallDamage = SkyWarsReloaded.getCfg().allowFallDamage();
-			}
-        }.runTaskLater(SkyWarsReloaded.get(), 100L);
-    	for(PlayerCard pCard: playerCards) {
-            int x = pCard.getSpawn().getX();
-            int y = pCard.getSpawn().getY();
-            int z = pCard.getSpawn().getZ();
-            
-            mapWorld.getBlockAt(x, y, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 1, z + 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 1, z - 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x + 1, y + 1, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x - 1, y + 1, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 2, z + 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 2, z - 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x + 1, y + 2, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x - 1, y + 2, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 3, z + 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 3, z - 1).setType(Material.AIR);
-            mapWorld.getBlockAt(x + 1, y + 3, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x - 1, y + 3, z).setType(Material.AIR);
-            mapWorld.getBlockAt(x, y + 4, z).setType(Material.AIR);
-    	}
-    }
-	
-    
     
 	/*Bungeemode Methods*/
 	
@@ -1558,6 +1441,15 @@ public class GameMap {
 		}
 	}
 	
+	public void removeSpawnBlocks() {
+		for (PlayerCard pCard: getPlayerCards()) {
+			World world = getCurrentWorld();
+			CoordLoc loc = pCard.getSpawn();
+			Location loca = new Location(world, loc.getX(), loc.getY(), loc.getZ());
+			world.getBlockAt(loca).setType(Material.AIR);
+		}
+	}
+	
 	public ArrayList<String> getDeathMatchWaiters() {
 	   	return deathMatchWaiters;
 	}
@@ -1591,5 +1483,26 @@ public class GameMap {
 
 	public ArrayList<Crate> getCrates() {
 		return crates;
+	}
+
+	public Cage getCage() {
+		return cage;
+	}
+
+	public void setCage(CageType next) {
+        switch(next) {
+        case CUBE: this.cage = new CubeCage();
+        break;
+        case DOME: this.cage = new DomeCage();
+		break;
+        case PYRAMID: this.cage = new PyramidCage();
+		break;
+        case SPHERE: this.cage = new SphereCage();
+		break;
+        case STANDARD: this.cage = new StandardCage();
+		break;
+		default: this.cage = new StandardCage();
+        }
+        saveArenaData();
 	}
 }
