@@ -275,7 +275,7 @@ public class PlayerInteractListener implements Listener {
     					}
     					e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
     				} else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-    					boolean result = map.removePlayerCard(e.getBlock().getLocation());
+    					boolean result = map.removeTeamCard(e.getBlock().getLocation());
     					if (result) {
     						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getMaxPlayers() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.spawnRemoved"));	
     					}
@@ -294,7 +294,7 @@ public class PlayerInteractListener implements Listener {
     			new BukkitRunnable() {
 					@Override
 					public void run() {
-						CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getSpawn();
+						CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getTeamCard().getSpawn();
 		    			e.getPlayer().teleport(new Location(gMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
 					}
     			}.runTaskLater(SkyWarsReloaded.get(), 2);

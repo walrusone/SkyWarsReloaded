@@ -3,6 +3,7 @@ minplayers:
 creator:
 registered:
 cage: standard
+teamSize: 1
 events:
   DisableRegenEvent:
     enabled: false

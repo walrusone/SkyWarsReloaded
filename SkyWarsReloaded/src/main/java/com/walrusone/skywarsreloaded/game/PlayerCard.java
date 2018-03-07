@@ -6,16 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 
 public class PlayerCard {
 	
-	private CoordLoc spawn;
 	private UUID uuid;
+	private TeamCard tCard;
 	private int preElo;
-	private GameMap gMap;
-	private int place;
 	private int postElo;
 	private int eloChange;
 	
@@ -26,12 +23,10 @@ public class PlayerCard {
 	private Vote modifier;
 	private Vote health;
 
-	public PlayerCard(CoordLoc spawn, UUID uuid, int BeginningElo, GameMap gameMap) {
-		this.spawn = spawn;
+	public PlayerCard(TeamCard tCard, UUID uuid, int BeginningElo) {
 		this.uuid = uuid;
 		this.preElo = BeginningElo;
-		this.gMap = gameMap;
-		this.place = 1;
+		this.tCard = tCard;
 		this.kitVote = null;
 		this.gameTime = null;
 		this.weather = null;
@@ -42,7 +37,6 @@ public class PlayerCard {
 	
 	public void reset() {
 		this.preElo = -1;
-		this.place = 1;
 		this.postElo = 0;
 		this.eloChange = 0;
 		this.kitVote = null;
@@ -71,10 +65,6 @@ public class PlayerCard {
 	
 	public int getPreElo() {
 		return this.preElo;
-	}
-	
-	public CoordLoc getSpawn() {
-		return this.spawn;
 	}
 	
 	public void setKitVote(GameKit kitVote) {
@@ -119,15 +109,7 @@ public class PlayerCard {
 	public void setModifier(Vote modifier) {
 		this.modifier = modifier;
 	}
-	
-	public int getPlace() {
-		return this.place;
-	}
-	
-	public void setPlace(int x) {
-		this.place = x;
-	}
-	
+		
 	public int getPostElo() {
 		return this.postElo;
 	}
@@ -137,16 +119,17 @@ public class PlayerCard {
 	}
 	
 	public void calculateELO() {
-	        int n = gMap.getPlayerCount();
+	        int n = tCard.getGameMap().getPlayerCount();
 	        float K = 32 / (float)(n - 1);
 	        
-	            int curPlace = place;
+	            int curPlace = tCard.getPlace();
 	            int curELO   = preElo;
 	            
-	            for (PlayerCard pCard: gMap.getPlayerCards()) {
-	                if (pCard.getUUID() != null && !pCard.getUUID().equals(uuid)) {
-	                    int opponentPlace = pCard.getPlace();
-	                    int opponentELO   = pCard.getPreElo();
+	            for (TeamCard tCard: tCard.getGameMap().getTeamCards()) {
+	            	PlayerCard opponent = tCard.getPlayers().get(0);
+	                if (opponent.getUUID() != null && !opponent.getUUID().equals(uuid)) {
+	                    int opponentPlace = opponent.tCard.getPlace();
+	                    int opponentELO   = opponent.getPreElo();
 	                    
 	                    float S;
 	                    if (curPlace < opponentPlace)
@@ -167,5 +150,9 @@ public class PlayerCard {
 
 	public UUID getUUID() {
 		return uuid;
+	}
+	
+	public TeamCard getTeamCard() {
+		return tCard;
 	}
 }

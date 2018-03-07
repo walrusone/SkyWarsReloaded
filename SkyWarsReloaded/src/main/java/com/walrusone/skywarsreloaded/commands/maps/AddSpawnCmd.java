@@ -30,7 +30,7 @@ public class AddSpawnCmd extends BaseCmd {
 				return true;
 			}
 			if (type.equalsIgnoreCase("player") || type.equalsIgnoreCase("p")) {
-				gMap.addPlayerCard(player.getLocation());
+				gMap.addTeamCard(player.getLocation());
 				player.getLocation().getBlock().setType(Material.DIAMOND_BLOCK);
 				player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getMaxPlayers()).setVariable("mapname", gMap.getDisplayName()).format("maps.addSpawn"));
 			} else if (type.equalsIgnoreCase("spec") || type.equalsIgnoreCase("s")) {

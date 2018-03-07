@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.PlayerCard;
+import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -21,10 +21,10 @@ public abstract class Cage {
 	
 	public void createSpawnPlatforms(GameMap gMap) {
 		World world = gMap.getCurrentWorld();
-		for(PlayerCard pCard: gMap.getPlayerCards()) {
-            int x = pCard.getSpawn().getX();
-            int y = pCard.getSpawn().getY();
-            int z = pCard.getSpawn().getZ();
+		for(TeamCard tCard: gMap.getTeamCards()) {
+            int x = tCard.getSpawn().getX();
+            int y = tCard.getSpawn().getY();
+            int z = tCard.getSpawn().getZ();
             for (CoordLoc loc: coordOffsets) {
             	 world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.GLASS);
             }
@@ -32,7 +32,7 @@ public abstract class Cage {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public boolean setGlassColor(GameMap gMap, PlayerCard pCard, String color) {
+	public boolean setGlassColor(GameMap gMap, TeamCard pCard, String color) {
 		if (gMap.getMatchState() == MatchState.WAITINGSTART) {			
 			if (pCard != null) {
 				World world = gMap.getCurrentWorld();
@@ -76,10 +76,10 @@ public abstract class Cage {
 				gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
 			}
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
-    	for(PlayerCard pCard: gMap.getPlayerCards()) {
-            int x = pCard.getSpawn().getX();
-            int y = pCard.getSpawn().getY();
-            int z = pCard.getSpawn().getZ();
+    	for(TeamCard tCard: gMap.getTeamCards()) {
+            int x = tCard.getSpawn().getX();
+            int y = tCard.getSpawn().getY();
+            int z = tCard.getSpawn().getZ();
             for (CoordLoc loc: coordOffsets) {
             	world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
             } 

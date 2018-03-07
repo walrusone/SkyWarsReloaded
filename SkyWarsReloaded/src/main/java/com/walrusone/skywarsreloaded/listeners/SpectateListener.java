@@ -93,7 +93,7 @@ public class SpectateListener implements Listener{
 				String name = ChatColor.stripColor(item.getItemMeta().getDisplayName());
 				Player toSpec = SkyWarsReloaded.get().getServer().getPlayer(name);
 	            if (toSpec != null) {
-    				if (!gameMap.getDead().contains(toSpec.getUniqueId())) {
+    				if (!gameMap.mapContainsDead(toSpec.getUniqueId())) {
     					player.teleport(toSpec.getLocation(), TeleportCause.END_PORTAL);
     				}
 	            }

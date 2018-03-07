@@ -73,7 +73,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -96,8 +98,9 @@ public class GameMap {
     private int strikeCounter;
     private int nextStrike;
     private MatchState matchState;
-    private ArrayList<PlayerCard> playerCards;
-    private ArrayList<UUID> dead = new ArrayList<UUID>();
+    private ArrayList<TeamCard> teamCards;
+    private int teamSize;
+
     private ArrayList<UUID> spectators = new ArrayList<UUID>();
     private String name;
     private int timer;
@@ -136,7 +139,7 @@ public class GameMap {
     public GameMap(final String name) {
     	this.name = name;
     	this.matchState = MatchState.OFFLINE;
-    	playerCards = new ArrayList<PlayerCard>();
+    	teamCards = new ArrayList<TeamCard>();
     	deathMatchSpawns = new ArrayList<CoordLoc>();
     	signs = new ArrayList<SWRSign>();
     	chests = new ArrayList<CoordLoc>();
@@ -210,119 +213,167 @@ public class GameMap {
 		if (Util.get().isBusy(player.getUniqueId())) {
 			return false;
 		}
-		
-		Collections.shuffle(playerCards);
-		for (PlayerCard pCard: playerCards) {
-			if (pCard.getPlayer() == null && pCard.getSpawn() != null) {
-    			pCard.setPlayer(player);
-    			pCard.setPreElo(PlayerStat.getPlayerStats(player.getUniqueId()).getElo());
-   			
-    			PlayerStat pStat = PlayerStat.getPlayerStats(player);
-    	        boolean glassReader = cage.setGlassColor(this, pCard, pStat.getGlassColor());
-    	        if (glassReader) {
-    	        	joinQueue.add(pCard);
-        			if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-        				kitVoteOption.updateKitVotes();
-        			}
-        	        timer = SkyWarsReloaded.getCfg().getWaitTimer();
-        	        this.update();
-        			return true;
-    	        }
-    		}  		
+		boolean result = false;
+		PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+		Collections.shuffle(teamCards);
+		TeamCard reserved = null;
+		for (TeamCard tCard: teamCards) {
+			if (tCard.getFullCount() > 0) {
+				reserved = tCard.sendReservation(player, ps);
+				break;
+			}
+		}
+		if (reserved != null) {
+			result = reserved.joinGame(player);
 		}
     	this.update();
-    	updateScoreboard();
-    	return false;
+    	return result;
     }
 	
 	public boolean addPlayers(final Party party) {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (UUID uuid: party.getMembers()) {
-			Player player = Bukkit.getPlayer(uuid);
-			if (Util.get().isBusy(uuid)) {
-				party.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.memberbusy"));
-			} else {
-				PlayerStat ps = PlayerStat.getPlayerStats(uuid);
-				Collections.shuffle(playerCards);
-				for (PlayerCard pCard: playerCards) {
-		    		if (pCard.getPlayer() == null && pCard.getSpawn() != null) {
-		    			pCard.setPlayer(player);
-		    			pCard.setPreElo(ps.getElo());
-		    			players.add(player);
-		    			break;
-		    		}
+		TeamCard team = null;
+		Map<TeamCard, ArrayList<Player>> players = new HashMap<TeamCard, ArrayList<Player>>();
+		if (teamSize == 1) {
+			for (UUID uuid: party.getMembers()) {
+				Player player = Bukkit.getPlayer(uuid);
+				if (Util.get().isBusy(uuid)) {
+					party.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.memberbusy"));
+				} else {
+					PlayerStat ps = PlayerStat.getPlayerStats(uuid);
+					Collections.shuffle(teamCards);
+					
+					if (teamSize == 1) {
+						for (TeamCard tCard: teamCards) {
+							if (tCard.getFullCount() > 0) {
+								TeamCard reserve = tCard.sendReservation(player, ps);
+								this.update();
+								if (reserve != null) {
+									if (players.get(reserve) == null) {
+										players.put(reserve, new ArrayList<Player>());
+									}
+									players.get(reserve).add(player);
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			for (TeamCard tCard: teamCards) {
+				if (tCard.getFullCount() > party.getSize()) {
+					for (int i = 0; i < party.getSize(); i++) {
+						Player player = Bukkit.getPlayer(party.getMembers().get(i));
+						PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+						TeamCard reserve = tCard.sendReservation(player, ps);
+						if (reserve != null) {
+							if (players.get(reserve) == null) {
+								players.put(reserve, new ArrayList<Player>());
+							}
+							players.get(reserve).add(player);
+						}
+						team = reserve;
+					}
+					this.update();
 				}
 			}
 		}
-		
-		if (players.size() == party.getSize()) {
-			for (Player player: players) {
-				PlayerCard pCard = this.getPlayerCard(player);
-				joinQueue.add(pCard);
-				if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-			        kitVoteOption.updateKitVotes();
-				}
-		        timer = SkyWarsReloaded.getCfg().getWaitTimer();
-		        this.update();
+
+		boolean result = false;
+		if (teamSize == 1 && players.size() == party.getSize()) {
+			for (TeamCard tCard: players.keySet()) {
+				result = tCard.joinGame(players.get(tCard).get(0));
 			}
-			return true;
+			this.update();
+			return result;
+		} else if (teamSize > 1 && team != null && players.get(team).size() == party.getSize()) {
+			for (int i = 0; i < players.get(team).size(); i++) {
+				result = team.joinGame(players.get(team).get(i));
+			}
+			this.update();
+			return result;
 		} else {
-			for (Player player: players) {
-				PlayerCard pCard = this.getPlayerCard(player);
-				pCard.reset();
+			for (ArrayList<Player> play: players.values()) {
+				for (Player player: play) {
+					PlayerCard pCard = this.getPlayerCard(player);
+					pCard.reset();
+				}
 			}
 		}
     	this.update();
-    	updateScoreboard();
     	return false;
 	}
 
 	public boolean removePlayer(final UUID uuid) {
-		for (PlayerCard pCard: playerCards) {
-    		if (uuid != null) {
-    			if (pCard.getUUID() != null) {
-    				if(pCard.getUUID().equals(uuid)) {
-            			pCard.reset();
-            			this.update();
-            			return true;
-            		}
-    			}
-    		}
-    	}
+		boolean result = false;
+		for (TeamCard tCard: teamCards) {
+			result = tCard.removePlayer(uuid);
+		}
     	this.update();
-    	return false;
+    	return result;
     }
  
     public ArrayList<Player> getAlivePlayers() {
     	ArrayList<Player> alivePlayers = new ArrayList<Player>();
-    	for (PlayerCard pCard: playerCards) {
-    		if (pCard.getPlayer() != null) {
-        		if (!this.getDead().contains(pCard.getPlayer().getUniqueId())) {
-            		alivePlayers.add(pCard.getPlayer());
+    	for (TeamCard tCard: teamCards) {
+    		for (PlayerCard pCard: tCard.getPlayers()) {
+        		if (pCard.getPlayer() != null) {
+            		if (!mapContainsDead(pCard.getPlayer().getUniqueId())) {
+                		alivePlayers.add(pCard.getPlayer());
+            		}
         		}
-    		}
+        	}
     	}
     	return alivePlayers;
     }
     
+    public boolean mapContainsDead(UUID uuid) {
+    	for(TeamCard tCard: teamCards) {
+    		if (tCard.getDead().contains(uuid)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public ArrayList<Player> getAllPlayers() {
     	ArrayList<Player> allPlayers = new ArrayList<Player>();
-    	for (PlayerCard pCard: playerCards) {
-    		if (pCard.getPlayer() != null) {
-            	allPlayers.add(pCard.getPlayer());
-    		}
+    	for (TeamCard tCard: teamCards) {
+    		for (PlayerCard pCard: tCard.getPlayers()) {
+        		if (pCard.getPlayer() != null) {
+                	allPlayers.add(pCard.getPlayer());
+        		}
+        	}
     	}
     	return allPlayers;
     }
     
     public boolean canAddPlayer() {
-    	int playerCount = getPlayerCount();
-        return (this.matchState == MatchState.WAITINGSTART && playerCount < playerCards.size() && this.registered);
+    	if (!(this.matchState == MatchState.WAITINGSTART && this.registered)) {
+    		return false;
+    	}
+    	for (TeamCard tCard: teamCards) {
+    		if (tCard.getFullCount() > 0) {
+    			return true;
+    		}
+    	}
+        return false;
     }
     
     public boolean canAddParty(Party party) {
-    	int playerCount = getPlayerCount();
-    	return (this.matchState == MatchState.WAITINGSTART && playerCount + party.getSize()-1 < playerCards.size() && this.registered);
+    	if (!(this.matchState == MatchState.WAITINGSTART && this.registered)) {
+    		return false;
+    	}
+    	if (teamSize == 1) {
+    		int playerCount = getPlayerCount();
+    		return playerCount + party.getSize()-1 < teamCards.size();
+    	} else {
+    		for (TeamCard tCard: teamCards) {
+        		if (tCard.getFullCount() > party.getSize()) {
+        			return true;
+        		}
+        	}
+    	}
+    	return false;
     }
     
 	/*Map Handling Methods*/
@@ -446,10 +497,11 @@ public class GameMap {
         fc.set("registered", registered);
         fc.set("spectateSpawn", spectateSpawn.getLocation());
         fc.set("cage", cage.getType().toString().toLowerCase());
+        fc.set("teamSize", teamSize);
        
         List<String> spawns = new ArrayList<String>();
-        for (PlayerCard pCard: playerCards) {
-        	spawns.add(pCard.getSpawn().getLocation());
+        for (TeamCard tCard: teamCards) {
+        	spawns.add(tCard.getSpawn().getLocation());
         }
         fc.set("spawns", spawns);
         
@@ -496,6 +548,7 @@ public class GameMap {
         registered = fc.getBoolean("registered", false);
         spectateSpawn = Util.get().getCoordLocFromString(fc.getString("spectateSpawn", "0:95:0"));
         legacy = fc.getBoolean("legacy");
+        teamSize = fc.getInt("teamSize", 1);
      
         String cage = fc.getString("cage");
         CageType ct = CageType.matchType(cage.toUpperCase());
@@ -507,11 +560,11 @@ public class GameMap {
         List<String> stringChests = fc.getStringList("chests");
        
         for (String spawn: spawns) {
-        	addPlayerCard(Util.get().getCoordLocFromString(spawn));
+        	addTeamCard(Util.get().getCoordLocFromString(spawn));
         }
         int def = 2;
-        if (playerCards.size() > 4) {
-        	def = playerCards.size()/2;
+        if (teamCards.size() > 4) {
+        	def = teamCards.size()/2;
         }
         minPlayers = fc.getInt("minplayers", def);
         
@@ -554,7 +607,7 @@ public class GameMap {
 		if (inEditing) {
 			saveMap(null);
 		}
-    	if (playerCards.size() > 1) {
+    	if (teamCards.size() > 1) {
     		registered = true;
             refreshMap();
             SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
@@ -700,7 +753,7 @@ public class GameMap {
 		Block max = chunkWorld.getBlockAt(max1, 0, max1);
 		Chunk cMin = min.getChunk();
 		Chunk cMax = max.getChunk();
-		playerCards.clear();
+		teamCards.clear();
 		chests.clear();
 		
 		for(int cx = cMin.getX(); cx < cMax.getX(); cx++) {
@@ -715,7 +768,7 @@ public class GameMap {
 			                  if(!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK) 
 			                		  && !block.getType().equals(Material.DIAMOND_BLOCK)&& !block.getType().equals(Material.EMERALD_BLOCK)) {
 				                  Location loc = beacon.getLocation();
-				                  playerCards.add(new PlayerCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), null, -1, this));
+				                  teamCards.add(new TeamCard(teamSize, new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), this));
 			                  }
 			            } else if (te instanceof Chest) {
 				                  Chest chest = (Chest) te;
@@ -756,9 +809,9 @@ public class GameMap {
 		loaded = SkyWarsReloaded.getWM().loadWorld(worldName);
 		if (loaded) {
 			World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-			for (PlayerCard pCard: gMap.getPlayerCards()) {
-				if (pCard.getSpawn() != null) {
-					editWorld.getBlockAt(pCard.getSpawn().getX(), pCard.getSpawn().getY(), pCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
+			for (TeamCard tCard: gMap.getTeamCards()) {
+				if (tCard.getSpawn() != null) {
+					editWorld.getBlockAt(tCard.getSpawn().getX(), tCard.getSpawn().getY(), tCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
 				}
 			}
 			for (CoordLoc cl: gMap.getDeathMatchSpawns()) {
@@ -779,13 +832,12 @@ public class GameMap {
 
 	
 	public void refreshMap() {
-		for (PlayerCard pCard: playerCards) {
-			pCard.reset();
+		for (TeamCard tCard: teamCards) {
+			tCard.reset();
 		}
 		thunder = false;
 		forceStart = false;
 		allowRegen = true;
-        dead.clear();
         kit = null;
         restartTimer = -1;
         winner = "";
@@ -838,21 +890,25 @@ public class GameMap {
 	}
 	
 	public void setKitVote(Player player, GameKit kit2) {
-		for (PlayerCard pCard: playerCards) {
-			if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
-				pCard.setKitVote(kit2);
-				return;
+		for (TeamCard tCard: teamCards) {
+			for (PlayerCard pCard: tCard.getPlayers()) {
+				if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
+					pCard.setKitVote(kit2);
+					return;
+				}
 			}
 		}
 	}
    
     public GameKit getSelectedKit(Player player) {
-    	for (PlayerCard pCard: playerCards) {
-    		if (pCard != null) {
-    			if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
-    				return pCard.getKitVote();
-    			}
-    		}
+    	for (TeamCard tCard: teamCards) {
+        	for (PlayerCard pCard: tCard.getPlayers()) {
+        		if (pCard != null) {
+        			if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
+        				return pCard.getKitVote();
+        			}
+        		}
+        	}
     	}
     	return null;
     }
@@ -940,7 +996,7 @@ public class GameMap {
 				.setVariable("mapname", displayName)
 				.setVariable("time", "" + Util.get().getFormattedTime(timer))
 				.setVariable("players", "" + getAlivePlayers().size())
-				.setVariable("maxplayers", "" + playerCards.size())
+				.setVariable("maxplayers", "" + teamCards.size())
 				.setVariable("winner", winner)
 				.setVariable("restarttime", "" + restartTimer)
 				.setVariable("chestvote", ChatColor.stripColor(currentChest))
@@ -1046,7 +1102,7 @@ public class GameMap {
 	}
 	
 	public boolean containsSpawns() {
-		if (playerCards.size() >= 2) {
+		if (teamCards.size() >= 2) {
 			return true;
 		}
 		return false;
@@ -1062,17 +1118,19 @@ public class GameMap {
     
     public int getPlayerCount() {
     	int count = 0;
-		for (PlayerCard pCard: playerCards) {
-			if (pCard.getPreElo() != -1) {
-				count++;
-			}
-		}
+    	for (TeamCard tCard: teamCards) {
+    		for (PlayerCard pCard: tCard.getPlayers()) {
+    			if (pCard.getPreElo() != -1) {
+    				count++;
+    			}
+    		}
+    	}
 		return count;
     }
     
     public int getMinPlayers() {
     	if (minPlayers == 0) {
-    		return playerCards.size();
+    		return teamCards.size();
     	}
     	return minPlayers;
     }
@@ -1110,7 +1168,11 @@ public class GameMap {
 		return allowFallDamage;
 	}
 
-	public ArrayList<UUID> getDead() {
+	public ArrayList<UUID> getDea() {
+		ArrayList<UUID> dead = new ArrayList<UUID>();
+		for (TeamCard tCard: teamCards) {
+			dead.addAll(tCard.getDead());
+		}
 		return dead;
 	}
 
@@ -1139,7 +1201,7 @@ public class GameMap {
 	}
 	
 	public int getMaxPlayers() {
-		return playerCards.size();
+		return teamCards.size();
 	}
 	
 	public boolean isMatchStarted() {
@@ -1155,13 +1217,19 @@ public class GameMap {
 	
 
 	public ArrayList<PlayerCard> getPlayerCards() {
-		return playerCards;
+		ArrayList<PlayerCard> cards = new ArrayList<PlayerCard>();
+		for (TeamCard tCard: teamCards) {
+			cards.addAll(tCard.getPlayers());
+		}
+		return cards;
 	}
 	
 	public PlayerCard getPlayerCard(Player player) {
-		for (PlayerCard pCard: playerCards) {
-			if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
-				return pCard;
+		for (TeamCard tCard: teamCards) {
+			for (PlayerCard pCard: tCard.getPlayers()) {
+				if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
+					return pCard;
+				}
 			}
 		}
 		return null;
@@ -1303,25 +1371,25 @@ public class GameMap {
 		saveArenaData();
 	}
 
-	public void addPlayerCard(Location loc) {
-		addPlayerCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+	public void addTeamCard(Location loc) {
+		addTeamCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 		saveArenaData();
 	}
 	
-	public void addPlayerCard(CoordLoc loc) {
-		playerCards.add(new PlayerCard(loc, null, -1, this));
+	public void addTeamCard(CoordLoc loc) {
+		teamCards.add(new TeamCard(teamSize, loc, this));
 	}
 	
-	public boolean removePlayerCard(Location loc) {
+	public boolean removeTeamCard(Location loc) {
 		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		PlayerCard toRemove = null;
-		for (PlayerCard pCard: playerCards) {
-			if (pCard.getSpawn().equals(remove)) {
-				toRemove = pCard;
+		TeamCard toRemove = null;
+		for (TeamCard tCard: teamCards) {
+			if (tCard.getSpawn().equals(remove)) {
+				toRemove = tCard;
 			}
 		}
 		if (toRemove != null) {
-			playerCards.remove(toRemove);
+			teamCards.remove(toRemove);
 			return true;
 		}
 		return false;
@@ -1442,9 +1510,9 @@ public class GameMap {
 	}
 	
 	public void removeSpawnBlocks() {
-		for (PlayerCard pCard: getPlayerCards()) {
+		for (TeamCard tCard: teamCards) {
 			World world = getCurrentWorld();
-			CoordLoc loc = pCard.getSpawn();
+			CoordLoc loc = tCard.getSpawn();
 			Location loca = new Location(world, loc.getX(), loc.getY(), loc.getZ());
 			world.getBlockAt(loca).setType(Material.AIR);
 		}
@@ -1504,5 +1572,60 @@ public class GameMap {
 		default: this.cage = new StandardCage();
         }
         saveArenaData();
+	}
+
+	public ArrayList<TeamCard> getTeamCards() {
+		return teamCards;
+	}
+
+	public GameQueue getJoinQueue() {
+		return joinQueue;
+	}
+
+	public TeamCard getTeamCard(Player player) {
+		for (TeamCard tCard: teamCards) {
+			if (tCard.containsPlayer(player.getUniqueId()) != null) {
+				return tCard;
+			}
+		}
+		return null;
+	}
+
+	public int getTeamCount() {
+		int count = 0;
+		for (TeamCard tCard: teamCards) {
+			if (tCard.getPlayersSize() > 0) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public int getTeamsOut() {
+		int count = 0;
+		for (TeamCard tCard: teamCards) {
+			int numOfPlayers = tCard.getPlayersSize();
+			if (numOfPlayers > 0 && tCard.isElmininated(numOfPlayers)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public int getTeamsleft() {
+		return getTeamCount() - getTeamsOut();
+	}
+
+	public int getTeamSize() {
+		return teamSize;
+	}
+
+	public TeamCard getWinningTeam() {
+		for (TeamCard tCard: teamCards) {
+			if (!tCard.isElmininated()) {
+				return tCard;
+			}
+		}
+		return null;
 	}
 }

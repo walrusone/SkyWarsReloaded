@@ -107,7 +107,7 @@ public class CrateDropEvent extends MatchEvent {
 		int cratesToAdd = Util.get().getRandomNum(0, maxNumOfCrates);
 		for (int i = 0; i < cratesToAdd; i++) {
 			Location loc = new Location (world, gMap.getSpectateSpawn().getX(), 0, gMap.getSpectateSpawn().getZ());
-			Location loc2 = new Location (world, gMap.getPlayerCards().get(0).getSpawn().getX(), gMap.getPlayerCards().get(0).getSpawn().getY(), gMap.getPlayerCards().get(0).getSpawn().getZ());
+			Location loc2 = new Location (world, gMap.getTeamCards().get(0).getSpawn().getX(), gMap.getTeamCards().get(0).getSpawn().getY(), gMap.getTeamCards().get(0).getSpawn().getZ());
 			int distance = (int) Math.hypot(loc.getX()-loc2.getX(), loc.getZ()-loc2.getZ());
 			int y = loc2.getBlockY();
 			Location spawn = new Location(world, loc.getBlockX() + Util.get().getRandomNum(-distance, distance), 0, loc.getBlockZ() + Util.get().getRandomNum(-distance, distance));
