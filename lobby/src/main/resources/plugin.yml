@@ -1,0 +1,69 @@
+name: SkyWarsReloadedLobby
+main: com.walrusone.skywarsreloaded.SkyWarsReloaded
+version: ${project.version}
+softdepend: [Vault, PlaceholderAPI]
+
+commands:
+   skywars:
+      description: This is the main plugin command.
+      aliases: [sw]
+      usage: /<command> [args]
+permissions:
+  sw.*:
+    description: Gives access to all sw commands
+    children:
+      sw.admin: true
+      sw.player: true
+  sw.admin:
+    description: Gives access to the sw setspawn, list, games, endgame, and reload commands
+    default: op
+    children:
+      sw.player: true
+      sw.setspawn: true
+      sw.reload: true
+      sw.setstat: true
+      sw.clearstats: true
+      sw.chestadd: true
+      sw.start: true
+      sw.updatetop: true
+  sw.player:
+    description: Allows a player to using all player commands.
+    default: true
+    children:
+      sw.join: true
+      sw.stats: true
+      sw.top: true
+      sw.quit: true 
+  sw.join: 
+    description: Allows a player to use sw join command.
+    default: true
+  sw.stats: 
+    description: Allows a player to view player stats.
+    default: true
+  sw.top: 
+    description: Allows a player to view the leaderboard.
+    default: true
+  sw.quit: 
+    description: Allows a player to use sw quit command.
+    default: true
+  sw.setspawn:
+    description: Allows a player to set a set the lobby spawn.
+    default: op
+  sw.updatetop:
+    description: Allows a player to use the updatetop command.
+    default: op
+  sw.start:
+    description: Allows a player to use the start command.
+    default: op
+  sw.setstat:
+    description: Allows a player to set a players stats.
+    default: op
+  sw.clearstats:
+    description: Allows a player to clear a players stats.
+    default: op
+  sw.allowcommands:
+    description: Allows a player to use commands when spectating or in sw.
+    default: op
+  sw.reload:
+    description: Allows a player to use the reload command.
+    default: op

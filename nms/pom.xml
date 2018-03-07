@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.walrusone.skywarsreloaded</groupId>
+        <artifactId>skywarsreloaded-parent</artifactId>
+        <version>3.3.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>skywarsreloaded-nms</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>interfaces</module>
+        <module>v1_8_R1</module>
+        <module>v1_8_R2</module>
+        <module>v1_8_R3</module>
+        <module>v1_9_R1</module>
+        <module>v1_9_R2</module>
+        <module>v1_10_R1</module>
+        <module>v1_11_R1</module>
+        <module>v1_12_R1</module>
+        <module>aggregated</module>
+    </modules>
+
+    <name>SkyWarsReloaded NMS</name>
+
+    <repositories>
+        <!-- NMS Repository -->
+        <repository>
+            <id>nms-repo</id>
+            <url>https://repo.codemc.org/repository/nms/</url>
+        </repository>
+    </repositories>
+
+</project>
