@@ -85,15 +85,6 @@
             <version>2.2.7-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>com.sainttx.holograms</groupId>
-            <artifactId>holograms-api</artifactId>
-            <version>latest</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Holograms-2.5.0-SNAPSHOT.jar</systemPath>
-        </dependency>
-        -->
         <dependency>
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
@@ -125,6 +116,14 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>me.rayzr522.jsonmessage</pattern>
+                            <shadedPattern>com.walrusone.skywarsreloaded.libs.me.rayzr522.jsonmessage</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
         </plugins>
     </build>

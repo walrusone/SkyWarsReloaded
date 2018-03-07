@@ -1,7 +1,6 @@
 name: SkyWarsReloadedLobby
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 1.0
-
+version: ${project.version}
 softdepend: [Vault, PlaceholderAPI]
 
 commands:
