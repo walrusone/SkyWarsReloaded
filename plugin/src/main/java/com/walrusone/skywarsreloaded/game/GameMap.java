@@ -39,7 +39,6 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.cages.Cage;
 import com.walrusone.skywarsreloaded.game.cages.CageType;
 import com.walrusone.skywarsreloaded.game.cages.CubeCage;
