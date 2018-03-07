@@ -43,7 +43,8 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class PlayerInteractListener implements Listener {
 	
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onClick(final PlayerInteractEvent a1) {
     	final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
     	if (gameMap == null) {

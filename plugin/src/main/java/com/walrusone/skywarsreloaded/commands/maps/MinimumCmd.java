@@ -26,7 +26,7 @@ public class MinimumCmd extends BaseCmd {
 			int min = Integer.valueOf(args[2]);
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
-				map.setMinPlayers(min);
+				map.setMinTeams(min);
 				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("min", args[2]).format("maps.minplayer"));
 				return true;
 			} else {

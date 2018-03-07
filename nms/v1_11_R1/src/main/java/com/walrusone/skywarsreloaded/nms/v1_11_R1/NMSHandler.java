@@ -46,6 +46,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.walrusone.skywarsreloaded.api.NMS;
 
@@ -204,5 +205,10 @@ public class NMSHandler implements NMS, Listener {
 	public void setEntityTarget(Entity ent, Player player) {
 		EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
 		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
+	}
+	
+	@Override
+	public void updateSkull(SkullMeta meta1, Player player) {
+		meta1.setOwner(player.getName());
 	}
 }

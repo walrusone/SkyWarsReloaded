@@ -58,7 +58,7 @@ public class ArenasMenu {
 							lores.add(ChatColor.AQUA + "Status: " + ChatColor.RED + "UNREGISTERED");
 						}
 						lores.add(ChatColor.AQUA + "Match State: " + ChatColor.GOLD + gMap.getMatchState().toString());
-						lores.add(ChatColor.AQUA + "Minimum Players: " + ChatColor.GOLD + gMap.getMinPlayers());
+						lores.add(ChatColor.AQUA + "Minimum Players: " + ChatColor.GOLD + gMap.getMinTeams());
 						lores.add(ChatColor.AQUA + "Current Players: " + ChatColor.GOLD + gMap.getAlivePlayers().size() + " of " + gMap.getMaxPlayers());
 						lores.add(ChatColor.AQUA + "Number of Join Signs: " + ChatColor.GOLD + gMap.getSigns().size());
 						lores.add(ChatColor.AQUA + "Cage Type: " + ChatColor.GOLD + gMap.getCage().getType().toString());

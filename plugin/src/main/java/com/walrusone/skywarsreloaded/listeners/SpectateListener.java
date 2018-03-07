@@ -73,7 +73,6 @@ public class SpectateListener implements Listener{
 		MatchManager.get().removeSpectator(gameMap, player);
 	}
 		
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent e) {
 		final Player player = (Player) e.getWhoClicked();

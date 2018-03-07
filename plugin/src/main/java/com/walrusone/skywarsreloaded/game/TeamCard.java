@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -15,11 +16,14 @@ public class TeamCard {
 	private CoordLoc spawn;
 	private GameMap gMap;
 	private int place;
+	private String prefix;
+	private Team team;
 	
-	public TeamCard(int size, CoordLoc spawn, GameMap gameMap) {
+	public TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix) {
 		this.spawn = spawn;
 		this.gMap = gameMap;
 		this.place = 1;
+		this.prefix = prefix;
 		for (int i = 0; i < size; i++) {
 			players.add(new PlayerCard(this, null, -1));
 		}
@@ -73,6 +77,7 @@ public class TeamCard {
 		return null;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public boolean joinGame(Player player) {
 		for (PlayerCard pCard: players) {
 			if (pCard.getUUID().equals(player.getUniqueId())) {
@@ -81,15 +86,18 @@ public class TeamCard {
 						gMap.getKitVoteOption().updateKitVotes();
 					}
 			        gMap.setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
+			       	team.addPlayer(player);
 					return true;
 			}
 		}
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean removePlayer(UUID uuid) {
 		PlayerCard pCard = containsPlayer(uuid);
 		if (pCard != null) {
+			team.removePlayer(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid));
 			pCard.reset();
 			return true;
 		}
@@ -158,7 +166,17 @@ public class TeamCard {
 		}
 		return name.substring(0, name.length() -2);
 	}
-	
 
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
 }
 

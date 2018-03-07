@@ -181,7 +181,7 @@ public class MatchManager
             }
             
         	if (debug) {
-        		if (gameMap.getAlivePlayers().size() < gameMap.getMinPlayers()) {
+        		if (gameMap.getAlivePlayers().size() < gameMap.getMinTeams()) {
             		Util.get().logToFile(debugName + ChatColor.YELLOW + "Waiting for More Players on map " + gameMap.getName());
         		} else {
         			Util.get().logToFile(debugName + ChatColor.YELLOW + "Starting Countdown for SkyWars Match on map " + gameMap.getName());
@@ -247,7 +247,7 @@ public class MatchManager
             	if (gameMap.getMatchState() != MatchState.WAITINGSTART) {
             		this.cancel();
             	}
-            	if (gameMap.getAlivePlayers().size() >= gameMap.getMinPlayers() || gameMap.getForceStart()) {
+            	if (gameMap.getFullTeams() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
                     if (gameMap.getTimer() <= 0) {
                         this.cancel();
                         if (gameMap.getMatchState() != MatchState.ENDING) {
@@ -429,24 +429,25 @@ public class MatchManager
     				public void run() {
     					for (PlayerCard pCard: winners.getPlayers()) {
     						Player win = pCard.getPlayer();
-    						SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
-    	    			            .setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));            
-    	    			        	
-    	                    		if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-    	                    			Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
-    	                    		}
-    	    					 	if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
-    	    			            	Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
-    	    			        	}
-    	    			    		if (SkyWarsReloaded.getCfg().particlesEnabled()) {
-    	    			    			List<String> particles = new ArrayList<String>();
-    	    			    			particles.add("FIREWORKS_SPARK");
-    	    			        		Util.get().surroundParticles(win, 1, particles, 8, 0);
-    	    			    		}
-    	                    		win.sendMessage(new Messaging.MessageFormatter()
-    	                                .setVariable("score", Util.get().formatScore(eloChange))
-    	                                .setVariable("map", gameMap.getName()).format("game.won"));                            	
-    	                    		}
+    						if (win != null) {
+        						SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
+        								.setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));  	
+        	                    if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+        	                    	Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
+        	                    }
+        	    				if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
+        	    			       	Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
+        	    			    }
+        	    			    if (SkyWarsReloaded.getCfg().particlesEnabled()) {
+        	    			    	List<String> particles = new ArrayList<String>();
+        	    			    	particles.add("FIREWORKS_SPARK");
+        	    			    	Util.get().surroundParticles(win, 1, particles, 8, 0);
+        	    			    }
+        	                    win.sendMessage(new Messaging.MessageFormatter()
+        	                    		.setVariable("score", Util.get().formatScore(eloChange))
+        	                            .setVariable("map", gameMap.getName()).format("game.won"));                            	
+        	                    }
+    						}
     					}
                 }.runTaskLater(SkyWarsReloaded.get(), 20); 
             }
@@ -779,7 +780,6 @@ public class MatchManager
         }
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void prepareSpectateInv(Player player, GameMap gameMap) {
 		int slot = 9;
         for (Player player1: gameMap.getAlivePlayers()) {

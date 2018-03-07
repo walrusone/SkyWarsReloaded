@@ -10,6 +10,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import com.google.common.collect.Iterables;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -767,7 +768,7 @@ public class GameMap {
 			                  if(!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK) 
 			                		  && !block.getType().equals(Material.DIAMOND_BLOCK)&& !block.getType().equals(Material.EMERALD_BLOCK)) {
 				                  Location loc = beacon.getLocation();
-				                  teamCards.add(new TeamCard(teamSize, new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), this));
+				                  addTeamCard(loc);
 			                  }
 			            } else if (te instanceof Chest) {
 				                  Chest chest = (Chest) te;
@@ -922,6 +923,11 @@ public class GameMap {
 		scoreboard = manager.getNewScoreboard();
         objective = scoreboard.registerNewObjective("info", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        for (int i = 0; i < teamCards.size(); i++) {
+        	TeamCard tCard = teamCards.get(i);
+        	tCard.setTeam(scoreboard.registerNewTeam("team" + i));
+        	tCard.getTeam().setPrefix(tCard.getPrefix());
+        }
 		updateScoreboard();
 	}
 	
@@ -1007,6 +1013,9 @@ public class GameMap {
 	}
 
     private void resetScoreboard() {
+    	for (Team team: scoreboard.getTeams()) {
+    		team.unregister();
+    	}
         if (objective != null) {
             objective.unregister();
         }
@@ -1127,14 +1136,14 @@ public class GameMap {
 		return count;
     }
     
-    public int getMinPlayers() {
+    public int getMinTeams() {
     	if (minPlayers == 0) {
     		return teamCards.size();
     	}
     	return minPlayers;
     }
     
-    public void setMinPlayers(int x) {
+    public void setMinTeams(int x) {
     	minPlayers = x;
     	saveArenaData();
     }
@@ -1200,7 +1209,7 @@ public class GameMap {
 	}
 	
 	public int getMaxPlayers() {
-		return teamCards.size();
+		return teamCards.size() * teamSize;
 	}
 	
 	public boolean isMatchStarted() {
@@ -1376,9 +1385,39 @@ public class GameMap {
 	}
 	
 	public void addTeamCard(CoordLoc loc) {
-		teamCards.add(new TeamCard(teamSize, loc, this));
+		String prefix = "";
+		if (teamSize > 1) {
+			prefix = getChatColor(teamCards.size());
+		}
+		teamCards.add(new TeamCard(teamSize, loc, this, prefix));
 	}
 	
+	private String getChatColor(int size) {
+		double d = ((double)size + 1)/16;
+		long i = (long) d;
+		double f = d - i;
+		int s = (int)(f * 16);
+		switch(s) {
+		case 1: return ChatColor.GREEN + "";
+		case 2: return ChatColor.RED + "";
+		case 3: return ChatColor.DARK_BLUE + "";
+		case 4: return ChatColor.GOLD + "";
+		case 5: return ChatColor.BLACK + "";
+		case 6: return ChatColor.AQUA + "";
+		case 7: return ChatColor.LIGHT_PURPLE + "";
+		case 8: return ChatColor.DARK_PURPLE + "";
+		case 9: return ChatColor.YELLOW + "";
+		case 10: return ChatColor.DARK_GREEN + "";
+		case 11: return ChatColor.DARK_RED + "";
+		case 12: return ChatColor.BLUE + "";
+		case 13: return ChatColor.WHITE + "";
+		case 14: return ChatColor.DARK_AQUA + "";
+		case 15: return ChatColor.DARK_GRAY + "";
+		case 16: return ChatColor.GRAY + "";
+		default: return ChatColor.GREEN + "";
+		}
+	}
+
 	public boolean removeTeamCard(Location loc) {
 		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		TeamCard toRemove = null;
@@ -1626,5 +1665,15 @@ public class GameMap {
 			}
 		}
 		return null;
+	}
+
+	public int getFullTeams() {
+		int count = 0;
+		for (TeamCard tCard: teamCards) {
+			if (tCard.isFull()) {
+				count++;
+			}
+		}
+		return count;
 	}
 }

@@ -99,7 +99,6 @@ public class PlayerStat
             		final Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
             		if (player != null) {
                 		new BukkitRunnable() {
-    						@SuppressWarnings("deprecation")
 							@Override
     						public void run() {
     							if (Util.get().isSpawnWorld(player.getWorld())) {

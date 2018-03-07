@@ -82,7 +82,7 @@ public class HoloDisUtil extends HologramsUtil {
 											if (player != null) {
 												item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 									    		SkullMeta meta1 = (SkullMeta)item.getItemMeta();
-									    		meta1.setOwner(player.getName());
+									    		SkyWarsReloaded.getNMS().updateSkull(meta1, player);
 									    		meta1.setDisplayName(ChatColor.YELLOW + player.getName());
 									    		item.setItemMeta(meta1);
 											}
