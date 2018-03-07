@@ -1,28 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>swr-v1_12_R1</artifactId>
-  <version>v1_12_R1</version>
-  <name>SWR V1_12_R1</name>
-  
-  <parent>
-    <groupId>com.walrusone.skywarsreloaded</groupId>
-    <artifactId>swr-parent</artifactId>
-    <version>parent</version>
-  </parent>
-  
-  <dependencies>
-  		<dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/craftbukkit-1.12.2.jar</systemPath>
-        </dependency>
-      <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-api</artifactId> <!-- Depend on the API! -->
-      <version>API</version>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.walrusone.skywarsreloaded</groupId>
+        <artifactId>skywarsreloaded-nms</artifactId>
+        <version>3.3.2-SNAPSHOT</version>
+    </parent>
+
+	<artifactId>skywarsreloaded-nms-v1_12_r1</artifactId>
+
+	<name>SkyWarsReloaded NMS v1_12_R1</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>skywarsreloaded-nms-interfaces</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigot-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+		</dependency>
+	</dependencies>
+
 </project>

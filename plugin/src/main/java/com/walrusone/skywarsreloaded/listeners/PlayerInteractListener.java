@@ -158,9 +158,9 @@ public class PlayerInteractListener implements Listener {
     						if (crate.getLocation().equals(block.getLocation())) {
     							a1.setCancelled(true);
     							if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.CHEST_OPEN, 1, 1);
+    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
     							} else {
-    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("BLOCK_CHEST_OPEN"), 1, 1);
+    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
     							}
     							a1.getPlayer().openInventory(crate.getInventory());
     							SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
@@ -184,9 +184,9 @@ public class PlayerInteractListener implements Listener {
     			for (Crate crate: gMap.getCrates()) {
     				if(crate.getInventory().equals(inv) && inv.getViewers().size() <= 1) {
 						if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.CHEST_CLOSE, 1, 1);
+							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.valueOf("CHEST_CLOSE"), 1, 1);
 						} else {
-							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.valueOf("BLOCK_CHEST_CLOSE"), 1, 1);
+							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1, 1);
 						}
     					SkyWarsReloaded.getNMS().playEnderChestAction(e.getPlayer().getWorld().getBlockAt(crate.getLocation()), false);
     					return;

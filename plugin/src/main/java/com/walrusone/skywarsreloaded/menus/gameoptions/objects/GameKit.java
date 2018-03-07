@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -289,7 +288,7 @@ public class GameKit {
         storage.set("gameSettings.soupPvp", false);
         storage.set("gameSettings.noFallDamage", false);
         
-        storage.set("filename",  FilenameUtils.removeExtension(kitFile.getName()));
+        storage.set("filename", kitFile.getName().substring(0, kitFile.getName().lastIndexOf('.')));
         
         try {
         	storage.save(kitFile);

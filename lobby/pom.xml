@@ -1,160 +1,85 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.walrusone</groupId>
-  <artifactId>SkyWarsReloadedLobby</artifactId>
-  <version>1.0</version>
-   <build>
-       <finalName>SkyWarsReloadedLobby</finalName>
-       <resources>
-        <resource>
-        <targetPath>.</targetPath>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>config.yml</include>
-          <include>config18.yml</include>
-          <include>glasscolors.yml</include>
-          <include>killsounds.yml</include>
-          <include>killsounds18.yml</include>
-          <include>messages.yml</include>
-          <include>particleeffects.yml</include>
-          <include>playerFile.yml</include>
-          <include>plugin.yml</include>
-          <include>projectileeffects.yml</include>
-          <include>taunts.yml</include>
-          <include>winsounds.yml</include>
-          <include>winsounds18.yml</include>
-          <include>leaderboards.yml</include>
-          <include>tables.sql</include>
-        </includes>
-       </resource>
-      </resources>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-shade-plugin</artifactId>
-              <version>1.4</version>
-              <configuration>
-      		    <source>1.8</source>
-                <target>1.8</target>
-    		  </configuration>
-              <executions>
-                <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                 </goals>
-             </execution>
-            </executions>
-          </plugin>
-      </plugins>
-   </build>
- <repositories>
-            <repository>
-            <id>placeholderapi</id>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.walrusone.skywarsreloaded</groupId>
+        <artifactId>skywarsreloaded-parent</artifactId>
+        <version>3.3.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>skywarsreloaded-lobby</artifactId>
+
+    <name>SkyWarsReloaded Lobby</name>
+
+    <repositories>
+        <repository>
+            <id>placeholderapi-repo</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
 	        <id>vault-repo</id>
 	        <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
- </repositories>
-  <dependencies>
-  <dependency>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>skywarsreloaded-nms-aggregated</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.6</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-          <dependency>
-         <groupId>me.clip</groupId>
-          <artifactId>placeholderapi</artifactId>
-          <version>2.8.2</version>
-         <scope>provided</scope>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.8.2</version>
+            <scope>provided</scope>
         </dependency>
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.8-R0.1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/craftbukkit-1.8.jar</systemPath>
-      </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-api</artifactId>
-      <version>API</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_8_R1</artifactId>
-      <version>v1_8_R1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_8_R2</artifactId>
-      <version>v1_8_R2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_8_R3</artifactId>
-      <version>v1_8_R3</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_9_R1</artifactId>
-      <version>v1_9_R1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_9_R2</artifactId>
-      <version>v1_9_R2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_10_R1</artifactId>
-      <version>v1_10_R1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_11_R1</artifactId>
-      <version>v1_11_R1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.walrusone.skywarsreloaded</groupId>
-      <artifactId>swr-v1_12_R1</artifactId>
-      <version>v1_12_R1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.2</version>
-    </dependency>
-</dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
