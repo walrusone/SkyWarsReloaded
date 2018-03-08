@@ -28,11 +28,11 @@
            <url>http://repo.mvdw-software.be/content/groups/public/</url>
         </repository>
         <repository>
-	        <id>vault-repo</id>
-	        <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
-    	    <id>rayzr-repo</id>
+            <id>rayzr-repo</id>
             <url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
         </repository>
         <repository>
@@ -50,17 +50,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot-api.version}</version>
             <scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.9-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-		</dependency>
+        </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
@@ -84,7 +78,7 @@
             <version>2.8.2</version>
             <scope>provided</scope>
         </dependency>
-  		<dependency>
+          <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.2.7-SNAPSHOT</version>
