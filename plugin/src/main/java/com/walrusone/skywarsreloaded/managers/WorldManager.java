@@ -39,7 +39,7 @@ public class WorldManager {
         worldCreator.type(WorldType.NORMAL);
 		worldCreator.generateStructures(false);
 		worldCreator.environment(World.Environment.NORMAL);
-        worldCreator.generator(new ChunkGenerator() {
+		worldCreator.generator(new ChunkGenerator() {
             @Override
         	public List<BlockPopulator> getDefaultPopulators(World world) {
                 return Arrays.asList(new BlockPopulator[0]);
@@ -151,3 +151,5 @@ public class WorldManager {
 	}
 	
 }
+
+

@@ -55,7 +55,6 @@
             <version>${spigot-api.version}</version>
             <scope>provided</scope>
         </dependency>
-<<<<<<< HEAD
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -64,8 +63,6 @@
             <classifier>javadoc</classifier>
             <optional>true</optional>
         </dependency>
-=======
->>>>>>> 3b9c7a3ec4ff24a7b8a7a29445b0c1f28ce74bbc
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
