@@ -32,10 +32,10 @@ public class WorldManager {
 
 	public boolean loadWorld(String worldName){
 		WorldCreator worldCreator = new WorldCreator(worldName);
-        worldCreator.type(WorldType.NORMAL);
-		worldCreator.generateStructures(false);
-		worldCreator.environment(World.Environment.NORMAL);
-		worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());
+        worldCreator.type(WorldType.NORMAL)
+                .generateStructures(false)
+                .environment(World.Environment.NORMAL)
+                .generator(SkyWarsReloaded.getNMS().getChunkGenerator());
 		World world = worldCreator.createWorld();
         world.setDifficulty(Difficulty.NORMAL);
         world.setSpawnFlags(true, true);

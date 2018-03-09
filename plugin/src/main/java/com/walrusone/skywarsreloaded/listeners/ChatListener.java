@@ -146,6 +146,7 @@ public class ChatListener implements Listener {
                                     .setVariable("xp", Integer.toString(ps.getXp()))
                                     .setVariable("prefix", prefix)
                                     .setVariable("message", message)
+									.setVariable("mapname", sMap.getDisplayName())
                                     .format("chat.specchat");
                         } else {
                             messageToSend = new Messaging.MessageFormatter()
@@ -159,6 +160,7 @@ public class ChatListener implements Listener {
                                     .setVariable("xp", Integer.toString(ps.getXp()))
                                     .setVariable("prefix", prefix)
                                     .setVariable("message", message)
+									.setVariable("mapname", gMap.getDisplayName())
                                     .format("chat.ingamechat");
                         }
                         if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {

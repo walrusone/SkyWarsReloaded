@@ -38,9 +38,10 @@ public class ArenaDamageListener implements Listener {
 			target = (Player) event.getEntity();
 			GameMap gameMap = MatchManager.get().getPlayerMap(target);
 			if (gameMap != null) {
-				if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART) {
-					event.setCancelled(true);
-				} else {
+				if(!gameMap.getSpectators().contains(target.getUniqueId())) {
+					if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART) {
+						event.setCancelled(true);
+					} else {
 						event.setCancelled(false);
 						if (damager instanceof Projectile) {
 							Projectile proj = (Projectile) damager;
@@ -52,7 +53,7 @@ public class ArenaDamageListener implements Listener {
 							}
 							if (proj.getShooter() instanceof Player) {
 								hitter = (Player) proj.getShooter();
-								if (hitter != null) {
+								if (hitter != null && hitter != target) {
 									PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
 									if (pd != null) {
 										pd.setTaggedBy(hitter);
@@ -66,10 +67,11 @@ public class ArenaDamageListener implements Listener {
 								pd.setTaggedBy(hitter);
 							}
 						}
-				}
+					}
 
+				}
 			}
-		}		
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

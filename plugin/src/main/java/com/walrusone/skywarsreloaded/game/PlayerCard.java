@@ -125,7 +125,7 @@ public class PlayerCard {
 	            int curELO   = preElo;
 	            
 	            for (TeamCard tCard: tCard.getGameMap().getTeamCards()) {
-	            	PlayerCard opponent = tCard.getPlayers().get(0);
+	            	PlayerCard opponent = tCard.getPlayerCards().get(0);
 	                if (opponent.getUUID() != null && !opponent.getUUID().equals(uuid)) {
 	                    int opponentPlace = opponent.tCard.getPlace();
 	                    int opponentELO   = opponent.getPreElo();

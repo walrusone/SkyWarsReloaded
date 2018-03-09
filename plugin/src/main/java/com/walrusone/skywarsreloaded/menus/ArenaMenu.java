@@ -41,107 +41,128 @@ public class ArenaMenu {
     	
     	Runnable update = () -> {
             if (SkyWarsReloaded.getIC().hasViewers(key)) {
-                    List<String> lores = new ArrayList<>();
-                    lores.add(ChatColor.GOLD + "" + gMap.getMinTeams());
-                    lores.add(ChatColor.AQUA + "Left Click to Increase.");
-                    lores.add(ChatColor.AQUA + "Right Click to Decrease.");
-                    ItemStack min = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.DIAMOND_HELMET, 1), lores, "Minimun Players");
+				List<String> lores = new ArrayList<>();
+				lores.add(ChatColor.GOLD + "" + gMap.getMinTeams());
+				lores.add(ChatColor.AQUA + "Left Click to Increase.");
+				lores.add(ChatColor.AQUA + "Right Click to Decrease.");
+				ItemStack min = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.DIAMOND_HELMET, 1), lores, "Minimun Players");
 
 
-                    lores.clear();
-                    if (gMap.isRegistered()) {
-                        lores.add(ChatColor.GREEN + "REGISTERED");
-                        lores.add(ChatColor.GOLD + gMap.getMatchState().toString().toUpperCase());
-                        lores.add(ChatColor.GREEN + "" + gMap.getAlivePlayers().size() + " of " + gMap.getMaxPlayers() + " Players");
-                        lores.add(" ");
-                        lores.add(ChatColor.RED + "Shift Left Click to Unregister.");
-                        lores.add(ChatColor.RED + "Unregistering will end the match!");
-                    } else {
-                        lores.add(ChatColor.RED + "UNREGISTERED");
-                        lores.add(" ");
-                        lores.add(ChatColor.AQUA + "Shift Left Click to");
-                        lores.add(ChatColor.AQUA + "Attempt Registration!");
-                    }
-                    ItemStack status = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.MAP, 1), lores, "Arena Status");
+				lores.clear();
+				if (gMap.isRegistered()) {
+					lores.add(ChatColor.GREEN + "REGISTERED");
+					lores.add(ChatColor.GOLD + gMap.getMatchState().toString().toUpperCase());
+					lores.add(ChatColor.GREEN + "" + gMap.getAlivePlayers().size() + " of " + gMap.getMaxPlayers() + " Players");
+					lores.add(" ");
+					lores.add(ChatColor.RED + "Shift Left Click to Unregister.");
+					lores.add(ChatColor.RED + "Unregistering will end the match!");
+				} else {
+					lores.add(ChatColor.RED + "UNREGISTERED");
+					lores.add(" ");
+					lores.add(ChatColor.AQUA + "Shift Left Click to");
+					lores.add(ChatColor.AQUA + "Attempt Registration!");
+				}
+				ItemStack status = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.MAP, 1), lores, "Arena Status");
 
-                    lores.clear();
-                    lores.add(ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
-                    lores.add(" ");
-                    lores.add(ChatColor.AQUA + "Left Click to Change");
-                    lores.add(ChatColor.AQUA + "the Display Name.");
-                    ItemStack display = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.NAME_TAG, 1), lores, "Display Name");
+				lores.clear();
+				lores.add(ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+				lores.add(" ");
+				lores.add(ChatColor.AQUA + "Left Click to Change");
+				lores.add(ChatColor.AQUA + "the Display Name.");
+				ItemStack display = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.NAME_TAG, 1), lores, "Display Name");
 
-                    lores.clear();
-                    lores.add(ChatColor.translateAlternateColorCodes('&', gMap.getDesigner()));
-                    lores.add(" ");
-                    lores.add(ChatColor.AQUA + "Left Click to Change");
-                    lores.add(ChatColor.AQUA + "the Creator.");
-                    ItemStack creator = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.SKULL_ITEM, 1, (short) 3), lores, "Map Creator");
+				lores.clear();
+				lores.add(ChatColor.translateAlternateColorCodes('&', gMap.getDesigner()));
+				lores.add(" ");
+				lores.add(ChatColor.AQUA + "Left Click to Change");
+				lores.add(ChatColor.AQUA + "the Creator.");
+				ItemStack creator = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.SKULL_ITEM, 1, (short) 3), lores, "Map Creator");
 
-                    lores.clear();
-                    lores.add(ChatColor.GOLD + "" + gMap.getSigns().size() + " Sign Available!");
-                    lores.add(" ");
-                    lores.add(ChatColor.AQUA + "Left Click for a list");
-                    lores.add(ChatColor.AQUA + "of Sign Locations.");
-                    ItemStack signs = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.SIGN, 1), lores, "Join Signs");
+				lores.clear();
+				lores.add(ChatColor.GOLD + "" + gMap.getSigns().size() + " Sign Available!");
+				lores.add(" ");
+				lores.add(ChatColor.AQUA + "Left Click for a list");
+				lores.add(ChatColor.AQUA + "of Sign Locations.");
+				ItemStack signs = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.SIGN, 1), lores, "Join Signs");
 
-                    lores.clear();
-                    if (gMap.isRegistered()) {
-                        lores.add(ChatColor.AQUA + "Left Click to spectate!");
-                    } else {
-                        lores.add(ChatColor.RED + "Spectate Currently Unavailable!");
-                    }
-                    ItemStack spectate = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.COMPASS, 1), lores, "Spectate");
+				lores.clear();
+				if (gMap.isRegistered()) {
+					lores.add(ChatColor.AQUA + "Left Click to spectate!");
+				} else {
+					lores.add(ChatColor.RED + "Spectate Currently Unavailable!");
+				}
+				ItemStack spectate = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.COMPASS, 1), lores, "Spectate");
 
-                    lores.clear();
-                    lores.add(ChatColor.AQUA + "Shift Left Click to");
-                    lores.add(ChatColor.AQUA + "End Current Match!");
-                    ItemStack end = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.ENDER_PORTAL_FRAME, 1), lores, "End Match");
+				lores.clear();
+				lores.add(ChatColor.AQUA + "Shift Left Click to");
+				lores.add(ChatColor.AQUA + "End Current Match!");
+				ItemStack end = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.ENDER_PORTAL_FRAME, 1), lores, "End Match");
 
-                    lores.clear();
-                    lores.add(ChatColor.AQUA + "Shift Left Click to Edit Map!");
-                    if (gMap.isRegistered()) {
-                        lores.add(ChatColor.RED + "Editing will End Match");
-                        lores.add(ChatColor.RED + "and unregister the map!");
-                    }
-                    ItemStack edit = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.WORKBENCH, 1), lores, "Edit Map");
+				lores.clear();
+				lores.add(ChatColor.AQUA + "Shift Left Click to Edit Map!");
+				if (gMap.isRegistered()) {
+					lores.add(ChatColor.RED + "Editing will End Match");
+					lores.add(ChatColor.RED + "and unregister the map!");
+				}
+				ItemStack edit = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.WORKBENCH, 1), lores, "Edit Map");
 
-                    lores.clear();
+				lores.clear();
 
-                    if (gMap.isEditing()) {
-                        lores.add(ChatColor.AQUA + "Shift Left Click to Save Map!");
-                        lores.add(ChatColor.RED + "Saving will close map");
-                        lores.add(ChatColor.RED + "from editing!");
-                    } else {
-                        lores.add(ChatColor.RED + "Map is not being edited!");
-                    }
-                    ItemStack save = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.BOOK, 1), lores, "Save Map");
+				if (gMap.isEditing()) {
+					lores.add(ChatColor.AQUA + "Shift Left Click to Save Map!");
+					lores.add(ChatColor.RED + "Saving will close map");
+					lores.add(ChatColor.RED + "from editing!");
+				} else {
+					lores.add(ChatColor.RED + "Map is not being edited!");
+				}
+				ItemStack save = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.BOOK, 1), lores, "Save Map");
 
-                    lores.clear();
-                    lores.add(ChatColor.GOLD + gMap.getCage().getType().toString());
-                    if (gMap.isRegistered()) {
-                        lores.add(ChatColor.RED + "Cage Type cannot be");
-                        lores.add(ChatColor.RED + "Changed while registered!");
-                    } else {
-                        lores.add(ChatColor.AQUA + "Left Click to Change Cage Type!");
-                    }
-                    ItemStack cage = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.IRON_FENCE, 1), lores, "Cage Type");
+				lores.clear();
+				lores.add(ChatColor.GOLD + gMap.getCage().getType().toString());
+				if (gMap.isRegistered()) {
+					lores.add(ChatColor.RED + "Cage Type cannot be");
+					lores.add(ChatColor.RED + "Changed while registered!");
+				} else {
+					lores.add(ChatColor.AQUA + "Left Click to Change Cage Type!");
+				}
+				ItemStack cage = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.IRON_FENCE, 1), lores, "Cage Type");
 
-                    lores.clear();
-                    lores.add(ChatColor.AQUA + "Left Click to view events!");
-                    ItemStack events = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.JUKEBOX, 1), lores, "Events");
+				lores.clear();
+				lores.add(ChatColor.AQUA + "Left Click to view events!");
+				ItemStack events = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.JUKEBOX, 1), lores, "Events");
 
-                    menu.setItem(0, status);
-                    menu.setItem(2, display);
-                    menu.setItem(4, creator);
-                    menu.setItem(6, min);
-                    menu.setItem(8, signs);
-                    menu.setItem(10, spectate);
-                    menu.setItem(12, end);
-                    menu.setItem(14, edit);
-                    menu.setItem(16, save);
-                    menu.setItem(20, cage);
-                    menu.setItem(22, events);
+				lores.clear();
+				lores.add(ChatColor.GREEN + "Team Size: " + ChatColor.GOLD + gMap.getTeamSize());
+				if (gMap.allowFriendlyFire()) {
+					lores.add(ChatColor.GREEN + "Freindly Fire Enabled: " + ChatColor.GREEN + "TRUE");
+				} else {
+					lores.add(ChatColor.GREEN + "Freindly Fire Enabled: " + ChatColor.RED+ "FALSE");
+				}
+				if (gMap.isRegistered()) {
+					lores.add(" ");
+					lores.add(ChatColor.RED + "Values cannot be changed");
+					lores.add(ChatColor.RED + "while map is registered!");
+				} else {
+					lores.add(" ");
+					lores.add(ChatColor.AQUA + "Left click to increase team size!");
+					lores.add(ChatColor.AQUA + "Right click to decrease team size!");
+					lores.add(ChatColor.AQUA + "Shift Left Click to toggle");
+					lores.add(ChatColor.AQUA + "Friendly Fire!");
+				}
+				ItemStack teams = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.REDSTONE_COMPARATOR, 1), lores, "Teams");
+
+				menu.setItem(0, status);
+				menu.setItem(2, display);
+				menu.setItem(4, creator);
+				menu.setItem(6, min);
+				menu.setItem(8, signs);
+				menu.setItem(10, spectate);
+				menu.setItem(12, end);
+				menu.setItem(14, edit);
+				menu.setItem(16, save);
+				menu.setItem(20, cage);
+				menu.setItem(22, events);
+				menu.setItem(24, teams);
             }
         };
   
@@ -256,10 +277,24 @@ public class ArenaMenu {
 						gMap.setCage(CageType.getNext(gMap.getCage().getType()));
 						gMap.update();
 					}
-				}  else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 22) {
+				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 22) {
 					new EventsMenu(player, gMap);
+				} else if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 24) {
+					if (!gMap.isRegistered()) {
+						gMap.setFriendlyFire(!gMap.allowFriendlyFire());
+						gMap.update();
+					}
+				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 24) {
+					if (gMap.getTeamSize() < 9 && !gMap.isRegistered()) {
+						gMap.setTeamSize(gMap.getTeamSize() + 1);
+						gMap.update();
+					}
+				} else if (event.getClick().equals(ClickType.RIGHT) && event.getSlot() == 24) {
+					if (gMap.getTeamSize() > 1 && !gMap.isRegistered()) {
+						gMap.setTeamSize(gMap.getTeamSize() - 1);
+						gMap.update();
+					}
 				}
-
 			}
 		});
 

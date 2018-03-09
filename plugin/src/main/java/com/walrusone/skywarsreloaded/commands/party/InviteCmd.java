@@ -38,7 +38,7 @@ public class InviteCmd extends BaseCmd {
 			}
 		}
 		
-		if (invited != null) {
+		if (invited != null && invited != player) {
 			Party inv = Party.getPartyOfInvite(invited);
 			if (inv != null) {
 				player.sendMessage(new Messaging.MessageFormatter().setVariable("player", invited.getName()).format("party.pendingInvite"));

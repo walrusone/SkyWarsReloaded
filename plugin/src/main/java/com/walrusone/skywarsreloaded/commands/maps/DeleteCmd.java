@@ -19,8 +19,12 @@ public class DeleteCmd extends BaseCmd {
 			String worldName = args[1];
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
-				map.removeMap();
-				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.deleted"));
+				boolean result = map.removeMap();
+				if (result) {
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.deleted"));
+					return true;
+				}
+				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-remove"));
 				return true;
 			} else {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));

@@ -59,7 +59,7 @@ public class TeamCard {
 		return gMap;
 	}
 
-	public ArrayList<PlayerCard> getPlayers() {
+	public ArrayList<PlayerCard> getPlayerCards() {
 		return players;
 	}
 

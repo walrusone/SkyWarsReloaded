@@ -385,8 +385,13 @@ public class MatchManager
             	Util.get().logToFile(debugName + ChatColor.YELLOW + winners.getName() + "Won the Match");
         	}
         	int eloChange1 = 0;
-        	gameMap.setWinner(winners.getName());
-        	for (PlayerCard pCard: winners.getPlayers()) {
+        	for (PlayerCard pCard: winners.getPlayerCards()) {
+				if (pCard.getUUID() != null) {
+					Player player = pCard.getPlayer();
+					if(player != null) {gameMap.addWinner(player.getName());}
+				}
+			}
+        	for (PlayerCard pCard: winners.getPlayerCards()) {
         		Player win = pCard.getPlayer();
                 pCard.getTeamCard().setPlace(1);
                 if (gameMap.getTeamSize() == 1) {
@@ -430,7 +435,7 @@ public class MatchManager
                 new BukkitRunnable() {
     				@Override
     				public void run() {
-    					for (PlayerCard pCard: winners.getPlayers()) {
+    					for (PlayerCard pCard: winners.getPlayerCards()) {
     						Player win = pCard.getPlayer();
     						if (win != null) {
         						SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
@@ -606,7 +611,7 @@ public class MatchManager
                 if (sendMessages) {
                 	if (gameMap.getMatchState() != MatchState.ENDING || gameMap.getMatchState() != MatchState.WAITINGSTART) {
                 		if (pCard.getTeamCard().isElmininated()) {
-                			for (PlayerCard card: pCard.getTeamCard().getPlayers()) {
+                			for (PlayerCard card: pCard.getTeamCard().getPlayerCards()) {
                 				if (card.getPlayer() != null) {
                                  	PlayerStat loserData = PlayerStat.getPlayerStats(card.getPlayer().getUniqueId().toString());
                                  	if (loserData != null) {

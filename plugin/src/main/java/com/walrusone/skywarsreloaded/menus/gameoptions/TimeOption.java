@@ -109,9 +109,7 @@ public class TimeOption extends GameOption {
 		} else if (time == Vote.TIMEMIDNIGHT) {
 			t = 18000;
 		}
-		for (Player player: gameMap.getAllPlayers()) {
-			player.setPlayerTime(t, false);
-		}
+		gameMap.getCurrentWorld().setTime(t);
 	}
 
 }
