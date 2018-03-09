@@ -8,14 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 import org.bukkit.*;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.generator.ChunkGenerator;
 
 public class WorldManager {
 
@@ -39,28 +35,7 @@ public class WorldManager {
         worldCreator.type(WorldType.NORMAL);
 		worldCreator.generateStructures(false);
 		worldCreator.environment(World.Environment.NORMAL);
-		worldCreator.generator(new ChunkGenerator() {
-            @Override
-        	public List<BlockPopulator> getDefaultPopulators(World world) {
-                return Arrays.asList(new BlockPopulator[0]);
-            }
-            
-            @Override
-            public boolean canSpawn(World world, int x, int z) {
-                return true;
-            }
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public byte[] generate(World world, Random random, int x, int z) {
-                return new byte[32768];
-            }
-    
-            @Override
-            public Location getFixedSpawnLocation(World world, Random random) {
-                return new Location(world, 0.0D, 64.0D, 0.0D);
-            }
-        });
+		worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());
 		World world = worldCreator.createWorld();
         world.setDifficulty(Difficulty.NORMAL);
         world.setSpawnFlags(true, true);

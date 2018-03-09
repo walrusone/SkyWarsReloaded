@@ -18,6 +18,7 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
@@ -42,6 +44,7 @@ import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -202,5 +205,20 @@ public class NMSHandler implements NMS {
 	public void updateSkull(SkullMeta meta1, Player player) {
 		meta1.setOwningPlayer(player);
 	}
-	
+
+	@Override
+	public ChunkGenerator getChunkGenerator() {
+		return new ChunkGenerator() {
+			@Override
+			public final ChunkGenerator.ChunkData generateChunkData(final World world, final Random random, final int x, final int z, final ChunkGenerator.BiomeGrid chunkGererator) {
+				final ChunkGenerator.ChunkData chunkData = this.createChunkData(world);
+				for (int i = 0; i < 16; i++) {
+					for (int j = 0; j < 16; j++) {
+						chunkGererator.setBiome(i, j, Biome.VOID);
+					}
+				}
+				return chunkData;
+			}
+		};
+	}
 }

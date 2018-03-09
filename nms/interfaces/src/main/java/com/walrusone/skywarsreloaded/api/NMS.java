@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -38,4 +39,5 @@ public interface NMS {
 	public void playEnderChestAction(Block block, boolean open);
 	public void setEntityTarget(Entity ent, Player player);
 	public void updateSkull(SkullMeta meta1, Player player);
+	public ChunkGenerator getChunkGenerator();
 }

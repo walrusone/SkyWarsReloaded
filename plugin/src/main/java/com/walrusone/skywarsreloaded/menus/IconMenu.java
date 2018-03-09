@@ -26,7 +26,7 @@ public class IconMenu {
         	if (invs.size() > 0 && (i+1) < invs.size()) {
         		addNextItem(invs.get(i));
         	}
-        	if (i < invs.size()) {
+        	if (i > 0 && i < invs.size()) {
         		addPrevItem(invs.get(i));
         	}
         }

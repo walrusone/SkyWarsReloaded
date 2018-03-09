@@ -1,6 +1,8 @@
 package com.walrusone.skywarsreloaded.nms.v1_8_R2;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.server.v1_8_R2.EntityFallingBlock;
@@ -43,6 +45,8 @@ import org.bukkit.craftbukkit.v1_8_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -213,5 +217,29 @@ public class NMSHandler implements NMS {
 	public void updateSkull(SkullMeta meta1, Player player) {
 		meta1.setOwner(player.getName());
 	}
-	
+
+	@Override
+	public ChunkGenerator getChunkGenerator() {
+		return new ChunkGenerator() {
+			@Override
+			public List<BlockPopulator> getDefaultPopulators(World world) {
+				return Arrays.asList(new BlockPopulator[0]);
+			}
+
+			@Override
+			public boolean canSpawn(World world, int x, int z) {
+				return true;
+			}
+
+			@Override
+			public byte[] generate(World world, Random random, int x, int z) {
+				return new byte[32768];
+			}
+
+			@Override
+			public Location getFixedSpawnLocation(World world, Random random) {
+				return new Location(world, 0.0D, 64.0D, 0.0D);
+			}
+		};
+	}
 }
