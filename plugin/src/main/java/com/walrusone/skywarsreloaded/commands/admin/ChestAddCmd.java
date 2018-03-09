@@ -26,7 +26,7 @@ public class ChestAddCmd extends BaseCmd {
 	public boolean run() {
 
 		String type = args[1];
-		ChestType ct = null;
+		ChestType ct;
 		if (type.equalsIgnoreCase("basic")) {
 			ct = ChestType.BASIC;
 		} else if (type.equalsIgnoreCase("normal")) {
@@ -40,7 +40,7 @@ public class ChestAddCmd extends BaseCmd {
 			return false;
 		}
 		
-		int percent = 0;
+		int percent;
 		if (Util.get().isInteger(args[3])) {
 			percent = Integer.valueOf(args[3]);
 		} else {
@@ -60,7 +60,7 @@ public class ChestAddCmd extends BaseCmd {
 			return false;
 		}
 		
-		List<ItemStack> items = new ArrayList<ItemStack>();
+		List<ItemStack> items = new ArrayList<>();
 		if (method.equalsIgnoreCase("hand")) {
 			ItemStack item = SkyWarsReloaded.getNMS().getMainHandItem(player).clone();
 			items.add(item);

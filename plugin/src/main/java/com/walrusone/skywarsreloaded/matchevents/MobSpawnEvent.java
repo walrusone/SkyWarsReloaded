@@ -37,8 +37,8 @@ public class MobSpawnEvent extends MatchEvent {
 	private int minMobsPerPlayer;
 	private BukkitTask br1;
 	private BukkitTask br2;
-	private List<String> mobs = new ArrayList<String>();
-	private ArrayList<Entity> mobsSpawned = new ArrayList<Entity>();
+	private List<String> mobs = new ArrayList<>();
+	private ArrayList<Entity> mobsSpawned = new ArrayList<>();
 	
 	public MobSpawnEvent(GameMap map, boolean b) {
 		this.gMap = map;
@@ -84,7 +84,7 @@ public class MobSpawnEvent extends MatchEvent {
 					@Override
 					public void run() {
 						if (player != null) {
-							List<Block> blocks = getSpawnableBlocks(player.getLocation(), 5);
+							List<Block> blocks = getSpawnableBlocks(player.getLocation());
 							Collections.shuffle(blocks);
 							for (int i = 0; i < Util.get().getRandomNum(minMobsPerPlayer, maxMobsPerPlayer); i++) {
 								Location spawn = blocks.get(i).getLocation().clone().add(0, 1, 0);
@@ -136,11 +136,11 @@ public class MobSpawnEvent extends MatchEvent {
 		}
 	}
 	
-	public static List<Block> getSpawnableBlocks(Location location, int radius) {
-        List<Block> blocks = new ArrayList<Block>();
-        for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+	private static List<Block> getSpawnableBlocks(Location location) {
+        List<Block> blocks = new ArrayList<>();
+        for(int x = location.getBlockX() - 5; x <= location.getBlockX() + 5; x++) {
             for(int y = location.getBlockY() - 2; y <= location.getBlockY() + 2; y++) {
-                for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+                for(int z = location.getBlockZ() - 5; z <= location.getBlockZ() + 5; z++) {
                 	Block block = location.getWorld().getBlockAt(x, y, z);
                 	Block above = location.getWorld().getBlockAt(x, y+1, z);
                 	if (!block.getType().equals(Material.AIR) && above.getType().equals(Material.AIR) && above.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {

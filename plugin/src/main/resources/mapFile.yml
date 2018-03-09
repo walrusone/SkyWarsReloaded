@@ -4,6 +4,7 @@ creator:
 registered:
 cage: standard
 teamSize: 1
+allowFriendlyFire: false
 events:
   DisableRegenEvent:
     enabled: false

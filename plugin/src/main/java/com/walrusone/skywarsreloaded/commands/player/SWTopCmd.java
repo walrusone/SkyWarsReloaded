@@ -48,12 +48,13 @@ public class SWTopCmd extends BaseCmd {
 	        player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.footer"));
 			return true;
 		} else {
-			String types = "";
+			StringBuilder types = new StringBuilder();
 			for (String add: SkyWarsReloaded.getUseable()) {
-				types = types + add + ", ";
+				types.append(add);
+				types.append(", ");
 			}
-			types = types.substring(0, types.length() - 2);
-			player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types).format("leaderboard.invalidtype"));
+			types.substring(0, types.length() - 2);
+			player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
 			return false;
 		}	
 	}

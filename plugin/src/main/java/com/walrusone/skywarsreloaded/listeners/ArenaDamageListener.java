@@ -29,7 +29,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 
 public class ArenaDamageListener implements Listener {
 	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerDamagedByAlly(EntityDamageByEntityEvent event) {
 		Player target;
 		Player hitter;
@@ -40,7 +40,6 @@ public class ArenaDamageListener implements Listener {
 			if (gameMap != null) {
 				if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART) {
 					event.setCancelled(true);
-					return;
 				} else {
 						event.setCancelled(false);
 						if (damager instanceof Projectile) {
@@ -59,19 +58,13 @@ public class ArenaDamageListener implements Listener {
 										pd.setTaggedBy(hitter);
 									}
 								}
-							} else {
-								return;
 							}
 						} else if (damager instanceof Player) {
 							hitter = (Player) damager;
-							if (hitter != null) {
-								PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
-								if (pd != null) {
-									pd.setTaggedBy(hitter);
-								}
+							PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+							if (pd != null) {
+								pd.setTaggedBy(hitter);
 							}
-						} else {
-							return;
 						}
 				}
 
@@ -92,12 +85,9 @@ public class ArenaDamageListener implements Listener {
 				if (!gameMap.allowFallDamage()) {
 					if (event.getCause().equals(DamageCause.FALL)) {
 						event.setCancelled(true);
-						return;
 					}
 				}
 			}
-		} else {
-			return;
 		}
 	}
 	

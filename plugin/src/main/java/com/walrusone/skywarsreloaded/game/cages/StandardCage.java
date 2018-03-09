@@ -8,6 +8,7 @@ public class StandardCage extends Cage {
 		cageType = CageType.STANDARD;
 		coordOffsets.add(new CoordLoc(0, 0, 0));
 		coordOffsets.add(new CoordLoc(0, 1, 1));
+		coordOffsets.add(new CoordLoc(0, 1, -1));
 		coordOffsets.add(new CoordLoc(1, 1, 0));
 		coordOffsets.add(new CoordLoc(-1, 1, 0));
 		coordOffsets.add(new CoordLoc(0, 2, 1));

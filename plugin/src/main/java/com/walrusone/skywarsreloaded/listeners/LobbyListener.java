@@ -33,12 +33,12 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class LobbyListener implements Listener
 {
 	 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(final EntityDamageByEntityEvent e) {	
 		if (SkyWarsReloaded.getCfg().protectLobby() && Util.get().isSpawnWorld(e.getEntity().getWorld())) {
 			e.setCancelled(true);
     		if (e.getEntity() instanceof Player || e.getDamager() instanceof Player) {
-        		if (((Player)e.getDamager()).hasPermission("sw.alterlobby")) {
+        		if (e.getDamager().hasPermission("sw.alterlobby")) {
         			e.setCancelled(false);
         		}
     		}

@@ -64,7 +64,7 @@ public class Database {
 	        return connection;
 	    }
 
-	    public void close() {
+	    private void close() {
 	        try {
 	            if (connection != null && !connection.isClosed()) {
 	                connection.close();
@@ -80,14 +80,11 @@ public class Database {
 	    public boolean checkConnection() {
 	        try {
 	            connect();
-
 	        } catch (SQLException sqlException) {
 	            close();
 	            sqlException.printStackTrace();
-
-	            return false;
+				return false;
 	        }
-
 	        return true;
 	    }
 

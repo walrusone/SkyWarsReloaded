@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ItemsManager {
 
-    private final Map<String, ItemStack> gameItems = new HashMap<String, ItemStack>();
+    private final Map<String, ItemStack> gameItems = new HashMap<>();
 
     public ItemsManager() {
     	getMatchStartItems();
@@ -48,7 +48,7 @@ public class ItemsManager {
     }
     
     private void getSignItems() {
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         addItem("blockoffline", lore, "items.skywars-options");
         addItem("blockwaiting", lore, "items.skywars-options");
         addItem("blockplaying", lore, "items.skywars-options"); 
@@ -60,7 +60,7 @@ public class ItemsManager {
     }
     
     private void getLobbyItem() {
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
         
         addItem("optionselect", lore, "items.skywars-options"); 
@@ -69,7 +69,7 @@ public class ItemsManager {
     }
 
 	private void getMatchStartItems() {
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
         
 		if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -100,7 +100,7 @@ public class ItemsManager {
     }
     
     private void getChestVoteItems() {
-    	List<String> lore = new ArrayList<String>();
+    	List<String> lore = new ArrayList<>();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 		
 		addItem("chestrandom", lore, "items.chest-random");
@@ -111,7 +111,7 @@ public class ItemsManager {
 	}
     
     private void getHealthVoteItems() {
-    	List<String> lore = new ArrayList<String>();
+    	List<String> lore = new ArrayList<>();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 		
 		addItem("healthrandom", lore, "items.health-random");
@@ -122,7 +122,7 @@ public class ItemsManager {
 	}
     
     private void getTimeVoteItems() {
-    	List<String> lore = new ArrayList<String>();
+    	List<String> lore = new ArrayList<>();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 		
 		addItem("timerandom", lore, "items.time-random");
@@ -133,7 +133,7 @@ public class ItemsManager {
     }
     
     private void getWeatherVoteItems() {
-    	List<String> lore = new ArrayList<String>();
+    	List<String> lore = new ArrayList<>();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 		
 		addItem("weatherrandom", lore, "items.weather-random");
@@ -144,7 +144,7 @@ public class ItemsManager {
     }
 
     private void getModifierVoteItems() {
-    	List<String> lore = new ArrayList<String>();
+    	List<String> lore = new ArrayList<>();
 		lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 		
 		addItem("modifierrandom", lore, "items.modifier-random");
@@ -155,7 +155,7 @@ public class ItemsManager {
     }
     
     private void getOptionItems() {
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         lore.add(new Messaging.MessageFormatter().format("items.lclick-to-open"));
         
         addItem("particleselect", lore, "items.particle-effect-sel");

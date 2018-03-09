@@ -20,13 +20,13 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class KillSoundOption extends PlayerOption {
 
-	private static ArrayList<PlayerOption> playerOptions = new ArrayList<PlayerOption>();
+	private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
 	private String sound;
     private float volume;
     private float pitch;
     private boolean customSound;
     
-    public KillSoundOption(String key, String sound, String displayname, int level, int cost, float volume, float pitch, Material material, boolean customSound, int position, int page, int menuSize) {
+    private KillSoundOption(String key, String sound, String displayname, int level, int cost, float volume, float pitch, Material material, boolean customSound, int position, int page, int menuSize) {
         this.level = level;
         this.cost = cost;
         this.key = key;
@@ -50,7 +50,10 @@ public class KillSoundOption extends PlayerOption {
                 	SkyWarsReloaded.get().saveResource("killsounds18.yml", false);
                 	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "killsounds18.yml");
                 	if (sf.exists()) {
-                		sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "killsounds.yml"));
+                		boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "killsounds.yml"));
+                		if (!result) {
+                			SkyWarsReloaded.get().getLogger().info("Failed to rename 1.8 Killsounds File");
+						}
                 	}
         	} else {
             	SkyWarsReloaded.get().saveResource("killsounds.yml", false);
@@ -78,25 +81,23 @@ public class KillSoundOption extends PlayerOption {
                 	if (mat != null) {
                 		if (!isCustom) {
                 			try {
-                				Sound s = Sound.valueOf(sound);
-                				if (s != null) {
-                					playerOptions.add(new KillSoundOption(key, sound, name, level, cost, volume, pitch, mat, isCustom, position, page, menuSize));
-                				}
+                				@SuppressWarnings("unused") Sound s = Sound.valueOf(sound);
+               					playerOptions.add(new KillSoundOption(key, sound, name, level, cost, volume, pitch, mat, false, position, page, menuSize));
                 			} catch (IllegalArgumentException e) {
                 				SkyWarsReloaded.get().getServer().getLogger().info(sound + " is not a valid sound in killsounds.yml");
                 			}
                 		} else {
-                			playerOptions.add(new KillSoundOption(key, sound, name, level, cost, volume, pitch, mat, isCustom, position, page, menuSize));
+                			playerOptions.add(new KillSoundOption(key, sound, name, level, cost, volume, pitch, mat, true, position, page, menuSize));
                 		}
                 			
                     } else {
-                    	SkyWarsReloaded.get().getServer().getLogger().info(mat + " is not a valid Material in killsounds.yml");
+                    	SkyWarsReloaded.get().getServer().getLogger().info(material + " is not a valid Material in killsounds.yml");
                     }
             	}
             }
         }
         
-        Collections.<PlayerOption>sort(playerOptions);
+        Collections.sort(playerOptions);
         if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
        	 FileConfiguration storage = YamlConfiguration.loadConfiguration(soundFile);
        	 updateFile(soundFile, storage);
@@ -104,7 +105,7 @@ public class KillSoundOption extends PlayerOption {
     }
     
     private static void updateFile(File file, FileConfiguration storage) {
-        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
+        ArrayList<Integer> placement = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35,
         		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
         storage.set("menuSize", 45);
 		for (int i = 0; i < playerOptions.size(); i++) {

@@ -17,18 +17,19 @@ public class CreatorCmd extends BaseCmd {
 	@Override
 	public boolean run() {
 			String worldName = args[1].toLowerCase();
-			String creator = args[2];
+			StringBuilder creator = new StringBuilder();
 			for (int i = 2; i < args.length; i++) {
-				creator = creator + args[i] + " ";
+				creator.append(args[i]);
+				creator.append(" ");
 			}
-			creator = creator.substring(0, creator.length() - 1);
+			creator.substring(0, creator.length() - 1);
 			if (creator.length() == 0) {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-creator"));
 				return false;
 			}
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
-				map.setCreator(creator);
+				map.setCreator(creator.toString());
 				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("creator", args[2]).format("maps.creator"));
 				
 				return true;

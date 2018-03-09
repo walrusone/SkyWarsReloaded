@@ -1,15 +1,9 @@
 package com.walrusone.skywarsreloaded.utilities;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +30,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -65,21 +57,13 @@ public class Util {
 	
 	public boolean hp(String t, CommandSender sender, String s) {
 		if (t.equalsIgnoreCase("sw")) {
-			if (sender.hasPermission("sw." + s)) {
-				return true;
-			}
+			return sender.hasPermission("sw." + s);
 		} else if (t.equalsIgnoreCase("kit")) {
-			if (sender.hasPermission("sw.kit." + s)) {
-				return true;
-			}
+			return sender.hasPermission("sw.kit." + s);
 		} else if (t.equalsIgnoreCase("map")) {
-			if (sender.hasPermission("sw.map." + s)) {
-				return true;
-			}
+			return sender.hasPermission("sw.map." + s);
 		} else if (t.equalsIgnoreCase("party")) {
-			if (sender.hasPermission("sw.party." + s)) {
-				return true;
-			}
+			return sender.hasPermission("sw.party." + s);
 		}
 		return false;
 	}
@@ -134,6 +118,7 @@ public class Util {
 	
 	public boolean isInteger(String s) {
 		try {
+			//noinspection ResultOfMethodCallIgnored
 			Integer.parseInt(s);
 			return true;
 		} catch (NumberFormatException | NullPointerException e) {
@@ -143,6 +128,7 @@ public class Util {
 	
 	public boolean isFloat(String s) {
 		try {
+			//noinspection ResultOfMethodCallIgnored
 			Float.parseFloat(s);
 			return true;
 		} catch (NumberFormatException | NullPointerException e) {
@@ -165,43 +151,14 @@ public class Util {
     public String locationToString(final Location location) {
         return location.getWorld().getName() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
     }
-	
-    public void copyFiles(File source, File target){
-	    try {
-	        ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
-	        if(!ignore.contains(source.getName())) {
-	            if(source.isDirectory()) {
-	                if(!target.exists())
-	                target.mkdirs();
-	                String files[] = source.list();
-	                for (String file : files) {
-	                    File srcFile = new File(source, file);
-	                    File destFile = new File(target, file);
-	                    copyFiles(srcFile, destFile);
-	                }
-	            } else {
-	                InputStream in = new FileInputStream(source);
-	                OutputStream out = new FileOutputStream(target);
-	                byte[] buffer = new byte[1024];
-	                int length;
-	                while ((length = in.read(buffer)) > 0)
-	                    out.write(buffer, 0, length);
-	                in.close();
-	                out.close();
-	            }
-	        }
-	    } catch (IOException e) {
-	 
-	    }
-	}
-      
+
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
     	SkyWarsReloaded.getNMS().sendTitle(player, fadein, stay, fadeout, title, subtitle);
 	}
     
     public void clear(final Player player) {
         player.getInventory().clear();
-        player.getInventory().setArmorContents((ItemStack[])null);
+        player.getInventory().setArmorContents(null);
         for (final PotionEffect a1 : player.getActivePotionEffects()) {
         	player.removePotionEffect(a1.getType());
         }
@@ -237,16 +194,14 @@ public class Util {
 		if (ps == null) {
 			PlayerStat.getPlayers().add(new PlayerStat(player));
 			return true;
-		} else if (!ps.isInitialized()) {
-			return true;
-		}
-    	return false;
+		} else return !ps.isInitialized();
     }
     
     public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {
-        final List<FireworkEffect.Type> type = new ArrayList<FireworkEffect.Type>(Arrays.<FireworkEffect.Type>asList(FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.CREEPER));
-        final List<Color> colors = new ArrayList<Color>(Arrays.<Color>asList(Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW));
+        final List<FireworkEffect.Type> type = new ArrayList<>(Arrays.asList(FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.CREEPER));
+        final List<Color> colors = new ArrayList<>(Arrays.asList(Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW));
         final long currentTime = System.currentTimeMillis();
+        Random rand = new Random();
         if (SkyWarsReloaded.get().isEnabled()) {
             new BukkitRunnable() {
                 public void run() {
@@ -259,7 +214,10 @@ public class Util {
                             @SuppressWarnings({ "unchecked", "rawtypes" })
 							final Firework firework = (Firework)player.getLocation().getWorld().spawn(loc, (Class)Firework.class);
                             final FireworkMeta fMeta = firework.getFireworkMeta();
-                            fMeta.addEffects(new FireworkEffect[] { FireworkEffect.builder().withColor(colors.get(new Random().nextInt(17))).withColor(colors.get(new Random().nextInt(17))).withColor(colors.get(new Random().nextInt(17))).with((FireworkEffect.Type)type.get(new Random().nextInt(5))).trail(new Random().nextBoolean()).flicker(new Random().nextBoolean()).build() });
+                            FireworkEffect fe = FireworkEffect.builder().withColor(colors.get(rand.nextInt(17))).withColor(colors.get(rand.nextInt(17)))
+                                    .withColor(colors.get(rand.nextInt(17))).with(type.get(rand.nextInt(5))).trail(rand.nextBoolean())
+                                    .flicker(rand.nextBoolean()).build();
+                            fMeta.addEffects(fe);
                             fMeta.setPower(new Random().nextInt(2) + 2);
                             firework.setFireworkMeta(fMeta);
                         }
@@ -279,10 +237,9 @@ public class Util {
     	}
 	}
     
-    public List<Block> getBlocks(Location center, int radius,
-            boolean hollow, boolean sphere) {
-        List<Location> locs = circle(center, radius, radius, hollow, sphere, 0);
-        List<Block> blocks = new ArrayList<Block>();
+    private List<Block> getBlocks(Location center, int radius) {
+        List<Location> locs = circle(center, radius);
+        List<Block> blocks = new ArrayList<>();
  
         for (Location loc : locs) {
             blocks.add(loc.getBlock());
@@ -291,24 +248,19 @@ public class Util {
         return blocks;
     }
  
-    public List<Location> circle(Location loc, int radius, int height,
-            boolean hollow, boolean sphere, int plusY) {
-        List<Location> circleblocks = new ArrayList<Location>();
+    private List<Location> circle(Location loc, int radius) {
+        List<Location> circleblocks = new ArrayList<>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
         int cz = loc.getBlockZ();
  
         for (int x = cx - radius; x <= cx + radius; x++) {
             for (int z = cz - radius; z <= cz + radius; z++) {
-                for (int y = (sphere ? cy - radius : cy); y < (sphere ? cy
-                        + radius : cy + height); y++) {
-                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z)
-                            + (sphere ? (cy - y) * (cy - y) : 0);
- 
+                for (int y = (cy - radius); y < (cy + radius); y++) {
+                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + ((cy - y) * (cy - y));
                     if (dist < radius * radius
-                            && !(hollow && dist < (radius - 1) * (radius - 1))) {
-                        Location l = new Location(loc.getWorld(), x, y + plusY,
-                                z);
+                            && !(dist < (radius - 1) * (radius - 1))) {
+                        Location l = new Location(loc.getWorld(), x, y, z);
                         circleblocks.add(l);
                     }
                 }
@@ -323,7 +275,7 @@ public class Util {
         	if (player != null) {
     	    	Location l = player.getLocation().add(0, 1, 0);
     			final Random random = new Random();
-    	    	for (final Block b : getBlocks(l, r, true, false)){
+    	    	for (final Block b : getBlocks(l, r)) {
     	    		new BukkitRunnable() {
     					@Override
     					public void run() {
@@ -341,7 +293,7 @@ public class Util {
 	}
 	
 	public String getDeathMessage(DamageCause dCause, boolean withHelp, Player target, Player killer) {
-		String first = "";
+		String first;
 		String second = new Messaging.MessageFormatter()
 						.setVariable("killer", killer.getName())
 						.format("game.death.killer-section");
@@ -421,7 +373,7 @@ public class Util {
 		Block max = mapWorld.getBlockAt(maxX, maxY, maxZ);
 		Chunk cMin = min.getChunk();
 		Chunk cMax = max.getChunk();
-		List<Chunk> chunks = new ArrayList<Chunk>();
+		List<Chunk> chunks = new ArrayList<>();
 		
 		for(int cx = cMin.getX(); cx < cMax.getX(); cx++) {
 			for(int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {
@@ -440,7 +392,7 @@ public class Util {
         }
 
         if (lores.length > 0) {
-            List<String> loreList = new ArrayList<String>(lores.length);
+            List<String> loreList = new ArrayList<>(lores.length);
 
             for (String lore : lores) {
                 loreList.add(ChatColor.translateAlternateColorCodes('&', lore));
@@ -452,30 +404,6 @@ public class Util {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
-	
-	public double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
-
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
-	}
-	
-	public String formatScore(int score) {
-        return formatScore(score, "");
-    }
-
-    public String formatScore(int score, String note) {
-        char color = '7';
-
-        if (score > 0) {
-            color = 'a';
-        } else if (score < 0) {
-            color = 'c';
-        }
-
-        return "\247" + color + "(" + (score > 0 ? "+" : "") + score + " Elo" + ")";
-    }
     
     public void logToFile(String message) {
     	ConsoleCommandSender console = SkyWarsReloaded.get().getServer().getConsoleSender();
@@ -483,23 +411,17 @@ public class Util {
 
         try {
             File dataFolder = SkyWarsReloaded.get().getDataFolder();
-            if(!dataFolder.exists()) {
-                dataFolder.mkdir();
+            if (dataFolder.exists() || dataFolder.mkdir()) {
+                File saveTo = new File(dataFolder, "DebugLog.txt");
+                if (saveTo.exists() || saveTo.createNewFile()) {
+                    FileWriter fw = new FileWriter(saveTo, true);
+                    PrintWriter pw = new PrintWriter(fw);
+                    pw.println(ChatColor.stripColor(message));
+                    pw.flush();
+                    pw.close();
+                }
             }
- 
-            File saveTo = new File(dataFolder, "DebugLog.txt");
-            if (!saveTo.exists()) {
-                saveTo.createNewFile();
-            }
-            FileWriter fw = new FileWriter(saveTo, true);
-            PrintWriter pw = new PrintWriter(fw);
- 
-            pw.println(ChatColor.stripColor(message));
- 
-            pw.flush();
- 
-            pw.close();
-        } catch (IOException e) {
+        } catch(IOException e){
             e.printStackTrace();
         }
     }
@@ -534,12 +456,24 @@ public class Util {
 	     default: return (byte) -1;
 		 }
 	}
+
+    public String formatScore(int score) {
+        char color = '7';
+
+        if (score > 0) {
+            color = 'a';
+        } else if (score < 0) {
+            color = 'c';
+        }
+
+        return "\247" + color + "(" + (score > 0 ? "+" : "") + score + " Elo" + ")";
+    }
 	
 	public void setPlayerExperience(Player player, int amount) {
 		if (amount <= 352) {
 			int level = (int) Math.floor(quadraticEquationRoot(1, 6, 0-amount));
 			double nextLevel = 2 * level + 7;
-			double levelExp = (int) ((level * level) + 6 * level);
+			double levelExp = (level * level) + 6 * level;
 			double leftOver = amount - levelExp;
 			player.setLevel(level);
 			player.setExp((float) (leftOver/nextLevel));
@@ -580,7 +514,7 @@ public class Util {
 	    }
 	}
 		
-	public static double quadraticEquationRoot(double a, double b, double c) {    
+	private static double quadraticEquationRoot(double a, double b, double c) {
 	    double root1, root2;
 	    root1 = (-b + Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
 	    root2 = (-b - Math.sqrt(Math.pow(b, 2) - 4*a*c)) / (2*a);
@@ -601,13 +535,8 @@ public class Util {
 	}
 
 	public boolean isSpawnWorld(World world) {
-		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
-			if (world.equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-				return true;
-			}
-		}
-		return false;
-	}
+        return SkyWarsReloaded.getCfg().getSpawn() != null && world.equals(SkyWarsReloaded.getCfg().getSpawn().getWorld());
+    }
 
 	public CoordLoc getCoordLocFromString(String location) {
 		if (location != null) {

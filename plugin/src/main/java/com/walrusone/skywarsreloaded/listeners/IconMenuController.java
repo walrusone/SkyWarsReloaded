@@ -15,7 +15,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -40,10 +39,6 @@ public class IconMenuController implements Listener {
         }
     }
 
-    public IconMenu getMenu(Player player) {
-    	return menu.get(player);
-    }
-    
     public IconMenu getMenu(String string) {
     	return persistantMenus.get(string);
     }
@@ -62,33 +57,18 @@ public class IconMenuController implements Listener {
     public void show(Player player, @Nullable String key) {
     	if (key != null) {
     		if (persistantMenus.containsKey(key)) {
-                persistantMenus.get(key).openInventory(player, 0);;
+                persistantMenus.get(key).openInventory(player, 0);
             }
     	} else {
             if (menu.containsKey(player)) {
-                menu.get(player).openInventory(player, 0);;
+                menu.get(player).openInventory(player, 0);
             }
     	}
     }
 
-    public void destroy(Player key) {
+    private void destroy(Player key) {
         if (menu.containsKey(key)) {
             menu.remove(key);
-        }
-    }
-    
-    public void destroy(String key) {
-        if (persistantMenus.containsKey(key)) {
-            persistantMenus.remove(key);
-        }
-    }
-
-    public void destroyAll() {
-        for (String key : new HashSet<String>(persistantMenus.keySet())) {
-            destroy(key);
-        }
-        for (Player key : new HashSet<Player>(menu.keySet())) {
-            destroy(key);
         }
     }
 
@@ -100,7 +80,7 @@ public class IconMenuController implements Listener {
     	return persistantMenus.containsKey(key);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player && menu.containsKey(event.getWhoClicked())) {
             menu.get(event.getWhoClicked()).onInventoryClick(event);
@@ -119,7 +99,7 @@ public class IconMenuController implements Listener {
         	new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (menu.get(event.getPlayer()).getInventories().contains(event.getPlayer().getOpenInventory())) {
+					if (menu.get(event.getPlayer()).getInventories().contains(event.getPlayer().getOpenInventory().getTopInventory())) {
 						destroy(((Player) event.getPlayer()));
 					}
 				}

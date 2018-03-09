@@ -68,7 +68,7 @@ import net.milkbowl.vault.economy.Economy;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
-	private static ArrayList<String> useable = new ArrayList<String>();
+	private static ArrayList<String> useable = new ArrayList<>();
 	private Messaging messaging;
 	private Leaderboard leaderboard;
 	private IconMenuController ic;
@@ -114,7 +114,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             	SkyWarsReloaded.get().saveResource("config18.yml", false);
             	config = new File(SkyWarsReloaded.get().getDataFolder(), "config18.yml");
             	if (config.exists()) {
-            		config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
+            		boolean result = config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
+            		if (result) {
+            		    getLogger().info("Loading 1.8 Configuration Files");
+                    }
             	}
             } 
     	}
@@ -203,7 +206,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         	for (final UUID uuid: gameMap.getSpectators()) {
         		final Player player = getServer().getPlayer(uuid);
         		if (player != null) {
-        			MatchManager.get().removeSpectator(gameMap, player);
+        			MatchManager.get().removeSpectator(player);
         		}
         	}
             for (final Player player : gameMap.getAlivePlayers()) {
@@ -319,9 +322,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 		}
     	try {
 			db.createTables();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
     }
@@ -358,7 +359,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 					String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();
 					String maxPlayers = "" + GameMap.getMaps().get(0).getMaxPlayers();
 					String gameStarted = "" + GameMap.getMaps().get(0).getMatchState().toString();
-					ArrayList<String> messages = new ArrayList<String>();
+					ArrayList<String> messages = new ArrayList<>();
 					messages.add("ServerUpdate");
 					messages.add(servername);
 					messages.add(playerCount);

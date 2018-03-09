@@ -23,7 +23,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 public class AnvilRainEvent extends MatchEvent {
 
 	public int count; 
-	public int per5Tick;
+	private int per5Tick;
 	private BukkitTask br;
 	
 	public AnvilRainEvent(GameMap map, boolean b) {

@@ -17,9 +17,9 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class GlassColorOption extends PlayerOption {
-	private static ArrayList<PlayerOption> playerOptions = new ArrayList<PlayerOption>();
+	private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
 	
-    public GlassColorOption(String color, String name, ItemStack item, int level, int cost, int position, int page, int menuSize) {
+    private GlassColorOption(String color, String name, ItemStack item, int level, int cost, int position, int page, int menuSize) {
         this.item = item;
         this.level = level;
         this.cost = cost;
@@ -29,6 +29,7 @@ public class GlassColorOption extends PlayerOption {
         this.page = page;
         this.menuSize = menuSize;
     }
+
 	public static void loadPlayerOptions() {
     	playerOptions.clear();
         File glassFile = new File(SkyWarsReloaded.get().getDataFolder(), "glasscolors.yml");
@@ -42,7 +43,6 @@ public class GlassColorOption extends PlayerOption {
 
             if (storage.getConfigurationSection("colors") != null) {
             	for (String key: storage.getConfigurationSection("colors").getKeys(false)) {
-            		String color = key;
                 	String name = storage.getString("colors." + key + ".displayname");
                 	String material = storage.getString("colors." + key + ".material");
                 	int level = storage.getInt("colors." + key + ".level");
@@ -54,22 +54,19 @@ public class GlassColorOption extends PlayerOption {
                 	                	
                 	Material mat = Material.matchMaterial(material);
                 	if (mat != null) {
-                		ItemStack itemStack = null;
+                		ItemStack itemStack;
                 		if (data == -1) {
                 			itemStack = new ItemStack(mat, 1);
                 		} else {
                 			itemStack = new ItemStack(mat, 1, (short) data);
                 		}
-                		
-                        if (itemStack != null) {
-                            playerOptions.add(new GlassColorOption(color, name, itemStack, level, cost, position, page, menuSize));
-                        }
+                		playerOptions.add(new GlassColorOption(key, name, itemStack, level, cost, position, page, menuSize));
                 	}
             	}
             }
         }
         
-        Collections.<PlayerOption>sort(playerOptions);
+        Collections.sort(playerOptions);
         if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
        	 	FileConfiguration storage = YamlConfiguration.loadConfiguration(glassFile);
        	 	updateFile(glassFile, storage);
@@ -77,7 +74,7 @@ public class GlassColorOption extends PlayerOption {
     }
 	
     private static void updateFile(File file, FileConfiguration storage) {
-        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
+        ArrayList<Integer> placement = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35,
         		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
         storage.set("menuSize", 45);
 		for (int i = 0; i < playerOptions.size(); i++) {

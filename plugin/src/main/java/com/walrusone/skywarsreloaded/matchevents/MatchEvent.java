@@ -1,14 +1,8 @@
 package com.walrusone.skywarsreloaded.matchevents;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +20,7 @@ public abstract class MatchEvent {
 	protected int length;
 	protected int startTime;
 	protected int chance;
-	protected boolean useThisMatch;
+	private boolean useThisMatch;
 	protected boolean fired;
 	protected boolean repeatable;
 	protected String title;
@@ -48,7 +42,7 @@ public abstract class MatchEvent {
 		setStartTime();
 	}
 	
-	public void fireThisMatch() {
+	private void fireThisMatch() {
 		useThisMatch = false;
 		if (enabled) {
 			int rand = Util.get().getRandomNum(0, 100);
@@ -102,22 +96,7 @@ public abstract class MatchEvent {
 	public boolean announceEnabled() {
 		return announceEvent;
 	}
-	
-	protected void copyDefaults(File file) {
-	        FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(file);
-			Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("events.yml"));
-			if (defConfigStream != null) {
-				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-				playerConfig.options().copyDefaults(true);
-				playerConfig.setDefaults(defConfig);
-				try {
-					playerConfig.save(file);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}

@@ -4,5 +4,5 @@ public enum MatchState {
     WAITINGSTART, 
     PLAYING,
     ENDING,
-    OFFLINE;
+    OFFLINE,
 }

@@ -15,7 +15,6 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.Listener;
@@ -33,7 +32,7 @@ public class PlayerDeathListener implements Listener
          
         final Player player = v2.getEntity();
         v2.getEntity().getInventory().clear();
-        v2.getEntity().getInventory().setArmorContents((ItemStack[])null);
+        v2.getEntity().getInventory().setArmorContents(null);
         
         DamageCause damageCause = DamageCause.CUSTOM;
 		if (v2.getEntity().getLastDamageCause() != null) {
@@ -49,15 +48,27 @@ public class PlayerDeathListener implements Listener
     public void onRespawn(final PlayerRespawnEvent a1) {
         final PlayerData pData = PlayerData.getPlayerData(a1.getPlayer().getUniqueId());
         if (pData != null) {
-        	final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
-        	World world = gMap.getCurrentWorld();
-	        Location respawn = new Location(world, 0, 95, 0);
-            a1.setRespawnLocation(respawn);
-            new BukkitRunnable() {
-                public void run() {
-                  	MatchManager.get().addSpectator(gMap, a1.getPlayer());
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), 15L);
+        	if (SkyWarsReloaded.getCfg().spectateEnable()) {
+            	final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
+            	World world = gMap.getCurrentWorld();
+    	        Location respawn = new Location(world, 0, 95, 0);
+                a1.setRespawnLocation(respawn);
+                new BukkitRunnable() {
+                    public void run() {
+                      	MatchManager.get().addSpectator(gMap, a1.getPlayer());
+                    }
+                }.runTaskLater(SkyWarsReloaded.get(), 15L);
+        	} else {
+        		final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
+            	World world = gMap.getCurrentWorld();
+    	        Location respawn = new Location(world, 0, 200, 0);
+                a1.setRespawnLocation(respawn);
+                new BukkitRunnable() {
+                    public void run() {
+                      	pData.restore();
+                    }
+                }.runTaskLater(SkyWarsReloaded.get(), 15L);
+        	}
         }
         if (Util.get().isSpawnWorld(a1.getPlayer().getWorld())) {
         	a1.setRespawnLocation(SkyWarsReloaded.getCfg().getSpawn());

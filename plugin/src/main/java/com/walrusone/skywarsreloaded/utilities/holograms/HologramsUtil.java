@@ -18,14 +18,14 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public abstract class HologramsUtil {
 	protected static FileConfiguration fc;
-	protected static File holoFile;
-	protected static HashMap<LeaderType, List<String>> formats = new HashMap<LeaderType, List<String>>();
+	static File holoFile;
+	private static HashMap<LeaderType, List<String>> formats = new HashMap<>();
 	
 	public abstract void createLeaderHologram(Location loc, LeaderType type, String formatKey);
 	public abstract void updateLeaderHolograms(LeaderType type);
 	public abstract boolean removeHologram(Location loc);
 	
-	public void getFC() {
+	void getFC() {
 		holoFile = new File(SkyWarsReloaded.get().getDataFolder(), "holograms.yml");
 
         if (!holoFile.exists()) {
@@ -37,9 +37,7 @@ public abstract class HologramsUtil {
             for (LeaderType type: LeaderType.values()) {
             	 if (fc.getConfigurationSection("leaderboard." + type.toString().toLowerCase()) != null) {
                  	for (String key: fc.getConfigurationSection("leaderboard." + type.toString().toLowerCase()).getKeys(false)) {
-                 		if (formats.get(type) == null) {
-                 			formats.put(type, new ArrayList<String>());           		               			
-                 		}
+                 		formats.computeIfAbsent(type, k ->new ArrayList<>());
                  		formats.get(type).add(key);
                  	}
             	 }
@@ -69,7 +67,7 @@ public abstract class HologramsUtil {
 		}
 	}
 		
-	public String getFormattedString(String string, @Nullable LeaderType type) {
+	String getFormattedString(String string, @Nullable LeaderType type) {
 		String toReturn = string;
 		if (string.startsWith("item:")) {
 			return string;
@@ -80,12 +78,12 @@ public abstract class HologramsUtil {
 		}
 		for (String var: variables) {
 			String value = getVariable(var, type);
-			toReturn = toReturn.replaceAll("\\{" + var + "\\}", value);
+			toReturn = toReturn.replaceAll("\\{" + var + "}", value);
 		}
 		return toReturn;
 	}
 	
-	public String getVariable(String var, @Nullable LeaderType type) {
+	private String getVariable(String var, @Nullable LeaderType type) {
 		String[] parts = var.split("_");
 			if (SkyWarsReloaded.getLB() != null && SkyWarsReloaded.getLB().getTopList(type) != null && Util.get().isInteger(parts[1])) {
 				if (SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(parts[1])-1) {
@@ -106,13 +104,11 @@ public abstract class HologramsUtil {
 					} else if (parts[0].equalsIgnoreCase("games_played")) {
 						return "" + (SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses() + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins());
 					} else if (parts[0].equalsIgnoreCase("kill_death")) {
-						double stat = (double)((double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getKills()/(double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getDeaths());
-						String statString = String.format("%1$,.2f", stat);
-						return statString;
+						double stat = (double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getKills()/(double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getDeaths();
+						return String.format("%1$,.2f", stat);
 					} else if (parts[0].equalsIgnoreCase("win_loss")) {
-						double stat = (double)((double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins()/(double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses());
-						String statString = String.format("%1$,.2f", stat);
-						return statString;	
+						double stat = (double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins()/(double)SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses();
+						return String.format("%1$,.2f", stat);
 					}
 				}
 			}

@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Tagged;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -76,7 +75,7 @@ public class PlayerData {
 		        player.closeInventory();
 		        player.setGameMode(GameMode.SURVIVAL);
 		        if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
-			        Util.get().setPlayerExperience(player, pStats.getXp());
+		        	if (pStats != null) { Util.get().setPlayerExperience(player, pStats.getXp()); }
 		        }
 		        Util.get().clear(player);
 		        player.getInventory().clear();
@@ -125,7 +124,7 @@ public class PlayerData {
 	    }
 	        
 	    static {
-	        PlayerData.playerData = new ArrayList<PlayerData>();
+	        PlayerData.playerData = new ArrayList<>();
 	    }
 
 	    public void setTaggedBy(Player player) {

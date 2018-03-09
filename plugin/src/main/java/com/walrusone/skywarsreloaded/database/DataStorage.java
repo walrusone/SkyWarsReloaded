@@ -17,8 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
@@ -45,7 +43,7 @@ public class DataStorage {
 	            	return;
 	            }
 
-	            File playerFile = new File(playerDataDirectory, pData.getId().toString() + ".yml");
+	            File playerFile = new File(playerDataDirectory, pData.getId() + ".yml");
 	            if (!playerFile.exists()) {
 	            	SkyWarsReloaded.get().getLogger().info("File doesn't exist!");
 	            	return;
@@ -236,16 +234,14 @@ public class DataStorage {
 	private void copyDefaults(File playerFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
 		Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("playerFile.yml"));
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			playerConfig.options().copyDefaults(true);
-			playerConfig.setDefaults(defConfig);
-			try {
-				playerConfig.save(playerFile);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+		playerConfig.options().copyDefaults(true);
+		playerConfig.setDefaults(defConfig);
+		try {
+			playerConfig.save(playerFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -257,10 +253,12 @@ public class DataStorage {
 	            File playerDataDirectory = new File(dataDirectory, "player_data");
 
 	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+					SkyWarsReloaded.get().getLogger().info("Failed to create data directory");
 	            }
 
-	            File playerFile = new File(playerDataDirectory, uuid.toString() + ".yml");
+	            File playerFile = new File(playerDataDirectory, uuid + ".yml");
 	            if (!playerFile.exists() && !playerFile.createNewFile()) {
+	            	SkyWarsReloaded.get().getLogger().info("Failed to create playerfile for: " + uuid);
 	            }
 	            playerFile.delete();            
 	        } catch (IOException ioException) {
@@ -313,15 +311,19 @@ public class DataStorage {
 		            }
 
 		            Connection connection = database.getConnection();
-		            PreparedStatement preparedStatement = null;
-		            ResultSet resultSet = null;
+		            PreparedStatement preparedStatement;
+		            ResultSet resultSet;
 
 		            try {
 		        		StringBuilder queryBuilder = new StringBuilder();
 		                queryBuilder.append("SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` ");
 		                queryBuilder.append("FROM `sw_player` ");
 		                queryBuilder.append("GROUP BY `uuid` ");
-		                queryBuilder.append("ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";");
+		                queryBuilder.append("ORDER BY `");
+		                queryBuilder.append(type.toString().toLowerCase());
+		                queryBuilder.append("` DESC LIMIT ");
+		                queryBuilder.append(size);
+		                queryBuilder.append(";");
 		                
 		                preparedStatement = connection.prepareStatement(queryBuilder.toString());
 		                resultSet = preparedStatement.executeQuery();
@@ -461,10 +463,7 @@ public class DataStorage {
 	    	            copyDefaults(playerFile);
 	    	            FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 	    	            
-	    	            List<String> perms = new ArrayList<String>();
-	    	            for (String perm: playerStat.getPerms().getPermissions().keySet()) {
-	    	            	perms.add(perm);
-	    	            }
+	    	            List<String> perms = new ArrayList<>(playerStat.getPerms().getPermissions().keySet());
 	    	            fc.set("permissions", perms);
 	    	            fc.save(playerFile);
 	    	            

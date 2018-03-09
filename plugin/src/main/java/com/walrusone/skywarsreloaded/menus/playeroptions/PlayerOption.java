@@ -4,6 +4,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 
+import javax.annotation.Nonnull;
+
 public abstract class PlayerOption implements Comparable<PlayerOption> {
 		protected ItemStack item;
 		protected int level;
@@ -66,7 +68,7 @@ public abstract class PlayerOption implements Comparable<PlayerOption> {
 	    }
 	    
 		@Override
-		public int compareTo(PlayerOption o) {
+		public int compareTo(@Nonnull PlayerOption o) {
 			return Integer.compare(this.level, o.level);
 		}
 		

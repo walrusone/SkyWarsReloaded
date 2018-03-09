@@ -30,7 +30,6 @@ game:
   waitTimer: 10
   kitVotingEnabled: false
   spectateEnabled: true
-  spectateDistance: 75
   allowFallDamage: false
   maxMapSize: 400
   tauntsEnabled: true
@@ -38,6 +37,14 @@ game:
     speed:
     strength:
     jump: 
+chat:
+  enableFormatter: true
+  limitGameChatToGame: true
+  limitLobbyChatToLobby: true
+  limitSpecChatToSpec: true
+  externalChat:
+    useExternalChat: false
+    addPrefix: false  
 parties:
   enabled: true
   maxPartySize: 4

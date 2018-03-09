@@ -21,7 +21,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class PartyCmdManager implements CommandExecutor {
-	private List<BaseCmd> partycmds = new ArrayList<BaseCmd>();
+	private List<BaseCmd> partycmds = new ArrayList<>();
 
 	//Add New Commands Here
 	public PartyCmdManager() {
@@ -38,20 +38,20 @@ public class PartyCmdManager implements CommandExecutor {
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 
 		if (args.length == 0 || getCommands(args[0]) == null) {
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
-			sendHelp(partycmds, s, "1");
+			sendHelp(partycmds, s);
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
 		} else getCommands(args[0]).processCmd(s, args);
 		return true;
 	}
 	
-	private void sendHelp(List<BaseCmd> cmds, CommandSender s, String num) {
+	private void sendHelp(List<BaseCmd> cmds, CommandSender s) {
 		int count = 0;
 		for (BaseCmd cmd : cmds) {
 			if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
 				count++;
 				if (count == 1) {
 					s.sendMessage(" ");
-					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swparty.header" + num));
+					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swparty.header" + 1));
 				}
 				s.sendMessage(new Messaging.MessageFormatter().format("helpList.swparty." + cmd.cmdName));
 			}
@@ -59,9 +59,7 @@ public class PartyCmdManager implements CommandExecutor {
 	}
 
 	private BaseCmd getCommands(String s) {
-		BaseCmd cmd = null;
-		cmd = getCmd(partycmds, s);
-		return cmd;
+		return getCmd(partycmds, s);
 	}
 
 	private BaseCmd getCmd(List<BaseCmd> cmds, String s) {

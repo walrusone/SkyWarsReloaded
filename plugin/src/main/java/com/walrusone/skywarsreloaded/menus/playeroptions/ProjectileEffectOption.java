@@ -21,10 +21,10 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class ProjectileEffectOption extends PlayerOption {
 
-	private static ArrayList<PlayerOption> playerOptions = new ArrayList<PlayerOption>();
+	private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
     private List<ParticleEffect> effects;
     
-    public ProjectileEffectOption(String key, List<ParticleEffect> effects, String name, Material material, int level, int cost, int position, int page, int menuSize) {
+    private ProjectileEffectOption(String key, List<ParticleEffect> effects, String name, Material material, int level, int cost, int position, int page, int menuSize) {
         this.key = key;
     	this.level = level;
     	this.cost = cost;
@@ -57,7 +57,7 @@ public class ProjectileEffectOption extends PlayerOption {
                 	int page = storage.getInt("effects." + key + ".page");
                 	int menuSize = storage.getInt("menuSize");
                  	
-                 	List<ParticleEffect> effects = new ArrayList<ParticleEffect>();
+                 	List<ParticleEffect> effects = new ArrayList<>();
                  	if (particles != null) {
                  		for (String part: particles) {
                      		final String[] parts = part.split(":");
@@ -83,7 +83,7 @@ public class ProjectileEffectOption extends PlayerOption {
              }
          }
          
-         Collections.<PlayerOption>sort(playerOptions);
+         Collections.sort(playerOptions);
          if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
         	 FileConfiguration storage = YamlConfiguration.loadConfiguration(particleFile);
         	 updateFile(particleFile, storage);
@@ -91,7 +91,7 @@ public class ProjectileEffectOption extends PlayerOption {
     }
     
     private static void updateFile(File file, FileConfiguration storage) {
-        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
+        ArrayList<Integer> placement = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35,
         		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
         storage.set("menuSize", 45);
 		for (int i = 0; i < playerOptions.size(); i++) {

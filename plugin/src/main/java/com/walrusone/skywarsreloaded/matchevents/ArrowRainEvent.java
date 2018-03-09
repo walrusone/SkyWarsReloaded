@@ -24,7 +24,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 public class ArrowRainEvent extends MatchEvent {
 
 	public int count; 
-	public int per2Tick;
+	private int per2Tick;
 	private BukkitTask br;
 	
 	public ArrowRainEvent(GameMap map, boolean b) {

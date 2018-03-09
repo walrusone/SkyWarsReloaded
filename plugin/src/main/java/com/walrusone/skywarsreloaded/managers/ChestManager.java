@@ -29,8 +29,8 @@ public class ChestManager {
     private final List<ChestItem> crateItemList = Lists.newArrayList();
     private final Random random = new Random();
    
-    private List<Integer> randomLoc = new ArrayList<Integer>();
-    private List<Integer> randomDLoc = new ArrayList<Integer>();
+    private List<Integer> randomLoc = new ArrayList<>();
+    private List<Integer> randomDLoc = new ArrayList<>();
 
 
     public ChestManager() {
@@ -47,18 +47,18 @@ public class ChestManager {
     }
     
     public void addItems(List<ItemStack> items, ChestType ct, int percent) {
-    	List<ChestItem> toAddTo = null;
+    	List<ChestItem> toAddTo;
     	if (ct == ChestType.BASIC) {
     		toAddTo = basicChestItemList;
     	} else if (ct == ChestType.OP) {
     		toAddTo = opChestItemList;
     	} else if (ct == ChestType.NORMAL) {
     		toAddTo = chestItemList;
-    	} else if (ct == ChestType.CRATE) {
+    	} else {
     		toAddTo = crateItemList;
     	}
     	for (ItemStack item: items) {
-    		toAddTo.add(new ChestItem(item, percent));
+    	    toAddTo.add(new ChestItem(item, percent));
     	}
     	Collections.shuffle(toAddTo);
     	save(toAddTo, ct);
@@ -92,18 +92,17 @@ public class ChestManager {
     }
 	
     private void save(List<ChestItem> chestList, ChestType ct) {
-		String fileName = "";
+		String fileName;
     	if (ct == ChestType.BASIC) {
     		fileName = "basicchest.yml";
     	} else if (ct == ChestType.OP) {
     		fileName =  "opchest.yml";
-    	} else if (ct == ChestType.NORMAL) {
+    	} else {
     		fileName =  "chest.yml";
     	}
     	
-    	List<ChestItem> toSave = new ArrayList<ChestItem>();
-    	toSave.addAll(chestList);
-    	
+    	List<ChestItem> toSave = new ArrayList<>(chestList);
+
     	File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);
 
         if (!chestFile.exists()) {
@@ -113,9 +112,9 @@ public class ChestManager {
         if (chestFile.exists()) {
         	try {
         		FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
-                Collections.<ChestItem>sort(toSave);
+                Collections.sort(toSave);
                 int percent = 0;
-                List<ItemStack> items = new ArrayList<ItemStack>();
+                List<ItemStack> items = new ArrayList<>();
                 for (int j = 0; j <= toSave.size(); j++) {
                 	ChestItem cItem = null;
                 	if (j < toSave.size()) {

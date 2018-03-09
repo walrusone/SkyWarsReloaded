@@ -15,13 +15,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class GameKit {
 
-	private static ArrayList<GameKit> kits = new ArrayList<GameKit>();
+	private static ArrayList<GameKit> kits = new ArrayList<>();
 	private ItemStack[] inventory;
 	private ItemStack[] armor;
 	private ItemStack icon;
@@ -30,15 +29,15 @@ public class GameKit {
 	private String filename;
 	private int position;
 	private int page;
-	Map<Integer, String> lores = Maps.newHashMap();
+	private Map<Integer, String> lores = Maps.newHashMap();
 	private String lockedLore;
 	private boolean enabled;
 	private boolean requirePermission;
-	
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
 	public GameKit(File kitFile) {
         FileConfiguration storage = YamlConfiguration.loadConfiguration(kitFile);
-        
+
         List<ItemStack> inventoryItems = (List<ItemStack>) storage.getList("inventory");
         inventory = inventoryItems.toArray(new ItemStack[inventoryItems.size()]);
         
@@ -75,6 +74,7 @@ public class GameKit {
         try {
         	storage.save(kitFile);
 		} catch (IOException e) {
+        	SkyWarsReloaded.get().getLogger().info("Failed to save kit file!");
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class GameKit {
 	}
 	
 	public List<String> getColorLores() {
-		List<String> colorLores = new ArrayList<String>();
+		List<String> colorLores = new ArrayList<>();
 		int spaces = 0;
 		for (int x = 1; x < 17; x++ ) {
 			if (lores.get(x).equals(" ")) {
@@ -195,7 +195,7 @@ public class GameKit {
 		return colorLores;
 	}
 	
-	public Map<Integer, String> getLores() {
+	private Map<Integer, String> getLores() {
 		return this.lores;
 	}
 	
@@ -203,7 +203,7 @@ public class GameKit {
 		return ChatColor.translateAlternateColorCodes('&', lockedLore);
 	}
 	
-	public String getLockedLore() {
+	private String getLockedLore() {
 		return lockedLore;
 	}
 	
@@ -293,6 +293,7 @@ public class GameKit {
         try {
         	storage.save(kitFile);
 		} catch (IOException e) {
+            SkyWarsReloaded.get().getLogger().info("Failed to save new kit file!");
 		}
         GameKit.getKits().add(new GameKit(kitFile));
     }
@@ -337,6 +338,7 @@ public class GameKit {
         try {
         	storage.save(kitFile);
 		} catch (IOException e) {
+            SkyWarsReloaded.get().getLogger().info("Failed to save kit file!");
 		}
     }
 
@@ -382,7 +384,7 @@ public class GameKit {
     }
 
 	public static ArrayList<GameKit> getAvailableKits() {
-		ArrayList<GameKit> availableKits = new ArrayList<GameKit>();
+		ArrayList<GameKit> availableKits = new ArrayList<>();
 		for (GameKit kit: GameKit.getKits()) {
 			if (kit.enabled) {
 				availableKits.add(kit);

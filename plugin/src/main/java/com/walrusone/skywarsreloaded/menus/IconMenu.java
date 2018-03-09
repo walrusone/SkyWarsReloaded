@@ -23,10 +23,10 @@ public class IconMenu {
         this.invs = invs;
         for (int i = 0; i < invs.size(); i++) {
         	addExitItem(invs.get(i));
-        	if (i >= 0 && invs.size() > 0 && (i+1) < invs.size()) {
+        	if (invs.size() > 0 && (i+1) < invs.size()) {
         		addNextItem(invs.get(i));
         	}
-        	if (i > 0 && i < invs.size()) {
+        	if (i < invs.size()) {
         		addPrevItem(invs.get(i));
         	}
         }
@@ -112,7 +112,7 @@ public class IconMenu {
         private ItemStack item;
         private int slot;
 
-        public OptionClickEvent(Player player, String name, ClickType clickType, ItemStack itemStack, int slot) {
+        OptionClickEvent(Player player, String name, ClickType clickType, ItemStack itemStack, int slot) {
             this.player = player;
             this.name = name;
             this.clickType = clickType;

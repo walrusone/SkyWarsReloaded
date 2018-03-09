@@ -10,11 +10,11 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 
 public class GameQueue {
 
-	private Queue<PlayerCard> queue = new LinkedList<PlayerCard>();
+	private Queue<PlayerCard> queue = new LinkedList<>();
 	private GameMap map;
 	private boolean running = false;
 	
-	public GameQueue(GameMap g) {
+	GameQueue(GameMap g) {
 		map = g;
 	}
 	
@@ -25,7 +25,7 @@ public class GameQueue {
 		}
 	}
 	
-	public void sendToGame() {
+	private void sendToGame() {
 		if (!queue.isEmpty()) {
 			running = true;
 			if (SkyWarsReloaded.get().isEnabled()) {

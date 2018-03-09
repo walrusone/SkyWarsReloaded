@@ -37,7 +37,7 @@ public class ParticleEffect {
 		return offsetYL;
 	}
 
-	public void setOffsetYL(float offsetYL) {
+	private void setOffsetYL(float offsetYL) {
 		this.offsetYL = offsetYL;
 	}
 
@@ -45,7 +45,7 @@ public class ParticleEffect {
 		return offsetYU;
 	}
 
-	public void setOffsetYU(float offsetYU) {
+	private void setOffsetYU(float offsetYU) {
 		this.offsetYU = offsetYU;
 	}
 
@@ -53,7 +53,7 @@ public class ParticleEffect {
 		return amountU;
 	}
 
-	public void setAmountU(int amountU) {
+	private void setAmountU(int amountU) {
 		this.amountU = amountU;
 	}
 
@@ -61,7 +61,7 @@ public class ParticleEffect {
 		return amountL;
 	}
 
-	public void setAmountL(int amountL) {
+	private void setAmountL(int amountL) {
 		this.amountL = amountL;
 	}
 }

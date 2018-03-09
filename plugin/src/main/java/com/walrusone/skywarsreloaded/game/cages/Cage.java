@@ -16,7 +16,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public abstract class Cage {
 	
-	protected ArrayList<CoordLoc> coordOffsets = new ArrayList<CoordLoc>();
+	protected ArrayList<CoordLoc> coordOffsets = new ArrayList<>();
 	protected CageType cageType;
 	
 	public void createSpawnPlatforms(GameMap gMap) {
@@ -89,5 +89,4 @@ public abstract class Cage {
 	public CageType getType() {
 		return cageType;
 	}
-	
 }

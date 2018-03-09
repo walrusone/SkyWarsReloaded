@@ -22,7 +22,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class KitCmdManager implements CommandExecutor {
-	private List<BaseCmd> kitcmds = new ArrayList<BaseCmd>();
+	private List<BaseCmd> kitcmds = new ArrayList<>();
 
 	//Add New Commands Here
 	public KitCmdManager() {
@@ -42,20 +42,20 @@ public class KitCmdManager implements CommandExecutor {
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 
 		if (args.length == 0 || getCommands(args[0]) == null) {
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
-			sendHelp(kitcmds, s, "1");
+			sendHelp(kitcmds, s);
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
 		} else getCommands(args[0]).processCmd(s, args);
 		return true;
 	}
 	
-	private void sendHelp(List<BaseCmd> cmds, CommandSender s, String num) {
+	private void sendHelp(List<BaseCmd> cmds, CommandSender s) {
 		int count = 0;
 		for (BaseCmd cmd : cmds) {
 			if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
 				count++;
 				if (count == 1) {
 					s.sendMessage(" ");
-					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swkit.header" + num));
+					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swkit.header" + 1));
 				}
 				s.sendMessage(new Messaging.MessageFormatter().format("helpList.swkit." + cmd.cmdName));
 			}
@@ -63,9 +63,7 @@ public class KitCmdManager implements CommandExecutor {
 	}
 
 	private BaseCmd getCommands(String s) {
-		BaseCmd cmd = null;
-		cmd = getCmd(kitcmds, s);
-		return cmd;
+		return getCmd(kitcmds, s);
 	}
 
 	private BaseCmd getCmd(List<BaseCmd> cmds, String s) {

@@ -31,8 +31,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class CmdManager implements CommandExecutor {
-	private List<BaseCmd> admincmds = new ArrayList<BaseCmd>();
-	private List<BaseCmd> pcmds = new ArrayList<BaseCmd>();
+	private List<BaseCmd> admincmds = new ArrayList<>();
+	private List<BaseCmd> pcmds = new ArrayList<>();
 
 	public CmdManager() {
 		admincmds.add(new ReloadCmd("sw"));
@@ -95,7 +95,7 @@ public class CmdManager implements CommandExecutor {
 	}
 
 	private BaseCmd getCommands(String s) {
-		BaseCmd cmd = null;
+		BaseCmd cmd;
 		cmd = getCmd(admincmds, s);
 		if (cmd == null) cmd = getCmd(pcmds, s);
 		return cmd;

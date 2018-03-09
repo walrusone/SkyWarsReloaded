@@ -29,39 +29,37 @@ public class PlayerOptionsManager {
 
 	private final Map<Projectile, List<ParticleEffect>> projectileMap = Maps.newConcurrentMap();
 	private final Map<UUID, List<ParticleEffect>> playerMap = Maps.newConcurrentMap();
-	private final List<ParticleEffect> crateEffects = new ArrayList<ParticleEffect>();
+	private final List<ParticleEffect> crateEffects = new ArrayList<>();
 
     public PlayerOptionsManager() {
     	if (SkyWarsReloaded.getCfg().particlesEnabled()) {
     		crateEffects.add(new ParticleEffect("CRIT", 0, 2, 0, 8, 4));
     		crateEffects.add(new ParticleEffect("CRIT_MAGIC", 0, 2, 0, 8, 4));
-            SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), new Runnable() {
-    			public void run() {
-    				for (Projectile projectile: projectileMap.keySet()) {
-    					if (projectile.isDead()) {
-    						projectileMap.remove(projectile);
-    					} else {
-    						List<ParticleEffect> effects = projectileMap.get(projectile);
-    						doEffects(projectile.getLocation(), effects, true);
-    					}
-    				}
-    				for (UUID p: playerMap.keySet()) {
-    					Player player = Bukkit.getPlayer(p);
-    					if (player == null) {
-    						playerMap.remove(p);
-    					} else {
-    						List<ParticleEffect> effects = playerMap.get(p);
-    						doEffects(player.getLocation(), effects, false);
-    					}
-    				}
-    				
-    				for (GameMap gMap: GameMap.getPlayableArenas()) {
-    					for (Crate crate: gMap.getCrates()) {
-    						doEffects(crate.getEntity().getLocation(), crateEffects, false);
-    					}
-    				}
-    			}
-    		}, SkyWarsReloaded.getCfg().getTicksPerUpdate(), SkyWarsReloaded.getCfg().getTicksPerUpdate()); 
+            SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), () -> {
+                for (Projectile projectile: projectileMap.keySet()) {
+                    if (projectile.isDead()) {
+                        projectileMap.remove(projectile);
+                    } else {
+                        List<ParticleEffect> effects = projectileMap.get(projectile);
+                        doEffects(projectile.getLocation(), effects, true);
+                    }
+                }
+                for (UUID p: playerMap.keySet()) {
+                    Player player = Bukkit.getPlayer(p);
+                    if (player == null) {
+                        playerMap.remove(p);
+                    } else {
+                        List<ParticleEffect> effects = playerMap.get(p);
+                        doEffects(player.getLocation(), effects, false);
+                    }
+                }
+
+                for (GameMap gMap: GameMap.getPlayableArenas()) {
+                    for (Crate crate: gMap.getCrates()) {
+                        doEffects(crate.getEntity().getLocation(), crateEffects, false);
+                    }
+                }
+            }, SkyWarsReloaded.getCfg().getTicksPerUpdate(), SkyWarsReloaded.getCfg().getTicksPerUpdate());
     	}
     	GlassColorOption.loadPlayerOptions();
     	ParticleEffectOption.loadPlayerOptions();

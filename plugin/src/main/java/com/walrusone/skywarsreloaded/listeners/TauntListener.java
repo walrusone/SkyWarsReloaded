@@ -17,10 +17,10 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class TauntListener implements Listener {
 
-	private final HashMap<String, Long> lastHandSwap = new HashMap<String, Long>();
-	private final HashMap<String, Long> lastTaunt = new HashMap<String, Long>();
+	private final HashMap<String, Long> lastHandSwap = new HashMap<>();
+	private final HashMap<String, Long> lastTaunt = new HashMap<>();
 	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void pressedTauntKey(PlayerToggleSneakEvent e) {
 		Player player = e.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
@@ -51,15 +51,17 @@ public class TauntListener implements Listener {
 						}
 					}
 					PlayerStat ps = PlayerStat.getPlayerStats(e.getPlayer());
-					String tauntName = ps.getTaunt();
-					TauntOption taunt = (TauntOption) TauntOption.getPlayerOptionByKey(tauntName);
-					if (taunt != null) {
-						if (!taunt.getKey().equals("none")) {
-							taunt.performTaunt(e.getPlayer());
-						}
-					}
-					lastHandSwap.remove(uuid);
-					lastTaunt.put(uuid, System.currentTimeMillis());
+					if (ps != null) {
+                        String tauntName = ps.getTaunt();
+                        TauntOption taunt = (TauntOption) TauntOption.getPlayerOptionByKey(tauntName);
+                        if (taunt != null) {
+                            if (!taunt.getKey().equals("none")) {
+                                taunt.performTaunt(e.getPlayer());
+                            }
+                        }
+                        lastHandSwap.remove(uuid);
+                        lastTaunt.put(uuid, System.currentTimeMillis());
+                    }
 				} else {
 					lastHandSwap.put(uuid, System.currentTimeMillis());
 				}

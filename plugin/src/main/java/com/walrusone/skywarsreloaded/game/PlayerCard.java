@@ -55,8 +55,7 @@ public class PlayerCard {
 		if (uuid == null) {
 			return null;
 		}
-		Player player = Bukkit.getPlayer(uuid);
-		return player;
+		return Bukkit.getPlayer(uuid);
 	}
 	
 	public void setPreElo(int x) {

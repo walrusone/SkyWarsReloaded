@@ -48,13 +48,12 @@ public final class Messaging {
         if (storage.contains(format)) {
             return storage.getString(format);
         }
-
         return null;
     }
 
     public static class MessageFormatter {
 
-        private final static Pattern PATTERN = Pattern.compile("(?i)(\\{[a-z0-9_]+\\})");
+        private final static Pattern PATTERN = Pattern.compile("(?i)(\\{[a-z0-9_]+})");
         private final Map<String, String> variableMap = Maps.newHashMap();
         private boolean prefix;
 
@@ -66,9 +65,9 @@ public final class Messaging {
         public MessageFormatter setVariable(String format, String value) {
             if (format != null && !format.isEmpty()) {
                 if (value == null) {
-                    variableMap.remove( format );
+                    variableMap.remove(format);
                 } else {
-                    variableMap.put( format, value );
+                    variableMap.put(format, value);
                 }
             }
             return this;
@@ -81,6 +80,10 @@ public final class Messaging {
 
             if (SkyWarsReloaded.getMessaging().getMessage(message) != null) {
                 message = SkyWarsReloaded.getMessaging().getMessage(message);
+            }
+
+            if (message == null) {
+                return "";
             }
 
             Matcher matcher = PATTERN.matcher(message);
@@ -103,52 +106,20 @@ public final class Messaging {
 
             return ChatColor.translateAlternateColorCodes('&', message);
         }
-        
-        public String formatNoColor(String message) {
-            if (message == null || message.isEmpty()) {
-                return "";
-            }
-
-            if (SkyWarsReloaded.getMessaging().getMessage(message) != null) {
-                message = SkyWarsReloaded.getMessaging().getMessage(message);
-            }
-
-            Matcher matcher = PATTERN.matcher(message);
-
-            while (matcher.find()) {
-                String variable = matcher.group();
-                variable = variable.substring(1, variable.length() - 1);
-
-                String value = variableMap.get(variable);
-                if (value == null) {
-                    value = "";
-                }
-
-                message = message.replaceFirst(Pattern.quote(matcher.group()), Matcher.quoteReplacement(value));
-            }
-
-            if (prefix) {
-                message = SkyWarsReloaded.getMessaging().getPrefix() + message;
-            }
-
-            return message;
-        }
     }
 
 	private void copyDefaults(File playerFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
 		Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("messages.yml"));
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			playerConfig.options().copyDefaults(true);
-			playerConfig.setDefaults(defConfig);
-			try {
-				playerConfig.save(playerFile);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+        playerConfig.options().copyDefaults(true);
+        playerConfig.setDefaults(defConfig);
+        try {
+            playerConfig.save(playerFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
-    
+
 }

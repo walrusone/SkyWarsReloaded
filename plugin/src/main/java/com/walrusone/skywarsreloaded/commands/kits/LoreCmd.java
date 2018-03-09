@@ -22,16 +22,16 @@ public class LoreCmd extends BaseCmd {
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.no-kit"));
 			return true;
 		}
-		String message = "";
+		StringBuilder message = new StringBuilder();
 		for (int i = 3; i < args.length; i++) {
-		    message = message + args[i] + " ";
+		    message.append(args[i]);
+		    message.append(" ");
 		}
-		message = message.trim();
-		
+
 		if (Util.get().isInteger(args[2])) {
-			kit.setLoreLine(Integer.valueOf(args[2]), message);
+			kit.setLoreLine(Integer.valueOf(args[2]), message.toString().trim());
 		} else if (args[2].equalsIgnoreCase("locked")) {
-			kit.setLockedLore(message);
+			kit.setLockedLore(message.toString().trim());
 		} else {
 			player.sendMessage(new Messaging.MessageFormatter().format("command.kit-loreerror"));
 		}

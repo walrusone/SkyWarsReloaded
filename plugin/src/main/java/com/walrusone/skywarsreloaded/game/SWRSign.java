@@ -14,7 +14,7 @@ public class SWRSign {
 	private String gameName;
 	private Location location;
 	
-	public SWRSign(String name, Location loc) {
+	SWRSign(String name, Location loc) {
 		this.gameName = name;
 		this.location = loc;
 	}
@@ -23,11 +23,11 @@ public class SWRSign {
 		GameMap gMap = GameMap.getMap(this.gameName);
 		Location loc = this.location;
 		BlockState bs = loc.getBlock().getState();
-		Sign sign = null;
+		Sign sign;
 		if (bs instanceof Sign) {
 			sign = (Sign) bs;
 			Block b = sign.getBlock();
-			org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
+			org.bukkit.material.Sign meteSign;
 			meteSign = (org.bukkit.material.Sign) b.getState().getData();
 			Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
 			setMaterial(gMap, attachedBlock);
@@ -39,30 +39,28 @@ public class SWRSign {
 			} else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
 				state =  new Messaging.MessageFormatter().format("signs.playing");
 			} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-				state =  new Messaging.MessageFormatter().format("signs.ending");;
+				state =  new Messaging.MessageFormatter().format("signs.ending");
 			}
-			if (sign != null) {
-					sign.getBlock().getChunk().load();
-					if (gMap != null) {
-						sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
-								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-								setVariable("playercount", "" + gMap.getPlayerCount()).
-								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1"));
-						sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
-								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-								setVariable("playercount", "" + gMap.getPlayerCount()).
-								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2"));
-						sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
-								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-								setVariable("playercount", "" + gMap.getPlayerCount()).
-								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3"));
-						sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
-								setVariable("mapname", gMap.getDisplayName().toUpperCase()).
-								setVariable("playercount", "" + gMap.getPlayerCount()).
-								setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
-						}
-						sign.update();
+			sign.getBlock().getChunk().load();
+			if (gMap != null) {
+				sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
+						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+						setVariable("playercount", "" + gMap.getPlayerCount()).
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1"));
+				sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
+						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+						setVariable("playercount", "" + gMap.getPlayerCount()).
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2"));
+				sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
+						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+						setVariable("playercount", "" + gMap.getPlayerCount()).
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3"));
+				sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
+						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
+						setVariable("playercount", "" + gMap.getPlayerCount()).
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4"));
 			}
+			sign.update();
 		}
 	}
 	

@@ -44,7 +44,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class PlayerInteractListener implements Listener {
 	
     @SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onClick(final PlayerInteractEvent a1) {
     	final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
     	if (gameMap == null) {
@@ -99,13 +99,13 @@ public class PlayerInteractListener implements Listener {
             		 if (a1.getClickedBlock().getType() == Material.WALL_SIGN || a1.getClickedBlock().getType() == Material.SIGN_POST ) {
             				Sign s = (Sign) a1.getClickedBlock().getState();
             			    Location loc = s.getLocation();
-            			    	boolean joined = false;
+            			    	boolean joined;
             			    	for (GameMap gMap : GameMap.getMaps()) {
                 			    	if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
                 			    		Party party = Party.getParty(player);
                 			    		if (party != null) {
                 			    			if (party.getLeader().equals(player.getUniqueId())) {
-                    			    			joined = gMap.addPlayers(party);
+                    			    			gMap.addPlayers(party);
                 			    			} else {
                 			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                 			    			}
@@ -220,10 +220,6 @@ public class PlayerInteractListener implements Listener {
                 		|| item2.equals(SkyWarsReloaded.getIM().getItem("joinselect")) 
                 		|| item2.equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) ) {
         			event.setCancelled(true);
-        			return;
-        		}
-        		if (event.getClick().equals(ClickType.NUMBER_KEY)) {
-        			
         		}
         	} else {
         		if (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.ENDING)) {
@@ -236,7 +232,7 @@ public class PlayerInteractListener implements Listener {
         
     @EventHandler
     public void onPlayerDropItem(final PlayerDropItemEvent event) {
-    	final GameMap gameMap = MatchManager.get().getPlayerMap((Player) event.getPlayer());
+    	final GameMap gameMap = MatchManager.get().getPlayerMap(event.getPlayer());
     	if (gameMap == null) {
     		return;
     	}

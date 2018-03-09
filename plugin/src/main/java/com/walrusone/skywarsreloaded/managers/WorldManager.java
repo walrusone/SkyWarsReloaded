@@ -11,16 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.*;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 
 public class WorldManager {
 
@@ -31,17 +26,19 @@ public class WorldManager {
 	        if (loaded) {
 	        	world = Bukkit.getWorld(name);
 	        }
-	        world.getBlockAt(0, 75, 0).setType(Material.STONE);
-	        return world;
-		} else {
-			return null;
+	        if (world != null) {
+				world.getBlockAt(0, 75, 0).setType(Material.STONE);
+				return world;
+			}
 		}
+		return null;
     }
 
 	public boolean loadWorld(String worldName){
 		WorldCreator worldCreator = new WorldCreator(worldName);
-        worldCreator.environment(World.Environment.NORMAL);
+        worldCreator.type(WorldType.NORMAL);
 		worldCreator.generateStructures(false);
+		worldCreator.environment(World.Environment.NORMAL);
         worldCreator.generator(new ChunkGenerator() {
             @Override
         	public List<BlockPopulator> getDefaultPopulators(World world) {
@@ -52,7 +49,8 @@ public class WorldManager {
             public boolean canSpawn(World world, int x, int z) {
                 return true;
             }
-            
+
+            @SuppressWarnings("deprecation")
             @Override
             public byte[] generate(World world, Random random, int x, int z) {
                 return new byte[32768];
@@ -99,17 +97,20 @@ public class WorldManager {
 
 	public void copyWorld(File source, File target){
 	    try {
-	        ArrayList<String> ignore = new ArrayList<String>(Arrays.asList("uid.dat", "session.dat"));
+	        ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.dat"));
 	        if(!ignore.contains(source.getName())) {
 	            if(source.isDirectory()) {
 	                if(!target.exists())
-	                target.mkdirs();
-	                String files[] = source.list();
-	                for (String file : files) {
-	                    File srcFile = new File(source, file);
-	                    File destFile = new File(target, file);
-	                    copyWorld(srcFile, destFile);
-	                }
+	                if (target.mkdirs()) {
+                        String[] files = source.list();
+                        if (files != null) {
+                            for (String file : files) {
+                                File srcFile = new File(source, file);
+                                File destFile = new File(target, file);
+                                copyWorld(srcFile, destFile);
+                            }
+                        }
+                    }
 	            } else {
 	                InputStream in = new FileInputStream(source);
 	                OutputStream out = new FileOutputStream(target);
@@ -122,26 +123,29 @@ public class WorldManager {
 	            }
 	        }
 	    } catch (IOException e) {
-	 
+	        SkyWarsReloaded.get().getLogger().info("Failed to copy world as required!");
 	    }
 	}
 	
-	public void deleteWorld(String name) {
+	public boolean deleteWorld(String name) {
 		unloadWorld(name);
 		File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), name);
-		deleteWorld(target);
+		return deleteWorld(target);
 	}
 	
-	public boolean deleteWorld(File path) {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    public boolean deleteWorld(File path) {
 	      if(path.exists()) {
-	          File files[] = path.listFiles();
-	          for(int i=0; i<files.length; i++) {
-	              if(files[i].isDirectory()) {
-	                  deleteWorld(files[i]);
-	              } else {
-	                  files[i].delete();
-	              }
-	          }
+	          File[] files = path.listFiles();
+	          if (files != null) {
+                  for (File file: files) {
+                      if(file.isDirectory()) {
+                          deleteWorld(file);
+                      } else {
+                          file.delete();
+                      }
+                  }
+              }
 	      }
 	      return(path.delete());
 	}

@@ -8,19 +8,16 @@ import org.bukkit.inventory.Inventory;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.PlayerOptions;
-import com.walrusone.skywarsreloaded.menus.IconMenu;
-import com.walrusone.skywarsreloaded.menus.IconMenu.OptionClickEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class OptionsSelectionMenu {
 
-    private static int menuSize = 27;
     private static final String menuName = new Messaging.MessageFormatter().format("menu.options-menu-title");
     
     public OptionsSelectionMenu(final Player player) {
-    	
-    	Inventory inv = Bukkit.createInventory(null, menuSize + 9, menuName);
+        int menuSize = 27;
+        Inventory inv = Bukkit.createInventory(null, menuSize + 9, menuName);
 
         if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
         	inv.setItem(SkyWarsReloaded.getCfg().getGlassSlot(), SkyWarsReloaded.getIM().getItem("glassselect"));
@@ -42,40 +39,34 @@ public class OptionsSelectionMenu {
         	inv.setItem(SkyWarsReloaded.getCfg().getTauntSlot(), SkyWarsReloaded.getIM().getItem("tauntselect"));
         }
                
-        ArrayList<Inventory> invs = new ArrayList<Inventory>();
+        ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(inv);
 
-        SkyWarsReloaded.getIC().create(player, invs, new IconMenu.OptionClickEventHandler() {
-			@Override
-            public void onOptionClick(OptionClickEvent event) {
-                
-                String name = event.getName();
+        SkyWarsReloaded.getIC().create(player, invs, event -> {
 
-                if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.particle-effect-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.PARTICLEEFFECT, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenParticleMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.projectile-effect-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.PROJECTILEEFFECT, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenProjectileMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.killsound-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.KILLSOUND, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKillSoundMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.winsound-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.WINSOUND, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenWinSoundMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.glass-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.GLASSCOLOR, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenGlassMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.taunt-sel"))) {
-                	new OptionSelectionMenu(player, PlayerOptions.TAUNT, false);
-		            Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenTauntMenuSound(), 1, 1);
-                } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.exit-menu-item"))) {
-                	player.closeInventory();
-                } else {
-                	return;
-                }
+            String name = event.getName();
+
+            if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.particle-effect-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.PARTICLEEFFECT, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenParticleMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.projectile-effect-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.PROJECTILEEFFECT, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenProjectileMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.killsound-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.KILLSOUND, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKillSoundMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.winsound-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.WINSOUND, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenWinSoundMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.glass-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.GLASSCOLOR, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenGlassMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.taunt-sel"))) {
+                new OptionSelectionMenu(player, PlayerOptions.TAUNT, false);
+                Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenTauntMenuSound(), 1, 1);
+            } else if (name.equalsIgnoreCase(new Messaging.MessageFormatter().format("items.exit-menu-item"))) {
+                player.closeInventory();
             }
-			
         });
                 
         if (player != null) {

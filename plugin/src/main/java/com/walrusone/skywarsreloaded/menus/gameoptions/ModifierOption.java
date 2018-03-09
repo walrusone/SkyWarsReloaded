@@ -27,7 +27,7 @@ public class ModifierOption extends GameOption {
 	
 	@Override
 	protected void doSlotNine(Player player) {
-		Vote cVote = Vote.MODIFIERRANDOM;;
+		Vote cVote = Vote.MODIFIERRANDOM;
 		String type = new Messaging.MessageFormatter().format("items.modifier-random");
 		finishEvent(player, cVote, type);
 	}

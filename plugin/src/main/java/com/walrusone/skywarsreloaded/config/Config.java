@@ -125,7 +125,6 @@ public class Config {
     private boolean winsoundEnabled;
     private boolean tauntsMenuEnabled;
 	
-	
 	private boolean playSounds;
 	private String countdown;
 	private String joinSound;
@@ -149,7 +148,6 @@ public class Config {
 	private String errorSound;
 	
 	private boolean spectateEnabled;
-	private int spectateDistance;
 
 	private boolean disableCommands;
 	private List<String> enabledCommands;
@@ -157,7 +155,15 @@ public class Config {
 	private boolean disableCommandsSpectate;
 	private List<String> enabledCommandsSpectate;
 	
-	private Map<String, String> materials = new HashMap<String, String>();
+	private boolean useExternalChat;
+	private boolean addPrefix;
+	private boolean enableFormatter;
+	private boolean limitGameChat;
+	private boolean limitSpecChat;
+	private boolean limitLobbyChat;
+	
+	
+	private Map<String, String> materials = new HashMap<>();
 	private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", 
 			"exitMenuItem", "nextPageItem", "prevPageItem",
 			"exitGameItem",
@@ -213,7 +219,7 @@ public class Config {
 	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
 	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
 	
-	boolean loading = false;
+	private boolean loading = false;
 	
 	public Config() {
 		load();
@@ -268,7 +274,6 @@ public class Config {
 			allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
 			kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
 			spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
-			spectateDistance = SkyWarsReloaded.get().getConfig().getInt("game.spectateDistance");
 			maxMapSize = SkyWarsReloaded.get().getConfig().getInt("game.maxMapSize");
 			pressurePlate = SkyWarsReloaded.get().getConfig().getBoolean("enablePressurePlateJoin");
 			teleportOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("teleportToSpawnOnJoin");
@@ -290,7 +295,7 @@ public class Config {
 			
 			if (spawn != null) {
 				if (lobbyWorlds == null) {
-					lobbyWorlds = new ArrayList<String>();
+					lobbyWorlds = new ArrayList<>();
 				}
 				if (!lobbyWorlds.contains(spawn.getWorld().getName())) {
 					lobbyWorlds.add(spawn.getWorld().getName());
@@ -371,6 +376,13 @@ public class Config {
 			
 			disableCommandsSpectate = SkyWarsReloaded.get().getConfig().getBoolean("disable-commands-spectate.enabled");
 			enabledCommandsSpectate = SkyWarsReloaded.get().getConfig().getStringList("disable-commands-spectate.exceptions");
+			
+			useExternalChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.externalChat.useExternalChat");
+			addPrefix = SkyWarsReloaded.get().getConfig().getBoolean("chat.externalChat.addPrefix");
+			enableFormatter = SkyWarsReloaded.get().getConfig().getBoolean("chat.enableFormatter");
+			limitGameChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitGameChatToGame");
+			limitSpecChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitSpecChatToSpec");
+			limitLobbyChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitLobbyChatToLobby");
 
 			for (int i = 0; i < itemNames.size(); i++) {
 				String name = itemNames.get(i);
@@ -404,7 +416,7 @@ public class Config {
 			matWithData = matParts[0];
 			data = Integer.valueOf(matParts[1]);
 		}	
-		Material material = null;
+		Material material;
 		if (data != -1) {
 			material = Material.matchMaterial(matWithData);
 		} else {
@@ -462,7 +474,6 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("fireworks.per5Ticks", fireworksPer5Tick);
 		SkyWarsReloaded.get().getConfig().set("fireworks.enabled", fireworksEnabled);
 		SkyWarsReloaded.get().getConfig().set("game.spectateEnabled", spectateEnabled);
-		SkyWarsReloaded.get().getConfig().set("game.spectateDistance", spectateDistance);
 		SkyWarsReloaded.get().getConfig().set("game.maxMapSize", maxMapSize);
 		SkyWarsReloaded.get().getConfig().set("game.tauntsEnabled", tauntsEnabled);
 		SkyWarsReloaded.get().getConfig().set("enablePressurePlateJoin", pressurePlate);
@@ -558,8 +569,14 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("disable-commands-spectate.enabled", disableCommandsSpectate);
 		SkyWarsReloaded.get().getConfig().set("disable-commands-spectate.exceptions", enabledCommandsSpectate);
 		
-		for (int i = 0; i < itemNames.size(); i++) {
-			String name = itemNames.get(i);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.externalChat.useExternalChat", useExternalChat);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.externalChat.addPrefix", addPrefix);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.enableFormatter", enableFormatter);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.limitGameChatToGame", limitGameChat);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.limitSpecChatToSpec", limitSpecChat);
+		SkyWarsReloaded.get().getConfig().getBoolean("chat.limitLobbyChatToLobby", limitLobbyChat);
+
+		for (String name: itemNames) {
 			SkyWarsReloaded.get().getConfig().set("items." + name, materials.get(name));
 		}
 		
@@ -614,16 +631,12 @@ public class Config {
 		return playSounds;
 	}
 	
-	public boolean spectateEnabled() {
+	public boolean spectateEnable() {
 		return spectateEnabled;
 	}
 
 	public boolean debugEnabled() {
 		return debug;
-	}
-
-	public int getSpectateDistance() {
-		return spectateDistance;
 	}
 
 	public int getMaxMapSize() {
@@ -754,20 +767,12 @@ public class Config {
 		return teleportOnJoin;
 	}
 	
-	public boolean teleportOnWorldEnter() {
-		return teleportOnWorldEnter;
-	}
-
 	public int getRandPos() {
 		return randPos;
 	}
 	
 	public Material getRandMat() {
-		Material mat = Material.valueOf(randMat);
-		if (mat == null) {
-			return Material.NETHER_STAR;
-		}
-		return mat;
+		return Material.valueOf(randMat);
 	}
 	
 	public int getNoKitPos() {
@@ -775,11 +780,7 @@ public class Config {
 	}
 	
 	public Material getNoKitMat() {
-		Material mat = Material.valueOf(noKitMat);
-		if (mat == null) {
-			return Material.GLASS;
-		}
-		return mat;
+		return Material.valueOf(noKitMat);
 	}
 	
 	public boolean promptForResource() {
@@ -983,7 +984,7 @@ public class Config {
 	}
 
 	public void setEconomyEnabled(boolean b) {
-		economyEnabled = false;
+		economyEnabled = b;
 	}
 
 	public boolean hologramsEnabled() {
@@ -1068,6 +1069,30 @@ public class Config {
 
 	public int getMaxChest() {
 		return maxDoubleChest;
+	}
+	
+	public boolean useExternalChat() {
+		return useExternalChat;
+	}
+
+	public boolean addPrefix() {
+		return addPrefix;
+	}
+
+	public boolean formatChat() {
+		return enableFormatter;
+	}
+	
+	public boolean limitGameChat() {
+		return limitGameChat;
+	}
+	
+	public boolean limitSpecChat() {
+		return limitSpecChat;
+	}
+	
+	public boolean limitLobbyChat() {
+		return limitLobbyChat;
 	}
 }
 

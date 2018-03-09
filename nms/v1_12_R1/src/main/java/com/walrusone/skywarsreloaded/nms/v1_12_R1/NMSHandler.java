@@ -42,7 +42,6 @@ import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,7 +50,7 @@ import org.bukkit.material.MaterialData;
 
 import com.walrusone.skywarsreloaded.api.NMS;
 
-public class NMSHandler implements NMS, Listener {
+public class NMSHandler implements NMS {
 	
 	public void respawnPlayer(Player player) {
 		((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)player).getHandle(), 0, false);
@@ -139,7 +138,6 @@ public class NMSHandler implements NMS, Listener {
         return addItem;
 	}
 
-	@Override
 	public ItemStack getItemStack(ItemStack item, List<String> lore, String message) {
 		ItemStack addItem = item.clone();
         ItemMeta addItemMeta = addItem.getItemMeta();
@@ -155,7 +153,6 @@ public class NMSHandler implements NMS, Listener {
         return addItem;
 	}	
 	
-	@Override
 	public boolean isValueParticle(String string) {
 		try {
 			Particle.valueOf(string);
@@ -165,7 +162,6 @@ public class NMSHandler implements NMS, Listener {
 		return true;
 	}
 	
-	@Override 
 	public void updateSkull(Skull skull, UUID uuid) {
 		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 	}
@@ -174,7 +170,6 @@ public class NMSHandler implements NMS, Listener {
 		player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 	}
 
-	@Override
 	public void spawnDragon(World world, Location loc) {
 		WorldServer w = ((CraftWorld) world).getHandle();
 		EntityEnderDragon dragon = new EntityEnderDragon(w);
@@ -183,7 +178,6 @@ public class NMSHandler implements NMS, Listener {
 		w.addEntity(dragon);
 	}
 	
-	@Override
 	public Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
 		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, new MaterialData(mat));
 		block.setDropItem(false);
@@ -192,7 +186,6 @@ public class NMSHandler implements NMS, Listener {
 		return block;
 	}
 	
-	@Override
 	public void playEnderChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
@@ -201,14 +194,13 @@ public class NMSHandler implements NMS, Listener {
         world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
     }
 	
-	@Override
 	public void setEntityTarget(Entity ent, Player player) {
 		EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
 		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
 	}
 
-	@Override
 	public void updateSkull(SkullMeta meta1, Player player) {
 		meta1.setOwningPlayer(player);
 	}
+	
 }

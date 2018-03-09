@@ -22,12 +22,13 @@ public class HoloAddCmd extends BaseCmd {
 		if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
 			LeaderType type = LeaderType.matchType(args[1].toUpperCase());
 			if (type == null || !SkyWarsReloaded.getUseable().contains(type.toString())) {
-				String types = "";
+				StringBuilder types = new StringBuilder();
 				for (String add: SkyWarsReloaded.getUseable()) {
-					types = types + add + ", ";
+					types.append(add);
+					types.append(", ");
 				}
-				types = types.substring(0, types.length() - 2);
-				player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types).format("leaderboard.invalidtype"));
+				types.substring(0, types.length() - 2);
+				player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
 				return false;
 			}
 			String format = args[2];
@@ -36,12 +37,13 @@ public class HoloAddCmd extends BaseCmd {
 				return true;
 			}
 			
-			String types = "";
+			StringBuilder formats = new StringBuilder();
 			for (String add: SkyWarsReloaded.getHoloManager().getFormats(type)) {
-				types = types + add + ", ";
+			    formats.append(add);
+			    formats.append(", ");
 			}
-			types = types.substring(0, types.length() - 2);
-			player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types).format("leaderboard.invalidformat"));
+			formats.substring(0, formats.length() - 2);
+			player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", formats.toString()).format("leaderboard.invalidformat"));
 			return false;
 		}
 		player.sendMessage(ChatColor.RED + "Holograms are not enabled!");

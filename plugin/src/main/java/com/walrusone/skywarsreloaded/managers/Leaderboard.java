@@ -3,7 +3,6 @@ package com.walrusone.skywarsreloaded.managers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +27,10 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class Leaderboard {
-	private static HashMap<LeaderType, List<LeaderData>> topLeaders =  new HashMap<LeaderType, List<LeaderData>>();
-	private static HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<LeaderType, ArrayList<LeaderData>>();
-	private static HashMap<LeaderType, Boolean> loaded = new HashMap<LeaderType, Boolean>();
-	private static HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>>();
+	private static HashMap<LeaderType, List<LeaderData>> topLeaders =  new HashMap<>();
+	private static HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<>();
+	private static HashMap<LeaderType, Boolean> loaded = new HashMap<>();
+	private static HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<>();
 	
 	public Leaderboard() {
 		loaded.put(LeaderType.DEATHS, false);
@@ -43,24 +42,21 @@ public class Leaderboard {
 		
 		for (LeaderType type: LeaderType.values()) {
 			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-				leaders.put(type, new ArrayList<LeaderData>());
+				leaders.put(type, new ArrayList<>());
 				if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
-					signs.put(type, new HashMap<Integer, ArrayList<Location>>());
+					signs.put(type, new HashMap<>());
 					getSigns(type);
 				}
 			}
 		}
 				
-		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), new Runnable() {
-			@Override
-			public void run() {
-				for (LeaderType type: LeaderType.values()) {
-					if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-						DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
-					}
-				}
-			}
-		}, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
+		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), () -> {
+            for (LeaderType type: LeaderType.values()) {
+                if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+                    DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
+                }
+            }
+        }, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
 	}
 	
 	public void addLeader(LeaderType type, String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
@@ -74,7 +70,7 @@ public class Leaderboard {
 	public void finishedLoading(LeaderType type) {
 		loaded.put(type, false);
 		topLeaders.remove(type);
-		topLeaders.put(type, (List<LeaderData>) getTop(SkyWarsReloaded.getCfg().getLeaderSize(), type));
+		topLeaders.put(type, getTop(SkyWarsReloaded.getCfg().getLeaderSize(), type));
 		loaded.put(type, true);
 		if (SkyWarsReloaded.getCfg().leaderSignsEnabled() && SkyWarsReloaded.get().isEnabled()) {
 			new BukkitRunnable() {
@@ -94,9 +90,8 @@ public class Leaderboard {
 	}
     
     private List<LeaderData> getTop(final int top, LeaderType type) {
-        final ArrayList<LeaderData> pData = new ArrayList<LeaderData>();
-        pData.addAll(leaders.get(type));
-        Collections.<LeaderData>sort(pData, new RankComparator(type));
+        final ArrayList<LeaderData> pData = new ArrayList<>(leaders.get(type));
+        pData.sort(new RankComparator(type));
         return pData.subList(0, (top > pData.size()) ? pData.size() : top);
     }
     
@@ -104,7 +99,7 @@ public class Leaderboard {
     	return topLeaders.get(type);
     }
     
-    public void getSigns(LeaderType type) {
+    private void getSigns(LeaderType type) {
 		 File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "leaderboards.yml");
 
 	     if (!leaderboardsFile.exists()) {
@@ -116,7 +111,7 @@ public class Leaderboard {
 	       	for (int i = 1; i < 11; i++) {
 	       		List<String> locations = storage.getStringList(type.toString().toLowerCase() + ".signs." + i);
 	       		if (locations != null) {
-	       			ArrayList<Location> locs = new ArrayList<Location>();
+	       			ArrayList<Location> locs = new ArrayList<>();
 	       			for (String location: locations) {
 	       				Location loc = Util.get().stringToLocation(location);
 	       				locs.add(loc);
@@ -128,7 +123,7 @@ public class Leaderboard {
     	
     }
     
-    public void saveSigns(LeaderType type) {
+    private void saveSigns(LeaderType type) {
     	 File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "leaderboards.yml");
 
 	     if (!leaderboardsFile.exists()) {
@@ -139,7 +134,7 @@ public class Leaderboard {
 	       	FileConfiguration storage = YamlConfiguration.loadConfiguration(leaderboardsFile);
 	       	for (int pos: signs.get(type).keySet()) {
 	       		if (signs.get(type).get(pos) != null) {
-	       			List<String> locs = new ArrayList<String>();
+	       			List<String> locs = new ArrayList<>();
 	       			for (Location loc: signs.get(type).get(pos)) {
 	       				locs.add(Util.get().locationToString(loc));
 	       			}
@@ -149,6 +144,7 @@ public class Leaderboard {
 	       	try {
 				storage.save(leaderboardsFile);
 			} catch (IOException e) {
+	       		SkyWarsReloaded.get().getLogger().info("[ERROR] Failed to save leaderboards file");
 			}
 	     }
 	     
@@ -175,7 +171,7 @@ public class Leaderboard {
     	return false;
     }
     
-    public void updateSigns(LeaderType type) {
+    private void updateSigns(LeaderType type) {
     	List<LeaderData> top = getTopList(type);
     	if (top != null) {
     		for (int pos: signs.get(type).keySet()) {
@@ -200,10 +196,10 @@ public class Leaderboard {
                 						.setVariable("type", type.toString())
                 						.format("leaderboard.signformats." + type.toString().toLowerCase() + ".line" + (i + 1)));
             				}
-            			}
-            			sign.update();
-            			if (SkyWarsReloaded.getCfg().leaderHeadsEnabled()) {
-            				updateHead(sign, top.get(pos-1).getUUID());
+                            sign.update();
+                            if (SkyWarsReloaded.getCfg().leaderHeadsEnabled()) {
+                                updateHead(sign, top.get(pos-1).getUUID());
+                            }
             			}
             		}
         		}	
@@ -213,7 +209,7 @@ public class Leaderboard {
     
     private void updateHead(Sign sign, UUID uuid) {
 		Block b = sign.getBlock();
-		org.bukkit.material.Sign meteSign = new org.bukkit.material.Sign();
+		org.bukkit.material.Sign meteSign;
 		meteSign = (org.bukkit.material.Sign) b.getState().getData();
 		BlockFace facing = meteSign.getFacing();
 		Block h1 = b.getRelative(BlockFace.UP, 1);
@@ -248,7 +244,7 @@ public class Leaderboard {
     {
     	private LeaderType type;
     	
-    	public RankComparator(LeaderType deaths) {
+    	RankComparator(LeaderType deaths) {
         	type = deaths;
 		}
 
@@ -289,7 +285,7 @@ public class Leaderboard {
 		private int elo;
 		private int xp;
 		
-		public LeaderData(String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
+		LeaderData(String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
 			this.uuid = uuid;
 			this.name = name;
 			this.wins = wins;
@@ -298,18 +294,6 @@ public class Leaderboard {
 			this.deaths = deaths;
 			this.elo = elo;
 			this.xp = xp;
-		}
-		
-		public int getStat(LeaderType type) {
-			switch (type) {
-			case ELO: return getElo();
-			case DEATHS: return getDeaths();
-			case KILLS: return getKills();
-			case LOSSES: return getLoses();
-			case WINS: return getWins();
-			case XP: return getXp();
-			default: return getElo();
-			}
 		}
 			
 		public String getName() {

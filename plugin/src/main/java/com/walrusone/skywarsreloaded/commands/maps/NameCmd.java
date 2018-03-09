@@ -17,11 +17,12 @@ public class NameCmd extends BaseCmd {
 	@Override
 	public boolean run() {
 			String worldName = args[1];
-			String displayName = "";
+			StringBuilder displayName = new StringBuilder();
 			for (int i = 2; i < args.length; i++) {
-				displayName = displayName + args[i] + " ";
+				displayName.append(args[i]);
+				displayName.append(" ");
 			}
-			displayName = displayName.substring(0, displayName.length() - 1);
+			displayName.substring(0, displayName.length() - 1);
 			if (displayName.length() == 0) {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name"));
 				return false;
@@ -29,7 +30,7 @@ public class NameCmd extends BaseCmd {
 			
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
-				map.setDisplayName(displayName);
+				map.setDisplayName(displayName.toString());
 				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("displayname", args[2]).format("maps.name"));
 				
 				return true;

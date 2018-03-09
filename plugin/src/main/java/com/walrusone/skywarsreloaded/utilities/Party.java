@@ -11,7 +11,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 public class Party {
 	
-	private static ArrayList<Party> parties = new ArrayList<Party>();
+	private static ArrayList<Party> parties = new ArrayList<>();
 	private UUID leader;
 	private String name;
 	private ArrayList<UUID> members;
@@ -20,8 +20,8 @@ public class Party {
 	public Party(Player player, String partyName) {
 		leader = player.getUniqueId();
 		name = partyName;
-		members = new ArrayList<UUID>();
-		invited = new ArrayList<UUID>();
+		members = new ArrayList<>();
+		invited = new ArrayList<>();
 		members.add(player.getUniqueId());
 		parties.add(this);
 	}
@@ -42,10 +42,6 @@ public class Party {
 		return null;
 	}
 	
-	public boolean isLeader(Player player) {
-		return player.getUniqueId().equals(this.leader);
-	}
-	
 	public String getPartyName() {
 		return name;
 	}
@@ -54,7 +50,7 @@ public class Party {
 		name = newName;
 	}
 	
-	public void addMember(Player player) {
+	private void addMember(Player player) {
 		if (!members.contains(player.getUniqueId())) {
 			this.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.joined"));
 			members.add(player.getUniqueId());
@@ -112,7 +108,7 @@ public class Party {
 		boolean result = false;
 		if (invited.contains(player.getUniqueId()) && members.size() < SkyWarsReloaded.getCfg().maxPartySize()) {
 			addMember(player);
-			result = true;;
+			result = true;
 		}
 		invited.remove(player.getUniqueId());
 		return result;

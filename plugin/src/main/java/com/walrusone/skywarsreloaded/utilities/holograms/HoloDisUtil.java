@@ -21,7 +21,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class HoloDisUtil extends HologramsUtil {
 
-	private static HashMap<LeaderType, HashMap<String, ArrayList<Hologram>>> holograms = new HashMap<LeaderType, HashMap<String, ArrayList<Hologram>>>();
+	private static HashMap<LeaderType, HashMap<String, ArrayList<Hologram>>> holograms = new HashMap<>();
 	
 	public HoloDisUtil() {
 		getFC();
@@ -30,18 +30,14 @@ public class HoloDisUtil extends HologramsUtil {
 	@Override
 	public void createLeaderHologram(Location loc, LeaderType type, String formatKey) {
 		Hologram hologram = HologramsAPI.createHologram(SkyWarsReloaded.get(), loc);
-		if (holograms.get(type) == null) {
-			holograms.put(type, new HashMap<String, ArrayList<Hologram>>());
-		}
-		if (holograms.get(type).get(formatKey) == null) {
-			holograms.get(type).put(formatKey, new ArrayList<Hologram>());
-		}
+		holograms.computeIfAbsent(type, k -> new HashMap<>());
+		holograms.get(type).computeIfAbsent(formatKey, k -> new ArrayList<>());
 		holograms.get(type).get(formatKey).add(hologram);
 		if (fc == null) {
 			getFC();
 		}
 		if (fc != null) {
-			List<String> locs = new ArrayList<String>();
+			List<String> locs = new ArrayList<>();
 			for (Hologram holo: holograms.get(type).get(formatKey)) {
 				locs.add(Util.get().locationToString(holo.getLocation()));
 			}
@@ -58,9 +54,7 @@ public class HoloDisUtil extends HologramsUtil {
 	@Override
 	public void updateLeaderHolograms(LeaderType type) {
 		if (SkyWarsReloaded.get().serverLoaded()) {
-			if (holograms.get(type) == null) {
-				holograms.put(type, new HashMap<String, ArrayList<Hologram>>());
-			}
+		    holograms.computeIfAbsent(type, k -> new HashMap<>());
 			if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
 				if (fc == null) {
 					getFC();
@@ -137,7 +131,7 @@ public class HoloDisUtil extends HologramsUtil {
 			holograms.get(typeToRemove).get(keyToRemove).remove(hologram);
 			hologram.delete();
 			if (fc != null) {
-				List<String> locs = new ArrayList<String>();
+				List<String> locs = new ArrayList<>();
 				for (Hologram holo: holograms.get(typeToRemove).get(keyToRemove)) {
 					locs.add(Util.get().locationToString(holo.getLocation()));
 				}

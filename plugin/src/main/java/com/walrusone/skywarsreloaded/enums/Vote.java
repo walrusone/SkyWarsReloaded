@@ -31,7 +31,7 @@ public enum Vote {
 	HEALTHTWENTY;
     
 	public static Vote getRandom(String type) {
-		ArrayList<Vote> list = new ArrayList<Vote>();
+		ArrayList<Vote> list = new ArrayList<>();
 		if (type.equalsIgnoreCase("time")) {
 			list.add(Vote.TIMEDUSK);
 			list.add(Vote.TIMEDAWN);

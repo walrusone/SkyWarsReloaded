@@ -33,10 +33,12 @@ public class ClearStatsCmd extends BaseCmd {
 		
 		if (swPlayer != null) {
 			PlayerStat pStat = PlayerStat.getPlayerStats(swPlayer);
-			pStat.clear();
-			DataStorage.get().saveStats(pStat);
-			sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
-			return true;
+			if (pStat != null) {
+				pStat.clear();
+                DataStorage.get().saveStats(pStat);
+                sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
+                return true;
+			}
 		} else {
 			new BukkitRunnable() {
 				@Override

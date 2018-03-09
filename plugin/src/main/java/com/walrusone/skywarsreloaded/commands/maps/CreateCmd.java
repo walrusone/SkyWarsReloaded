@@ -37,12 +37,14 @@ public class CreateCmd extends BaseCmd {
 				} else {
 					player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.created"));
 					gMap = GameMap.getMap(worldName);
-					gMap.setEditing(true);
-					player.setGameMode(GameMode.CREATIVE);
-					player.teleport(new Location(result, 0, 76, 0), TeleportCause.PLUGIN);
-					player.setAllowFlight(true);
-					player.setFlying(true);
-					return true;
+					if (gMap != null) {
+                        gMap.setEditing(true);
+                        player.setGameMode(GameMode.CREATIVE);
+                        player.teleport(new Location(result, 0, 76, 0), TeleportCause.PLUGIN);
+                        player.setAllowFlight(true);
+                        player.setFlying(true);
+                    }
+                    return true;
 				}
 		} else {
 			sender.sendMessage(new Messaging.MessageFormatter().format("error.nospawn"));

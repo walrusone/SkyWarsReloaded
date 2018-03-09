@@ -73,12 +73,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -89,11 +88,12 @@ public class GameMap {
 	}
 	private static ArrayList<GameMap> arenas;
 
-	private ArrayList<Crate> crates = new ArrayList<Crate>();
+	private ArrayList<Crate> crates = new ArrayList<>();
 	private boolean forceStart;
 	private boolean allowFallDamage;
 	private boolean allowRegen;
     private boolean thunder;
+    private boolean allowFriendlyFire;
     private String winner = "";
     private int strikeCounter;
     private int nextStrike;
@@ -101,7 +101,7 @@ public class GameMap {
     private ArrayList<TeamCard> teamCards;
     private int teamSize;
 
-    private ArrayList<UUID> spectators = new ArrayList<UUID>();
+    private ArrayList<UUID> spectators = new ArrayList<>();
     private String name;
     private int timer;
     private int restartTimer = -1;
@@ -132,17 +132,17 @@ public class GameMap {
 	private CoordLoc spectateSpawn;
 	private ArrayList<CoordLoc> deathMatchSpawns;
 	private boolean legacy = false;
-	private ArrayList<MatchEvent> events = new ArrayList<MatchEvent>();
-	private ArrayList<String> deathMatchWaiters = new ArrayList<String>();
-	private ArrayList<String> anvils = new ArrayList<String>();
+	private ArrayList<MatchEvent> events = new ArrayList<>();
+	private ArrayList<String> deathMatchWaiters = new ArrayList<>();
+	private ArrayList<String> anvils = new ArrayList<>();
 		
     public GameMap(final String name) {
-    	this.name = name;
+        this.name = name;
     	this.matchState = MatchState.OFFLINE;
-    	teamCards = new ArrayList<TeamCard>();
-    	deathMatchSpawns = new ArrayList<CoordLoc>();
-    	signs = new ArrayList<SWRSign>();
-    	chests = new ArrayList<CoordLoc>();
+    	teamCards = new ArrayList<>();
+    	deathMatchSpawns = new ArrayList<>();
+    	signs = new ArrayList<>();
+    	chests = new ArrayList<>();
     	loadArenaData();
         this.thunder = false;
         allowRegen = true;
@@ -216,6 +216,9 @@ public class GameMap {
 		boolean result = false;
 		PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
 		Collections.shuffle(teamCards);
+		if (teamSize > 1) {
+		    teamCards.sort(new TeamCardComparator());
+		}
 		TeamCard reserved = null;
 		for (TeamCard tCard: teamCards) {
 			if (tCard.getFullCount() > 0) {
@@ -232,7 +235,11 @@ public class GameMap {
 	
 	public boolean addPlayers(final Party party) {
 		TeamCard team = null;
-		Map<TeamCard, ArrayList<Player>> players = new HashMap<TeamCard, ArrayList<Player>>();
+		Map<TeamCard, ArrayList<Player>> players = new HashMap<>();
+		Collections.shuffle(teamCards);
+		if (teamSize > 1) {
+            teamCards.sort(new TeamCardComparator());
+		}
 		if (teamSize == 1) {
 			for (UUID uuid: party.getMembers()) {
 				Player player = Bukkit.getPlayer(uuid);
@@ -240,19 +247,16 @@ public class GameMap {
 					party.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.memberbusy"));
 				} else {
 					PlayerStat ps = PlayerStat.getPlayerStats(uuid);
-					Collections.shuffle(teamCards);
-					
 					if (teamSize == 1) {
 						for (TeamCard tCard: teamCards) {
 							if (tCard.getFullCount() > 0) {
 								TeamCard reserve = tCard.sendReservation(player, ps);
 								this.update();
 								if (reserve != null) {
-									if (players.get(reserve) == null) {
-										players.put(reserve, new ArrayList<Player>());
-									}
+								    players.computeIfAbsent(reserve, k -> new ArrayList<>());
 									players.get(reserve).add(player);
 								}
+								break;
 							}
 						}
 					}
@@ -260,20 +264,20 @@ public class GameMap {
 			}
 		} else {
 			for (TeamCard tCard: teamCards) {
-				if (tCard.getFullCount() > party.getSize()) {
+				if (tCard.getFullCount() >= party.getSize()) {
 					for (int i = 0; i < party.getSize(); i++) {
 						Player player = Bukkit.getPlayer(party.getMembers().get(i));
 						PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
 						TeamCard reserve = tCard.sendReservation(player, ps);
 						if (reserve != null) {
-							if (players.get(reserve) == null) {
-								players.put(reserve, new ArrayList<Player>());
-							}
-							players.get(reserve).add(player);
+						    players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
 						}
 						team = reserve;
 					}
 					this.update();
+				}
+				if (team != null && players.get(team).size() == party.getSize()) {
+						break;
 				}
 			}
 		}
@@ -303,17 +307,20 @@ public class GameMap {
     	return false;
 	}
 
-	public boolean removePlayer(final UUID uuid) {
-		boolean result = false;
+	public void removePlayer(final UUID uuid) {
+		boolean result;
 		for (TeamCard tCard: teamCards) {
-			result = tCard.removePlayer(uuid);
-		}
-    	this.update();
-    	return result;
+            result = tCard.removePlayer(uuid);
+            if (result) {
+                this.update();
+                break;
+            }
+        }
+        this.update();
     }
  
     public ArrayList<Player> getAlivePlayers() {
-    	ArrayList<Player> alivePlayers = new ArrayList<Player>();
+    	ArrayList<Player> alivePlayers = new ArrayList<>();
     	for (TeamCard tCard: teamCards) {
     		for (PlayerCard pCard: tCard.getPlayers()) {
         		if (pCard.getPlayer() != null) {
@@ -336,7 +343,7 @@ public class GameMap {
     }
     
     public ArrayList<Player> getAllPlayers() {
-    	ArrayList<Player> allPlayers = new ArrayList<Player>();
+    	ArrayList<Player> allPlayers = new ArrayList<>();
     	for (TeamCard tCard: teamCards) {
     		for (PlayerCard pCard: tCard.getPlayers()) {
         		if (pCard.getPlayer() != null) {
@@ -345,6 +352,28 @@ public class GameMap {
         	}
     	}
     	return allPlayers;
+    }
+    
+    public ArrayList<Player> getMessageAblePlayers(boolean isSpectator) {
+    	ArrayList<Player> recievers = new ArrayList<>();
+    	if (!isSpectator) {
+        	for (TeamCard tCard: teamCards) {
+        		for (PlayerCard pCard: tCard.getPlayers()) {
+            		if (pCard.getPlayer() != null) {
+                		if (!mapContainsDead(pCard.getPlayer().getUniqueId())) {
+                    		recievers.add(pCard.getPlayer());
+                		}
+            		}
+            	}
+        	}
+    	}
+    	for (UUID uuid: spectators) {
+    		Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
+    		if (player != null) {
+    			recievers.add(player);
+    		}
+    	}
+    	return recievers;
     }
     
     public boolean canAddPlayer() {
@@ -368,7 +397,7 @@ public class GameMap {
     		return playerCount + party.getSize()-1 < teamCards.size();
     	} else {
     		for (TeamCard tCard: teamCards) {
-        		if (tCard.getFullCount() > party.getSize()) {
+        		if (tCard.getFullCount() >= party.getSize()) {
         			return true;
         		}
         	}
@@ -379,7 +408,7 @@ public class GameMap {
 	/*Map Handling Methods*/
 	
     static {
-        GameMap.arenas = new ArrayList<GameMap>();
+        GameMap.arenas = new ArrayList<>();
     }
 	
 	public static GameMap getMap(final String mapName) {
@@ -392,10 +421,9 @@ public class GameMap {
         return null;
     }
 	
-	public static boolean addMap(String name, boolean forceRegister, boolean startup) {
+	private static void addMap(String name) {
 		GameMap gMap = new GameMap(name);
 		arenas.add(gMap);
-		return gMap.isRegistered();
 	}
 	
 	public void removeMap() {
@@ -409,8 +437,10 @@ public class GameMap {
         	return;
         }
         File mapFile = new File(mapDataDirectory, name + ".yml");
-        mapFile.delete();
-		arenas.remove(this);
+        boolean result = mapFile.delete();
+        if (result) {
+            arenas.remove(this);
+        }
 	}
         
     public static void loadMaps() {
@@ -422,11 +452,14 @@ public class GameMap {
     	File dataDirectory = SkyWarsReloaded.get().getDataFolder();
 		File maps = new File (dataDirectory, "maps");
 		if (maps.exists() && maps.isDirectory()) {
-			for (File map : maps.listFiles()) {
-				if (map.isDirectory()) {
-					addMap(map.getName(), true, true);
-				} 
-			}
+		    File[] files = maps.listFiles();
+		    if (files != null) {
+                for (File map : files) {
+                    if (map.isDirectory()) {
+                        addMap(map.getName());
+                    }
+                }
+            }
 		} else {
 			SkyWarsReloaded.get().getLogger().info("Maps directory is missing or no Maps were found!");
 		} 
@@ -439,7 +472,6 @@ public class GameMap {
 
 	            if (storage.getConfigurationSection("maps") != null) {
 	                for (String key: storage.getConfigurationSection("maps").getKeys(false)) {
-	                	String name = key;
 	                	String displayname = storage.getString("maps." + key + ".displayname");
 	                	int minplayers = storage.getInt("maps." + key + ".minplayers");
 	                	String creator = storage.getString("maps." + key + ".creator");
@@ -453,7 +485,7 @@ public class GameMap {
 	                    	return;
 	                    }
 
-	                    File newMapFile = new File(mapDataDirectory, name + ".yml");
+	                    File newMapFile = new File(mapDataDirectory, key + ".yml");
 	                    copyDefaults(newMapFile);
 	                    FileConfiguration fc = YamlConfiguration.loadConfiguration(newMapFile);
 	                    fc.set("displayname", displayname);
@@ -467,16 +499,18 @@ public class GameMap {
 	    	            try {
 							fc.save(newMapFile);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 	                }
 	            }
-	            mapFile.delete();
+	            boolean result = mapFile.delete();
+	            if (!result) {
+	                SkyWarsReloaded.get().getLogger().info("Failed to Delete Old MapData File");
+                }
 	        }
 	}
 	
-	public void saveArenaData() {
+	private void saveArenaData() {
 		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
         File mapDataDirectory = new File(dataDirectory, "mapsData");
 
@@ -498,26 +532,27 @@ public class GameMap {
         fc.set("spectateSpawn", spectateSpawn.getLocation());
         fc.set("cage", cage.getType().toString().toLowerCase());
         fc.set("teamSize", teamSize);
+        fc.set("allowFriendlyFire", allowFriendlyFire);
        
-        List<String> spawns = new ArrayList<String>();
+        List<String> spawns = new ArrayList<>();
         for (TeamCard tCard: teamCards) {
         	spawns.add(tCard.getSpawn().getLocation());
         }
         fc.set("spawns", spawns);
         
-        List<String> dSpawns = new ArrayList<String>();
+        List<String> dSpawns = new ArrayList<>();
         for (CoordLoc loc: deathMatchSpawns) {
         	dSpawns.add(loc.getLocation());
         }
         fc.set("deathMatchSpawns", dSpawns);
         
-        List<String> stringSigns = new ArrayList<String>();
+        List<String> stringSigns = new ArrayList<>();
    	 	for (SWRSign s: signs) {
    	 		stringSigns.add(Util.get().locationToString(s.getLocation()));
    	 	}
    	 	fc.set("signs", stringSigns);
 
-   	 	List<String> stringChests = new ArrayList<String>();
+   	 	List<String> stringChests = new ArrayList<>();
    	 	for (CoordLoc chest: chests) {
    	 		stringChests.add(chest.getLocation());
    	 	}
@@ -526,7 +561,6 @@ public class GameMap {
    	 	try {
 			fc.save(mapFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -549,6 +583,7 @@ public class GameMap {
         spectateSpawn = Util.get().getCoordLocFromString(fc.getString("spectateSpawn", "0:95:0"));
         legacy = fc.getBoolean("legacy");
         teamSize = fc.getInt("teamSize", 1);
+        allowFriendlyFire = fc.getBoolean("allowFriendlyFire", false); 
      
         String cage = fc.getString("cage");
         CageType ct = CageType.matchType(cage.toUpperCase());
@@ -599,7 +634,7 @@ public class GameMap {
 		File source = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), mapName);
 		SkyWarsReloaded.getWM().copyWorld(source, target);
 		SkyWarsReloaded.getWM().loadWorld(mapName);
-		addMap(mapName, false, false);
+		addMap(mapName);
 		return SkyWarsReloaded.get().getServer().getWorld(mapName);
 	}
 	
@@ -629,7 +664,7 @@ public class GameMap {
 		for (final UUID uuid: this.getSpectators()) {
     		final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
     		if (player != null) {
-    			MatchManager.get().removeSpectator(this, player);
+    			MatchManager.get().removeSpectator(player);
     		}
     	}
         for (final Player player : this.getAlivePlayers()) {
@@ -639,8 +674,8 @@ public class GameMap {
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName());
 	}
-    
-    public static boolean loadWorldForScanning(String name) {
+
+    private static boolean loadWorldForScanning(String name) {
         	File dataDirectory = SkyWarsReloaded.get().getDataFolder();
     		File maps = new File (dataDirectory, "maps");
     		
@@ -651,8 +686,9 @@ public class GameMap {
     			File target = new File(rootDirectory, name);
     			wm.copyWorld(source, target);
     			boolean mapExists = false;
-    			if(target.isDirectory()) {			 
-    				if(target.list().length > 0) {
+    			if(target.isDirectory()) {
+    			    String[] list = target.list();
+    				if(list != null && list.length > 0) {
     		 			mapExists = true;
     				}	 
     			}
@@ -670,39 +706,27 @@ public class GameMap {
 	}
 
 	public static ArrayList<GameMap> getMaps() {
-		return new ArrayList<GameMap>(arenas);
+		return new ArrayList<>(arenas);
 	}
 	
 	public static ArrayList<GameMap> getPlayableArenas() {
-		ArrayList<GameMap> sorted = new ArrayList<GameMap>();
+		ArrayList<GameMap> sorted = new ArrayList<>();
 		for (GameMap gMap: arenas) {
 			if (gMap.isRegistered()) {
 				sorted.add(gMap);
 			}
 		}
-		Collections.sort(sorted, new GameMapComparator());
+		sorted.sort(new GameMapComparator());
 		return sorted;
 	}
 	
 	public static ArrayList<GameMap> getSortedArenas() {
-		ArrayList<GameMap> sorted = new ArrayList<GameMap>();
-		for (GameMap gMap: arenas) {
-			sorted.add(gMap);
-		}
-		Collections.sort(sorted, new GameMapComparator());
+		ArrayList<GameMap> sorted = new ArrayList<>(arenas);
+		sorted.sort(new GameMapComparator());
 		return sorted;
 	}
-	
-	public static boolean mapRegistered(String name) {
-		for (GameMap gMap: arenas) {
-			if (gMap.getName().equals(name)) {
-				return gMap.isRegistered();
-			}
-		}
-		return false;
-	}
-	   
-	public boolean loadMap() {
+
+	private void loadMap() {
 			WorldManager wm = SkyWarsReloaded.getWM();
 			String mapName = name;
 			boolean mapExists = false;
@@ -712,8 +736,9 @@ public class GameMap {
 			String root = SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath();
 			File rootDirectory = new File(root);
 			File target = new File(rootDirectory, mapName);
-			if(target.isDirectory()) {			 
-				if(target.list().length > 0) {
+			if(target.isDirectory()) {
+			    String[] list = target.list();
+				if(list != null && list.length > 0) {
 		 			mapExists = true;
 				}	 
 			}
@@ -740,10 +765,9 @@ public class GameMap {
 		        world.setGameRuleValue("showDeathMessages", "false");
 		        cage.createSpawnPlatforms(this);
 			}
-			return loaded;
 	}
 	
-	public void ChunkIterator() {
+	private void ChunkIterator() {
 		World chunkWorld;
 		chunkWorld = SkyWarsReloaded.get().getServer().getWorld(name);
 		int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
@@ -796,8 +820,9 @@ public class GameMap {
 			File source = new File (dataDirectory, worldName);
 			File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
 			boolean mapExists = false;
-			if(target.isDirectory()) {			 
-				if(target.list().length > 0) {
+			if(target.isDirectory()) {
+			    String[] list = target.list();
+				if(list != null && list.length > 0) {
 		 			mapExists = true;
 				}	 
 			}
@@ -817,14 +842,12 @@ public class GameMap {
 			for (CoordLoc cl: gMap.getDeathMatchSpawns()) {
 					editWorld.getBlockAt(cl.getX(), cl.getY(), cl.getZ()).setType(Material.EMERALD_BLOCK);
 			}
-			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), new Runnable() {
-				public void run() {
-					player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
-					player.setGameMode(GameMode.CREATIVE);
-					player.setAllowFlight(true);
-					player.setFlying(true);
-				}
-			}, 20);
+			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), () -> {
+                player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
+                player.setGameMode(GameMode.CREATIVE);
+                player.setAllowFlight(true);
+                player.setFlying(true);
+            }, 20);
 		} else {
 			player.sendMessage(new Messaging.MessageFormatter().format("error.map-fail-load"));
 		}
@@ -915,7 +938,7 @@ public class GameMap {
     
 	/*Scoreboard Methods*/
 	
-	public void getScoreBoard() {
+	private void getScoreBoard() {
 		if (scoreboard != null) {
             resetScoreboard();
         }
@@ -927,6 +950,7 @@ public class GameMap {
         	TeamCard tCard = teamCards.get(i);
         	tCard.setTeam(scoreboard.registerNewTeam("team" + i));
         	tCard.getTeam().setPrefix(tCard.getPrefix());
+        	tCard.getTeam().setAllowFriendlyFire(allowFriendlyFire);
         }
 		updateScoreboard();
 	}
@@ -958,19 +982,19 @@ public class GameMap {
         	        }
         	        objective.setDisplayName(title);
         		} else {
-        			String s = "";
+            	    StringBuilder s = new StringBuilder(39);
         			if (getScoreboardLine(sb + i).length() == 0) {
         				for (int j = 0; j < i; j++) {
-        					s = s + " ";
+        					s.append(" ");
         				}
         			} else {
-        				s = getScoreboardLine(sb + i);
+        				s.append(getScoreboardLine(sb + i));
         			}
-        			if (!s.equalsIgnoreCase("remove")) {
+        			if (!s.toString().equalsIgnoreCase("remove")) {
         				if (s.length() > 40) {
-        	    	        s = s.substring(0, 39);
+        	    	        s.substring(0, 39);
         				}
-            			Score score = objective.getScore(s);
+            			Score score = objective.getScore(s.toString());
         				score.setScore(17-i);
         			}
         		}
@@ -994,14 +1018,12 @@ public class GameMap {
 		}
 	}
 	
-
-	
 	private String getScoreboardLine(String lineNum) {
 		return new Messaging.MessageFormatter()
 				.setVariable("mapname", displayName)
 				.setVariable("time", "" + Util.get().getFormattedTime(timer))
 				.setVariable("players", "" + getAlivePlayers().size())
-				.setVariable("maxplayers", "" + teamCards.size())
+				.setVariable("maxplayers", "" + teamCards.size() * teamSize)
 				.setVariable("winner", winner)
 				.setVariable("restarttime", "" + restartTimer)
 				.setVariable("chestvote", ChatColor.stripColor(currentChest))
@@ -1031,12 +1053,12 @@ public class GameMap {
     
 	/*Bungeemode Methods*/
 	
-	public void sendBungeeUpdate() {
+	private void sendBungeeUpdate() {
 		if (SkyWarsReloaded.getCfg().bungeeMode()) {
 			String playerCount = "" + this.getAlivePlayers().size();
 			String maxPlayers = "" + this.getMaxPlayers();
 			String gameStarted = "" + this.matchState.toString();
-			ArrayList<String> messages = new ArrayList<String>();
+			ArrayList<String> messages = new ArrayList<>();
 			messages.add("ServerUpdate");
 			messages.add(SkyWarsReloaded.get().getServerName());
 			messages.add(playerCount);
@@ -1051,7 +1073,7 @@ public class GameMap {
 	
     /*Sign Methods*/
 	
-	public void updateSigns() {
+	private void updateSigns() {
 		for (SWRSign s : signs) {
 			s.update();
 		}
@@ -1107,13 +1129,6 @@ public class GameMap {
     
     public ArrayList<CoordLoc> getChests(){
 		return chests;
-	}
-	
-	public boolean containsSpawns() {
-		if (teamCards.size() >= 2) {
-			return true;
-		}
-		return false;
 	}
     
     public MatchState getMatchState() {
@@ -1176,14 +1191,6 @@ public class GameMap {
 		return allowFallDamage;
 	}
 
-	public ArrayList<UUID> getDea() {
-		ArrayList<UUID> dead = new ArrayList<UUID>();
-		for (TeamCard tCard: teamCards) {
-			dead.addAll(tCard.getDead());
-		}
-		return dead;
-	}
-
 	public ArrayList<UUID> getSpectators() {
 		return spectators;
 	}
@@ -1212,20 +1219,13 @@ public class GameMap {
 		return teamCards.size() * teamSize;
 	}
 	
-	public boolean isMatchStarted() {
-		if (this.matchState == MatchState.WAITINGSTART) {
-			return false;
-		}
-		return true;
-	}
-	
 	public void setThunderStorm(boolean b) {
 		this.thunder = b;
 	}
 	
 
 	public ArrayList<PlayerCard> getPlayerCards() {
-		ArrayList<PlayerCard> cards = new ArrayList<PlayerCard>();
+		ArrayList<PlayerCard> cards = new ArrayList<>();
 		for (TeamCard tCard: teamCards) {
 			cards.addAll(tCard.getPlayers());
 		}
@@ -1244,7 +1244,7 @@ public class GameMap {
 	}
 	
 	public void setForceStart(boolean state) {
-		forceStart = true;
+		forceStart = state;
 	}
 	
 	public boolean getForceStart() {
@@ -1355,17 +1355,15 @@ public class GameMap {
 	private static void copyDefaults(File mapFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(mapFile);
 		Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("mapFile.yml"));
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			playerConfig.options().copyDefaults(true);
-			playerConfig.setDefaults(defConfig);
-			try {
-				playerConfig.save(mapFile);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+        playerConfig.options().copyDefaults(true);
+        playerConfig.setDefaults(defConfig);
+        try {
+            playerConfig.save(mapFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	public World getCurrentWorld() {
@@ -1384,7 +1382,7 @@ public class GameMap {
 		saveArenaData();
 	}
 	
-	public void addTeamCard(CoordLoc loc) {
+	private void addTeamCard(CoordLoc loc) {
 		String prefix = "";
 		if (teamSize > 1) {
 			prefix = getChatColor(teamCards.size());
@@ -1438,17 +1436,16 @@ public class GameMap {
 		saveArenaData();
 	}
 	
-	public void addDeathMatchSpawn(CoordLoc loc) {
+	private void addDeathMatchSpawn(CoordLoc loc) {
 		deathMatchSpawns.add(loc);
 	}
 	
 	public boolean removeDeathMatchSpawn(Location loc) {
 		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		boolean removed = deathMatchSpawns.remove(remove);
-		return removed;
+		return deathMatchSpawns.remove(remove);
 	}
 	
-	public boolean addChest(Chest chest) {
+	public void addChest(Chest chest) {
 		InventoryHolder ih = chest.getInventory().getHolder();
         if (ih instanceof DoubleChest) {
         	DoubleChest dc = (DoubleChest) ih;
@@ -1458,19 +1455,16 @@ public class GameMap {
 			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
 			if (!(chests.contains(locLeft) || chests.contains(locRight))) {
 				addChest(locLeft);
-				return true;
 			}
         } else {
         	CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
             if (!chests.contains(loc)){
       	  		addChest(loc);
-      	  		return true;
             }
         }
-        return false;
 	}
 	
-	public void addChest(CoordLoc loc) {
+	private void addChest(CoordLoc loc) {
 		chests.add(loc);
 	}
 	
@@ -1501,7 +1495,7 @@ public class GameMap {
 		return spectateSpawn;
 	}
 
-	public boolean saveMap(@Nullable Player mess) {
+	public void saveMap(Player mess) {
 		Location respawn = SkyWarsReloaded.getCfg().getSpawn();
 		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
 			if (world.getName().equals(name)) {
@@ -1522,13 +1516,11 @@ public class GameMap {
 					mess.sendMessage(new Messaging.MessageFormatter().format("maps.register-reminder"));
 				}
 				saveArenaData();
-				return true;
 			} 	
 		}
 		if (mess != null) {
 			mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("error.map-not-in-edit"));
 		}
-		return false;
 	}
 
 	public ArrayList<MatchEvent> getEvents() {
@@ -1542,15 +1534,6 @@ public class GameMap {
 	public void removeDMSpawnBlocks() {
 		for (CoordLoc loc: deathMatchSpawns) {
 			World world = getCurrentWorld();
-			Location loca = new Location(world, loc.getX(), loc.getY(), loc.getZ());
-			world.getBlockAt(loca).setType(Material.AIR);
-		}
-	}
-	
-	public void removeSpawnBlocks() {
-		for (TeamCard tCard: teamCards) {
-			World world = getCurrentWorld();
-			CoordLoc loc = tCard.getSpawn();
 			Location loca = new Location(world, loc.getX(), loc.getY(), loc.getZ());
 			world.getBlockAt(loca).setType(Material.AIR);
 		}
@@ -1676,4 +1659,18 @@ public class GameMap {
 		}
 		return count;
 	}
+	
+	public class TeamCardComparator implements Comparator<TeamCard> {
+		@Override
+	    public int compare(final TeamCard f1, final TeamCard f2) {
+			if (f1 != null && f2 != null) {
+				if (f1.getFullCount() > f2.getFullCount()) {
+					return 1;
+				}
+			}
+			return 0;
+	    }
+	}
 }
+
+

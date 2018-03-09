@@ -19,7 +19,7 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 public class PlayerTeleportListener implements Listener
 {
 	
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport(final PlayerTeleportEvent a1) {
     		Player player = a1.getPlayer();
             final GameMap gameMap = MatchManager.get().getPlayerMap(player);
@@ -55,7 +55,6 @@ public class PlayerTeleportListener implements Listener
         		        	}
         		        }
                 	}
-                    return;
         		}
         	} else {
             	if (a1.getCause().equals(TeleportCause.END_PORTAL)) {

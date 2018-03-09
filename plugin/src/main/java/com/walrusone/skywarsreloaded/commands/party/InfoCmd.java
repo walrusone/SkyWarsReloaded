@@ -28,12 +28,13 @@ public class InfoCmd extends BaseCmd {
 		
 		player.sendMessage(new Messaging.MessageFormatter().setVariable("partyname", party.getPartyName()).format("party.info1"));
 		player.sendMessage(new Messaging.MessageFormatter().setVariable("leader", Bukkit.getPlayer(party.getLeader()).getName()).format("party.info2"));
-		String members = "";
+		StringBuilder members = new StringBuilder();
 		for (UUID uuid: party.getMembers()) {
-			members = members + Bukkit.getPlayer(uuid).getName() + ", ";
+			members.append(Bukkit.getPlayer(uuid).getName());
+			members.append(", ");
 		}
-		members = members.substring(0, members.length()-2);
-		player.sendMessage(new Messaging.MessageFormatter().setVariable("members", members).format("party.info3"));
+		members.substring(0, members.length()-2);
+		player.sendMessage(new Messaging.MessageFormatter().setVariable("members", members.toString()).format("party.info3"));
 		return true;
 	}
 

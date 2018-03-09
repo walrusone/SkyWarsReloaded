@@ -26,7 +26,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class MapCmdManager implements CommandExecutor {
-	private List<BaseCmd> mapcmds = new ArrayList<BaseCmd>();
+	private List<BaseCmd> mapcmds = new ArrayList<>();
 
 	//Add New Commands Here
 	public MapCmdManager() {
@@ -48,20 +48,20 @@ public class MapCmdManager implements CommandExecutor {
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 
 		if (args.length == 0 || getCommands(args[0]) == null) {
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
-			sendHelp(mapcmds, s, "1");
+			sendHelp(mapcmds, s);
 			s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
 		} else getCommands(args[0]).processCmd(s, args);
 		return true;
 	}
 	
-	private void sendHelp(List<BaseCmd> cmds, CommandSender s, String num) {
+	private void sendHelp(List<BaseCmd> cmds, CommandSender s) {
 		int count = 0;
 		for (BaseCmd cmd : cmds) {
 			if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
 				count++;
 				if (count == 1) {
 					s.sendMessage(" ");
-					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swmap.header" + num));
+					s.sendMessage(new Messaging.MessageFormatter().format("helpList.swmap.header" + 1));
 				}
 				s.sendMessage(new Messaging.MessageFormatter().format("helpList.swmap." + cmd.cmdName));
 			}
@@ -69,9 +69,7 @@ public class MapCmdManager implements CommandExecutor {
 	}
 
 	private BaseCmd getCommands(String s) {
-		BaseCmd cmd = null;
-		cmd = getCmd(mapcmds, s);
-		return cmd;
+		return getCmd(mapcmds, s);
 	}
 
 	private BaseCmd getCmd(List<BaseCmd> cmds, String s) {

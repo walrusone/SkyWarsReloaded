@@ -1,3 +1,8 @@
+chat:
+  lobbychat: '&c[SkyWars]&6({elo} Elo){prefix}<{displayname}> {message}'
+  specchat: '&c[Spectator]&6({elo} Elo){prefix}<{displayname}> {message}'
+  ingamechat: '&c[SkyWars]&6({elo} Elo){prefix}<{displayname}> {message}'
+  externalPrefix: '&6({elo} Elo)'
 command:
   kit-create: '&aCreated the kit {kit} &ausing your inventory. Use the other kit commands to finalize the kit!'
   kit-update: '&aThe kit {kit} &ahas been updated using your inventory!'

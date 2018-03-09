@@ -7,7 +7,6 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ public class PlayerStat
 {
     
 	private static ArrayList<PlayerStat> players;
-	private static HashMap<Player, Scoreboard> scoreboards = new HashMap<Player, Scoreboard>();
+	private static HashMap<Player, Scoreboard> scoreboards = new HashMap<>();
     private final String uuid;
     private String playername;
     private int wins;
@@ -64,9 +63,10 @@ public class PlayerStat
     private void saveStats(final String uuid) {
     	new BukkitRunnable() {
             public void run() {
-            	if (PlayerStat.getPlayerStats(uuid) == null) {
+            	PlayerStat ps = PlayerStat.getPlayerStats(uuid);
+            	if (ps == null) {
             		this.cancel();
-            	} else if (PlayerStat.getPlayerStats(uuid).isInitialized()) {
+            	} else if (ps.isInitialized()) {
             		new BukkitRunnable() {
 						@Override
 						public void run() {
@@ -93,9 +93,10 @@ public class PlayerStat
     public static void updatePlayer(final String uuid) {
     	new BukkitRunnable() {
             public void run() {
-            	if (PlayerStat.getPlayerStats(uuid) == null) {
+                PlayerStat ps = PlayerStat.getPlayerStats(uuid);
+            	if (ps == null) {
             		this.cancel();
-            	} else if (PlayerStat.getPlayerStats(uuid).isInitialized()) {
+            	} else if (ps.isInitialized()) {
             		final Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
             		if (player != null) {
                 		new BukkitRunnable() {
@@ -112,7 +113,7 @@ public class PlayerStat
             	        		        player.resetPlayerWeather();
     								}
     								PlayerStat pStats = PlayerStat.getPlayerStats(player);
-    								if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+    								if (pStats != null && SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
             	        		        Util.get().setPlayerExperience(player, pStats.getXp());
     								}
      	        		            if (SkyWarsReloaded.get().isEnabled() && SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
@@ -231,7 +232,7 @@ public class PlayerStat
     }
         
     static {
-        PlayerStat.players = new ArrayList<PlayerStat>();
+        PlayerStat.players = new ArrayList<>();
     }
     
     public boolean isInitialized() {
@@ -304,7 +305,7 @@ public class PlayerStat
 	
 	//Scoreboard Methods
 	
-	public static void getScoreboard(Player player) {
+	private static void getScoreboard(Player player) {
 		Scoreboard scoreboard = scoreboards.get(player);
 		if (scoreboard != null) {
             resetScoreboard(player);
@@ -332,7 +333,7 @@ public class PlayerStat
 		Objective objective = scoreboard.registerNewObjective("info", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         String sb = "scoreboards.lobbyboard.line";
-        ArrayList<String> scores = new ArrayList<String>();
+        ArrayList<String> scores = new ArrayList<>();
         for (int i = 1; i < 17; i++) {
         	if (i == 1) {
     	        String leaderboard = getScoreboardLine(sb + i, player);
@@ -355,28 +356,31 @@ public class PlayerStat
 		PlayerStat ps = PlayerStat.getPlayerStats(player);
 		String killdeath;
 		String winloss;
-		if (ps.getWins() == 0) {
-			winloss = "0.00";
-		} else {
-			winloss = String.format("%1$,.2f", ((double)((double)ps.getWins()/(double)ps.getLosses())));
-		}
-		if (ps.getKills() == 0) {
-			killdeath = "0.00";
-		} else {
-			killdeath = String.format("%1$,.2f", ((double)((double)ps.getKills()/(double)ps.getDeaths())));
-		}
-		
-		return new Messaging.MessageFormatter()
-				.setVariable("elo", Integer.toString(ps.getElo()))
-				.setVariable("wins", Integer.toString(ps.getWins()))
-				.setVariable("losses", Integer.toString(ps.getLosses()))
-				.setVariable("kills", Integer.toString(ps.getKills()))
-				.setVariable("deaths",Integer.toString(ps.getDeaths()))
-				.setVariable("xp", Integer.toString(ps.getXp()))
-				.setVariable("killdeath", killdeath)
-				.setVariable("winloss", winloss)
-				.setVariable("balance", "" + getBalance(player))
-				.format(lineNum);
+		if (ps != null) {
+            if (ps.getWins() == 0) {
+                winloss = "0.00";
+            } else {
+                winloss = String.format("%1$,.2f", ((double)((double)ps.getWins()/(double)ps.getLosses())));
+            }
+            if (ps.getKills() == 0) {
+                killdeath = "0.00";
+            } else {
+                killdeath = String.format("%1$,.2f", ((double)((double)ps.getKills()/(double)ps.getDeaths())));
+            }
+
+            return new Messaging.MessageFormatter()
+                    .setVariable("elo", Integer.toString(ps.getElo()))
+                    .setVariable("wins", Integer.toString(ps.getWins()))
+                    .setVariable("losses", Integer.toString(ps.getLosses()))
+                    .setVariable("kills", Integer.toString(ps.getKills()))
+                    .setVariable("deaths",Integer.toString(ps.getDeaths()))
+                    .setVariable("xp", Integer.toString(ps.getXp()))
+                    .setVariable("killdeath", killdeath)
+                    .setVariable("winloss", winloss)
+                    .setVariable("balance", "" + getBalance(player))
+                    .format(lineNum);
+        }
+        return "";
 	}
 	
 	private static double getBalance(Player player) {
@@ -393,13 +397,9 @@ public class PlayerStat
                 objective.unregister();
             }
     	}
-        
-        if (scoreboard != null) {
-            scoreboard = null;
-        }
     }
 
-	public static Scoreboard getPlayerScoreboard(Player player) {
+	private static Scoreboard getPlayerScoreboard(Player player) {
 		return scoreboards.get(player);
 	}
 	

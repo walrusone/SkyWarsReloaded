@@ -6,5 +6,5 @@ public enum PlayerOptions {
     PROJECTILEEFFECT,
     WINSOUND,
     KILLSOUND,
-    TAUNT;
+    TAUNT,
 }

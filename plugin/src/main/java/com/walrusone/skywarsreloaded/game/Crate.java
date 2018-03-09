@@ -18,7 +18,7 @@ public class Crate {
 	private boolean success = false;
 	private double prevY;
 	
-	public Crate(Location loc, int max) {
+	Crate(Location loc, int max) {
 		this.loc = loc.clone();
 		SkyWarsReloaded.getCM().fillCrate(inv, max);
 		ent = SkyWarsReloaded.getNMS().spawnFallingBlock(loc.add(0, 40, 0), Material.SAND, false);

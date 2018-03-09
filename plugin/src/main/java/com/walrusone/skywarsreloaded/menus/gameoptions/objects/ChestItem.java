@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.menus.gameoptions.objects;
 
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ChestItem implements Comparable<ChestItem> {
 
     private ItemStack item;
@@ -21,7 +23,7 @@ public class ChestItem implements Comparable<ChestItem> {
     }
     
 	@Override
-	public int compareTo(ChestItem o) {
+	public int compareTo(@Nonnull ChestItem o) {
 		return Integer.compare(this.chance, o.chance);
 	}
 }

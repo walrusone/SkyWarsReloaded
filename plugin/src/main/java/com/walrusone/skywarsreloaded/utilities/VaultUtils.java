@@ -6,6 +6,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -13,9 +14,10 @@ public class VaultUtils {
 
 	private static VaultUtils instance;
 	private Economy econ = null;
+	private Chat chat = null;
 	
 	private VaultUtils() {
-		if (!setupEconomy()) {
+		if (!setupEconomy() && !setupChat()) {
 			SkyWarsReloaded.get().getLogger().info("ERROR: Vault Dependency was not found. Install Vault or turn off Economy in the Config!");
 		}
 	}
@@ -39,20 +41,19 @@ public class VaultUtils {
         return econ != null;
 	}
 	
+	private boolean setupChat() {
+        RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
+        chat = rsp.getProvider();
+        return chat != null;
+    }
+	
 	public boolean canBuy(Player player, double cost) {
-		if (econ != null) {
-			if (econ.getBalance(player) >= cost) {
-				return true;
-			}
-		}
-		return false;
-	}
+        return econ != null && econ.getBalance(player) >= cost;
+    }
 	public boolean payCost(Player player, double cost) {
 		if (econ != null) {
 			EconomyResponse rp = econ.withdrawPlayer(player, cost);
-			if (rp.transactionSuccess()) {
-				return true;
-			}
+            return rp.transactionSuccess();
 		}
 		return false;
 	}
@@ -68,6 +69,10 @@ public class VaultUtils {
 		if (econ != null) {
 			econ.depositPlayer(win, i);
 		}
+	}
+	
+	public Chat getChat() {
+		return chat;
 	}
 	
 }

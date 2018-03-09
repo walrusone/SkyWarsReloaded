@@ -11,15 +11,15 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 
 public class TeamCard {
-	private ArrayList<PlayerCard> players = new ArrayList<PlayerCard>();
-    private ArrayList<UUID> dead = new ArrayList<UUID>();
+	private ArrayList<PlayerCard> players = new ArrayList<>();
+    private ArrayList<UUID> dead = new ArrayList<>();
 	private CoordLoc spawn;
 	private GameMap gMap;
 	private int place;
 	private String prefix;
 	private Team team;
 	
-	public TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix) {
+	TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix) {
 		this.spawn = spawn;
 		this.gMap = gameMap;
 		this.place = 1;
@@ -65,7 +65,7 @@ public class TeamCard {
 
 	public TeamCard sendReservation(Player player, PlayerStat ps) {
 		for (PlayerCard pCard: players) {
-			if (pCard.getPlayer() == null && spawn != null) {
+			if (pCard.getUUID() == null && spawn != null) {
 				pCard.setPlayer(player);
 				pCard.setPreElo(ps.getElo());
 				boolean glassReader = gMap.getCage().setGlassColor(gMap, this, ps.getGlassColor());
@@ -144,24 +144,19 @@ public class TeamCard {
 	}
 
 	public boolean isElmininated(int numOfPlayers) {
-		if (numOfPlayers == dead.size()) {
-			return true;
-		}
-		return false;
+		return numOfPlayers == dead.size();
 	}
 	
 	public boolean isElmininated() {
-		if (getPlayersSize() == dead.size()) {
-			return true;
-		}
-		return false;
+		return getPlayersSize() == dead.size();
 	}
 
 	public String getName() {
-		String name = "";
+		StringBuilder name = new StringBuilder();
 		for (PlayerCard pCard: players) {
 			if (pCard.getPlayer() != null) {
-				name = name + pCard.getPlayer().getDisplayName() + ", ";
+				name.append(pCard.getPlayer().getDisplayName());
+				name.append(", ");
 			}
 		}
 		return name.substring(0, name.length() -2);

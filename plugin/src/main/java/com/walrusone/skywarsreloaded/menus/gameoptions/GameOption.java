@@ -22,9 +22,9 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public abstract class GameOption {
 
-	protected ArrayList<String> itemList;
-	protected ArrayList<Vote> voteList;
-	protected IconMenu iconMenu;
+	ArrayList<String> itemList;
+	ArrayList<Vote> voteList;
+	private IconMenu iconMenu;
 	protected GameMap gameMap;
 	protected String key;
 	
@@ -40,9 +40,9 @@ public abstract class GameOption {
 	protected abstract Vote getDefault();
 	public abstract void completeOption();
 	
-	protected void createMenu(String key, String name) {
+	void createMenu(String key, String name) {
 		this.key = key;
-		ArrayList<Inventory> invs = new ArrayList<Inventory>();
+		ArrayList<Inventory> invs = new ArrayList<>();
 		Inventory inv = Bukkit.createInventory(null, 36, new Messaging.MessageFormatter().format(name));
 		inv.clear();
 		inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
@@ -52,34 +52,31 @@ public abstract class GameOption {
 		inv.setItem(17, SkyWarsReloaded.getIM().getItem(itemList.get(4)));
 		invs.add(inv);
 		
-		SkyWarsReloaded.getIC().create(key, invs, new IconMenu.OptionClickEventHandler() {
-			@Override
-	        public void onOptionClick(IconMenu.OptionClickEvent event) {
-				String itemName = event.getName();
-				if (itemName.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
-		            new VotingMenu(event.getPlayer());
-		            return;
-		        }
-				final GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());
-		    	if (gameMap == null || !gMap.equals(gameMap)) {
-		    		return;
-		    	}
-				if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
-					int slot = event.getSlot();
-					if (slot == 9) {
-						doSlotNine(event.getPlayer());
-					} else if (slot == 11) {
-						doSlotEleven(event.getPlayer());
-					} else if (slot == 13) {
-						doSlotThriteen(event.getPlayer());
-					} else if (slot == 15) {
-						doSlotFifteen(event.getPlayer());
-					} else if (slot == 17) {
-						doSlotSeventeen(event.getPlayer());
-					}
-				}
-			}
-		});
+		SkyWarsReloaded.getIC().create(key, invs, event -> {
+            String itemName = event.getName();
+            if (itemName.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
+                new VotingMenu(event.getPlayer());
+                return;
+            }
+            final GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());
+            if (gameMap == null || !gMap.equals(gameMap)) {
+                return;
+            }
+            if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
+                int slot = event.getSlot();
+                if (slot == 9) {
+                    doSlotNine(event.getPlayer());
+                } else if (slot == 11) {
+                    doSlotEleven(event.getPlayer());
+                } else if (slot == 13) {
+                    doSlotThriteen(event.getPlayer());
+                } else if (slot == 15) {
+                    doSlotFifteen(event.getPlayer());
+                } else if (slot == 17) {
+                    doSlotSeventeen(event.getPlayer());
+                }
+            }
+        });
 		iconMenu = SkyWarsReloaded.getIC().getMenu(key);
 	}
 	
@@ -93,7 +90,7 @@ public abstract class GameOption {
 		updateScoreboard();
 	}
 	
-	public void setVote(Player player, Vote vote) {
+	void setVote(Player player, Vote vote) {
 		for (PlayerCard pCard: gameMap.getPlayerCards()) {
 			if (pCard.getUUID() != null && pCard.getUUID().equals(player.getUniqueId())) {
 				setCard(pCard, vote);
@@ -102,7 +99,7 @@ public abstract class GameOption {
 	}
 	
 	private HashMap<Vote, Integer> getVotes(boolean getRandom) {
-    	HashMap <Vote, Integer> votes = new HashMap<Vote, Integer>();
+    	HashMap <Vote, Integer> votes = new HashMap<>();
 		votes.put(voteList.get(0), 0);
 		votes.put(voteList.get(1), 0);
 		votes.put(voteList.get(2), 0);
@@ -118,14 +115,14 @@ public abstract class GameOption {
 						vote = getRandomVote();
 					}
 					int multiplier = Util.get().getMultiplier(player);
-					votes.put(vote, votes.get(vote) + (1 * multiplier));
+					votes.put(vote, votes.get(vote) + (multiplier));
 				}
 			}	
 		}
 		return votes;
     }
 	
-	public void updateVotes() {
+	void updateVotes() {
 		HashMap <Vote, Integer> votes = getVotes(false);
 			
 		for (Vote vote: votes.keySet()) {
@@ -172,7 +169,7 @@ public abstract class GameOption {
 		return voted;
 	}
 	
-	protected String getVoteString(Vote vote) {
+	String getVoteString(Vote vote) {
 		switch(vote) {
 		case CHESTRANDOM: return new Messaging.MessageFormatter().format("items.chest-random");
 		case CHESTBASIC: return new Messaging.MessageFormatter().format("items.chest-basic");

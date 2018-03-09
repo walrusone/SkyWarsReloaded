@@ -13,41 +13,36 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 public class SpectateMenu {
-	
-    private static int menuSize = 45;
+
     private static final String menuName = new Messaging.MessageFormatter().format("menu.spectategame-menu-title");
     
-    public SpectateMenu() {	
-    	Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
-    	ArrayList<Inventory> invs = new ArrayList<Inventory>();
+    public SpectateMenu() {
+        int menuSize = 45;
+        Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
+    	ArrayList<Inventory> invs = new ArrayList<>();
     	invs.add(menu);
     	 
-        SkyWarsReloaded.getIC().create("spectatemenu", invs, new IconMenu.OptionClickEventHandler() {
-			@Override
-            public void onOptionClick(IconMenu.OptionClickEvent event) {
-                Player player = event.getPlayer();
-                GameMap gMap = MatchManager.get().getPlayerMap(player);
-                if (gMap != null) {
-                    return;
-                }
-                
-                String name = event.getName();
-                if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
-	            	player.closeInventory();
-	            	return;
-	            }
-                gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(name));
-                if (gMap == null) {
-                    return;
-                }
-                  
-                if (player.hasPermission("sw.spectate")) {
-	                if (player!= null) {
-		                	player.closeInventory();
-		                	MatchManager.get().addSpectator(gMap, player);
-	                }
-                }
-			}            
+        SkyWarsReloaded.getIC().create("spectatemenu", invs, event -> {
+            Player player = event.getPlayer();
+            GameMap gMap = MatchManager.get().getPlayerMap(player);
+            if (gMap != null) {
+                return;
+            }
+
+            String name = event.getName();
+            if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
+                player.closeInventory();
+                return;
+            }
+            gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(name));
+            if (gMap == null) {
+                return;
+            }
+
+            if (player.hasPermission("sw.spectate")) {
+                player.closeInventory();
+                MatchManager.get().addSpectator(gMap, player);
+            }
         });
                
     }

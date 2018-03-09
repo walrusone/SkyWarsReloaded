@@ -14,18 +14,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
-import com.walrusone.skywarsreloaded.menus.IconMenu;
-import com.walrusone.skywarsreloaded.menus.IconMenu.OptionClickEvent;
 
-public class EventsMenu {
+class EventsMenu {
 
-    private static int menuSize = 27;
-    private static final String menuName = ChatColor.DARK_PURPLE + "Events Manager: ";
+	private static final String menuName = ChatColor.DARK_PURPLE + "Events Manager: ";
     
-    public EventsMenu(final Player player, GameMap gMap) {
-    	
-    	Inventory inv = Bukkit.createInventory(null, menuSize + 9, menuName + gMap.getName());
-    	List<String> lores = new ArrayList<String>();
+    EventsMenu(final Player player, GameMap gMap) {
+
+		int menuSize = 27;
+		Inventory inv = Bukkit.createInventory(null, menuSize + 9, menuName + gMap.getName());
+    	List<String> lores = new ArrayList<>();
     	for (MatchEvent event: gMap.getEvents()) {
     		lores.clear();
     		String part1;
@@ -55,47 +53,43 @@ public class EventsMenu {
     		inv.setItem(event.getSlot(), item);
     	}
                
-        ArrayList<Inventory> invs = new ArrayList<Inventory>();
+        ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(inv);
 
-        SkyWarsReloaded.getIC().create(player, invs, new IconMenu.OptionClickEventHandler() {
-			@Override
-            public void onOptionClick(OptionClickEvent event) {
-                
-                String name = event.getName();
-                if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
-                	SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							gMap.updateArenaManager();
-						}
-					}.runTaskLater(SkyWarsReloaded.get(), 2);	
-					return;
-	            }
-                MatchEvent mEvent = null;
-                for (MatchEvent e: gMap.getEvents()) {
-                	if(ChatColor.translateAlternateColorCodes('&', e.getTitle()).equals(name)) {
-                		mEvent = e;
-                		break;
-                	}
-                }
-                if (mEvent != null) {
-                	if (event.getClick().equals(ClickType.RIGHT)) {
-                		if (mEvent.hasFired()) {
-                			mEvent.endEvent(true);
-                		} else {
-                    		mEvent.doEvent();
-                		}
-                		new EventsMenu(player, gMap);
-                	} else if (event.getClick().equals(ClickType.LEFT)) {
-                		mEvent.setEnabled(!mEvent.isEnabled());
-                		mEvent.saveEventData();
-                		new EventsMenu(player, gMap);
-                	}
-                }
-            }
-        });
+        SkyWarsReloaded.getIC().create(player, invs, event -> {
+			String name = event.getName();
+			if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
+				SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						gMap.updateArenaManager();
+					}
+				}.runTaskLater(SkyWarsReloaded.get(), 2);
+				return;
+			}
+			MatchEvent mEvent = null;
+			for (MatchEvent e: gMap.getEvents()) {
+				if(ChatColor.translateAlternateColorCodes('&', e.getTitle()).equals(name)) {
+					mEvent = e;
+					break;
+				}
+			}
+			if (mEvent != null) {
+				if (event.getClick().equals(ClickType.RIGHT)) {
+					if (mEvent.hasFired()) {
+						mEvent.endEvent(true);
+					} else {
+						mEvent.doEvent();
+					}
+					new EventsMenu(player, gMap);
+				} else if (event.getClick().equals(ClickType.LEFT)) {
+					mEvent.setEnabled(!mEvent.isEnabled());
+					mEvent.saveEventData();
+					new EventsMenu(player, gMap);
+				}
+			}
+		});
                 
         if (player != null) {
             SkyWarsReloaded.getIC().show(player, null);

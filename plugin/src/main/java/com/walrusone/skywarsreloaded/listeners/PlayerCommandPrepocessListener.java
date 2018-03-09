@@ -20,35 +20,31 @@ public class PlayerCommandPrepocessListener implements Listener
     		if (splited[0].equalsIgnoreCase("/spawn")) {
             	e.setCancelled(true);
             	gMap.getSpectators().remove(e.getPlayer().getUniqueId());
-            	MatchManager.get().removeSpectator(gMap, e.getPlayer());
+            	MatchManager.get().removeSpectator(e.getPlayer());
             	return;
     		}
         	if (SkyWarsReloaded.getCfg().disableCommandsSpectate()) {
-            	if (gMap != null) {
-                	if (e.getPlayer().hasPermission("sw.allowcommands")) {
-                		return;
-                	}
-                    for (final String a1 : SkyWarsReloaded.getCfg().getEnabledCommandsSpectate()) {
-                    	if (splited.length == 1) {
-                        	if (splited[0].equalsIgnoreCase("/" + a1)) {
-                                return;
-                            }
-                    	} else if (splited.length > 1) {
-                        	if (splited[0].equalsIgnoreCase("/" + a1) || (splited[0] + " " + splited[1]).equalsIgnoreCase("/" + a1)) {
-                                return;
-                            }
-                    	}
-                    }
-            		e.getPlayer().sendMessage(new Messaging.MessageFormatter().format("game.command-disabled-spec"));
-            		e.setCancelled(true);
-            		return;
-                }
+				if (e.getPlayer().hasPermission("sw.allowcommands")) {
+					return;
+				}
+				for (final String a1 : SkyWarsReloaded.getCfg().getEnabledCommandsSpectate()) {
+					if (splited.length == 1) {
+						if (splited[0].equalsIgnoreCase("/" + a1)) {
+							return;
+						}
+					} else {
+						if (splited[0].equalsIgnoreCase("/" + a1) || (splited[0] + " " + splited[1]).equalsIgnoreCase("/" + a1)) {
+							return;
+						}
+					}
+				}
+				e.getPlayer().sendMessage(new Messaging.MessageFormatter().format("game.command-disabled-spec"));
+				e.setCancelled(true);
+				return;
         	}
     	}
     		  	
-    	if (MatchManager.get().getPlayerMap(e.getPlayer()) == null) {
-            return;
-        } else {
+    	if (MatchManager.get().getPlayerMap(e.getPlayer()) != null) {
         	if (e.getPlayer().hasPermission("sw.allowcommands")) {
         		return;
         	}

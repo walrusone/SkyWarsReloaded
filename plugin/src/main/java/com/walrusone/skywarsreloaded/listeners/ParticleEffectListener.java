@@ -28,13 +28,19 @@ public class ParticleEffectListener implements Listener{
 				 Player player = (Player) projectile.getShooter();
 				 GameMap gMap = MatchManager.get().getPlayerMap(player);
 				 if (gMap != null) {
-					 String key = PlayerStat.getPlayerStats(player.getUniqueId()).getProjectileEffect();
-					 List<ParticleEffect> effects = ((ProjectileEffectOption) ProjectileEffectOption.getPlayerOptionByKey(key)).getEffects();
-					 if (key != null && effects != null) {
-						 if (!key.equalsIgnoreCase("none")) {
-							 SkyWarsReloaded.getOM().addProjectile(projectile, effects);
-						 }
-					 } 
+				 	PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+				 	if (ps != null) {
+                        String key = ps.getProjectileEffect();
+                        ProjectileEffectOption peo = (ProjectileEffectOption) ProjectileEffectOption.getPlayerOptionByKey(key);
+                        if (peo != null) {
+                            List<ParticleEffect> effects = peo.getEffects();
+                            if (key != null && effects != null) {
+                                if (!key.equalsIgnoreCase("none")) {
+                                    SkyWarsReloaded.getOM().addProjectile(projectile, effects);
+                                }
+                            }
+                        }
+                    }
 				 }
 			 }
 		 }

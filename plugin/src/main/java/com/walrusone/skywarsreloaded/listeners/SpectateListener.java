@@ -30,7 +30,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class SpectateListener implements Listener{
 	
-	private HashMap<String, BukkitTask> teleportRequests = new HashMap<String, BukkitTask>();
+	private HashMap<String, BukkitTask> teleportRequests = new HashMap<>();
 		
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent e) {
@@ -70,10 +70,10 @@ public class SpectateListener implements Listener{
 			return;
 		}
 		gameMap.getSpectators().remove(player.getUniqueId());
-		MatchManager.get().removeSpectator(gameMap, player);
+		MatchManager.get().removeSpectator(player);
 	}
 		
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryClick(InventoryClickEvent e) {
 		final Player player = (Player) e.getWhoClicked();
 		final GameMap gameMap = MatchManager.get().getSpectatorMap(player);
@@ -84,7 +84,7 @@ public class SpectateListener implements Listener{
 		if (slot == 8) {
 			player.closeInventory();
 			gameMap.getSpectators().remove(player.getUniqueId());
-			MatchManager.get().removeSpectator(gameMap, player);
+			MatchManager.get().removeSpectator(player);
 		} else if (slot >= 9 && slot <= 35) {
 			player.closeInventory();
 			ItemStack item = e.getCurrentItem();
@@ -104,41 +104,11 @@ public class SpectateListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent e) {
 		if(teleportRequests.containsKey(e.getPlayer().getUniqueId().toString())) {
-			if (e.getTo().getBlockX() == e.getFrom().getBlockX() && e.getTo().getBlockY() == e.getFrom().getBlockY() && e.getTo().getBlockZ() == e.getFrom().getBlockZ()) {
-				return;
-			} else {
+			if (!(e.getTo().getBlockX() == e.getFrom().getBlockX() && e.getTo().getBlockY() == e.getFrom().getBlockY() && e.getTo().getBlockZ() == e.getFrom().getBlockZ())) {
 				e.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.spectate-cancelled"));
 				teleportRequests.get(e.getPlayer().getUniqueId().toString()).cancel();
 				teleportRequests.remove(e.getPlayer().getUniqueId().toString());
 			}
 		}
-	}
-	
-	
-	public void addSpectator(final GameMap game, final Player player) {
-		BukkitTask runnable = new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (player != null) {
-					player.sendMessage(new Messaging.MessageFormatter().format("spectate.starting"));
-					if (Util.get().isBusy(player.getUniqueId())) {
-						player.sendMessage(new Messaging.MessageFormatter().format("error.spectate-cancelled"));
-			   	 		player.sendMessage(new Messaging.MessageFormatter().format("error.spectate-notatthistime"));
-			   	 		this.cancel();
-			   	 		return;
-			   	 	}
-					if (game == null || game.getMatchState() == MatchState.ENDING) {
-						player.sendMessage(new Messaging.MessageFormatter().format("error.spectate-cancelled"));
-						player.sendMessage(new Messaging.MessageFormatter().format("error.spectate-no-longer-avail"));
-						this.cancel();
-						return;
-			   	 	}
-					teleportRequests.remove(player.getUniqueId().toString());
-					MatchManager.get().addSpectator(game, player);
-				}	
-			}
-		}.runTaskLater(SkyWarsReloaded.get(), 80);
-		
-		teleportRequests.put(player.getUniqueId().toString(), runnable);
 	}
 }

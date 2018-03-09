@@ -47,15 +47,13 @@ public class SWRPlaceholderAPI extends EZPlaceholderHook {
 		}
 		
 		if (identifier.equals("kill_death")) {
-			double stat = (double)((double)swr.getPlayerStat(player).getKills()/(double)swr.getPlayerStat(player).getDeaths());
-			String statString = String.format("%1$,.2f", stat);
-			return statString;
+			double stat = (double)swr.getPlayerStat(player).getKills()/(double)swr.getPlayerStat(player).getDeaths();
+			return String.format("%1$,.2f", stat);
 		}
 		
 		if (identifier.equals("win_loss")) {
-			double stat = (double)((double)swr.getPlayerStat(player).getWins()/(double)swr.getPlayerStat(player).getLosses());
-			String statString = String.format("%1$,.2f", stat);
-			return statString;	
+			double stat = (double)swr.getPlayerStat(player).getWins()/(double)swr.getPlayerStat(player).getLosses();
+			return String.format("%1$,.2f", stat);
 		}
 		
 		return null;

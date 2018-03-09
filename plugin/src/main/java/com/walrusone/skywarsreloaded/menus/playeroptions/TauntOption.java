@@ -22,7 +22,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class TauntOption extends PlayerOption{
 	
-	private static ArrayList<PlayerOption> playerOptions = new ArrayList<PlayerOption>();
+	private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
 	private List<String> lore;
 	private String message;
 	private String sound;
@@ -33,7 +33,7 @@ public class TauntOption extends PlayerOption{
 	private int density;
 	private List<String> stringParticles;
 	
-	public TauntOption(String key, String name, List<String> lore, String message, String sound, boolean useCustomSound, double volume, double pitch, double speed, int density, List<String> particles, Material icon, int level, int cost, int position, int page, int menuSize) {
+	private TauntOption(String key, String name, List<String> lore, String message, String sound, boolean useCustomSound, double volume, double pitch, double speed, int density, List<String> particles, Material icon, int level, int cost, int position, int page, int menuSize) {
 		this.key = key;
 		this.name = name;
 		this.lore = lore;
@@ -62,7 +62,10 @@ public class TauntOption extends PlayerOption{
                 	SkyWarsReloaded.get().saveResource("taunts18.yml", false);
                 	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "taunts18.yml");
                 	if (sf.exists()) {
-                		sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
+                		boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
+                		if (!result) {
+                		    SkyWarsReloaded.get().getLogger().info("Failed to rename 1.8 Taunts file!");
+                        }
                 	}
         	} else {
             	SkyWarsReloaded.get().saveResource("taunts.yml", false);
@@ -94,7 +97,7 @@ public class TauntOption extends PlayerOption{
                 }
             } 
         }
-        Collections.<PlayerOption>sort(playerOptions);
+        Collections.sort(playerOptions);
         if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
        	 FileConfiguration storage = YamlConfiguration.loadConfiguration(tauntFile);
        	 updateFile(tauntFile, storage);
@@ -102,7 +105,7 @@ public class TauntOption extends PlayerOption{
 	}
 	
     private static void updateFile(File file, FileConfiguration storage) {
-        ArrayList<Integer> placement = new ArrayList<Integer>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 
+        ArrayList<Integer> placement = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8, 9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35,
         		36, 38, 40, 42, 44, 45, 47, 49, 51, 53));
         storage.set("menuSize", 45);
 		for (int i = 0; i < playerOptions.size(); i++) {
@@ -127,28 +130,12 @@ public class TauntOption extends PlayerOption{
 		return this.message;
 	}
 	
-	public boolean useCustomSound() {
-		return this.useCustomSound;
-	}
-	
 	public float getVolume() {
 		return this.volume;
 	}
 	
 	public float getPitch() {
 		return this.pitch;
-	}
-	
-	public double getSpeed() {
-		return speed;
-	}
-	
-	public int getDensity() {
-		return this.density;
-	}
-	
-	public List<String> getStringParticles() {
-		return this.stringParticles;
 	}
 	
 	/**Does the taunt for a player
@@ -173,7 +160,7 @@ public class TauntOption extends PlayerOption{
 	
 	/**Creates a sphere of particles around the player
 	 */
-    public void doTauntParticles(String uuid) {
+    private void doTauntParticles(String uuid) {
     	Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
     	if (player != null) {
     		Util.get().surroundParticles(player, 2, stringParticles, density, speed);

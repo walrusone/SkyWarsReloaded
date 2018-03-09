@@ -21,14 +21,14 @@ public class NameCmd extends BaseCmd {
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.no-kit"));
 			return true;
 		}
-		
-		String message = "";
-		for (int i = 2; i < args.length; i++) {
-		    message = message + args[i] + " ";
+
+		StringBuilder message = new StringBuilder();
+		for (int i = 3; i < args.length; i++) {
+			message.append(args[i]);
+			message.append(" ");
 		}
-		message = message.trim();
 		
-		kit.setName(message);
+		kit.setName(message.toString().trim());
 		
 		GameKit.saveKit(kit);
 		
