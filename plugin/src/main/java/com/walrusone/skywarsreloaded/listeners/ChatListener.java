@@ -163,19 +163,21 @@ public class ChatListener implements Listener {
 									.setVariable("mapname", gMap.getDisplayName())
                                     .format("chat.ingamechat");
                         }
-                        if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {
-                            event.setCancelled(true);
-                            MatchManager.get().specMessage(sMap, messageToSend);
-                        } else if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat() || gMap != null && SkyWarsReloaded.getCfg().limitGameChat()){
-                            event.setCancelled(true);
-                            if(sMap != null) {
-                                MatchManager.get().message(sMap, messageToSend);
-                            } else {
-                                MatchManager.get().message(gMap, messageToSend);
-                            }
-                        } else {
-                            event.setFormat(messageToSend);
-                        }
+						ArrayList<Player> recievers = null;
+						if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {
+							recievers = sMap.getMessageAblePlayers(true);
+						} else if (sMap != null && SkyWarsReloaded.getCfg().limitGameChat() || gMap != null && SkyWarsReloaded.getCfg().limitGameChat()) {
+							if (sMap != null) {
+								recievers = sMap.getMessageAblePlayers(false);
+							} else {
+								recievers = gMap.getMessageAblePlayers(false);
+							}
+						}
+						final ArrayList recipents = recievers;
+						if (recievers != null) {
+							event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
+						}
+						event.setFormat(messageToSend);
                     }
 	    		}
 			} else {
