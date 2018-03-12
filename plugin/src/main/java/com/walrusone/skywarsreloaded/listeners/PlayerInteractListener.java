@@ -243,61 +243,61 @@ public class PlayerInteractListener implements Listener {
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-    	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
-    	if (gMap == null) {
-    		if(e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-    			GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
-    			if (map == null) {
-    				return;
-    			}
-    			if (map.isEditing()) {
-    				if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
-    					Chest chest = (Chest) e.getBlock().getState();
-    					map.removeChest(chest);
-    					InventoryHolder ih = chest.getInventory().getHolder();
-    					if (ih instanceof DoubleChest) {
-    						DoubleChest dc = (DoubleChest) ih;
-    						Chest left = (Chest) dc.getLeftSide();
-    						Chest right = (Chest) dc.getRightSide();
-    						Location locLeft = left.getLocation();
-    						Location locRight = right.getLocation();
-    						World world = e.getBlock().getWorld();
-    						new BukkitRunnable() {
+		GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
+		if (gMap == null) {
+			if(e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
+				GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+				if (map == null) {
+					return;
+				}
+				if (map.isEditing()) {
+					if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
+						Chest chest = (Chest) e.getBlock().getState();
+						map.removeChest(chest);
+						InventoryHolder ih = chest.getInventory().getHolder();
+						if (ih instanceof DoubleChest) {
+							DoubleChest dc = (DoubleChest) ih;
+							Chest left = (Chest) dc.getLeftSide();
+							Chest right = (Chest) dc.getRightSide();
+							Location locLeft = left.getLocation();
+							Location locRight = right.getLocation();
+							World world = e.getBlock().getWorld();
+							new BukkitRunnable() {
 								@Override
 								public void run() {
 									world.getBlockAt(locLeft).setType(Material.AIR);
 									world.getBlockAt(locRight).setType(Material.AIR);
 								}
-    						}.runTaskLater(SkyWarsReloaded.get(), 2L);
-    					}
-    					e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
-    				} else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-    					boolean result = map.removeTeamCard(e.getBlock().getLocation());
-    					if (result) {
-    						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getMaxPlayers() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.spawnRemoved"));	
-    					}
-    				} else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-    					boolean result = map.removeDeathMatchSpawn(e.getBlock().getLocation());
-    					if (result) {
-    						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getDeathMatchSpawns().size() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.deathSpawnRemoved"));	
-    					}
-    				} 
-    			}
-    		}
-    		return;
-    	}
-    	if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-    			e.setCancelled(true);
-    			new BukkitRunnable() {
-					@Override
-					public void run() {
-						CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getTeamCard().getSpawn();
-		    			e.getPlayer().teleport(new Location(gMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
+							}.runTaskLater(SkyWarsReloaded.get(), 2L);
+						}
+						e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
+					} else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+						boolean result = map.removeTeamCard(e.getBlock().getLocation());
+						if (result) {
+							e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getMaxPlayers() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.spawnRemoved"));
+						}
+					} else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
+						boolean result = map.removeDeathMatchSpawn(e.getBlock().getLocation());
+						if (result) {
+							e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getDeathMatchSpawns().size() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.deathSpawnRemoved"));
+						}
 					}
-    			}.runTaskLater(SkyWarsReloaded.get(), 2);
-   		}
-    	if (gMap.getMatchState().equals(MatchState.PLAYING)) {
-    		Block block = e.getBlock();
+				}
+			}
+			return;
+		}
+		if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getTeamCard().getSpawn();
+					e.getPlayer().teleport(new Location(gMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
+				}
+			}.runTaskLater(SkyWarsReloaded.get(), 2);
+		}
+		if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+			Block block = e.getBlock();
 			if (block.getType().equals(Material.ENDER_CHEST)) {
 				for (Crate crate: gMap.getCrates()) {
 					if (crate.getLocation().equals(block.getLocation())) {
@@ -306,32 +306,31 @@ public class PlayerInteractListener implements Listener {
 					}
 				}
 			}
-    	}
+		}
     }
     
     @EventHandler
     public void onBlockPlaced(BlockPlaceEvent e) {
-    	GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
-    	if (gMap == null) {
-    		if (e.getBlockPlaced().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
-        		GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
-        		if (map == null) {
-        			return;
-        		}
-    			if (map.isEditing()) {
-    				Location loc = e.getBlock().getLocation();
-    				Player player = e.getPlayer();
-    				new BukkitRunnable() {
+		GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
+		if (gMap == null) {
+			if (e.getBlockPlaced().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
+				GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+				if (map == null) {
+					return;
+				}
+				if (map.isEditing()) {
+					Location loc = e.getBlock().getLocation();
+					Player player = e.getPlayer();
+					new BukkitRunnable() {
 						@Override
 						public void run() {
 							map.addChest((Chest) loc.getBlock().getState());
 							player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addChest"));
 						}
-    				}.runTaskLater(SkyWarsReloaded.get(), 2L);
-    			}
-    		}
-    	}
-    	
+					}.runTaskLater(SkyWarsReloaded.get(), 2L);
+				}
+			}
+		}
     }
     
     @EventHandler

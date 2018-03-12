@@ -99,11 +99,11 @@ public class IconMenuController implements Listener {
         	new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (menu.get(event.getPlayer()).getInventories().contains(event.getPlayer().getOpenInventory().getTopInventory())) {
+					if (menu.get(event.getPlayer()).getInventories().contains(event.getPlayer().getOpenInventory())) {
 						destroy(((Player) event.getPlayer()));
 					}
 				}
-        	}.runTaskLater(SkyWarsReloaded.get(), 5);
+         	}.runTaskLater(SkyWarsReloaded.get(), 5);
         }
     }
 }

@@ -367,7 +367,7 @@ public class MatchManager
         					int y = Util.get().getRandomNum(20, 50);
         					mapWorld.strikeLightningEffect(new Location(mapWorld, x, y, z));
         				}
-        				gameMap.setNextStrike(Util.get().getRandomNum(20, 3));
+        				gameMap.setNextStrike(Util.get().getRandomNum(3, 20));
         				gameMap.setStrikeCounter(0);
         			} else {
         				gameMap.setStrikeCounter(gameMap.getStrikeCounter() + 1);

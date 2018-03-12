@@ -75,7 +75,7 @@ public class ChatListener implements Listener {
 		toChange.put(uuid,  setting);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
 		if (SkyWarsReloaded.getCfg().formatChat()) {
 			GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());

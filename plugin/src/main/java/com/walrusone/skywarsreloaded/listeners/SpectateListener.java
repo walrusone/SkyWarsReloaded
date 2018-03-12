@@ -36,7 +36,7 @@ public class SpectateListener implements Listener{
 	public void onPlayerTeleport(PlayerTeleportEvent e) {
 		final Player player = e.getPlayer();
 		final GameMap gameMap = MatchManager.get().getSpectatorMap(player);
-		if (gameMap == null) {
+		if (gameMap == null || player.hasPermission("sw.opteleport")) {
 			return;
 		}
 		if (e.getCause() != TeleportCause.END_PORTAL) {
