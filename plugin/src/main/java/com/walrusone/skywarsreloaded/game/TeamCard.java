@@ -89,27 +89,25 @@ public class TeamCard {
 		return null;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean joinGame(Player player) {
 		for (PlayerCard pCard: players) {
 			if (pCard.getUUID().equals(player.getUniqueId())) {
-		        	gMap.getJoinQueue().add(pCard);
-					if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-						gMap.getKitVoteOption().updateKitVotes();
-					}
-			        gMap.setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
-			       	team.addPlayer(player);
-					return true;
+				team.addEntry(player.getName());
+				gMap.getJoinQueue().add(pCard);
+				if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+					gMap.getKitVoteOption().updateKitVotes();
+				}
+				gMap.setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
+				return true;
 			}
 		}
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean removePlayer(UUID uuid) {
 		PlayerCard pCard = containsPlayer(uuid);
 		if (pCard != null) {
-			team.removePlayer(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid));
+			team.removeEntry(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid).getName());
 			pCard.reset();
 			return true;
 		}

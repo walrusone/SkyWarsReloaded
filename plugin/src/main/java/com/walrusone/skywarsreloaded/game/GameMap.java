@@ -7,12 +7,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 import com.google.common.collect.Iterables;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -106,7 +100,6 @@ public class GameMap {
     private ArrayList<UUID> spectators = new ArrayList<>();
     private String name;
     private int timer;
-    private int restartTimer = -1;
     private int minPlayers;
     private GameKit kit;
     private Cage cage;
@@ -887,7 +880,6 @@ public class GameMap {
 		forceStart = false;
 		allowRegen = true;
         kit = null;
-        restartTimer = -1;
         winners.clear();
         deathMatchWaiters.clear();
 		if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
