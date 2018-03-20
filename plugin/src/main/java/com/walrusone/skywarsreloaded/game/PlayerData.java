@@ -100,18 +100,18 @@ public class PlayerData {
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");
-		    	}		        		           
-	        	if (SkyWarsReloaded.getCfg().bungeeMode()) {
-			        new BukkitRunnable() {
+		    	}
+				if (SkyWarsReloaded.getCfg().bungeeMode()) {
+					new BukkitRunnable() {
 						@Override
 						public void run() {
 							String uuid = player.getUniqueId().toString();
 							SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
-				   			PlayerStat remove = PlayerStat.getPlayerStats(uuid);
-				   			PlayerStat.getPlayers().remove(remove);
+							PlayerStat remove = PlayerStat.getPlayerStats(uuid);
+							PlayerStat.getPlayers().remove(remove);
 						}
-			        }.runTaskLater(SkyWarsReloaded.get(), 5);
-		        }
+					}.runTaskLater(SkyWarsReloaded.get(), 5);
+				}
 			}
 	    }
 	    

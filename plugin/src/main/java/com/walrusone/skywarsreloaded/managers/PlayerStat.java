@@ -99,41 +99,41 @@ public class PlayerStat
             		this.cancel();
             	} else if (ps.isInitialized()) {
             		final Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
-            		if (player != null) {
-                		new BukkitRunnable() {
+					if (player != null) {
+						new BukkitRunnable() {
 							@Override
-    						public void run() {
-    							if (Util.get().isSpawnWorld(player.getWorld())) {
-    								if(SkyWarsReloaded.getCfg().protectLobby()) {
-    									player.setGameMode(GameMode.ADVENTURE);
-    									player.setHealth(20);
-            	        		        player.setFoodLevel(20);
-            	        		        player.setSaturation(20);
-            	        		        player.setFireTicks(0);
-            	        		        player.resetPlayerTime();
-            	        		        player.resetPlayerWeather();
-    								}
-    								PlayerStat pStats = PlayerStat.getPlayerStats(player);
-    								if (pStats != null && SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
-            	        		        Util.get().setPlayerExperience(player, pStats.getXp());
-    								}
-     	        		            if (SkyWarsReloaded.get().isEnabled() && SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
-            	        		        getScoreboard(player);
-            	        		        player.setScoreboard(getPlayerScoreboard(player));
-        	        		        }
-        	        		        if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
-            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
-        	        		        }
-        	        		        if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
-            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
-        	        		        }
-        	        		        if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
-            	        		        player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
-        	        		        }
-        	        		        player.updateInventory();
-    							}
-    						}
-                		}.runTask(SkyWarsReloaded.get());
+							public void run() {
+								if (Util.get().isSpawnWorld(player.getWorld())) {
+									if(SkyWarsReloaded.getCfg().protectLobby()) {
+										player.setGameMode(GameMode.ADVENTURE);
+										player.setHealth(20);
+										player.setFoodLevel(20);
+										player.setSaturation(20);
+										player.setFireTicks(0);
+										player.resetPlayerTime();
+										player.resetPlayerWeather();
+									}
+									PlayerStat pStats = PlayerStat.getPlayerStats(player);
+									if (pStats != null && SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+										Util.get().setPlayerExperience(player, pStats.getXp());
+									}
+									if (SkyWarsReloaded.get().isEnabled() && SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
+										getScoreboard(player);
+										player.setScoreboard(getPlayerScoreboard(player));
+									}
+									if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+										player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
+									}
+									if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
+										player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
+									}
+									if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
+										player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
+									}
+									player.updateInventory();
+								}
+							}
+						}.runTask(SkyWarsReloaded.get());
             		} else {
             			this.cancel();
             		}

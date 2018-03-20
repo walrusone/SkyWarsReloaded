@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.walrusone.skywarsreloaded.commands.player.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,16 +18,6 @@ import com.walrusone.skywarsreloaded.commands.admin.UpdateTopCmd;
 import com.walrusone.skywarsreloaded.commands.admin.SetSpawnCmd;
 import com.walrusone.skywarsreloaded.commands.admin.SetStatsCmd;
 import com.walrusone.skywarsreloaded.commands.admin.StartCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWGlassCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWJoinCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWKillsoundCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWParticleCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWProjectileCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWQuitCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWStatsCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWTauntCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWTopCmd;
-import com.walrusone.skywarsreloaded.commands.player.SWWinsoundCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -49,6 +40,9 @@ public class CmdManager implements CommandExecutor {
 		pcmds.add(new SWQuitCmd("sw"));
 		pcmds.add(new SWStatsCmd("sw"));
 		pcmds.add(new SWTopCmd("sw"));
+		if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+			pcmds.add(new SWOptionsCmd("sw"));
+		}
 		if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
 			pcmds.add(new SWWinsoundCmd("sw"));
 		}

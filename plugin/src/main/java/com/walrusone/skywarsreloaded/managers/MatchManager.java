@@ -140,6 +140,7 @@ public class MatchManager
     public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
     	if (pCard.getPlayer() != null && pCard.getTeamCard().getSpawn() != null && gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
     		Player player = pCard.getPlayer();
+			PlayerData.getPlayerData().add(new PlayerData(player));
     		CoordLoc spawn = pCard.getTeamCard().getSpawn();
     		if (debug) {     	
             	Util.get().logToFile(debugName + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
@@ -180,11 +181,15 @@ public class MatchManager
             	for (final Player p : gameMap.getAlivePlayers()) {
             		if (!p.equals(player)) {
                         Util.get().sendTitle(p, 2, 20, 2, "", 
-                        		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+                        		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+										.setVariable("players", "" + gameMap.getPlayerCount())
+										.setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
         			}
             	}
-            } 
-       		message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.joined-the-game"));
+            }
+			new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+					.setVariable("players", "" + gameMap.getPlayerCount())
+					.setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game");
             
            	for (final Player p : gameMap.getAlivePlayers()) {
         		if (!p.equals(player)) {
@@ -219,7 +224,6 @@ public class MatchManager
     	if (debug) {
     		Util.get().logToFile(debugName + ChatColor.YELLOW + "Preparing " + player.getName() + " for SkyWars");
     	}
-        PlayerData.getPlayerData().add(new PlayerData(player));
         player.setFoodLevel(20);
         player.setSaturation(20);
         player.setHealth(20.0);
@@ -655,11 +659,15 @@ public class MatchManager
 	        	for (final Player p : gameMap.getAlivePlayers()) {
 	        		if (!p.equals(player)) {
 	                    Util.get().sendTitle(p, 2, 20, 2, "", 
-	                    		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.left-the-game"));
+	                    		new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+										.setVariable("players", "" + gameMap.getPlayerCount())
+										.setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
 	    			}
 	        	}
 	        }
-	        message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("game.left-the-game"));
+	        message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+					.setVariable("players", "" + gameMap.getPlayerCount())
+					.setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
 	        
 	        
         	for (final Player p : gameMap.getAlivePlayers()) {
