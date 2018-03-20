@@ -285,7 +285,7 @@ public class ArenaMenu {
 						gMap.update();
 					}
 				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 24) {
-					if (gMap.getTeamSize() < 9 && !gMap.isRegistered()) {
+					if (gMap.getTeamSize() < 8 && !gMap.isRegistered()) {
 						gMap.setTeamSize(gMap.getTeamSize() + 1);
 						gMap.update();
 					}

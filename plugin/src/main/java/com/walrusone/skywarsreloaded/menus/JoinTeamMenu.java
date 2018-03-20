@@ -51,17 +51,20 @@ public class JoinTeamMenu {
 
                     List<String> loreList = Lists.newLinkedList();
                     if (gMap.getMatchState() != MatchState.OFFLINE) {
-                         if (gMap.getMatchState() == MatchState.WAITINGSTART) {
-                             loreList.add((new Messaging.MessageFormatter().format("signs.joinable").toUpperCase()));
-                         } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
-                             loreList.add((new Messaging.MessageFormatter().format("signs.playing").toUpperCase()));
-                         }  else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-                             loreList.add((new Messaging.MessageFormatter().format("signs.ending").toUpperCase()));
-                         }
-                         loreList.add((new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                 .setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4")));
+                        if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+                            loreList.add((new Messaging.MessageFormatter().format("signs.joinable").toUpperCase()));
+                        } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+                            loreList.add((new Messaging.MessageFormatter().format("signs.playing").toUpperCase()));
+                        }  else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+                            loreList.add((new Messaging.MessageFormatter().format("signs.ending").toUpperCase()));
+                        }
+
+                        loreList.add((new Messaging.MessageFormatter().setVariable("teamsize", "" + gMap.getTeamSize())
+                               .format("signs.teamSize")));
                         loreList.add((new Messaging.MessageFormatter().setVariable("teamcount", "" + gMap.getFullTeams())
-                                .setVariable("maxteams", "" + gMap.getTeamCards().size()).format("signs.teamstate")));
+                                .setVariable("maxteams", "" + gMap.getTeamCards().size()).format("signs.teamState")));
+                        loreList.add((new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getAlivePlayers().size())
+                                .setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4team")));
 
                         double xy = ((double) (gMap.getFullTeams() / gMap.getTeamCards().size()));
 

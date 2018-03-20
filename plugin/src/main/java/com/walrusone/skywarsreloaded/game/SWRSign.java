@@ -50,19 +50,23 @@ public class SWRSign {
 				sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state).
 						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
 						setVariable("playercount", "" + gMap.getPlayerCount()).
-						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line1" + team));
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).
+						setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line1" + team));
 				sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state).
 						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
 						setVariable("playercount", "" + gMap.getPlayerCount()).
-						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line2" + team));
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).
+						setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line2" + team));
 				sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state).
 						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
 						setVariable("playercount", "" + gMap.getPlayerCount()).
-						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line3" + team));
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).
+						setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line3" + team));
 				sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state).
 						setVariable("mapname", gMap.getDisplayName().toUpperCase()).
 						setVariable("playercount", "" + gMap.getPlayerCount()).
-						setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4" + team));
+						setVariable("maxplayers", "" + gMap.getMaxPlayers()).
+						setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line4" + team));
 			}
 			sign.update();
 		}
