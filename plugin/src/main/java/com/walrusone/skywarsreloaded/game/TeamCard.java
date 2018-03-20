@@ -28,6 +28,18 @@ public class TeamCard {
 			players.add(new PlayerCard(this, null, -1));
 		}
 	}
+
+	public void updateCard(int size) {
+		if (size >  players.size()) {
+			for (int i = players.size(); i < size; i++) {
+				players.add(new PlayerCard(this, null, -1));
+			}
+		} else {
+			while (size < players.size()) {
+				players.remove(players.size()-1);
+			}
+		}
+	}
 	
 	public int getSize() {
 		return players.size();

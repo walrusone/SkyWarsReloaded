@@ -48,23 +48,21 @@ public class LobbyListener implements Listener
 	   
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-    	Player player = (Player) e.getWhoClicked();
-    	if (Util.get().isSpawnWorld(player.getWorld())) {
-    		if (SkyWarsReloaded.getCfg().protectLobby()) {
-            	if (!player.hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(player)) {
-            		e.setCancelled(true);
-            	}
-    		}
-    	}
+		Player player = (Player) e.getWhoClicked();
+		if (SkyWarsReloaded.getCfg().protectLobby() && Util.get().isSpawnWorld(player.getWorld())) {
+			if (!player.hasPermission("sw.alterlobby") && !SkyWarsReloaded.getIC().has(player)) {
+				e.setCancelled(true);
+			}
+		}
     }
     
     @EventHandler
     public void onPlayerDropItem(final PlayerDropItemEvent e) {
-    	if (Util.get().isSpawnWorld(e.getPlayer().getWorld())) {
-    		if (!e.getPlayer().hasPermission("sw.alterlobby")) {
-    			e.setCancelled(true);
-    		}
-    	}
+		if (SkyWarsReloaded.getCfg().protectLobby() && Util.get().isSpawnWorld(e.getPlayer().getWorld())) {
+			if (!e.getPlayer().hasPermission("sw.alterlobby")) {
+				e.setCancelled(true);
+			}
+		}
     }
     
     @EventHandler

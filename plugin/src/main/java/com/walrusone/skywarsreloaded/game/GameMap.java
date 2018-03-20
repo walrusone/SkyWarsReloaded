@@ -607,6 +607,7 @@ public class GameMap {
         for (String spawn: spawns) {
         	addTeamCard(Util.get().getCoordLocFromString(spawn));
         }
+
         int def = 2;
         if (teamCards.size() > 4) {
         	def = teamCards.size()/2;
@@ -1288,6 +1289,9 @@ public class GameMap {
 
 	public void setTeamSize(int size) {
 		teamSize = size;
+		for (TeamCard tCard: teamCards) {
+			tCard.updateCard(size);
+		}
 		saveArenaData();
 	}
 
