@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.menus.gameoptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Chest;
@@ -96,7 +97,7 @@ public class ChestOption extends GameOption {
 	@Override
 	protected void updateScoreboard() {
 		gameMap.setCurrentChest(getVoteString(getVoted()));
-		gameMap.updateScoreboard();
+		gameMap.getGameBoard().updateScoreboardVar(ScoreVar.CHESTVOTE);
 	}
 
 	@Override

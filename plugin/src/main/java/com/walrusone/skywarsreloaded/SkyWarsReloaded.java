@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.menus.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -55,8 +56,6 @@ import com.walrusone.skywarsreloaded.managers.ItemsManager;
 import com.walrusone.skywarsreloaded.managers.Leaderboard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.WorldManager;
-import com.walrusone.skywarsreloaded.menus.JoinMenu;
-import com.walrusone.skywarsreloaded.menus.SpectateMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
@@ -68,7 +67,7 @@ import net.milkbowl.vault.economy.Economy;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
-	private static ArrayList<String> useable = new ArrayList<>();
+	private ArrayList<String> useable = new ArrayList<>();
 	private Messaging messaging;
 	private Leaderboard leaderboard;
 	private IconMenuController ic;
@@ -80,7 +79,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private WorldManager wm;
 	private String servername;
 	private NMS nmsHandler;
-	private static HologramsUtil hu;
+	private HologramsUtil hu;
 	private boolean loaded;
 
 	
@@ -99,8 +98,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
         } catch (final Exception e) {
             e.printStackTrace();
-            this.getLogger().severe("Could not find support for this CraftBukkit version.");
-            this.getLogger().info("Check for updates at URL HERE");
+            this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ".");
+            this.getLogger().info("Check for updates at https://www.spigotmc.org/resources/skywarsreloaded.3796/");
             this.setEnabled(false);
             return;
         }
@@ -271,10 +270,14 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
 
         if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
-	        new JoinMenu();
+        	new JoinMenu();
+	        new JoinSingleMenu();
+			new JoinTeamMenu();
         }
         if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
-	        new SpectateMenu();
+        	new SpectateMenu();
+	        new SpectateSingleMenu();
+            new SpectateTeamMenu();
         }
         
         getCommand("skywars").setExecutor(new CmdManager());
@@ -411,7 +414,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	return instance.nmsHandler;
     }
     
-    public static ArrayList<String> getUseable() {
+    public ArrayList<String> getUseable() {
     	return useable;
     }
 
@@ -424,7 +427,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	}
 	
 	public static HologramsUtil getHoloManager() {
-		return hu;
+		return instance.hu;
 	}
 	
 	public static PlayerOptionsManager getOM() {

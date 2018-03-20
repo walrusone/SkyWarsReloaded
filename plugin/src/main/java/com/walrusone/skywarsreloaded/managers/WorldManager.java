@@ -47,6 +47,7 @@ public class WorldManager {
         world.setKeepSpawnInMemory(false);
 	    world.setTicksPerAnimalSpawns(1);
 	    world.setTicksPerMonsterSpawns(1);
+	    world.setAutoSave(false);
         
         world.setGameRuleValue("doMobSpawning", "false");
         world.setGameRuleValue("mobGriefing", "false");
@@ -66,7 +67,7 @@ public class WorldManager {
 	public void unloadWorld(String w) {
 	    World world = SkyWarsReloaded.get().getServer().getWorld(w);
 	    if(world != null) {
-	        SkyWarsReloaded.get().getServer().unloadWorld(world, true);
+	        SkyWarsReloaded.get().getServer().unloadWorld(world, false);
 	    }
 	}
 

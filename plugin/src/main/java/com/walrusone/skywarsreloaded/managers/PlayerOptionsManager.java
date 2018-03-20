@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.managers;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.Crate;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
@@ -54,7 +55,7 @@ public class PlayerOptionsManager {
                     }
                 }
 
-                for (GameMap gMap: GameMap.getPlayableArenas()) {
+                for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
                     for (Crate crate: gMap.getCrates()) {
                         doEffects(crate.getEntity().getLocation(), crateEffects, false);
                     }

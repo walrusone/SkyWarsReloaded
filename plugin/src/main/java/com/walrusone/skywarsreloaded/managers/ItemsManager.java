@@ -66,6 +66,8 @@ public class ItemsManager {
         addItem("optionselect", lore, "items.skywars-options"); 
         addItem("joinselect", lore, "items.joinmenu");
         addItem("spectateselect", lore, "items.spectatemenu");
+		addItem("singlemenu", lore, "items.joinsingle");
+		addItem("teammenu", lore, "items.jointeam");
     }
 
 	private void getMatchStartItems() {

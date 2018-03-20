@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.Chunk;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
@@ -95,7 +96,7 @@ public class WeatherOption extends GameOption {
 	@Override
 	protected void updateScoreboard() {
 		gameMap.setCurrentWeather(getVoteString(getVoted()));
-		gameMap.updateScoreboard();
+		gameMap.getGameBoard().updateScoreboardVar(ScoreVar.WEATHERVOTE);
 	}
 
 	@Override

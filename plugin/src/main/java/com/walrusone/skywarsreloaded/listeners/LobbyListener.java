@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import com.walrusone.skywarsreloaded.enums.GameType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -97,7 +98,7 @@ public class LobbyListener implements Listener
                    	Block b = w.getBlockAt(signLocation);
                		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
               			event.setCancelled(true);
-              			if (SkyWarsReloaded.getUseable().contains(lines[1].toUpperCase())) {
+              			if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
               				LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
               				if (Util.get().isInteger(lines[2])) {
               					if (Integer.valueOf(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
@@ -152,7 +153,8 @@ public class LobbyListener implements Listener
     		Player player = e.getPlayer();
         	GameMap gMap = MatchManager.get().getPlayerMap(player);
         	if (gMap == null) {
-        		if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.STONE_PLATE) {
+        		if (e.getAction() == Action.PHYSICAL && (e.getClickedBlock().getType() == Material.STONE_PLATE ||
+						e.getClickedBlock().getType() == Material.IRON_PLATE || e.getClickedBlock().getType() == Material.GOLD_PLATE)) {
             		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
             			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
             			if (spawn != null) {
@@ -170,7 +172,13 @@ public class LobbyListener implements Listener
                 							}
             							}
             							if (tryJoin) {
-                							joined = MatchManager.get().joinGame(party);
+            								if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+												joined = MatchManager.get().joinGame(party, GameType.ALL);
+											} else if (e.getClickedBlock().getType() == Material.IRON_PLATE) {
+												joined = MatchManager.get().joinGame(party, GameType.SINGLE);
+											} else {
+												joined = MatchManager.get().joinGame(party, GameType.TEAM);
+											}
             							} else {
             								break;
             							}
@@ -179,7 +187,13 @@ public class LobbyListener implements Listener
             							break;
                     				}
             					} else {
-            						joined = MatchManager.get().joinGame(player);
+									if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+										joined = MatchManager.get().joinGame(player, GameType.ALL);
+									} else if (e.getClickedBlock().getType() == Material.IRON_PLATE) {
+										joined = MatchManager.get().joinGame(player, GameType.SINGLE);
+									} else {
+										joined = MatchManager.get().joinGame(player, GameType.TEAM);
+									}
                     				if (!joined) {
                     					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
                     				}

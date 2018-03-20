@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import com.walrusone.skywarsreloaded.enums.GameType;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -141,7 +142,7 @@ public class ArenaDamageListener implements Listener {
 		if (event.getEntity() instanceof FallingBlock) {
 			FallingBlock fb = (FallingBlock) event.getEntity();
 			if (fb.getMaterial().equals(Material.ANVIL)) {
-				for (GameMap gMap: GameMap.getPlayableArenas()) {
+				for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
 					if (gMap.getAnvils().contains(event.getEntity().getUniqueId().toString())) {
 						event.setCancelled(true);
 						gMap.getAnvils().remove(event.getEntity().getUniqueId().toString());
@@ -149,7 +150,7 @@ public class ArenaDamageListener implements Listener {
 					}
 				}
 			} else if (fb.getMaterial().equals(Material.SAND)) {
-				for (GameMap gMap: GameMap.getPlayableArenas()) {
+				for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
 					for (Crate crate: gMap.getCrates()) {
 						if (fb.equals(crate.getEntity())) {
 							event.setCancelled(true);

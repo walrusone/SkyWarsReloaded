@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands.player;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
+import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
@@ -16,10 +17,18 @@ public class SWJoinCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-		boolean joined = MatchManager.get().joinGame(player);
+		GameType type = GameType.ALL;
+		if (args.length > 1) {
+			if (args[1].equalsIgnoreCase("single")) {
+				type = GameType.SINGLE;
+			} else if (args[1].equalsIgnoreCase("team")) {
+				type = GameType.TEAM;
+			}
+		}
+		boolean joined = MatchManager.get().joinGame(player, type);
 		int count = 0;
 		while (count < 4 && !joined) {
-			joined = MatchManager.get().joinGame(player);
+			joined = MatchManager.get().joinGame(player, type);
 			count++;
 		}
 		if (!joined) {

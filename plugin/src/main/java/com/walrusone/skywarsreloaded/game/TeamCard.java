@@ -143,12 +143,9 @@ public class TeamCard {
 		return count;
 	}
 
-	public boolean isElmininated(int numOfPlayers) {
-		return numOfPlayers == dead.size();
-	}
-	
 	public boolean isElmininated() {
-		return getPlayersSize() == dead.size();
+		int num = getPlayersSize();
+		return (num == 0 || num == dead.size());
 	}
 
 	public String getName() {

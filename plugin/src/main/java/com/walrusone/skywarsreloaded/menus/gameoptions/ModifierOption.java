@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.menus.gameoptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -92,7 +93,7 @@ public class ModifierOption extends GameOption {
 	@Override
 	protected void updateScoreboard() {
 		gameMap.setCurrentModifier(getVoteString(getVoted()));
-		gameMap.updateScoreboard();
+		gameMap.getGameBoard().updateScoreboardVar(ScoreVar.MODIFIERVOTE);
 	}
 
 	@Override

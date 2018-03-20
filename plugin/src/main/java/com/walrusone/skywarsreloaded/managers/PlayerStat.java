@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.managers;
 
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
@@ -73,7 +74,7 @@ public class PlayerStat
 		            		if (SkyWarsReloaded.getCfg().bungeeMode()) {
 		                		Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
 		                		if (player != null) {
-		                			boolean joined = MatchManager.get().joinGame(player);
+		                			boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
 		                			if (!joined) {
 		                    			SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
 		                    		}

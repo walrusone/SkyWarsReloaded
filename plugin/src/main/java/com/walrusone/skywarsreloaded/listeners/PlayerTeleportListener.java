@@ -1,6 +1,5 @@
 package com.walrusone.skywarsreloaded.listeners;
 
-import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -58,7 +57,7 @@ public class PlayerTeleportListener implements Listener
                 	}
         		}
         	} else {
-            	if (a1.getCause().equals(TeleportCause.END_PORTAL) || player.hasPermission("sw.opteleport")) {
+            	if (a1.getCause().equals(TeleportCause.END_PORTAL) || player.hasPermission("sw.opteleport") || a1.getTo().getWorld().equals(a1.getFrom().getWorld())) {
             		a1.setCancelled(false);
             	} else {
             		if (a1.getCause().equals(TeleportCause.ENDER_PEARL) && gameMap.getMatchState() != MatchState.ENDING && gameMap.getMatchState() != MatchState.WAITINGSTART) {

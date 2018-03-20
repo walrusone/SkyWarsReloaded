@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.menus.gameoptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
@@ -90,7 +91,7 @@ public class HealthOption extends GameOption {
 	@Override
 	protected void updateScoreboard() {
 		gameMap.setCurrentHealth(getVoteString(getVoted()));
-		gameMap.updateScoreboard();
+		gameMap.getGameBoard().updateScoreboardVar(ScoreVar.HEALTHVOTE);
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.enums.GameType;
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -52,11 +54,19 @@ public class MatchManager
         return MatchManager.instance;
     }
        
-    public boolean joinGame(Player player) {
+    public boolean joinGame(Player player, GameType type) {
     	GameMap.shuffle();
     	GameMap map = null;
     	int highest = 0;
-        for (final GameMap gameMap : GameMap.getMaps()) {
+		ArrayList<GameMap> games;
+		if (type == GameType.ALL) {
+			games = GameMap.getPlayableArenas(GameType.ALL);
+		} else if (type == GameType.SINGLE) {
+			games = GameMap.getPlayableArenas(GameType.SINGLE);
+		} else {
+			games = GameMap.getPlayableArenas(GameType.TEAM);
+		}
+        for (final GameMap gameMap : games) {
             if (gameMap.canAddPlayer() && highest <= gameMap.getPlayerCount()) {
                 map = gameMap;
                 highest = gameMap.getPlayerCount();
@@ -69,11 +79,20 @@ public class MatchManager
 		return joined;
     }
     
-    public boolean joinGame(Party party) {
+    public boolean joinGame(Party party, GameType type) {
     	GameMap.shuffle();
     	GameMap map = null;
     	int highest = 0;
-        for (final GameMap gameMap : GameMap.getMaps()) {
+		ArrayList<GameMap> games;
+		if (type == GameType.ALL) {
+			games = GameMap.getPlayableArenas(GameType.ALL);
+		} else if (type == GameType.SINGLE) {
+			games = GameMap.getPlayableArenas(GameType.SINGLE);
+		} else {
+			games = GameMap.getPlayableArenas(GameType.TEAM);
+		}
+
+        for (final GameMap gameMap : games) {
             if (gameMap.canAddParty(party) && highest <= gameMap.getPlayerCount()) {
                 map = gameMap;
                 highest = gameMap.getPlayerCount();
@@ -99,6 +118,7 @@ public class MatchManager
         this.setGameTime();
         gameMap.setMatchState(MatchState.WAITINGSTART);
         gameMap.update();
+        gameMap.getGameBoard().updateScoreboard();
         this.waitStart(gameMap);
     }
     
@@ -109,15 +129,6 @@ public class MatchManager
         		player.sendMessage(message);
         	}
         }
-    	for (final UUID uuid : gameMap.getSpectators()) {
-        	Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
-        	if (player != null) {
-        		player.sendMessage(message);
-        	}
-        }
-    }
-    
-    public void specMessage(final GameMap gameMap, final String message) {
     	for (final UUID uuid : gameMap.getSpectators()) {
         	Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
         	if (player != null) {
@@ -142,28 +153,28 @@ public class MatchManager
             player.setAllowFlight(true);
             player.setFlying(true);
             player.teleport(newSpawn, TeleportCause.END_PORTAL);
-            new BukkitRunnable() {
-    			@Override
-    			public void run() {
-    		    	preparePlayer(player, gameMap);
-    			}
-        	}.runTaskLater(SkyWarsReloaded.get(), 5);
-        	new BukkitRunnable() {
-     			@Override
-     			public void run() { 
-     				player.setFlying(false);
-     				player.setAllowFlight(false);
-    			}
-         	}.runTaskLater(SkyWarsReloaded.get(), 20);
-        	PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
-        	if (ps != null) {
-                String key = ps.getParticleEffect();
-                ParticleEffectOption effect = (ParticleEffectOption) ParticleEffectOption.getPlayerOptionByKey(key);
-                if (effect != null) {
-                    List<ParticleEffect> effects = effect.getEffects();
-                    SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
-                }
-            }
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					preparePlayer(player, gameMap);
+				}
+			}.runTaskLater(SkyWarsReloaded.get(), 5);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					player.setFlying(false);
+					player.setAllowFlight(false);
+				}
+			}.runTaskLater(SkyWarsReloaded.get(), 20);
+			PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+			if (ps != null) {
+				String key = ps.getParticleEffect();
+				ParticleEffectOption effect = (ParticleEffectOption) ParticleEffectOption.getPlayerOptionByKey(key);
+				if (effect != null) {
+					List<ParticleEffect> effects = effect.getEffects();
+					SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
+				}
+			}
             Util.get().clear(player);
             if (SkyWarsReloaded.getCfg().titlesEnabled()) {
             	for (final Player p : gameMap.getAlivePlayers()) {
@@ -215,7 +226,7 @@ public class MatchManager
         player.setExp(0.0f);
         player.setLevel(0);
 		player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
-		player.setScoreboard(gameMap.getScoreboard());
+		player.setScoreboard(gameMap.getGameBoard().getScoreboard());
 		
         Util.get().clear(player);
         player.getInventory().setBoots(new ItemStack(Material.AIR, 1));
@@ -334,6 +345,7 @@ public class MatchManager
             return;
         }
         gameMap.setMatchState(MatchState.PLAYING);
+		gameMap.getGameBoard().updateScoreboard();
         gameMap.update();
         gameMap.setTimer(this.getGameTime());
         new BukkitRunnable() {
@@ -374,7 +386,7 @@ public class MatchManager
         			}
                 }                  
                 gameMap.setTimer(gameMap.getTimer() + 1);
-                gameMap.updateScoreboard();
+                gameMap.getGameBoard().updateScoreboardVar(ScoreVar.TIME);
             }
         }.runTaskTimer(SkyWarsReloaded.get(), 0L, 20L);
     }
@@ -431,37 +443,38 @@ public class MatchManager
         	final int eloChange = eloChange1;
             final String winner = winners.getName();
             final String map = gameMap.getDisplayName();
-            if (SkyWarsReloaded.get().isEnabled()) {
-                new BukkitRunnable() {
-    				@Override
-    				public void run() {
-    					for (PlayerCard pCard: winners.getPlayerCards()) {
-    						Player win = pCard.getPlayer();
-    						if (win != null) {
-        						SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
-        								.setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));  	
-        	                    if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-        	                    	Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
-        	                    }
-        	    				if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
-        	    			       	Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
-        	    			    }
-        	    			    if (SkyWarsReloaded.getCfg().particlesEnabled()) {
-        	    			    	List<String> particles = new ArrayList<>();
-        	    			    	particles.add("FIREWORKS_SPARK");
-        	    			    	Util.get().surroundParticles(win, 1, particles, 8, 0);
-        	    			    }
-        	                    win.sendMessage(new Messaging.MessageFormatter()
-        	                    		.setVariable("score", Util.get().formatScore(eloChange))
-        	                            .setVariable("map", gameMap.getName()).format("game.won"));                            	
-        	                    }
-    						}
-    					}
-                }.runTaskLater(SkyWarsReloaded.get(), 20); 
-            }
-        }
+			if (SkyWarsReloaded.get().isEnabled()) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						for (PlayerCard pCard: winners.getPlayerCards()) {
+							Player win = pCard.getPlayer();
+							if (win != null) {
+								SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
+										.setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));
+								if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+									Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
+								}
+								if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
+									Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
+								}
+								if (SkyWarsReloaded.getCfg().particlesEnabled()) {
+									List<String> particles = new ArrayList<>();
+									particles.add("FIREWORKS_SPARK");
+									Util.get().surroundParticles(win, 1, particles, 8, 0);
+								}
+								win.sendMessage(new Messaging.MessageFormatter()
+										.setVariable("score", Util.get().formatScore(eloChange))
+										.setVariable("map", gameMap.getName()).format("game.won"));
+							}
+						}
+					}
+				}.runTaskLater(SkyWarsReloaded.get(), 20);
+			}
+		}
         if (gameMap.getMatchState() != MatchState.OFFLINE) {
         	gameMap.setMatchState(MatchState.ENDING);
+			gameMap.getGameBoard().updateScoreboard();
         	for (MatchEvent mEvent: gameMap.getEvents()) {
         		if (mEvent.hasFired()) {
         			mEvent.endEvent(true);
@@ -770,7 +783,7 @@ public class MatchManager
 		            player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
 		            player.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
 		            player.setGameMode(GameMode.SPECTATOR);
-		            player.setScoreboard(gameMap.getScoreboard());
+		            player.setScoreboard(gameMap.getGameBoard().getScoreboard());
 		            
 		            prepareSpectateInv(player, gameMap);
 		    		

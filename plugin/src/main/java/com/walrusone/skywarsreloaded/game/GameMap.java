@@ -1,5 +1,7 @@
 package com.walrusone.skywarsreloaded.game;
 
+import com.walrusone.skywarsreloaded.enums.GameType;
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -123,8 +125,7 @@ public class GameMap {
 	private String displayName;
 	private String designedBy;
 	private ArrayList<SWRSign> signs;
-	private Scoreboard scoreboard;
-	private Objective objective;
+	private GameBoard gameboard;
 	private boolean registered;
 	private String arenakey;
 	private GameQueue joinQueue;
@@ -157,6 +158,7 @@ public class GameMap {
         timeOption =  new TimeOption(this, name + "time");
         weatherOption = new WeatherOption(this, name + "weather");
         modifierOption = new ModifierOption(this, name + "modifier");
+        gameboard = new GameBoard(this);
         if (legacy) {
         	 boolean loaded = loadWorldForScanning(name);
              if (loaded) {
@@ -199,11 +201,11 @@ public class GameMap {
 		this.updateArenaManager();
         this.updateSigns();
         this.sendBungeeUpdate();
-        if (this.isRegistered()) {
-            this.updateScoreboard();
+        if (SkyWarsReloaded.getIC().has("joinsinglemenu") && teamSize == 1) {
+            SkyWarsReloaded.getIC().getMenu("joinsinglemenu").update();
         }
-        if (SkyWarsReloaded.getIC().has("joinmenu")) {
-            SkyWarsReloaded.getIC().getMenu("joinmenu").update();
+        if (SkyWarsReloaded.getIC().has("jointeammenu") && teamSize > 1) {
+            SkyWarsReloaded.getIC().getMenu("jointeammenu").update();
         }
 	}
    
@@ -215,9 +217,10 @@ public class GameMap {
 		}
 		boolean result = false;
 		PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
-		Collections.shuffle(teamCards);
 		if (teamSize > 1) {
 		    teamCards.sort(new TeamCardComparator());
+		} else {
+			Collections.shuffle(teamCards);
 		}
 		TeamCard reserved = null;
 		for (TeamCard tCard: teamCards) {
@@ -230,17 +233,15 @@ public class GameMap {
 			result = reserved.joinGame(player);
 		}
     	this.update();
+		gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
     	return result;
     }
 	
 	public boolean addPlayers(final Party party) {
 		TeamCard team = null;
 		Map<TeamCard, ArrayList<Player>> players = new HashMap<>();
-		Collections.shuffle(teamCards);
-		if (teamSize > 1) {
-            teamCards.sort(new TeamCardComparator());
-		}
 		if (teamSize == 1) {
+			Collections.shuffle(teamCards);
 			for (UUID uuid: party.getMembers()) {
 				Player player = Bukkit.getPlayer(uuid);
 				if (Util.get().isBusy(uuid)) {
@@ -252,6 +253,7 @@ public class GameMap {
 							if (tCard.getFullCount() > 0) {
 								TeamCard reserve = tCard.sendReservation(player, ps);
 								this.update();
+								gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
 								if (reserve != null) {
 								    players.computeIfAbsent(reserve, k -> new ArrayList<>());
 									players.get(reserve).add(player);
@@ -263,6 +265,7 @@ public class GameMap {
 				}
 			}
 		} else {
+			teamCards.sort(new TeamCardComparator());
 			for (TeamCard tCard: teamCards) {
 				if (tCard.getFullCount() >= party.getSize()) {
 					for (int i = 0; i < party.getSize(); i++) {
@@ -275,6 +278,7 @@ public class GameMap {
 						team = reserve;
 					}
 					this.update();
+					gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
 				}
 				if (team != null && players.get(team).size() == party.getSize()) {
 						break;
@@ -288,12 +292,14 @@ public class GameMap {
 				result = tCard.joinGame(players.get(tCard).get(0));
 			}
 			this.update();
+			gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
 			return result;
 		} else if (teamSize > 1 && team != null && players.get(team).size() == party.getSize()) {
 			for (int i = 0; i < players.get(team).size(); i++) {
 				result = team.joinGame(players.get(team).get(i));
 			}
 			this.update();
+			gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
 			return result;
 		} else {
 			for (ArrayList<Player> play: players.values()) {
@@ -304,6 +310,7 @@ public class GameMap {
 			}
 		}
     	this.update();
+		gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
     	return false;
 	}
 
@@ -313,10 +320,12 @@ public class GameMap {
             result = tCard.removePlayer(uuid);
             if (result) {
                 this.update();
+				gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
                 break;
             }
         }
         this.update();
+		gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
     }
  
     public ArrayList<Player> getAlivePlayers() {
@@ -710,11 +719,25 @@ public class GameMap {
 		return new ArrayList<>(arenas);
 	}
 	
-	public static ArrayList<GameMap> getPlayableArenas() {
+	public static ArrayList<GameMap> getPlayableArenas(GameType type) {
 		ArrayList<GameMap> sorted = new ArrayList<>();
-		for (GameMap gMap: arenas) {
-			if (gMap.isRegistered()) {
-				sorted.add(gMap);
+		if (type == GameType.TEAM) {
+			for (GameMap gMap: arenas) {
+				if (gMap.isRegistered() && gMap.teamSize > 1) {
+					sorted.add(gMap);
+				}
+			}
+		} else if (type == GameType.SINGLE) {
+			for (GameMap gMap: arenas) {
+				if (gMap.isRegistered() && gMap.teamSize == 1) {
+					sorted.add(gMap);
+				}
+			}
+		} else {
+			for (GameMap gMap: arenas) {
+				if (gMap.isRegistered()) {
+					sorted.add(gMap);
+				}
 			}
 		}
 		sorted.sort(new GameMapComparator());
@@ -885,7 +908,7 @@ public class GameMap {
 				@Override
 				public void run() {
 					matchState = MatchState.WAITINGSTART;
-			        getScoreBoard();
+			        gameboard.updateScoreboard();
 			        MatchManager.get().start(gMap);
 			        update();
 				}
@@ -936,137 +959,7 @@ public class GameMap {
     	}
     	return null;
     }
-    
-	/*Scoreboard Methods*/
-	
-	private void getScoreBoard() {
-		if (scoreboard != null) {
-            resetScoreboard();
-        }
-		ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
-		scoreboard = manager.getNewScoreboard();
-        objective = scoreboard.registerNewObjective("info", "dummy");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        for (int i = 0; i < teamCards.size(); i++) {
-        	TeamCard tCard = teamCards.get(i);
-        	tCard.setTeam(scoreboard.registerNewTeam("team" + i));
-        	tCard.getTeam().setPrefix(tCard.getPrefix());
-        	tCard.getTeam().setAllowFriendlyFire(allowFriendlyFire);
-        }
-		updateScoreboard();
-	}
-	
-	public void updateScoreboard() {
-        if (objective != null) {
-            objective.unregister();
-        }
-        if (scoreboard != null) {
-        	objective = scoreboard.registerNewObjective("info", "dummy");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            String sb = "";
-            if (matchState.equals(MatchState.WAITINGSTART)) {
-            	sb = "scoreboards.waitboard.line";
-            } else if (matchState.equals(MatchState.PLAYING)) {
-            	sb = "scoreboards.playboard.line";
-            } else if (matchState.equals(MatchState.ENDING)) {
-            	sb = "scoreboards.endboard.line";
-            	if (restartTimer == -1) {
-            		startRestartTimer();
-            	}
-            }
-            
-            for (int i = 1; i < 17; i++) {
-            	if (i == 1) {
-        	        String title = getScoreboardLine(sb + i);
-        	        if (title.length() > 32) {
-        	        	title = title.substring(0, 31);
-        	        }
-        	        objective.setDisplayName(title);
-        		} else {
-            	    StringBuilder s = new StringBuilder(39);
-        			if (getScoreboardLine(sb + i).length() == 0) {
-        				for (int j = 0; j < i; j++) {
-        					s.append(" ");
-        				}
-        			} else {
-        				s.append(getScoreboardLine(sb + i));
-        			}
-        			if (!s.toString().equalsIgnoreCase("remove")) {
-        				if (s.length() > 40) {
-        	    	        s.substring(0, 39);
-        				}
-            			Score score = objective.getScore(s.toString());
-        				score.setScore(17-i);
-        			}
-        		}
-            }	
-        }   
-	}
-	
-	private void startRestartTimer() {
-		restartTimer = SkyWarsReloaded.getCfg().getTimeAfterMatch();
-		if (SkyWarsReloaded.get().isEnabled()) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					restartTimer--;
-					if (restartTimer == 0) {
-						this.cancel();
-					}
-					updateScoreboard();
-				}
-			}.runTaskTimer(SkyWarsReloaded.get(), 0, 20);
-		}
-	}
-	
-	private String getScoreboardLine(String lineNum) {
-		return new Messaging.MessageFormatter()
-				.setVariable("mapname", displayName)
-				.setVariable("time", "" + Util.get().getFormattedTime(timer))
-				.setVariable("players", "" + getAlivePlayers().size())
-				.setVariable("maxplayers", "" + teamCards.size() * teamSize)
-				.setVariable("winner", getWinnerName(0))
-				.setVariable("winner1", getWinnerName(0))
-				.setVariable("winner2", getWinnerName(1))
-				.setVariable("winner3", getWinnerName(2))
-				.setVariable("winner4", getWinnerName(3))
-				.setVariable("winner5", getWinnerName(4))
-				.setVariable("winner6", getWinnerName(5))
-				.setVariable("winner7", getWinnerName(6))
-				.setVariable("winner8", getWinnerName(7))
-				.setVariable("restarttime", "" + restartTimer)
-				.setVariable("chestvote", ChatColor.stripColor(currentChest))
-				.setVariable("timevote", ChatColor.stripColor(currentTime))
-				.setVariable("healthvote", ChatColor.stripColor(currentHealth))
-				.setVariable("weathervote", ChatColor.stripColor(currentWeather))
-				.setVariable("modifiervote", ChatColor.stripColor(currentModifier))
-				.format(lineNum);
-	}
 
-	private String getWinnerName(int i) {
-		if (winners.size() > i) {
-			return winners.get(i);
-		}
-		return "";
-	}
-
-    private void resetScoreboard() {
-    	for (Team team: scoreboard.getTeams()) {
-    		team.unregister();
-    	}
-        if (objective != null) {
-            objective.unregister();
-        }
-        
-        if (scoreboard != null) {
-            scoreboard = null;
-        }
-    }
-
-	public Scoreboard getScoreboard() {
-		return scoreboard;
-	}
-    
 	/*Bungeemode Methods*/
 	
 	private void sendBungeeUpdate() {
@@ -1230,7 +1123,8 @@ public class GameMap {
 	public int getStrikeCounter() {
 		return strikeCounter;
 	}
-	
+
+	/**Returns the maximum number of players that can join a match*/
 	public int getMaxPlayers() {
 		return teamCards.size() * teamSize;
 	}
@@ -1377,7 +1271,6 @@ public class GameMap {
         try {
             playerConfig.save(mapFile);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 	}
@@ -1426,7 +1319,7 @@ public class GameMap {
 		case 2: return ChatColor.RED + "";
 		case 3: return ChatColor.DARK_BLUE + "";
 		case 4: return ChatColor.GOLD + "";
-		case 5: return ChatColor.BLACK + "";
+		case 5: return ChatColor.WHITE + "";
 		case 6: return ChatColor.AQUA + "";
 		case 7: return ChatColor.LIGHT_PURPLE + "";
 		case 8: return ChatColor.DARK_PURPLE + "";
@@ -1434,10 +1327,10 @@ public class GameMap {
 		case 10: return ChatColor.DARK_GREEN + "";
 		case 11: return ChatColor.DARK_RED + "";
 		case 12: return ChatColor.BLUE + "";
-		case 13: return ChatColor.WHITE + "";
-		case 14: return ChatColor.DARK_AQUA + "";
-		case 15: return ChatColor.DARK_GRAY + "";
-		case 16: return ChatColor.GRAY + "";
+		case 13: return ChatColor.DARK_AQUA + "";
+		case 14: return ChatColor.DARK_GRAY + "";
+		case 15: return ChatColor.GRAY + "";
+		case 16: return ChatColor.BLACK + "";
 		default: return ChatColor.GREEN + "";
 		}
 	}
@@ -1654,8 +1547,7 @@ public class GameMap {
 	public int getTeamsOut() {
 		int count = 0;
 		for (TeamCard tCard: teamCards) {
-			int numOfPlayers = tCard.getPlayersSize();
-			if (numOfPlayers > 0 && tCard.isElmininated(numOfPlayers)) {
+			if (tCard.isElmininated()) {
 				count++;
 			}
 		}
@@ -1663,7 +1555,7 @@ public class GameMap {
 	}
 	
 	public int getTeamsleft() {
-		return getTeamCount() - getTeamsOut();
+		return teamCards.size() - getTeamsOut();
 	}
 
 	public int getTeamSize() {
@@ -1688,12 +1580,40 @@ public class GameMap {
 		}
 		return count;
 	}
-	
+
+	public String getCurrentChest() {
+		return currentChest;
+	}
+
+	public String getCurrentTime() {
+		return currentTime;
+	}
+
+	public String getCurrentHealth() {
+		return currentHealth;
+	}
+
+	public String getCurrentWeather() {
+		return currentWeather;
+	}
+
+	public String getCurrentModifier() {
+		return currentModifier;
+	}
+
+	public List<String> getWinners() {
+		return winners;
+	}
+
+	public GameBoard getGameBoard() {
+		return gameboard;
+	}
+
 	public class TeamCardComparator implements Comparator<TeamCard> {
 		@Override
 	    public int compare(final TeamCard f1, final TeamCard f2) {
 			if (f1 != null && f2 != null) {
-				if (f1.getFullCount() > f2.getFullCount()) {
+				if (f1.getFullCount() < f2.getFullCount()) {
 					return 1;
 				}
 			}

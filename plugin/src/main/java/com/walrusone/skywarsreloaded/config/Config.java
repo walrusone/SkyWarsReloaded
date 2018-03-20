@@ -114,6 +114,8 @@ public class Config {
 	
 	private boolean joinEnabled;
 	private int joinSlot;
+	private int singleSlot;
+	private int teamSlot;
 	private boolean spectateMenuEnabled;
 	private int spectateSlot;
 	private boolean optionsEnabled;
@@ -174,6 +176,8 @@ public class Config {
 			"weathervote", "weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow", 
 			"modifiervote", "modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone", 
 			"joinselect",
+			"singlemenu",
+			"teammenu",
 			"spectateselect",
 			"optionselect",
 			"particleselect", 
@@ -191,6 +195,8 @@ public class Config {
 			"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
 			"DRAGONS_BREATH", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
 			"DIAMOND_HELMET",
+			"REDSTONE_TORCH_OFF",
+			"REDSTONE_COMPARATOR",
 			"LEATHER_HELMET",			
 			"EYE_OF_ENDER",
 			"BLAZE_POWDER",
@@ -208,6 +214,8 @@ public class Config {
 				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
 				"DRAGON_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
 				"DIAMOND_HELMET",
+				"REDSTONE_TORCH_OFF",
+				"REDSTONE_COMPARATOR",
 				"LEATHER_HELMET",			
 				"EYE_OF_ENDER",
 				"BLAZE_POWDER",
@@ -340,6 +348,8 @@ public class Config {
 			spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
 			joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
 			joinSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.joinSlot");
+			singleSlot = SkyWarsReloaded.get().getConfig().getInt("items.singleSlot");
+			teamSlot = SkyWarsReloaded.get().getConfig().getInt("items.teamSlot");
 			optionsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.options");
 			optionsSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.optionsSlot");
 			glassEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.glass");
@@ -532,6 +542,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.spectateSlot", spectateSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.join", joinEnabled);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.joinSlot", joinSlot);
+		SkyWarsReloaded.get().getConfig().set("items.singleSlot", singleSlot);
+		SkyWarsReloaded.get().getConfig().set("items.teamSlot", teamSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.options", optionsEnabled);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.optionsSlot", optionsSlot);
 		SkyWarsReloaded.get().getConfig().set("enabledMenus.glass", glassEnabled);
@@ -1094,6 +1106,10 @@ public class Config {
 	public boolean limitLobbyChat() {
 		return limitLobbyChat;
 	}
+
+    public int getSingleSlot() { return singleSlot; }
+
+	public int getTeamSlot() { return teamSlot; }
 }
 
 

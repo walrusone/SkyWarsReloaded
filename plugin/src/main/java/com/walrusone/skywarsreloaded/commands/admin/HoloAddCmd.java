@@ -21,9 +21,9 @@ public class HoloAddCmd extends BaseCmd {
 	public boolean run() {
 		if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
 			LeaderType type = LeaderType.matchType(args[1].toUpperCase());
-			if (type == null || !SkyWarsReloaded.getUseable().contains(type.toString())) {
+			if (type == null || !SkyWarsReloaded.get().getUseable().contains(type.toString())) {
 				StringBuilder types = new StringBuilder();
-				for (String add: SkyWarsReloaded.getUseable()) {
+				for (String add: SkyWarsReloaded.get().getUseable()) {
 					types.append(add);
 					types.append(", ");
 				}
