@@ -76,13 +76,15 @@ public class TeamCard {
 	}
 
 	public TeamCard sendReservation(Player player, PlayerStat ps) {
-		for (PlayerCard pCard: players) {
-			if (pCard.getUUID() == null && spawn != null) {
-				pCard.setPlayer(player);
-				pCard.setPreElo(ps.getElo());
-				boolean glassReader = gMap.getCage().setGlassColor(gMap, this, ps.getGlassColor());
-				if(glassReader) {
-					return this;
+		if (player != null && ps != null) {
+			for (PlayerCard pCard: players) {
+				if (pCard.getUUID() == null && spawn != null) {
+					pCard.setPlayer(player);
+					pCard.setPreElo(ps.getElo());
+					boolean glassReader = gMap.getCage().setGlassColor(gMap, this, ps.getGlassColor());
+					if(glassReader) {
+						return this;
+					}
 				}
 			}
 		}

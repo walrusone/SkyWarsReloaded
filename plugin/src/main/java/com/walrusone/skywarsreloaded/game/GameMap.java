@@ -215,18 +215,20 @@ public class GameMap {
 		} else {
 			Collections.shuffle(teamCards);
 		}
-		TeamCard reserved = null;
-		for (TeamCard tCard: teamCards) {
-			if (tCard.getFullCount() > 0) {
-				reserved = tCard.sendReservation(player, ps);
-				break;
+		if (player != null && ps != null) {
+			TeamCard reserved = null;
+			for (TeamCard tCard: teamCards) {
+				if (tCard.getFullCount() > 0) {
+					reserved = tCard.sendReservation(player, ps);
+					break;
+				}
 			}
+			if (reserved != null) {
+				result = reserved.joinGame(player);
+			}
+			this.update();
+			gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
 		}
-		if (reserved != null) {
-			result = reserved.joinGame(player);
-		}
-    	this.update();
-		gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
     	return result;
     }
 	
@@ -241,7 +243,7 @@ public class GameMap {
 					party.sendPartyMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).format("party.memberbusy"));
 				} else {
 					PlayerStat ps = PlayerStat.getPlayerStats(uuid);
-					if (teamSize == 1) {
+					if (ps != null && player != null) {
 						for (TeamCard tCard: teamCards) {
 							if (tCard.getFullCount() > 0) {
 								TeamCard reserve = tCard.sendReservation(player, ps);
@@ -264,11 +266,13 @@ public class GameMap {
 					for (int i = 0; i < party.getSize(); i++) {
 						Player player = Bukkit.getPlayer(party.getMembers().get(i));
 						PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
-						TeamCard reserve = tCard.sendReservation(player, ps);
-						if (reserve != null) {
-						    players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
+						if (player != null && ps != null) {
+							TeamCard reserve = tCard.sendReservation(player, ps);
+							if (reserve != null) {
+								players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
+							}
+							team = reserve;
 						}
-						team = reserve;
 					}
 					this.update();
 					gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
