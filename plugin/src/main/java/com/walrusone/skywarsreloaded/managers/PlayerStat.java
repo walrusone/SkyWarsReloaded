@@ -79,16 +79,16 @@ public class PlayerStat
 		                    			SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
 		                    		}
 		                		}
-		            		}
+							}
 						}
-            		}.runTask(SkyWarsReloaded.get());
+					}.runTask(SkyWarsReloaded.get());
 
-                    DataStorage.get().saveStats(PlayerStat.getPlayerStats(uuid));
-            	} else {
-            		saveStats(uuid);
-            	}
-            }
-        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
+					DataStorage.get().saveStats(PlayerStat.getPlayerStats(uuid));
+				} else {
+					saveStats(uuid);
+				}
+			}
+		}.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
     }
     
     public static void updatePlayer(final String uuid) {

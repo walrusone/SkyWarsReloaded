@@ -57,7 +57,7 @@ public abstract class Cage {
 	            int x = pCard.getSpawn().getX();
 	            int y = pCard.getSpawn().getY();
 	            int z = pCard.getSpawn().getZ();
-	            
+
 				byte cByte = Util.get().getByteFromColor(color.toLowerCase());
 				if (cByte <= -1) {
 					Material material = Material.GLASS;

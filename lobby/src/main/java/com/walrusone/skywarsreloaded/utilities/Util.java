@@ -169,30 +169,30 @@ public class Util {
 	}
 	
 	public byte getByteFromColor(String color) {
-		 switch (color) {
-	     case "white": return (byte) 0;
-	     case "orange": return (byte) 1;
-	     case "magenta": return (byte) 2;
-	     case "lightblue": return (byte) 3;
-	     case "yellow": return (byte) 4;
-	     case "lime": return (byte) 5;
-	     case "pink": return (byte) 6;
-	     case "gray": return (byte) 7;
-	     case "lightgray": return (byte) 8;
-	     case "cyan": return (byte) 9;
-	     case "purple": return (byte) 10;
-	     case "blue": return (byte) 11;
-	     case "brown": return (byte) 12;
-	     case "green": return (byte) 13;
-	     case "red": return (byte) 14;
-	     case "black": return (byte) 15;
-	     case "none": return (byte) -2;
-	     case "lapis": return (byte) -3;
-	     case "redstone": return (byte) -4;
-	     case "emerald": return (byte) -5;
-	     case "diamond": return (byte) -6;
-	     default: return (byte) -1;
-		 }
+		switch (color) {
+			case "white": return (byte) 0;
+			case "orange": return (byte) 1;
+			case "magenta": return (byte) 2;
+			case "lightblue": return (byte) 3;
+			case "yellow": return (byte) 4;
+			case "lime": return (byte) 5;
+			case "pink": return (byte) 6;
+			case "gray": return (byte) 7;
+			case "lightgray": return (byte) 8;
+			case "cyan": return (byte) 9;
+			case "purple": return (byte) 10;
+			case "blue": return (byte) 11;
+			case "brown": return (byte) 12;
+			case "green": return (byte) 13;
+			case "red": return (byte) 14;
+			case "black": return (byte) 15;
+			case "none": return (byte) -2;
+			case "lapis": return (byte) -3;
+			case "redstone": return (byte) -4;
+			case "emerald": return (byte) -5;
+			case "diamond": return (byte) -6;
+			default: return (byte) -1;
+		}
 	}
 	
 	public void setPlayerExperience(Player player, int amount) {
