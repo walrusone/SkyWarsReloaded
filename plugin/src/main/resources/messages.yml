@@ -76,6 +76,7 @@ party:
   declined: '&6{player} &cdeclined to join your party!'
   left: '&6{player} &cleft your party!'
   invite: '&6{leader} &binvited you to join the party {partyname}&b! Type "/swparty accept" to join the party!'
+  clicktoaccept: '&6Click Here to Accept'
   invited: '&bYou invited &6{player} &bto join your party!'
   pendingInvite: '&6{player} &calready has a pending party invite!'
   couldnotfind: '&cCould not find player named &6{player}&c!'

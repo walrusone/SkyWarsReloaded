@@ -91,7 +91,7 @@ colors:
     position: 20
     page: 1
   blue:
-    displayname: '&Blue'
+    displayname: '&bBlue'
     level: 56
     cost: 100
     material: STAINED_GLASS

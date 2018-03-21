@@ -1,6 +1,8 @@
 package com.walrusone.skywarsreloaded.commands.party;
 
+import me.rayzr522.jsonmessage.JSONMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
@@ -46,6 +48,14 @@ public class InviteCmd extends BaseCmd {
 			}
 			party.invite(invited);
 			invited.sendMessage(new Messaging.MessageFormatter().setVariable("leader", player.getName()).setVariable("partyname", party.getPartyName()).format("party.invite"));
+
+			JSONMessage.create(new Messaging.MessageFormatter().format("party.clicktoaccept"))
+					.color(ChatColor.GOLD)
+					.tooltip(new Messaging.MessageFormatter().format("party.clicktoaccept"))
+					.color(ChatColor.AQUA)
+					.runCommand("/swp a")
+					.send(invited);
+
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("player", invited.getName()).format("party.invited"));
 		} else {
 			player.sendMessage(new Messaging.MessageFormatter().setVariable("player",  invite).format("party.couldnotfind"));
