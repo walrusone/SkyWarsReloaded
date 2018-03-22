@@ -81,7 +81,11 @@ public class PlayerData {
 		        player.getInventory().clear();
 		        player.getInventory().setContents(inv.getContents());
 		        SkyWarsReloaded.getNMS().setMaxHealth(player, 20);
-		        player.setHealth(health);
+		        if (health <= 0 || health > 20) {
+					player.setHealth(20);
+				} else {
+					player.setHealth(health);
+				}
 		        player.setFoodLevel(food);
 		        player.setSaturation(sat);
 		        player.resetPlayerTime();

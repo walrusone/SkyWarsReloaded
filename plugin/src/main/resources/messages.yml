@@ -438,6 +438,7 @@ helpList:
     quit: '&a/sw quit &e- &2Quits from the current game'
     stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'
     top: '&a/sw top [stat] &e- &2Displays SkyWars leaderboard'
+    options: '&a/sw options &e- &2Opens options selection menu'
     glass: '&a/sw glass &e- &2Opens glass selection menu'
     winsound: '&a/sw winsound &e- &2Opens winsound selection menu'
     killsound: '&a/sw killsound &e- &2Opens killsound selection menu'

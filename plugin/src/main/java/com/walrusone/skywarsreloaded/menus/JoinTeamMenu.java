@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -125,30 +126,34 @@ public class JoinTeamMenu {
 			}
 
 			if (player.hasPermission("sw.join")) {
-					boolean joined;
-					Party party = Party.getParty(player);
-					if (party != null) {
-						if(party.getLeader().equals(player.getUniqueId())) {
-							if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
-								player.closeInventory();
-								joined = gMap.addPlayers(party);
-								if (!joined) {
-									player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-								}
-							}
-						} else {
-							player.closeInventory();
-							player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
-						}
-					} else {
-						if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
-							player.closeInventory();
-							joined = gMap.addPlayers(player);
-							if (!joined) {
-								player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-							}
-						}
-					}
+			    if (event.getClick() == ClickType.RIGHT) {
+
+                } else {
+                    boolean joined;
+                    Party party = Party.getParty(player);
+                    if (party != null) {
+                        if (party.getLeader().equals(player.getUniqueId())) {
+                            if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
+                                player.closeInventory();
+                                joined = gMap.addPlayers(party);
+                                if (!joined) {
+                                    player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+                                }
+                            }
+                        } else {
+                            player.closeInventory();
+                            player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+                        }
+                    } else {
+                        if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
+                            player.closeInventory();
+                            joined = gMap.addPlayers(player);
+                            if (!joined) {
+                                player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+                            }
+                        }
+                    }
+                }
 			}
 		});
         SkyWarsReloaded.getIC().getMenu("jointeammenu").setUpdate(update);

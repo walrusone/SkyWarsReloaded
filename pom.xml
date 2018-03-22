@@ -6,7 +6,7 @@
 
     <groupId>com.walrusone.skywarsreloaded</groupId>
     <artifactId>skywarsreloaded-parent</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>

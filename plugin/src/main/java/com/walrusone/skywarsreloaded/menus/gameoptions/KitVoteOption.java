@@ -37,7 +37,7 @@ public class KitVoteOption {
 	
 	private void createMenu(String key, String name) {
 		this.key = key;
-		int menuSize = 45;
+		int menuSize = SkyWarsReloaded.getCfg().getKitMenuSize();
 		ArrayList<Inventory> invs = new ArrayList<>();
 		for (GameKit gameKit: GameKit.getAvailableKits()) {
         	int page = gameKit.getPage() - 1;

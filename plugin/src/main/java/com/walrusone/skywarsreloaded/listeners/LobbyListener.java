@@ -31,8 +31,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
-public class LobbyListener implements Listener
-{
+public class LobbyListener implements Listener  {
 	 
 	@EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(final EntityDamageByEntityEvent e) {	
@@ -182,6 +181,7 @@ public class LobbyListener implements Listener
             							}
             						} else {
             							player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+            							joined = true;
             							break;
                     				}
             					} else {

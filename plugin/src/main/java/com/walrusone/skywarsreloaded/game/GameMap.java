@@ -652,6 +652,7 @@ public class GameMap {
 		}
     	if (teamCards.size() > 1) {
     		registered = true;
+    		gameboard = new GameBoard(this);
             refreshMap();
             SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
     	} else {
