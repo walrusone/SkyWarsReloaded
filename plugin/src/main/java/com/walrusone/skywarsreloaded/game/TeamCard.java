@@ -81,11 +81,7 @@ public class TeamCard {
 				if (pCard.getUUID() == null && spawn != null) {
 					pCard.setPlayer(player);
 					pCard.setPreElo(ps.getElo());
-					String color = ps.getGlassColor();
-					if (color == null) {
-						color = "none";
-					}
-					boolean glassReader = gMap.getCage().setGlassColor(gMap, this, color);
+					boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
 					if(glassReader) {
 						return this;
 					}
