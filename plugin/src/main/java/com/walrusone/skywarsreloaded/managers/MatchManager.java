@@ -322,10 +322,18 @@ public class MatchManager
         	this.matchCountdown(gameMap);
         }
         gameMap.getChestOption().completeOption();
-        gameMap.getTimeOption().completeOption();
-        gameMap.getWeatherOption().completeOption();
-        gameMap.getModifierOption().completeOption();
-        gameMap.getHealthOption().completeOption();
+    	if (SkyWarsReloaded.getCfg().isTimeVoteEnabled()) {
+			gameMap.getTimeOption().completeOption();
+		}
+		if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()) {
+			gameMap.getWeatherOption().completeOption();
+		}
+		if (SkyWarsReloaded.getCfg().isModifierVoteEnabled()) {
+			gameMap.getModifierOption().completeOption();
+		}
+		if (SkyWarsReloaded.getCfg().isHealthVoteEnabled()) {
+			gameMap.getHealthOption().completeOption();
+		}
 		selectKit(gameMap);
     	gameMap.getCage().removeSpawnHousing(gameMap);
     }
