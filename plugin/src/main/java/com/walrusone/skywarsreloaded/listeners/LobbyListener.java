@@ -192,12 +192,12 @@ public class LobbyListener implements Listener
 									} else {
 										joined = MatchManager.get().joinGame(player, GameType.TEAM);
 									}
-                    				if (!joined) {
-                    					player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
-                    				}
             					}
             					count++;
             				}
+							if (!joined) {
+								player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
+							}
                	        } else {
                				e.getPlayer().sendMessage(ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
                				SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");

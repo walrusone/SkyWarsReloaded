@@ -217,7 +217,7 @@ menu:
   usewin-playermsg: '&aYour Victory Sound has been changed to {sound}'
   no-use: '&cUnlocked at Level {level}'
   cost: '&cCost to Unlock: {cost}'
-  joingame-menu-tile: '&5Join Game Menu'
+  joingame-menu-title: '&5Join Game Menu'
   joinloresingle1: '&bLeft Click to view'
   joinloresingle2: '&bSingle Player Arenas'
   joinloreteam1: '&bLeft Click to view'

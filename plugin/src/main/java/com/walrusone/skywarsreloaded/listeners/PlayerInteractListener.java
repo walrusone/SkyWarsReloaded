@@ -135,8 +135,11 @@ public class PlayerInteractListener implements Listener {
                 			    		Party party = Party.getParty(player);
                 			    		if (party != null) {
                 			    			if (party.getLeader().equals(player.getUniqueId())) {
-                    			    			gMap.addPlayers(party);
-                			    			} else {
+                    			    			joined = gMap.addPlayers(party);
+												if (!joined) {
+													player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+												}
+											} else {
                 			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                 			    			}
                 			    		} else {

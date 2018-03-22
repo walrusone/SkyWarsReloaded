@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.game.cages;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -57,8 +58,10 @@ public abstract class Cage {
 	            int x = pCard.getSpawn().getX();
 	            int y = pCard.getSpawn().getY();
 	            int z = pCard.getSpawn().getZ();
+	            Random rand = new Random();
 
 				byte cByte = Util.get().getByteFromColor(color.toLowerCase());
+                double chance = (1/(double)gMap.getTeamSize()) *100;
 				if (cByte <= -1) {
 					Material material = Material.GLASS;
 					GlassColorOption gColor = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(color.toLowerCase());
@@ -66,14 +69,20 @@ public abstract class Cage {
                         material = gColor.getItem().getType();
                     }
 		            for (CoordLoc loc: bottomCoordOffsets) {
-		            	 world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+					    if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                        }
 		            }
                     for (CoordLoc loc: middleCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
-                    }
+                        if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                        }
+					}
                     for (CoordLoc loc: topCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
-                    }
+                        if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                        }
+					}
 				} else {
 					Material material = Material.STAINED_GLASS;
 					GlassColorOption gColor = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(color.toLowerCase());
@@ -81,17 +90,23 @@ public abstract class Cage {
 						material = gColor.getItem().getType();
 					}
 		            for (CoordLoc loc: bottomCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
-                    }
+                        if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
+                        }
+					}
                     for (CoordLoc loc: middleCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
-                    }
+                        if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
+                        }
+					}
                     for (CoordLoc loc: topCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
-                    }
+                        if (rand.nextInt(100) < chance) {
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(material);
+                            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(cByte);
+                        }
+					}
 				}
 				return true;
 			}
