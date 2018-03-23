@@ -191,8 +191,8 @@ public class GameBoard {
                 .setVariable("time", "" + Util.get().getFormattedTime(gMap.getTimer()))
                 .setVariable("players", "" + gMap.getAlivePlayers().size())
                 .setVariable("maxplayers", "" + gMap.getTeamCards().size() * gMap.getTeamSize())
-                .setVariable("winner", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : gMap.getWinningTeam().getTeamName())
-                .setVariable("winner1", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : gMap.getWinningTeam().getTeamName())
+                .setVariable("winner", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : getWinningTeamName())
+                .setVariable("winner1", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : getWinningTeamName())
                 .setVariable("winner2", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(1) : "")
                 .setVariable("winner3", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(2) : "")
                 .setVariable("winner4", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(3) : "")
@@ -212,6 +212,13 @@ public class GameBoard {
     private String getWinnerName(int i) {
         if (gMap.getWinners().size() > i) {
             return gMap.getWinners().get(i);
+        }
+        return "";
+    }
+
+    private String getWinningTeamName() {
+        if (gMap.getWinningTeam() != null) {
+            return gMap.getWinningTeam().getTeamName();
         }
         return "";
     }

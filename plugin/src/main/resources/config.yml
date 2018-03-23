@@ -40,7 +40,7 @@ game:
 teams:
   usePlayerNames: true
   usePlayerGlassColors: true
-  teamCageMaterial: WOOL
+  teamCageMaterial: STAINED_GLASS
 chat:
   enableFormatter: true
   limitGameChatToGame: true
