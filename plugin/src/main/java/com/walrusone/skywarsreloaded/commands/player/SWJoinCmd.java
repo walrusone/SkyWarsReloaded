@@ -19,7 +19,7 @@ public class SWJoinCmd extends BaseCmd {
 	public boolean run() {
 		GameType type = GameType.ALL;
 		if (args.length > 1) {
-			if (args[1].equalsIgnoreCase("single")) {
+			if (args[1].equalsIgnoreCase("single") || args[1].equalsIgnoreCase("solo")) {
 				type = GameType.SINGLE;
 			} else if (args[1].equalsIgnoreCase("team")) {
 				type = GameType.TEAM;

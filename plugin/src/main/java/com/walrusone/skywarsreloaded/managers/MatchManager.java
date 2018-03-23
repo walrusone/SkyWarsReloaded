@@ -349,7 +349,6 @@ public class MatchManager
         		GameKit.giveKit(player, gameMap.getSelectedKit(player));         
         	}
     	}
-
     }
        
     private void matchCountdown(final GameMap gameMap) {
@@ -658,7 +657,6 @@ public class MatchManager
                 		} else {
                 			this.won(gameMap, null);
                 		}
-                		
                 	}
                 }
             }

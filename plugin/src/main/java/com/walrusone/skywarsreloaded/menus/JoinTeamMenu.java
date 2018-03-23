@@ -66,6 +66,8 @@ public class JoinTeamMenu {
                                 .setVariable("maxteams", "" + gMap.getTeamCards().size()).format("signs.teamState")));
                         loreList.add((new Messaging.MessageFormatter().setVariable("playercount", "" + gMap.getAlivePlayers().size())
                                 .setVariable("maxplayers", "" + gMap.getMaxPlayers()).format("signs.line4team")));
+                        loreList.add(" ");
+                        loreList.add(new Messaging.MessageFormatter().format("menu.viewteams"));
 
                         double xy = ((double) (gMap.getFullTeams() / gMap.getTeamCards().size()));
 

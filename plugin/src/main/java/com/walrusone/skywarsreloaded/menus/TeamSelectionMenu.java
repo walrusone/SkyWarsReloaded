@@ -25,7 +25,7 @@ public class TeamSelectionMenu {
 
     private static int menuSize = 27;
 
-    public TeamSelectionMenu(String key, GameMap gMap) {
+    public TeamSelectionMenu(GameMap gMap) {
         String menuName = new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("menu.teamselection-menu-title");
         if (SkyWarsReloaded.getNMS().isOnePointEight()) {
             if (menuName.length() > 32) {
@@ -37,8 +37,8 @@ public class TeamSelectionMenu {
     	invs.add(menu);
     	
     	Runnable update = () -> {
-            if ((SkyWarsReloaded.getIC().hasViewers(key))) {
-                ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu(key).getInventories();
+            if (SkyWarsReloaded.getIC().hasViewers(gMap.getName() + "teamselect") || SkyWarsReloaded.getIC().hasViewers(gMap.getName() + "teamspectate")) {
+                ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").getInventories();
                 for (Inventory inv: invs1) {
                     for (int i = 0; i < menuSize; i++) {
                         inv.setItem(i, new ItemStack(Material.AIR, 1));
@@ -61,15 +61,34 @@ public class TeamSelectionMenu {
                     }
                     invs1.get(0).setItem(tCard.getPosition(), SkyWarsReloaded.getNMS().getItemStack(item, lores, name));
                 }
+                if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+                    ArrayList<Inventory> specs = SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamspectate").getInventories();
+                    int i = 0;
+                    for (Inventory inv: invs1) {
+                        if (specs.get(i) == null) {
+                            specs.add(Bukkit.createInventory(null, menuSize, new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("menu.teamspectate-menu-title")));
+                        }
+                        specs.get(0).setContents(inv.getContents());
+                        i++;
+                    }
+                }
             }
         };
   
-        SkyWarsReloaded.getIC().create(key, invs, event -> {
+        SkyWarsReloaded.getIC().create(gMap.getName() + "teamselect", invs, event -> {
 			Player player = event.getPlayer();
 
 			String name = event.getName();
 			if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
-				player.closeInventory();
+                if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            SkyWarsReloaded.getIC().getMenu("jointeammenu").update();
+                        }
+                    }.runTaskLater(SkyWarsReloaded.get(), 5);
+                }
+                SkyWarsReloaded.getIC().show(player, "jointeammenu");
 				return;
 			}
 
@@ -120,7 +139,7 @@ public class TeamSelectionMenu {
                 }
 			}
 		});
-        SkyWarsReloaded.getIC().getMenu(key).setUpdate(update);
+        SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").setUpdate(update);
     }
 
 }

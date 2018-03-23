@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.game;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
+import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -168,7 +169,10 @@ public class GameMap {
         }
         new ArenaMenu(arenakey, this);
         if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
-			new TeamSelectionMenu(name + "teamselect", this);
+			new TeamSelectionMenu(this);
+		}
+		if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+        	new TeamSpectateMenu(this);
 		}
     }
 
