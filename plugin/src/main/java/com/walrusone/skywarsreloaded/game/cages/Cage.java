@@ -20,10 +20,10 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public abstract class Cage {
 	
-	protected ArrayList<CoordLoc> bottomCoordOffsets = new ArrayList<>();
-    protected ArrayList<CoordLoc> middleCoordOffsets = new ArrayList<>();
-    protected ArrayList<CoordLoc> topCoordOffsets = new ArrayList<>();
-	protected CageType cageType;
+	ArrayList<CoordLoc> bottomCoordOffsets = new ArrayList<>();
+    ArrayList<CoordLoc> middleCoordOffsets = new ArrayList<>();
+    ArrayList<CoordLoc> topCoordOffsets = new ArrayList<>();
+	CageType cageType;
 	
 	public void createSpawnPlatforms(GameMap gMap) {
 		World world = gMap.getCurrentWorld();
@@ -54,31 +54,36 @@ public abstract class Cage {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public boolean setGlassColor(GameMap gMap, TeamCard pCard) {
+	public boolean setGlassColor(GameMap gMap, TeamCard tCard) {
 		if (gMap.getMatchState() == MatchState.WAITINGSTART) {			
-			if (pCard != null) {
+			if (tCard != null) {
 				World world = gMap.getCurrentWorld();
-	            int x = pCard.getSpawn().getX();
-	            int y = pCard.getSpawn().getY();
-	            int z = pCard.getSpawn().getZ();
+	            int x = tCard.getSpawn().getX();
+	            int y = tCard.getSpawn().getY();
+	            int z = tCard.getSpawn().getZ();
 	            Random rand = new Random();
 
 				ArrayList<MaterialWithByte> colors = new ArrayList<>();
-				for (PlayerCard p: pCard.getPlayerCards()) {
-				    Player player = p.getPlayer();
-				    if (player != null) {
-				        PlayerStat pStat = PlayerStat.getPlayerStats(player);
-				        if (pStat != null) {
-				            String col = pStat.getGlassColor().toLowerCase();
-                            byte cByte = Util.get().getByteFromColor(col);
-				            GlassColorOption color = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(col);
-				            if (color != null) {
-				                colors.add(new MaterialWithByte(color.getItem().getType(), cByte));
-                            } else {
-				                if (cByte <= -1) {
-                                    colors.add(new MaterialWithByte(Material.GLASS, cByte));
+
+				if (gMap.getTeamSize() > 1 && !SkyWarsReloaded.getCfg().usePlayerGlassColors()) {
+                    colors.add(new MaterialWithByte(SkyWarsReloaded.getCfg().getTeamMaterial(), tCard.getByte()));
+                } else {
+                    for (PlayerCard p: tCard.getPlayerCards()) {
+                        Player player = p.getPlayer();
+                        if (player != null) {
+                            PlayerStat pStat = PlayerStat.getPlayerStats(player);
+                            if (pStat != null) {
+                                String col = pStat.getGlassColor().toLowerCase();
+                                byte cByte = Util.get().getByteFromColor(col);
+                                GlassColorOption color = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(col);
+                                if (color != null) {
+                                    colors.add(new MaterialWithByte(color.getItem().getType(), cByte));
                                 } else {
-                                    colors.add(new MaterialWithByte(Material.STAINED_GLASS, cByte));
+                                    if (cByte <= -1) {
+                                        colors.add(new MaterialWithByte(Material.GLASS, cByte));
+                                    } else {
+                                        colors.add(new MaterialWithByte(Material.STAINED_GLASS, cByte));
+                                    }
                                 }
                             }
                         }
@@ -100,7 +105,8 @@ public abstract class Cage {
 		return false;
 	}
 
-	private void setBlockColor(CoordLoc loc, int x, int y, int z, World world, MaterialWithByte materialWithByte) {
+	@SuppressWarnings("deprecation")
+    private void setBlockColor(CoordLoc loc, int x, int y, int z, World world, MaterialWithByte materialWithByte) {
         if (materialWithByte.cByte <= -1) {
             world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(materialWithByte.mat);
         } else {
@@ -110,20 +116,20 @@ public abstract class Cage {
     }
 	
 	public void removeSpawnHousing(GameMap gMap) {
-		World world = gMap.getCurrentWorld();
-		gMap.setAllowFallDamage(false);
+        World world = gMap.getCurrentWorld();
+        gMap.setAllowFallDamage(false);
         new BukkitRunnable() {
-			@Override
-			public void run() {
-				gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
-			}
+            @Override
+            public void run() {
+                gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
+            }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
         for(TeamCard tCard: gMap.getTeamCards()) {
             int x = tCard.getSpawn().getX();
             int y = tCard.getSpawn().getY();
             int z = tCard.getSpawn().getZ();
             for (CoordLoc loc: bottomCoordOffsets) {
-            	world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
+                world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
             }
             new BukkitRunnable() {
                 @Override
@@ -141,7 +147,7 @@ public abstract class Cage {
                     }
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 14L);
-    	}
+        }
 	}
 
 	public CageType getType() {

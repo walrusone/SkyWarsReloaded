@@ -83,6 +83,10 @@ public class Config {
 	private int speed;
 	private int jump;
 
+	private boolean usePlayerNames;
+	private boolean usePlayerGlassColors;
+	private Material teamMaterial;
+
 	private int timeAfterMatch;
 	private boolean fireworksEnabled;
 	private int fireworksPer5Tick;
@@ -289,7 +293,15 @@ public class Config {
 			strength = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.strength");
 			speed = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.speed");
 			jump = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.jump");
-			
+
+			usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
+			usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
+			String mat = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
+			teamMaterial = Material.matchMaterial(mat);
+			if (teamMaterial == null) {
+				teamMaterial = Material.WOOL;
+			}
+
 			maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
 			partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
 			lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
@@ -494,6 +506,10 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.strength", strength);
 		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.speed", speed);
 		SkyWarsReloaded.get().getConfig().set("game.modifierLevel.jump", jump);
+
+		SkyWarsReloaded.get().getConfig().set("teams.usePlayerNames", usePlayerNames);
+		SkyWarsReloaded.get().getConfig().set("teams.usePlayerGlassColors", usePlayerGlassColors);
+		SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toString());
 		
 		SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
 		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
@@ -1110,6 +1126,12 @@ public class Config {
     public int getSingleSlot() { return singleSlot; }
 
 	public int getTeamSlot() { return teamSlot; }
+
+	public boolean usePlayerNames() { return usePlayerNames; }
+
+	public Material getTeamMaterial() {	return teamMaterial; }
+
+	public boolean usePlayerGlassColors() { return usePlayerGlassColors; }
 }
 
 

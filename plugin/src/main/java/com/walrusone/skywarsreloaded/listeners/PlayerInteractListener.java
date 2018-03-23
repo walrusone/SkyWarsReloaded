@@ -135,7 +135,7 @@ public class PlayerInteractListener implements Listener {
                 			    		Party party = Party.getParty(player);
                 			    		if (party != null) {
                 			    			if (party.getLeader().equals(player.getUniqueId())) {
-                    			    			joined = gMap.addPlayers(party);
+                    			    			joined = gMap.addPlayers(null, party);
 												if (!joined) {
 													player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
 												}
@@ -143,7 +143,7 @@ public class PlayerInteractListener implements Listener {
                 			    				player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                 			    			}
                 			    		} else {
-                    			    		joined = gMap.addPlayers(player);
+                    			    		joined = gMap.addPlayers(null, player);
                     			    		if (!joined) { 
                     			    			player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                     			    		} 

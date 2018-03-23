@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.game;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
@@ -11,43 +12,50 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 
 public class TeamCard {
-	private ArrayList<PlayerCard> players = new ArrayList<>();
+	private ArrayList<PlayerCard> playerCards = new ArrayList<>();
     private ArrayList<UUID> dead = new ArrayList<>();
 	private CoordLoc spawn;
 	private GameMap gMap;
 	private int place;
 	private String prefix;
 	private Team team;
+	private byte bColor;
+	private String name;
+	private int position;
 	
-	TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix) {
+	TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix, String color, int pos) {
 		this.spawn = spawn;
 		this.gMap = gameMap;
 		this.place = 1;
 		this.prefix = prefix;
+		this.name = prefix + color;
+		String col = color.replaceAll("\\s","").toLowerCase();
+		this.bColor = Util.get().getByteFromColor(col);
+		this.position = pos - 1;
 		for (int i = 0; i < size; i++) {
-			players.add(new PlayerCard(this, null, -1));
+			playerCards.add(new PlayerCard(this, null, -1));
 		}
 	}
 
 	public void updateCard(int size) {
-		if (size >  players.size()) {
-			for (int i = players.size(); i < size; i++) {
-				players.add(new PlayerCard(this, null, -1));
+		if (size >  playerCards.size()) {
+			for (int i = playerCards.size(); i < size; i++) {
+				playerCards.add(new PlayerCard(this, null, -1));
 			}
 		} else {
-			while (size < players.size()) {
-				players.remove(players.size()-1);
+			while (size < playerCards.size()) {
+				playerCards.remove(playerCards.size()-1);
 			}
 		}
 	}
 	
 	public int getSize() {
-		return players.size();
+		return playerCards.size();
 	}
 	
 	public int getFullCount() {
 		int x = 0;
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
 			if (pCard.getUUID() == null) {
 				x++;
 			}
@@ -72,12 +80,12 @@ public class TeamCard {
 	}
 
 	public ArrayList<PlayerCard> getPlayerCards() {
-		return players;
+		return playerCards;
 	}
 
 	public TeamCard sendReservation(Player player, PlayerStat ps) {
 		if (player != null && ps != null && ps.isInitialized()) {
-			for (PlayerCard pCard: players) {
+			for (PlayerCard pCard: playerCards) {
 				if (pCard.getUUID() == null && spawn != null) {
 					pCard.setPlayer(player);
 					pCard.setPreElo(ps.getElo());
@@ -92,7 +100,7 @@ public class TeamCard {
 	}
 	
 	public boolean joinGame(Player player) {
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
 			if (pCard.getUUID().equals(player.getUniqueId())) {
 				team.addEntry(player.getName());
 				gMap.getJoinQueue().add(pCard);
@@ -118,7 +126,7 @@ public class TeamCard {
 
 	public void reset() {
 		this.place = 1;
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
 			pCard.reset();
 		}
 		this.dead.clear();
@@ -129,7 +137,7 @@ public class TeamCard {
 	}
 
 	public PlayerCard containsPlayer(UUID uuid) {
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
     		if (uuid != null) {
     			if (pCard.getUUID() != null) {
     				if(pCard.getUUID().equals(uuid)) {
@@ -147,7 +155,7 @@ public class TeamCard {
 
 	public int getPlayersSize() {
 		int count = 0;
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
 			if (pCard.getUUID() != null) {
 				count++;
 			}
@@ -160,15 +168,19 @@ public class TeamCard {
 		return (num == 0 || num == dead.size());
 	}
 
-	public String getName() {
+	public String getPlayerNames() {
 		StringBuilder name = new StringBuilder();
-		for (PlayerCard pCard: players) {
+		for (PlayerCard pCard: playerCards) {
 			if (pCard.getPlayer() != null) {
 				name.append(pCard.getPlayer().getDisplayName());
 				name.append(", ");
 			}
 		}
 		return name.substring(0, name.length() -2);
+	}
+
+	public String getTeamName() {
+		return name;
 	}
 
 	public String getPrefix() {
@@ -181,6 +193,14 @@ public class TeamCard {
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public byte getByte() {
+		return bColor;
+	}
+
+	public int getPosition() {
+		return position;
 	}
 }
 

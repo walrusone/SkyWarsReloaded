@@ -37,6 +37,10 @@ game:
     speed:
     strength:
     jump: 
+teams:
+  usePlayerNames: true
+  usePlayerGlassColors: true
+  teamCageMaterial: WOOL
 chat:
   enableFormatter: true
   limitGameChatToGame: true

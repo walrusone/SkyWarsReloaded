@@ -19,7 +19,7 @@ public class SaveCmd extends BaseCmd {
 	public boolean run() {
 			String worldName = args[1];
 			GameMap gMap = GameMap.getMap(worldName);
-			if (gMap == null) {
+			if (gMap == null || !gMap.isEditing()) {
 				player.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));
 				return true;
 			}

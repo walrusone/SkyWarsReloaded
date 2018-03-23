@@ -74,7 +74,7 @@ public class MatchManager
         }
         boolean joined = false;
 		if (map != null) {
-			joined = map.addPlayers(player);
+			joined = map.addPlayers(null, player);
 		}
 		return joined;
     }
@@ -100,7 +100,7 @@ public class MatchManager
         }
         boolean joined = false;
 		if (map != null) {
-			joined = map.addPlayers(party);
+			joined = map.addPlayers(null, party);
 		}
 		return joined;
     }
@@ -406,7 +406,7 @@ public class MatchManager
     private void won(final GameMap gameMap, final TeamCard winners) {             
         if (winners != null) {
         	if (debug) {
-            	Util.get().logToFile(debugName + ChatColor.YELLOW + winners.getName() + "Won the Match");
+            	Util.get().logToFile(debugName + ChatColor.YELLOW + winners.getTeamName() + "Won the Match");
         	}
         	int eloChange1 = 0;
         	for (PlayerCard pCard: winners.getPlayerCards()) {
@@ -453,7 +453,13 @@ public class MatchManager
                 }
         	}
         	final int eloChange = eloChange1;
-            final String winner = winners.getName();
+        	String winName;
+        	if (SkyWarsReloaded.getCfg().usePlayerNames()) {
+				winName = winners.getPlayerNames();
+			} else {
+        		winName = winners.getTeamName();
+			}
+            final String winner = winName;
             final String map = gameMap.getDisplayName();
 			if (SkyWarsReloaded.get().isEnabled()) {
 				new BukkitRunnable() {

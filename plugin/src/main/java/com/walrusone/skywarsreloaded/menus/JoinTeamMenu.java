@@ -5,7 +5,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,8 +126,17 @@ public class JoinTeamMenu {
 			}
 
 			if (player.hasPermission("sw.join")) {
-			    if (event.getClick() == ClickType.RIGHT) {
-
+			    if (event.getClick() == ClickType.RIGHT  && gMap.getMatchState() == MatchState.WAITINGSTART) {
+			        final String n = gMap.getName();
+                    if (!SkyWarsReloaded.getIC().hasViewers(n + "teamselect")) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                SkyWarsReloaded.getIC().getMenu( n + "teamselect").update();
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 5);
+                    }
+                    SkyWarsReloaded.getIC().show(player, n + "teamselect");
                 } else {
                     boolean joined;
                     Party party = Party.getParty(player);
@@ -135,7 +144,7 @@ public class JoinTeamMenu {
                         if (party.getLeader().equals(player.getUniqueId())) {
                             if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
                                 player.closeInventory();
-                                joined = gMap.addPlayers(party);
+                                joined = gMap.addPlayers(null, party);
                                 if (!joined) {
                                     player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                                 }
@@ -147,7 +156,7 @@ public class JoinTeamMenu {
                     } else {
                         if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
                             player.closeInventory();
-                            joined = gMap.addPlayers(player);
+                            joined = gMap.addPlayers(null, player);
                             if (!joined) {
                                 player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                             }

@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.game;
 
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
+import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -68,6 +69,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -165,6 +167,9 @@ public class GameMap {
         	registerMap();
         }
         new ArenaMenu(arenakey, this);
+        if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
+			new TeamSelectionMenu(name + "teamselect", this);
+		}
     }
 
 	private void loadEvents() {
@@ -199,12 +204,15 @@ public class GameMap {
         }
         if (SkyWarsReloaded.getIC().has("jointeammenu") && teamSize > 1) {
             SkyWarsReloaded.getIC().getMenu("jointeammenu").update();
+            if (matchState == MatchState.WAITINGSTART && SkyWarsReloaded.getIC().has(name + "teamselect")) {
+				SkyWarsReloaded.getIC().getMenu(name + "teamselect").update();
+			}
         }
 	}
    
 	/*Player Handling Methods*/
 	
-	public boolean addPlayers(final Player player) {
+	public boolean addPlayers(@Nullable TeamCard teamToTry, final Player player) {
 		if (Util.get().isBusy(player.getUniqueId())) {
 			return false;
 		}
@@ -217,10 +225,16 @@ public class GameMap {
 		}
 		if (player != null && ps != null && ps.isInitialized()) {
 			TeamCard reserved = null;
-			for (TeamCard tCard: teamCards) {
-				if (tCard.getFullCount() > 0) {
-					reserved = tCard.sendReservation(player, ps);
-					break;
+			if (teamToTry == null) {
+				for (TeamCard tCard: teamCards) {
+					if (tCard.getFullCount() > 0) {
+						reserved = tCard.sendReservation(player, ps);
+						break;
+					}
+				}
+			} else {
+				if (teamToTry.getFullCount() > 0) {
+					reserved = teamToTry.sendReservation(player, ps);
 				}
 			}
 			if (reserved != null) {
@@ -232,7 +246,7 @@ public class GameMap {
     	return result;
     }
 	
-	public boolean addPlayers(final Party party) {
+	public boolean addPlayers(@Nullable TeamCard teamToTry, final Party party) {
 		TeamCard team = null;
 		Map<TeamCard, ArrayList<Player>> players = new HashMap<>();
 		if (teamSize == 1) {
@@ -260,14 +274,35 @@ public class GameMap {
 				}
 			}
 		} else {
-			teamCards.sort(new TeamCardComparator());
-			for (TeamCard tCard: teamCards) {
-				if (tCard.getFullCount() >= party.getSize()) {
+			if (teamToTry == null) {
+				teamCards.sort(new TeamCardComparator());
+				for (TeamCard tCard: teamCards) {
+					if (tCard.getFullCount() >= party.getSize()) {
+						for (int i = 0; i < party.getSize(); i++) {
+							Player player = Bukkit.getPlayer(party.getMembers().get(i));
+							PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+							if (player != null && ps != null && ps.isInitialized()) {
+								TeamCard reserve = tCard.sendReservation(player, ps);
+								if (reserve != null) {
+									players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
+								}
+								team = reserve;
+							}
+						}
+						this.update();
+						gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
+					}
+					if (team != null && players.get(team).size() == party.getSize()) {
+						break;
+					}
+				}
+			} else {
+				if (teamToTry.getFullCount() >= party.getSize()) {
 					for (int i = 0; i < party.getSize(); i++) {
 						Player player = Bukkit.getPlayer(party.getMembers().get(i));
 						PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
 						if (player != null && ps != null && ps.isInitialized()) {
-							TeamCard reserve = tCard.sendReservation(player, ps);
+							TeamCard reserve = teamToTry.sendReservation(player, ps);
 							if (reserve != null) {
 								players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
 							}
@@ -276,9 +311,6 @@ public class GameMap {
 					}
 					this.update();
 					gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
-				}
-				if (team != null && players.get(team).size() == party.getSize()) {
-						break;
 				}
 			}
 		}
@@ -1307,32 +1339,54 @@ public class GameMap {
 		if (teamSize > 1) {
 			prefix = getChatColor(teamCards.size());
 		}
-		teamCards.add(new TeamCard(teamSize, loc, this, prefix));
+		teamCards.add(new TeamCard(teamSize, loc, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1));
 	}
 	
 	private String getChatColor(int size) {
-		double d = ((double)size + 1)/16;
+		double d = ((double)size + 1)/14;
 		long i = (long) d;
 		double f = d - i;
-		int s = (int)(f * 16);
+		int s = (int)(f * 14);
 		switch(s) {
 		case 1: return ChatColor.GREEN + "";
 		case 2: return ChatColor.RED + "";
 		case 3: return ChatColor.DARK_BLUE + "";
-		case 4: return ChatColor.GOLD + "";
+		case 4: return ChatColor.YELLOW + "";
 		case 5: return ChatColor.WHITE + "";
 		case 6: return ChatColor.AQUA + "";
-		case 7: return ChatColor.LIGHT_PURPLE + "";
+		case 7: return ChatColor.GRAY + "";
 		case 8: return ChatColor.DARK_PURPLE + "";
-		case 9: return ChatColor.YELLOW + "";
-		case 10: return ChatColor.DARK_GREEN + "";
-		case 11: return ChatColor.DARK_RED + "";
-		case 12: return ChatColor.BLUE + "";
-		case 13: return ChatColor.DARK_AQUA + "";
-		case 14: return ChatColor.DARK_GRAY + "";
-		case 15: return ChatColor.GRAY + "";
-		case 16: return ChatColor.BLACK + "";
+		case 9: return ChatColor.DARK_GREEN + "";
+		case 10: return ChatColor.BLUE + "";
+		case 11: return ChatColor.DARK_GRAY + "";
+		case 12: return ChatColor.BLACK + "";
+		case 13: return ChatColor.LIGHT_PURPLE + "";
+		case 14: return ChatColor.GOLD + "";
 		default: return ChatColor.GREEN + "";
+		}
+	}
+
+	private String getStringColor(int size) {
+		double d = ((double)size + 1)/14;
+		long i = (long) d;
+		double f = d - i;
+		int s = (int)(f * 14);
+		switch(s) {
+			case 1: return "Lime";
+			case 2: return "Red";
+			case 3: return "Blue";
+			case 4: return "Yellow";
+			case 5: return "White";
+			case 6: return "Cyan";
+			case 7: return "Light Gray";
+			case 8: return "Purple";
+			case 9: return "Green";
+			case 10: return "Light Blue";
+			case 11: return "Gray";
+			case 12: return "Black";
+			case 13: return "Magenta";
+			case 14: return "Orange";
+			default: return "Lime";
 		}
 	}
 
@@ -1610,15 +1664,19 @@ public class GameMap {
 		return gameboard;
 	}
 
-	public class TeamCardComparator implements Comparator<TeamCard> {
-		@Override
-	    public int compare(final TeamCard f1, final TeamCard f2) {
-			if (f1 != null && f2 != null) {
-				if (f1.getFullCount() < f2.getFullCount()) {
-					return 1;
-				}
+    public TeamCard getTeamCardFromName(String name) {
+		for (TeamCard tCard: teamCards) {
+			if (tCard.getTeamName().equalsIgnoreCase(name)) {
+				return tCard;
 			}
-			return 0;
+		}
+		return null;
+    }
+
+    public class TeamCardComparator implements Comparator<TeamCard> {
+		@Override
+	    public int compare(TeamCard f1, TeamCard f2) {
+			return Integer.compare(f1.getFullCount(), f2.getFullCount());
 	    }
 	}
 

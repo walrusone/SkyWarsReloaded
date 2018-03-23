@@ -43,7 +43,6 @@ public class WorldManager {
         world.setStorm(false);
         world.setThundering(false);
         world.setWeatherDuration(Integer.MAX_VALUE);
-        world.setAutoSave(false);
         world.setKeepSpawnInMemory(false);
 	    world.setTicksPerAnimalSpawns(1);
 	    world.setTicksPerMonsterSpawns(1);

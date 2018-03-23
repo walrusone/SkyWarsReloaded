@@ -134,7 +134,7 @@ public class JoinSingleMenu {
 						if(party.getLeader().equals(player.getUniqueId())) {
 							if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
 								player.closeInventory();
-								joined = gMap.addPlayers(party);
+								joined = gMap.addPlayers(null, party);
 								if (!joined) {
 									player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
 								}
@@ -146,7 +146,7 @@ public class JoinSingleMenu {
 					} else {
 						if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
 							player.closeInventory();
-							joined = gMap.addPlayers(player);
+							joined = gMap.addPlayers(null, player);
 							if (!joined) {
 								player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
 							}

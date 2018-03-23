@@ -34,6 +34,9 @@ game:
     speed:
     strength:
     jump: 
+teams:
+  usePlayerNames: true
+  usePlayerGlassColors: true
 chat:
   enableFormatter: true
   limitGameChatToGame: true

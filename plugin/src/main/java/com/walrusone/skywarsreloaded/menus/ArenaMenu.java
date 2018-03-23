@@ -200,18 +200,14 @@ public class ArenaMenu {
 					ChatListener.setSetting(player.getUniqueId(), gMap.getName() + ":creator");
 					player.sendMessage(new Messaging.MessageFormatter().format("maps.changecreator"));
 				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 6) {
-					if (gMap.isRegistered()) {
-						if (gMap.getMinTeams() < gMap.getMaxPlayers()) {
-							gMap.setMinTeams(gMap.getMinTeams() + 1);
-							gMap.update();
-						}
+					if (gMap.getMinTeams() < gMap.getMaxPlayers()) {
+						gMap.setMinTeams(gMap.getMinTeams() + 1);
+						gMap.update();
 					}
 				} else if (event.getClick().equals(ClickType.RIGHT) && event.getSlot() == 6) {
-					if (gMap.isRegistered()) {
-						if (gMap.getMinTeams() > 2) {
-							gMap.setMinTeams(gMap.getMinTeams() - 1);
-							gMap.update();
-						}
+					if (gMap.getMinTeams() > 2) {
+						gMap.setMinTeams(gMap.getMinTeams() - 1);
+						gMap.update();
 					}
 				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 8) {
 					player.closeInventory();

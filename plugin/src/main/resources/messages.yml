@@ -224,6 +224,7 @@ menu:
   joinloreteam2: '&bTeam Arenas'
   joinsinglegame-menu-title: '&5Join SkyWars Menu'
   jointeamgame-menu-title: '&5Join Team SkyWars Menu'
+  teamselection-menu-title: 'Join Team Menu - {mapname}'
   spectategame-menu-title: '&5Spectate Game Menu'
   spectatesinglegame-menu-title: '&5Spectate SkyWars Menu'
   spectateteamgame-menu-title: '&5Spectate Team SkyWars Menu'
