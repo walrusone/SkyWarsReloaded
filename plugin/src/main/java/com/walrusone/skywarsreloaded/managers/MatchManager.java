@@ -570,7 +570,7 @@ public class MatchManager
         	gameMap.getTeamCard(player).getDead().add(player.getUniqueId());
             
             PlayerCard pCard = gameMap.getPlayerCard(player);
-            pCard.getTeamCard().setPlace(gameMap.getTeamCount() + 1 - gameMap.getTeamsOut());
+            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getTeamsOut());
             int eloChange1 = 0;
             if (gameMap.getTeamSize() == 1) {
             	pCard.calculateELO();

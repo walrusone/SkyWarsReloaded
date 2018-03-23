@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.game;
 
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -123,13 +124,13 @@ public class PlayerCard {
 	        
 	            int curPlace = tCard.getPlace();
 	            int curELO   = preElo;
-	            
+
 	            for (TeamCard tCard: tCard.getGameMap().getTeamCards()) {
 	            	PlayerCard opponent = tCard.getPlayerCards().get(0);
 	                if (opponent.getUUID() != null && !opponent.getUUID().equals(uuid)) {
 	                    int opponentPlace = opponent.tCard.getPlace();
 	                    int opponentELO   = opponent.getPreElo();
-	                    
+
 	                    float S;
 	                    if (curPlace < opponentPlace)
 	                        S = 1.0F;
