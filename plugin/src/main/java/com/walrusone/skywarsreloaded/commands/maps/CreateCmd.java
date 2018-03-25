@@ -25,12 +25,21 @@ public class CreateCmd extends BaseCmd {
 	public boolean run() {
 		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
 			String worldName = args[1];
+			World.Environment environment = World.Environment.NORMAL;
+			if (args.length > 2) {
+				if (args[2].equalsIgnoreCase("the_end")) {
+					environment = World.Environment.THE_END;
+				} else if (args[2].equalsIgnoreCase("nether")) {
+					environment = World.Environment.NETHER;
+				}
+			}
+
 			GameMap gMap = GameMap.getMap(worldName);
 			if (gMap != null) {
 				player.sendMessage(new Messaging.MessageFormatter().format("error.map-exists"));
 				return true;
 			}
-				World result = GameMap.createNewMap(worldName);
+				World result = GameMap.createNewMap(worldName, environment);
 				if (result == null) {
 					player.sendMessage(new Messaging.MessageFormatter().format("error.map-world-exists"));
 					return true;

@@ -269,7 +269,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
         }
 
-        if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
+        if (SkyWarsReloaded.getCfg().joinMenuEnabled() || SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
         	new JoinMenu();
 	        new JoinSingleMenu();
 			new JoinTeamMenu();

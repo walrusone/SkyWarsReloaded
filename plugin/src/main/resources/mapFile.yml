@@ -5,6 +5,7 @@ registered:
 cage: standard
 teamSize: 1
 allowFriendlyFire: false
+environment: NORMAL
 events:
   DisableRegenEvent:
     enabled: false

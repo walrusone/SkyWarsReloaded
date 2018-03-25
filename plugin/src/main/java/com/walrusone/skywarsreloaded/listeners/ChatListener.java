@@ -181,7 +181,7 @@ public class ChatListener implements Listener {
                     }
 	    		}
 			} else {
-				if(event.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+				if(SkyWarsReloaded.getCfg().getSpawn() != null && event.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
 					if (SkyWarsReloaded.getCfg().useExternalChat()) { 	
 		    			PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
 		            	String prefix = "";

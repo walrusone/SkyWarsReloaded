@@ -15,10 +15,10 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 public class WorldManager {
 
-	public World createEmptyWorld(String name) {
+	public World createEmptyWorld(String name, World.Environment environment) {
 		if (Bukkit.getWorld(name) == null) {
 			World world = null;
-			boolean loaded = loadWorld(name);
+			boolean loaded = loadWorld(name, environment);
 	        if (loaded) {
 	        	world = Bukkit.getWorld(name);
 	        }
@@ -30,11 +30,10 @@ public class WorldManager {
 		return null;
     }
 
-	public boolean loadWorld(String worldName){
+	public boolean loadWorld(String worldName, World.Environment environment){
 		WorldCreator worldCreator = new WorldCreator(worldName);
-        worldCreator.type(WorldType.NORMAL)
-                .generateStructures(false)
-                .environment(World.Environment.NORMAL)
+        worldCreator.environment(environment)
+				.generateStructures(false)
                 .generator(SkyWarsReloaded.getNMS().getChunkGenerator());
 		World world = worldCreator.createWorld();
         world.setDifficulty(Difficulty.NORMAL);

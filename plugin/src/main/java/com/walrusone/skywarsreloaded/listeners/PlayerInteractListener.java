@@ -96,7 +96,7 @@ public class PlayerInteractListener implements Listener {
 						} else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
 							a1.setCancelled(true);
 							if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
-								if (!SkyWarsReloaded.getIC().hasViewers("joinsinglemenu")) {
+								if (!SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu")) {
 									new BukkitRunnable() {
 										@Override
 										public void run() {
@@ -107,7 +107,7 @@ public class PlayerInteractListener implements Listener {
 								SkyWarsReloaded.getIC().show(a1.getPlayer(), "spectatesinglemenu");
 								return;
 							} else if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
-								if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
+								if (!SkyWarsReloaded.getIC().hasViewers("spectateteammenu")) {
 									new BukkitRunnable() {
 										@Override
 										public void run() {
