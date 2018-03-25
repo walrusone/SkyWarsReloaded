@@ -875,55 +875,70 @@ public class GameMap {
 	}
 	
 	public static void editMap(GameMap gMap, Player player) {
-		gMap.unregister();
-		gMap.setEditing(true);
-		String worldName = gMap.getName();
-		boolean loaded = false;
-		for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
-			if (world.getName().equals(worldName)) {
-				loaded = true;
-			}
-		} 
-		
-		if (!loaded) {
-			File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
-			File source = new File (dataDirectory, worldName);
-			File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
-			boolean mapExists = false;
-			if(target.isDirectory()) {
-			    String[] list = target.list();
-				if(list != null && list.length > 0) {
-		 			mapExists = true;
-				}	 
-			}
-			if (mapExists) {
-				SkyWarsReloaded.getWM().deleteWorld(worldName);
-			}
-			SkyWarsReloaded.getWM().copyWorld(source, target);
+    	if (gMap.isRegistered()) {
+			gMap.unregister();
 		}
-		loaded = SkyWarsReloaded.getWM().loadWorld(worldName, World.Environment.valueOf(gMap.environment));
-		if (loaded) {
-			World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-			for (TeamCard tCard: gMap.getTeamCards()) {
-				if (tCard.getSpawn() != null) {
-					editWorld.getBlockAt(tCard.getSpawn().getX(), tCard.getSpawn().getY(), tCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
+		String worldName = gMap.getName();
+		if (gMap.isEditing()) {
+			boolean loaded = false;
+			for (World world: SkyWarsReloaded.get().getServer().getWorlds()) {
+				if (world.getName().equals(worldName)) {
+					loaded = true;
 				}
 			}
-			for (CoordLoc cl: gMap.getDeathMatchSpawns()) {
-					editWorld.getBlockAt(cl.getX(), cl.getY(), cl.getZ()).setType(Material.EMERALD_BLOCK);
+			if (!loaded) {
+				loaded = loadWorld(worldName, gMap);
 			}
-			SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), () -> {
-                player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
-                player.setGameMode(GameMode.CREATIVE);
-                player.setAllowFlight(true);
-                player.setFlying(true);
-            }, 20);
+			if (loaded) {
+				prepareForEditor(player, gMap, worldName);
+			}
 		} else {
-			player.sendMessage(new Messaging.MessageFormatter().format("error.map-fail-load"));
+			gMap.setEditing(true);
+			boolean loaded = loadWorld(worldName, gMap);
+			if (loaded) {
+				prepareForEditor(player, gMap, worldName);
+			} else {
+				player.sendMessage(new Messaging.MessageFormatter().format("error.map-fail-load"));
+			}
 		}
 	}
 
-	
+	public static boolean loadWorld(String worldName, GameMap gMap) {
+		File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
+		File source = new File(dataDirectory, worldName);
+		File target = new File(SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
+		boolean mapExists = false;
+		if (target.isDirectory()) {
+			String[] list = target.list();
+			if (list != null && list.length > 0) {
+				mapExists = true;
+			}
+		}
+		if (mapExists) {
+			SkyWarsReloaded.getWM().deleteWorld(worldName);
+		}
+		SkyWarsReloaded.getWM().copyWorld(source, target);
+		return SkyWarsReloaded.getWM().loadWorld(worldName, World.Environment.valueOf(gMap.environment));
+	}
+
+	public static void prepareForEditor(Player player, GameMap gMap, String worldName) {
+		World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
+		for (TeamCard tCard: gMap.getTeamCards()) {
+			if (tCard.getSpawn() != null) {
+				editWorld.getBlockAt(tCard.getSpawn().getX(), tCard.getSpawn().getY(), tCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
+			}
+		}
+		for (CoordLoc cl: gMap.getDeathMatchSpawns()) {
+			editWorld.getBlockAt(cl.getX(), cl.getY(), cl.getZ()).setType(Material.EMERALD_BLOCK);
+		}
+		SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), () -> {
+			player.teleport(new Location(editWorld, 0, 95, 0), TeleportCause.PLUGIN);
+			player.setGameMode(GameMode.CREATIVE);
+			player.setAllowFlight(true);
+			player.setFlying(true);
+		}, 20);
+	}
+
 	public void refreshMap() {
 		for (TeamCard tCard: teamCards) {
 			tCard.reset();
@@ -1506,6 +1521,7 @@ public class GameMap {
 					mess.sendMessage(new Messaging.MessageFormatter().format("maps.register-reminder"));
 				}
 				saveArenaData();
+				inEditing = false;
 				success = true;
 				break;
 			} 	
