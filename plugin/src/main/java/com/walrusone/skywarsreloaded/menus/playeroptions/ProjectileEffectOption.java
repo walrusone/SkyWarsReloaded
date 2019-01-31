@@ -141,7 +141,7 @@ public class ProjectileEffectOption extends PlayerOption {
 		return "menu.useprojeffect-seteffect";
 	}
 	
-	public static PlayerOption getPlayerOptionByName(String name) {
+	static PlayerOption getPlayerOptionByName(String name) {
     	for (PlayerOption pOption: playerOptions) {
     		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pOption;
@@ -159,7 +159,7 @@ public class ProjectileEffectOption extends PlayerOption {
         return null;
     }
     
-    public static ArrayList<PlayerOption> getPlayerOptions() {
+    static ArrayList<PlayerOption> getPlayerOptions() {
     	return playerOptions;
     }
 }

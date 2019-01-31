@@ -34,9 +34,20 @@ public class GlassColorOption extends PlayerOption {
     	playerOptions.clear();
         File glassFile = new File(SkyWarsReloaded.get().getDataFolder(), "glasscolors.yml");
 
-        if (!glassFile.exists()) {
-        	SkyWarsReloaded.get().saveResource("glasscolors.yml", false);
-        }
+		if (!glassFile.exists()) {
+			if (SkyWarsReloaded.getNMS().getVersion() < 9) {
+				SkyWarsReloaded.get().saveResource("glasscolors18.yml", false);
+				File sf = new File(SkyWarsReloaded.get().getDataFolder(), "glasscolors18.yml");
+				if (sf.exists()) {
+					boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "glasscolors.yml"));
+					if (!result) {
+						SkyWarsReloaded.get().getLogger().info("Failed to rename 1.8 Glasscolors File");
+					}
+				}
+			} else {
+				SkyWarsReloaded.get().saveResource("glasscolors.yml", false);
+			}
+		}
 
         if (glassFile.exists()) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(glassFile);
@@ -53,18 +64,19 @@ public class GlassColorOption extends PlayerOption {
                 	int menuSize = storage.getInt("menuSize");
                 	                	
                 	Material mat = Material.matchMaterial(material);
-                	if (mat != null) {
-                		ItemStack itemStack;
-                		if (data == -1) {
-                			itemStack = new ItemStack(mat, 1);
-                		} else {
-                			itemStack = new ItemStack(mat, 1, (short) data);
-                		}
-                		playerOptions.add(new GlassColorOption(key, name, itemStack, level, cost, position, page, menuSize));
+                	ItemStack itemStack;
+					if (data == -1) {
+						if (mat != null) {
+							itemStack = new ItemStack(mat, 1);
+							playerOptions.add(new GlassColorOption(key, name, itemStack, level, cost, position, page, menuSize));
+						}
+					} else {
+						itemStack = SkyWarsReloaded.getNMS().getColorItem(material, (byte) data);
+						playerOptions.add(new GlassColorOption(key, name, itemStack, level, cost, position, page, menuSize));
+					}
                 	}
             	}
             }
-        }
         
         Collections.sort(playerOptions);
         if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
@@ -122,7 +134,7 @@ public class GlassColorOption extends PlayerOption {
 		 stat.setGlassColor(key);	
 	}
 
-    public static PlayerOption getPlayerOptionByName(String name) {
+    static PlayerOption getPlayerOptionByName(String name) {
     	for (PlayerOption pOption: playerOptions) {
     		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pOption;
@@ -140,7 +152,7 @@ public class GlassColorOption extends PlayerOption {
         return null;
     }
     
-    public static ArrayList<PlayerOption> getPlayerOptions() {
+    static ArrayList<PlayerOption> getPlayerOptions() {
     	return playerOptions;
     }
 

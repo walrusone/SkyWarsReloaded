@@ -81,7 +81,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         this.getLogger().info("Loading support for " + version);
         
-    	if (nmsHandler.isOnePointEight()) {
+    	if (nmsHandler.getVersion() < 9) {
     		File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
             	SkyWarsReloaded.get().saveResource("config18.yml", false);

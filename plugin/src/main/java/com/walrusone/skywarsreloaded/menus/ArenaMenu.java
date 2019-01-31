@@ -76,7 +76,7 @@ public class ArenaMenu {
 				lores.add(" ");
 				lores.add(ChatColor.AQUA + "Left Click to Change");
 				lores.add(ChatColor.AQUA + "the Creator.");
-				ItemStack creator = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.SKULL_ITEM, 1, (short) 3), lores, "Map Creator");
+				ItemStack creator = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getNMS().getMaterial("SKULL_ITEM"), lores, "Map Creator");
 
 				lores.clear();
 				lores.add(ChatColor.GOLD + "" + gMap.getSigns().size() + " Sign Available!");
@@ -96,7 +96,7 @@ public class ArenaMenu {
 				lores.clear();
 				lores.add(ChatColor.AQUA + "Shift Left Click to");
 				lores.add(ChatColor.AQUA + "End Current Match!");
-				ItemStack end = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.ENDER_PORTAL_FRAME, 1), lores, "End Match");
+				ItemStack end = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(SkyWarsReloaded.getNMS().getMaterial("ENDER_PORTAL_FRAME")), lores, "End Match");
 
 				lores.clear();
 				lores.add(ChatColor.AQUA + "Shift Left Click to Edit Map!");
@@ -104,7 +104,7 @@ public class ArenaMenu {
 					lores.add(ChatColor.RED + "Editing will End Match");
 					lores.add(ChatColor.RED + "and unregister the map!");
 				}
-				ItemStack edit = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.WORKBENCH, 1), lores, "Edit Map");
+				ItemStack edit = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(SkyWarsReloaded.getNMS().getMaterial("WORKBENCH")), lores, "Edit Map");
 
 				lores.clear();
 
@@ -125,7 +125,7 @@ public class ArenaMenu {
 				} else {
 					lores.add(ChatColor.AQUA + "Left Click to Change Cage Type!");
 				}
-				ItemStack cage = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.IRON_FENCE, 1), lores, "Cage Type");
+				ItemStack cage = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(SkyWarsReloaded.getNMS().getMaterial("IRON_FENCE")), lores, "Cage Type");
 
 				lores.clear();
 				lores.add(ChatColor.AQUA + "Left Click to view events!");
@@ -149,7 +149,7 @@ public class ArenaMenu {
 					lores.add(ChatColor.AQUA + "Shift Left Click to toggle");
 					lores.add(ChatColor.AQUA + "Friendly Fire!");
 				}
-				ItemStack teams = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.REDSTONE_COMPARATOR, 1), lores, "Teams");
+				ItemStack teams = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(SkyWarsReloaded.getNMS().getMaterial("REDSTONE_COMPARATOR")), lores, "Teams");
 
 				menu.setItem(0, status);
 				menu.setItem(2, display);

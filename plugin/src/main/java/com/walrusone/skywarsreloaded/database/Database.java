@@ -60,7 +60,7 @@ public class Database {
 	        }
 	    }
 
-	    public Connection getConnection() {
+	    Connection getConnection() {
 	        return connection;
 	    }
 
@@ -77,18 +77,19 @@ public class Database {
 	        connection = null;
 	    }
 
-	    public boolean checkConnection() {
+	    boolean checkConnection() {
 	        try {
 	            connect();
 	        } catch (SQLException sqlException) {
 	            close();
 	            sqlException.printStackTrace();
-				return false;
+				return true;
 	        }
-	        return true;
+	        return false;
 	    }
 
-	    public void createTables() throws IOException, SQLException {
+	    @SuppressWarnings("UnstableApiUsage")
+		public void createTables() throws IOException, SQLException {
 	        URL resource = Resources.getResource(SkyWarsReloaded.class, "/tables.sql");
 	        String[] databaseStructure = Resources.toString(resource, Charsets.UTF_8).split(";");
 
@@ -123,8 +124,8 @@ public class Database {
 	        }
 	    }
 	    
-	    public boolean doesPlayerExist(String fId) {
-	        if (!checkConnection()) {
+	    boolean doesPlayerExist(String fId) {
+	        if (checkConnection()) {
 	            return false;
 	        }
 
@@ -133,13 +134,8 @@ public class Database {
 	        ResultSet resultSet = null;
 
 	        try {
-	            StringBuilder queryBuilder = new StringBuilder();
-	            queryBuilder.append("SELECT Count(`player_id`) ");
-	            queryBuilder.append("FROM `sw_player` ");
-	            queryBuilder.append("WHERE `uuid` = ? ");
-	            queryBuilder.append("LIMIT 1;");
-
-	            preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	            String query = "SELECT Count(`player_id`) FROM `sw_player` WHERE `uuid` = ? LIMIT 1;";
+	            preparedStatement = connection.prepareStatement(query);
 	            preparedStatement.setString(1, fId);
 	            resultSet = preparedStatement.executeQuery();
 
@@ -169,20 +165,17 @@ public class Database {
 	        return count > 0;
 	    }
 
-	    public void createNewPlayer(String fId, String name) {
-	        if (!checkConnection()) {
+	    void createNewPlayer(String fId, String name) {
+	        if (checkConnection()) {
 	            return;
 	        }
 
 	        PreparedStatement preparedStatement = null;
 
 	        try {
-	            StringBuilder queryBuilder = new StringBuilder();
-	            queryBuilder.append("INSERT INTO `sw_player` ");
-	            queryBuilder.append("(`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt`) ");
-	            queryBuilder.append("VALUES ");
-	            queryBuilder.append("(NULL, ?, ?, 0, 0, 0, 0, 1500, 0, ?, ?, ?, ?, ?, ?);");
-	            preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	            String query = "INSERT INTO `sw_player` (`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, " +
+						"`pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt`) VALUES (NULL, ?, ?, 0, 0, 0, 0, 1500, 0, ?, ?, ?, ?, ?, ?);";
+	            preparedStatement = connection.prepareStatement(query);
 	            preparedStatement.setString(1, fId);
 	            preparedStatement.setString(2, name);
 	            preparedStatement.setString(3, "none");

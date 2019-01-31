@@ -76,11 +76,11 @@ public class PlayerOptionsManager {
 		projectileMap.put(p,  e);
 	}
     
-    public void addPlayer(UUID p, List<ParticleEffect> e) {
+    void addPlayer(UUID p, List<ParticleEffect> e) {
 		playerMap.put(p,  e);
 	}
     
-    public void removePlayer(UUID p) {
+    void removePlayer(UUID p) {
 		playerMap.remove(p);
 	}
 	

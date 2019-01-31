@@ -46,7 +46,7 @@ taunts:
     page: 1
   pig:
     name: '&4Here Piggy Piggy'
-    icon: PORK
+    icon: PORKCHOP
     level: 15
     cost: 100
     addGlow: true
@@ -76,7 +76,7 @@ taunts:
     - '&b*Plays dragon growl.'
     - '&6*Surrounds player in fire and lava particles.'
     message: '&4Sniff....Sniff....I smell fear!!'
-    sound: ENTITY_ENDERDRAGON_GROWL
+    sound: ENTITY_ENDER_DRAGON_GROWL
     useCustomSound: false
     volume: 10
     pitch: 1
@@ -89,7 +89,7 @@ taunts:
     page: 1
   seekdestroy:
     name: '&eSeek and Destroy'
-    icon: GOLD_AXE
+    icon: GOLDEN_AXE
     level: 30
     cost: 100
     addGlow: true

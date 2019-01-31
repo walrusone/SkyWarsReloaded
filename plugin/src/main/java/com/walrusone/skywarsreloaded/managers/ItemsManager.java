@@ -26,8 +26,8 @@ public class ItemsManager {
     	getOptionItems();
     	getSignItems();
     }
-    
-    private void addItem(String materialref, List<String> lore, String message) {
+
+	private void addItem(String materialref, List<String> lore, String message) {
     	String mat = SkyWarsReloaded.getCfg().getMaterial(materialref);
 		int data = -1;
 		String matWithData = "";
@@ -38,7 +38,7 @@ public class ItemsManager {
 		}
 		ItemStack item;
 		if (data != -1) {
-			item = new ItemStack(Material.valueOf(matWithData.toUpperCase()), 1, (short) data);
+			item = SkyWarsReloaded.getNMS().getColorItem(matWithData, (byte) data);
 		} else {
 			item = new ItemStack(Material.valueOf(SkyWarsReloaded.getCfg().getMaterial(materialref).toUpperCase()), 1);
 		}

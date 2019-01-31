@@ -139,7 +139,7 @@ public class Config {
 		for (int i = 0; i < itemNames.size(); i++) {
 			String name = itemNames.get(i);
 			String def;
-			if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+			if (SkyWarsReloaded.getNMS().getVersion() < 9) {
 				def = defItems18.get(i);
 			} else {
 				def = defItems.get(i);

@@ -65,6 +65,7 @@ import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 
 import net.milkbowl.vault.economy.Economy;
 
+@SuppressWarnings("UnstableApiUsage")
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarsReloaded instance;
 	private ArrayList<String> useable = new ArrayList<>();
@@ -107,7 +108,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     	
     	servername = "none";
     	 
-    	if (nmsHandler.isOnePointEight()) {
+    	if (nmsHandler.getVersion() < 9) {
     		File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
             	SkyWarsReloaded.get().saveResource("config18.yml", false);
@@ -119,7 +120,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
             	}
             } 
-    	}
+    	} else if (nmsHandler.getVersion() < 13 && nmsHandler.getVersion() > 8) {
+			File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
+			if (!config.exists()) {
+				SkyWarsReloaded.get().saveResource("config112.yml", false);
+				config = new File(SkyWarsReloaded.get().getDataFolder(), "config112.yml");
+				if (config.exists()) {
+					boolean result = config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
+					if (result) {
+						getLogger().info("Loading 1.9 - 1.12 Configuration Files");
+					}
+				}
+			}
+		}
     	
     	getConfig().options().copyDefaults(true);
     	saveDefaultConfig();
@@ -138,7 +151,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         ic = new IconMenuController();
         wm = new WorldManager();
         
-        if (!nmsHandler.isOnePointEight()) {
+        if (nmsHandler.getVersion() > 8) {
         	this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
         }
         this.getServer().getPluginManager().registerEvents(ic, this);

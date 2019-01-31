@@ -88,9 +88,12 @@ public class SWRSign {
 	@SuppressWarnings("deprecation")
 	private static void updateBlock(Block block, String item) {
 		block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
-		if (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.WOOL) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.STAINED_GLASS) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.STAINED_CLAY)) {
-			block.setData(SkyWarsReloaded.getIM().getItem(item).getData().getData());
+		if (SkyWarsReloaded.getNMS().getVersion() < 13) {
+			if (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("WOOL")) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_GLASS")) || SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_CLAY"))) {
+				SkyWarsReloaded.getNMS().setBlockWithColor(block.getWorld(), block.getX(), block.getY(), block.getZ(), SkyWarsReloaded.getIM().getItem(item).getType(), SkyWarsReloaded.getIM().getItem(item).getData().getData());
+			}
 		}
+
 	}
 	
 	public Location getLocation() {

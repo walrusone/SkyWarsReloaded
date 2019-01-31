@@ -1,12 +1,10 @@
 package com.walrusone.skywarsreloaded.nms.v1_12_R1;
 
-import net.minecraft.server.v1_12_R1.*;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -37,6 +35,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 import com.walrusone.skywarsreloaded.api.NMS;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class NMSHandler implements NMS {
 	
@@ -81,7 +81,7 @@ public class NMSHandler implements NMS {
 	
     public void sendActionBar(Player p, String msg) {
         String s = ChatColor.translateAlternateColorCodes('&', msg);
-        IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \"" + s + "\"}");
+        IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + s + "\"}");
         PacketPlayOutChat bar = new PacketPlayOutChat(icbc);
         ((CraftPlayer)p).getHandle().playerConnection.sendPacket(bar);
     }
@@ -89,10 +89,6 @@ public class NMSHandler implements NMS {
 	public String getItemName(ItemStack item){
         return CraftItemStack.asNMSCopy(item).getName();
     }
-    
-	public boolean isOnePointEight() {
-		return false;
-	}
 
 	public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
 		if (customSound) {
@@ -187,8 +183,7 @@ public class NMSHandler implements NMS {
 		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
 	}
 
-	public void updateSkull(SkullMeta meta1, Player player) {
-		meta1.setOwningPlayer(player);
+	public void updateSkull(SkullMeta meta1, Player player) {meta1.setOwner(player.getName());
 	}
 
 	@Override
@@ -205,5 +200,70 @@ public class NMSHandler implements NMS {
 				return chunkData;
 			}
 		};
+	}
+
+	@Override
+	public boolean checkMaterial(FallingBlock fb, Material mat) {
+		if (fb.getMaterial().equals(mat)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Objective getNewObjective(Scoreboard scoreboard) {
+		return scoreboard.registerNewObjective("info", "dummy");
+	}
+
+	@Override
+	public void setGameRule(World world, String rule, String bool) {world.setGameRuleValue(rule, bool);
+	}
+
+	@Override
+	public boolean headCheck(Block h1) {
+		return h1.getType() == Material.SKULL;
+	}
+
+	@Override
+	public ItemStack getBlankPlayerHead() {
+		return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+	}
+
+	@Override
+	public int getVersion() {
+		return 12;
+	}
+
+	@Override
+	public ItemStack getMaterial(String item) {
+		if (item.equalsIgnoreCase("SKULL_ITEM")) {
+			return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+		} else {
+			return new ItemStack(Material.valueOf(item), 1);
+		}
+	}
+
+	@Override
+	public ItemStack getColorItem(String mat, byte color) {
+		if (mat.equalsIgnoreCase("wool")) {
+			return new ItemStack(Material.WOOL, 1, (short) color);
+		} else if (mat.equalsIgnoreCase("glass")) {
+			return new ItemStack(Material.STAINED_GLASS, 1, (short) color);
+		} else if (mat.equalsIgnoreCase("banner")) {
+			return new ItemStack(Material.BANNER, 1, (short) color);
+		} else {
+			return new ItemStack(Material.STAINED_GLASS, 1, (short) color);
+		}
+	}
+
+	@Override
+	public void setBlockWithColor(World world, int x, int y, int z, Material mat, byte cByte) {
+		world.getBlockAt(x, y, z).setType(mat);
+		world.getBlockAt(x, y, z).setData(cByte);
+	}
+
+	@Override
+	public void deleteCache() {
+		RegionFileCache.a();
 	}
 }

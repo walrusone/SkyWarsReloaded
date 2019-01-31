@@ -18,15 +18,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class SpectateListener implements Listener{
 	
@@ -92,7 +89,7 @@ public class SpectateListener implements Listener{
 				String name = ChatColor.stripColor(item.getItemMeta().getDisplayName());
 				Player toSpec = SkyWarsReloaded.get().getServer().getPlayer(name);
 	            if (toSpec != null) {
-    				if (!gameMap.mapContainsDead(toSpec.getUniqueId())) {
+    				if (!gameMap.mapContainsDead(toSpec.getUniqueId()) && player != null) {
     					player.teleport(toSpec.getLocation(), TeleportCause.END_PORTAL);
     				}
 	            }

@@ -274,18 +274,16 @@ public class Leaderboard {
         if (facing.equals(BlockFace.NORTH)) {
          	h2 = b.getRelative(0, 1, 1);	
         }
-        if(h1.getType() == Material.SKULL) {
-        	Skull skull = (Skull) h1.getState();
-     	    skull.setSkullType(SkullType.PLAYER); 
-     	    SkyWarsReloaded.getNMS().updateSkull(skull, uuid);
-     	    skull.update();
-        }
-        if(h2.getType() == Material.SKULL) {
-        	Skull skull = (Skull) h2.getState();
-     	    skull.setSkullType(SkullType.PLAYER); 
-     	    SkyWarsReloaded.getNMS().updateSkull(skull, uuid);
-     	    skull.update();
-        }
+		if (SkyWarsReloaded.getNMS().headCheck(h1)) {
+			Skull skull = (Skull) h1.getState();
+			SkyWarsReloaded.getNMS().updateSkull(skull, uuid);
+			skull.update();
+		}
+		if (SkyWarsReloaded.getNMS().headCheck(h2)) {
+			Skull skull = (Skull) h2.getState();
+			SkyWarsReloaded.getNMS().updateSkull(skull, uuid);
+			skull.update();
+		}
     }
         
     public class RankComparator implements Comparator<LeaderData>

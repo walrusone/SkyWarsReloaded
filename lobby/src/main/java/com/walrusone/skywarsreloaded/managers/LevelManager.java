@@ -258,7 +258,7 @@ public class LevelManager {
         File soundFile = new File(SkyWarsReloaded.get().getDataFolder(), "killsounds.yml");
 
         if (!soundFile.exists()) {
-        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+        	if (SkyWarsReloaded.getNMS().getVersion() < 8) {
                 	SkyWarsReloaded.get().saveResource("killsounds18.yml", false);
                 	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "killsounds18.yml");
                 	if (sf.exists()) {
@@ -335,7 +335,7 @@ public class LevelManager {
         File soundFile = new File(SkyWarsReloaded.get().getDataFolder(), "winsounds.yml");
 
         if (!soundFile.exists()) {
-        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+        	if (SkyWarsReloaded.getNMS().getVersion() < 9) {
                 	SkyWarsReloaded.get().saveResource("winsounds18.yml", false);
                 	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "winsounds18.yml");
                 	if (sf.exists()) {
@@ -413,7 +413,7 @@ public class LevelManager {
         File tauntFile = new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml");
 
         if (!tauntFile.exists()) {
-        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+        	if (SkyWarsReloaded.getNMS().getVersion() < 9) {
                 	SkyWarsReloaded.get().saveResource("taunts18.yml", false);
                 	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "taunts18.yml");
                 	if (sf.exists()) {

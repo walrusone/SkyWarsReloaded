@@ -29,7 +29,7 @@ public class SignListener implements Listener {
         			Location signLocation = event.getBlock().getLocation();
                     World w = signLocation.getWorld();
                 	Block b = w.getBlockAt(signLocation);
-                	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+                	if(b.getType() == Material.WALL_SIGN || b.getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()) {
                			event.setCancelled(true);
                			String serverName = lines[1];
                			SWRServer server = SWRServer.getServer(serverName);
@@ -52,7 +52,7 @@ public class SignListener implements Listener {
         Location blockLocation = event.getBlock().getLocation();
         World w = blockLocation.getWorld();
     	Block b = w.getBlockAt(blockLocation);
-		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
+		if(b.getType() == Material.WALL_SIGN || b.getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()){
 	    	Sign sign = (Sign) b.getState();
 	    	Location loc = sign.getLocation();
 	    	SWRServer server = SWRServer.getSign(loc);
@@ -67,7 +67,7 @@ public class SignListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
     	if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-    		 if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == Material.SIGN_POST ) {
+    		 if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()) {
     				Sign s = (Sign) e.getClickedBlock().getState();
     			    Location loc = s.getLocation();
     			    SWRServer server = SWRServer.getSign(loc);

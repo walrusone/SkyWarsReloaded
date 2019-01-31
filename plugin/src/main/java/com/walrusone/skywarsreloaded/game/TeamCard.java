@@ -37,7 +37,7 @@ public class TeamCard {
 		}
 	}
 
-	public void updateCard(int size) {
+	void updateCard(int size) {
 		if (size >  playerCards.size()) {
 			for (int i = playerCards.size(); i < size; i++) {
 				playerCards.add(new PlayerCard(this, null, -1));
@@ -53,7 +53,7 @@ public class TeamCard {
 		return playerCards.size();
 	}
 	
-	public int getFullCount() {
+	int getFullCount() {
 		int x = 0;
 		for (PlayerCard pCard: playerCards) {
 			if (pCard.getUUID() == null) {
@@ -63,7 +63,7 @@ public class TeamCard {
 		return x;
 	}
 	
-	public int getPlace() {
+	int getPlace() {
 		return this.place;
 	}
 	
@@ -83,7 +83,7 @@ public class TeamCard {
 		return playerCards;
 	}
 
-	public TeamCard sendReservation(Player player, PlayerStat ps) {
+	TeamCard sendReservation(Player player, PlayerStat ps) {
 		if (player != null && ps != null && ps.isInitialized()) {
 			for (PlayerCard pCard: playerCards) {
 				if (pCard.getUUID() == null && spawn != null) {
@@ -99,7 +99,7 @@ public class TeamCard {
 		return null;
 	}
 	
-	public boolean joinGame(Player player) {
+	boolean joinGame(Player player) {
 		for (PlayerCard pCard: playerCards) {
 			if (pCard.getUUID().equals(player.getUniqueId())) {
 				team.addEntry(player.getName());
@@ -114,7 +114,7 @@ public class TeamCard {
 		return false;
 	}
 
-	public boolean removePlayer(UUID uuid) {
+	boolean removePlayer(UUID uuid) {
 		PlayerCard pCard = containsPlayer(uuid);
 		if (pCard != null && team != null) {
 			team.removeEntry(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid).getName());
@@ -124,7 +124,7 @@ public class TeamCard {
 		return false;
 	}
 
-	public void reset() {
+	void reset() {
 		this.place = 1;
 		for (PlayerCard pCard: playerCards) {
 			pCard.reset();
@@ -136,7 +136,7 @@ public class TeamCard {
 		return dead;
 	}
 
-	public PlayerCard containsPlayer(UUID uuid) {
+	PlayerCard containsPlayer(UUID uuid) {
 		for (PlayerCard pCard: playerCards) {
     		if (uuid != null) {
     			if (pCard.getUUID() != null) {
@@ -149,7 +149,7 @@ public class TeamCard {
 		return null;
 	}
 	
-	public boolean isFull() {
+	boolean isFull() {
 		return (getFullCount() == 0);
 	}
 
@@ -183,7 +183,7 @@ public class TeamCard {
 		return name;
 	}
 
-	public String getPrefix() {
+	String getPrefix() {
 		return prefix;
 	}
 

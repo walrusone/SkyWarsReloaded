@@ -52,25 +52,31 @@ public class TauntOption extends PlayerOption{
 		this.page = page;
 		this.menuSize = menuSize;
 	}
-	
+
+	private static void saveTauntFile(String filename) {
+		SkyWarsReloaded.get().saveResource(filename, false);
+		File sf = new File(SkyWarsReloaded.get().getDataFolder(), filename);
+		if (sf.exists()) {
+			boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
+			if (!result) {
+				SkyWarsReloaded.get().getLogger().info("Failed to rename Taunts File");
+			}
+		}
+	}
+
 	public static void loadPlayerOptions() {
 		playerOptions.clear();
         File tauntFile = new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml");
 
-        if (!tauntFile.exists()) {
-        	if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-                	SkyWarsReloaded.get().saveResource("taunts18.yml", false);
-                	File sf = new File(SkyWarsReloaded.get().getDataFolder(), "taunts18.yml");
-                	if (sf.exists()) {
-                		boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
-                		if (!result) {
-                		    SkyWarsReloaded.get().getLogger().info("Failed to rename 1.8 Taunts file!");
-                        }
-                	}
-        	} else {
-            	SkyWarsReloaded.get().saveResource("taunts.yml", false);
-        	}
-        }
+		if (!tauntFile.exists()) {
+			if (SkyWarsReloaded.getNMS().getVersion() < 9) {
+				saveTauntFile("taunts18.yml");
+			} else if (SkyWarsReloaded.getNMS().getVersion() < 13 && SkyWarsReloaded.getNMS().getVersion() > 8) {
+				saveTauntFile("taunts112.yml");
+			} else {
+				SkyWarsReloaded.get().saveResource("taunts.yml", false);
+			}
+		}
         
         if (tauntFile.exists()) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(tauntFile);
@@ -133,11 +139,7 @@ public class TauntOption extends PlayerOption{
 	public float getVolume() {
 		return this.volume;
 	}
-	
-	public float getPitch() {
-		return this.pitch;
-	}
-	
+
 	/**Does the taunt for a player
 	 */
 	public void performTaunt(Player player) {
@@ -198,7 +200,7 @@ public class TauntOption extends PlayerOption{
 		return "menu.usetaunt-settaunt";
 	}
 	
-	public static PlayerOption getPlayerOptionByName(String name) {
+	static PlayerOption getPlayerOptionByName(String name) {
     	for (PlayerOption pOption: playerOptions) {
     		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
     			return pOption;
@@ -216,7 +218,7 @@ public class TauntOption extends PlayerOption{
         return null;
     }
     
-    public static ArrayList<PlayerOption> getPlayerOptions() {
+    static ArrayList<PlayerOption> getPlayerOptions() {
     	return playerOptions;
     }
 

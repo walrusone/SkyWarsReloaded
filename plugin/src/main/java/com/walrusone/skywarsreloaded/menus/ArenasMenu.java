@@ -20,7 +20,7 @@ public class ArenasMenu {
     private static int menuSize = 27;
     private static final String menuName = ChatColor.DARK_PURPLE + "Arenas Manager";
     
-    public ArenasMenu() {	
+    public ArenasMenu() {
     	Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
     	ArrayList<Inventory> invs = new ArrayList<>();
     	invs.add(menu);
@@ -43,10 +43,11 @@ public class ArenasMenu {
                     if(invs1.isEmpty() || invs1.size() < index + 1) {
                         invs1.add(Bukkit.createInventory(null, menuSize + 9, menuName));
                     }
-                    ItemStack item = new ItemStack(Material.WOOL, 1, (short) 13);
+                    ItemStack item = SkyWarsReloaded.getNMS().getColorItem("WOOL", (byte) 13);
                     if (!gMap.isRegistered()) {
-                        item = new ItemStack(Material.WOOL, 1, (short) 14);
+                        item = SkyWarsReloaded.getNMS().getColorItem("WOOL", (byte) 14);
                     }
+
                     lores.clear();
                     lores.add(ChatColor.AQUA + "Display Name: " + ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
                     lores.add(ChatColor.AQUA + "Creator: " + ChatColor.translateAlternateColorCodes('&', gMap.getDesigner()));
@@ -78,22 +79,32 @@ public class ArenasMenu {
                 return;
             }
 
-            if (event.getClick().equals(ClickType.LEFT) && event.getItem().getType().equals(Material.WOOL)) {
-                GameMap gMap = GameMap.getMap(name);
-                   if (gMap != null) {
-                       SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
-                       new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            gMap.updateArenaManager();
-                        }
-                       }.runTaskLater(SkyWarsReloaded.get(), 2);
-                   }
+            if (SkyWarsReloaded.getNMS().getVersion() < 13) {
+                if (event.getClick().equals(ClickType.LEFT) && event.getItem().getType().equals(Material.valueOf("WOOL"))) {
+                    attemptUpdate(name, player);
+                }
+            } else {
+                if (event.getClick().equals(ClickType.LEFT) && (event.getItem().getType().equals(Material.GREEN_WOOL) || event.getItem().getType().equals(Material.RED_WOOL))) {
+                    attemptUpdate(name, player);
+                }
             }
         });
         
         
         SkyWarsReloaded.getIC().getMenu("arenasmenu").setUpdate(update);
+    }
+
+    private void attemptUpdate(String name, Player player) {
+        GameMap gMap = GameMap.getMap(name);
+        if (gMap != null) {
+            SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    gMap.updateArenaManager();
+                }
+            }.runTaskLater(SkyWarsReloaded.get(), 2);
+        }
     }
 
 }

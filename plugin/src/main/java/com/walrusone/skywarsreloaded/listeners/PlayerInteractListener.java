@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -126,7 +127,8 @@ public class PlayerInteractListener implements Listener {
             	}
     			Player player = a1.getPlayer();
             	if (a1.getAction() == Action.RIGHT_CLICK_BLOCK && (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)) {
-            		 if (a1.getClickedBlock().getType() == Material.WALL_SIGN || a1.getClickedBlock().getType() == Material.SIGN_POST ) {
+            		Material signPost = SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType();
+            		 if (a1.getClickedBlock().getType() == Material.WALL_SIGN || a1.getClickedBlock().getType() == signPost) {
             				Sign s = (Sign) a1.getClickedBlock().getState();
             			    Location loc = s.getLocation();
             			    	boolean joined;
@@ -191,7 +193,7 @@ public class PlayerInteractListener implements Listener {
     					for (Crate crate: gMap.getCrates()) {
     						if (crate.getLocation().equals(block.getLocation())) {
     							a1.setCancelled(true);
-    							if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+    							if (SkyWarsReloaded.getNMS().getVersion() < 9) {
     								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
     							} else {
     								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
@@ -213,11 +215,12 @@ public class PlayerInteractListener implements Listener {
     @EventHandler 
     public void onInventoryClose(InventoryCloseEvent e) {
     	Inventory inv = e.getInventory();
-    	if (inv.getTitle().equals(new Messaging.MessageFormatter().format("event.crateInv"))) {
+		InventoryView inView = e.getPlayer().getOpenInventory();
+    	if (inView.getTitle().equals(new Messaging.MessageFormatter().format("event.crateInv"))) {
     		for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
     			for (Crate crate: gMap.getCrates()) {
     				if(crate.getInventory().equals(inv) && inv.getViewers().size() <= 1) {
-						if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+						if (SkyWarsReloaded.getNMS().getVersion() < 9) {
 							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.valueOf("CHEST_CLOSE"), 1, 1);
 						} else {
 							e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1, 1);

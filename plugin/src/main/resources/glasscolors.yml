@@ -6,128 +6,128 @@ colors:
     displayname: '&bWhite'
     level: 1
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 0
+    material: WHITE_STAINED_GLASS
+    datavalue: -1
     position: 2
     page: 1
   orange:
     displayname: '&bOrange'
     level: 6
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 1
+    material: ORANGE_STAINED_GLASS
+    datavalue: -1
     position: 4
     page: 1
   magenta:
     displayname: '&bMagenta'
     level: 11
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 2
+    material: MAGENTA_STAINED_GLASS
+    datavalue: -1
     position: 6
     page: 1
   lightblue:
     displayname: '&bLight Blue'
     level: 16
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 3
+    material: LIGHT_BLUE_STAINED_GLASS
+    datavalue: -1
     position: 8
     page: 1
   yellow:
     displayname: '&bYellow'
     level: 21
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 4
+    material: YELLOW_STAINED_GLASS
+    datavalue: -1
     position: 9
     page: 1
   lime:
     displayname: '&bLime'
     level: 26
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 5
+    material: LIME_STAINED_GLASS
+    datavalue: -1
     position: 11
     page: 1
   pink:
     displayname: '&bPink'
     level: 31
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 6
+    material: PINK_STAINED_GLASS
+    datavalue: -1
     position: 13
     page: 1
   gray:
     displayname: '&bGray'
     level: 36
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 7
+    material: GRAY_STAINED_GLASS
+    datavalue: -1
     position: 15
     page: 3
   lightgray:
     displayname: '&bLight Gray'
     level: 41
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 8
+    material: LIGHT_GRAY_STAINED_GLASS
+    datavalue: -1
     position: 17
     page: 1
   cyan:
     displayname: '&bCyan'
     level: 46
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 9
+    material: CYAN_STAINED_GLASS
+    datavalue: -1
     position: 18
     page: 1
   purple:
     displayname: '&bPurple'
     level: 51
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 10
+    material: PURPLE_STAINED_GLASS
+    datavalue: -1
     position: 20
     page: 1
   blue:
     displayname: '&bBlue'
     level: 56
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 11
+    material: BLUE_STAINED_GLASS
+    datavalue: -1
     position: 22
     page: 1
   brown:
     displayname: '&bBrown'
     level: 61
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 12
+    material: BROWN_STAINED_GLASS
+    datavalue: -1
     position: 24
     page: 1
   green:
     displayname: '&bGreen'
     level: 66
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 13
+    material: GREEN_STAINED_GLASS
+    datavalue: -1
     position: 26
     page: 1
   red:
     displayname: '&bRed'
     level: 71
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 14
+    material: RED_STAINED_GLASS
+    datavalue: -1
     position: 27
     page: 1
   black:
     displayname: '&bBlack'
     level: 76
     cost: 100
-    material: STAINED_GLASS
-    datavalue: 15
+    material: BLACK_STAINED_GLASS
+    datavalue: -1
     position: 29
     page: 2
   lapis:

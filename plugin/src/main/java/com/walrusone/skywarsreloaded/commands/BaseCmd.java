@@ -21,14 +21,14 @@ public abstract class BaseCmd {
 	public Player player;
 	public String type;
 
-	public boolean processCmd(CommandSender s, String[] arg) {
+	void processCmd(CommandSender s, String[] arg) {
 		sender = s;
 		args = arg;
 
 		if (forcePlayer) {
 			if (!(s instanceof Player))  {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
-				return false;
+				return;
 			} else {
 				player = (Player) s;
 			}
@@ -38,8 +38,9 @@ public abstract class BaseCmd {
 			sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
 		else if (argLength > arg.length)
 			s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + Util.get().getMessageKey(type) + "." + cmdName));
-		else return run();
-		return true;
+		else {
+			run();
+		}
 	}
 	
 	public String getType() {

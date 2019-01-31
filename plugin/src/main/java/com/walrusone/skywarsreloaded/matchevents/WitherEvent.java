@@ -5,13 +5,11 @@ import java.io.IOException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -40,7 +38,7 @@ public class WitherEvent extends MatchEvent {
 	    if (mapFile.exists()) {
 	    	eventName = "WitherEvent";
 	    	slot = 24;
-	    	material = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+    		material = SkyWarsReloaded.getNMS().getMaterial("SKULL_ITEM");
 	        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
 	        this.min = fc.getInt("events." + eventName + ".minStart");
 	        this.max = fc.getInt("events." + eventName + ".maxStart");

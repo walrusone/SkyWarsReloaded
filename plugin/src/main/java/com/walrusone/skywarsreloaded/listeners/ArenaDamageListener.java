@@ -141,7 +141,7 @@ public class ArenaDamageListener implements Listener {
 	public void onAnvilLand(EntityChangeBlockEvent event) {
 		if (event.getEntity() instanceof FallingBlock) {
 			FallingBlock fb = (FallingBlock) event.getEntity();
-			if (fb.getMaterial().equals(Material.ANVIL)) {
+			if (SkyWarsReloaded.getNMS().checkMaterial(fb, Material.ANVIL)) {
 				for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
 					if (gMap.getAnvils().contains(event.getEntity().getUniqueId().toString())) {
 						event.setCancelled(true);
@@ -149,7 +149,7 @@ public class ArenaDamageListener implements Listener {
 						return;
 					}
 				}
-			} else if (fb.getMaterial().equals(Material.SAND)) {
+			} else if (SkyWarsReloaded.getNMS().checkMaterial(fb, Material.SAND)) {
 				for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
 					for (Crate crate: gMap.getCrates()) {
 						if (fb.equals(crate.getEntity())) {

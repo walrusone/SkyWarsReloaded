@@ -72,7 +72,7 @@ public class DataStorage {
 		} else {
             Database database = SkyWarsReloaded.getDb();
 
-            if (!database.checkConnection()) {
+            if (database.checkConnection()) {
                 return;
             }
 
@@ -80,13 +80,10 @@ public class DataStorage {
             PreparedStatement preparedStatement = null;
 
             try {
-            	 StringBuilder queryBuilder = new StringBuilder();
-                 queryBuilder.append("UPDATE `sw_player` SET ");
-                 queryBuilder.append("`player_name` = ?, `wins` = ?, `losses` = ?, ");
-                 queryBuilder.append("`kills` = ?, `deaths` = ?, `elo` = ?, `xp` = ?, `pareffect` = ?, `proeffect` = ?, `glasscolor` = ?,`killsound` = ?, `winsound` = ?, `taunt` = ? ");
-                 queryBuilder.append("WHERE `uuid` = ?;");
+            	 String query = "UPDATE `sw_player` SET `player_name` = ?, `wins` = ?, `losses` = ?, `kills` = ?, `deaths` = ?, `elo` = ?, `xp` = ?, `pareffect` = ?, " +
+						 "`proeffect` = ?, `glasscolor` = ?,`killsound` = ?, `winsound` = ?, `taunt` = ? WHERE `uuid` = ?;";
                  
-                 preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                 preparedStatement = connection.prepareStatement(query);
                  preparedStatement.setString(1, pData.getPlayerName());
                  preparedStatement.setInt(2, pData.getWins());
                  preparedStatement.setInt(3, pData.getLosses());
@@ -126,7 +123,7 @@ public class DataStorage {
 				if (sqlEnabled) {
 			                Database database = SkyWarsReloaded.getDb();
 
-			                if (!database.checkConnection()) {
+			                if (database.checkConnection()) {
 			                    return;
 			                }
 
@@ -150,13 +147,10 @@ public class DataStorage {
 			                    ResultSet resultSet = null;
 
 			                    try {
-			                        StringBuilder queryBuilder = new StringBuilder();
-			                        queryBuilder.append("SELECT `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` ");
-			                        queryBuilder.append("FROM `sw_player` ");
-			                        queryBuilder.append("WHERE `uuid` = ? ");
-			                        queryBuilder.append("LIMIT 1;");
+			                        String query = "SELECT `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` " +
+											"FROM `sw_player` WHERE `uuid` = ? LIMIT 1;";
 
-			                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+			                        preparedStatement = connection.prepareStatement(query);
 			                        preparedStatement.setString(1, pData.getId());
 			                        resultSet = preparedStatement.executeQuery();
 
@@ -200,6 +194,7 @@ public class DataStorage {
 			    	            File playerDataDirectory = new File(dataDirectory, "player_data");
 
 			    	            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+									SkyWarsReloaded.get().getLogger().info("Encountered an error while creating data directory!");
 			    	            }
 
 			    	            File playerFile = new File(playerDataDirectory, pData.getId() + ".yml");
@@ -245,6 +240,7 @@ public class DataStorage {
 		}
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void removePlayerData(String uuid) {
 		boolean sqlEnabled = SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled");
 		if (!sqlEnabled) {
@@ -267,7 +263,7 @@ public class DataStorage {
 		} else {
             Database database = SkyWarsReloaded.getDb();
 
-            if (!database.checkConnection()) {
+            if (database.checkConnection()) {
                 return;
             }
 
@@ -275,11 +271,9 @@ public class DataStorage {
             PreparedStatement preparedStatement = null;
 
             try {
-            	 StringBuilder queryBuilder = new StringBuilder();
-                 queryBuilder.append("DELETE FROM `sw_player` ");
-                 queryBuilder.append("WHERE `uuid` = ?;");
+            	 String query = "DELETE FROM `sw_player` WHERE `uuid` = ?;";
 
-                 preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                 preparedStatement = connection.prepareStatement(query);
                  preparedStatement.setString(1, uuid);
                  preparedStatement.executeUpdate();
 
@@ -306,7 +300,7 @@ public class DataStorage {
 				if (sqlEnabled) {
 		            Database database = SkyWarsReloaded.getDb();
 
-		            if (!database.checkConnection()) {
+		            if (database.checkConnection()) {
 		                return;
 		            }
 
@@ -315,17 +309,10 @@ public class DataStorage {
 		            ResultSet resultSet;
 
 		            try {
-		        		StringBuilder queryBuilder = new StringBuilder();
-		                queryBuilder.append("SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` ");
-		                queryBuilder.append("FROM `sw_player` ");
-		                queryBuilder.append("GROUP BY `uuid` ");
-		                queryBuilder.append("ORDER BY `");
-		                queryBuilder.append(type.toString().toLowerCase());
-		                queryBuilder.append("` DESC LIMIT ");
-		                queryBuilder.append(size);
-		                queryBuilder.append(";");
+		        		String query = "SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` FROM `sw_player` GROUP BY `uuid` " +
+								"ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";";
 		                
-		                preparedStatement = connection.prepareStatement(queryBuilder.toString());
+		                preparedStatement = connection.prepareStatement(query);
 		                resultSet = preparedStatement.executeQuery();
 		                SkyWarsReloaded.getLB().resetLeader(type);
 		                while (resultSet.next()) {
@@ -398,7 +385,7 @@ public class DataStorage {
 					}
 				} else {
 					Database database = SkyWarsReloaded.getDb();
-	                if (!database.checkConnection()) {
+	                if (database.checkConnection()) {
 	                    return;
 	                }
 	                Connection connection = database.getConnection();
@@ -406,12 +393,9 @@ public class DataStorage {
 	                ResultSet resultSet = null;
 
 	                try {
-	                    StringBuilder queryBuilder = new StringBuilder();
-	                    queryBuilder.append("SELECT `permissions` ");
-	                    queryBuilder.append("FROM `sw_permissions` ");
-	                    queryBuilder.append("WHERE `uuid` = ?;");
+	                    String query= "SELECT `permissions` FROM `sw_permissions` WHERE `uuid` = ?;";
 
-	                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+	                    preparedStatement = connection.prepareStatement(query);
 	                    preparedStatement.setString(1, playerStat.getId());
 	                    resultSet = preparedStatement.executeQuery();
 	                    
@@ -473,7 +457,7 @@ public class DataStorage {
 				} else {
 					if (playerStat.getPerms().getPermissions().size() > 0) {
 						Database database = SkyWarsReloaded.getDb();
-		                if (!database.checkConnection()) {
+		                if (database.checkConnection()) {
 		                    return;
 		                }
 						Connection connection = database.getConnection();
@@ -481,13 +465,10 @@ public class DataStorage {
 			            try {
 			            	if (playerStat.getPerms().getPermissions().size() >= 1) {
 			                	for (String perm: playerStat.getPerms().getPermissions().keySet()) {
-			                		StringBuilder queryBuilder = new StringBuilder();
-			                        queryBuilder.append("INSERT INTO `sw_permissions` ");
-			                        queryBuilder.append("(`uuid`, `playername`, `permissions`) ");
-			                        queryBuilder.append("VALUES (?, ?, ?) ");
-			                        queryBuilder.append("ON DUPLICATE KEY UPDATE `uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ");
+			                		String query = "INSERT INTO `sw_permissions` (`uuid`, `playername`, `permissions`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE " +
+											"`uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ";
 			                        
-			                        preparedStatement = connection.prepareStatement(queryBuilder.toString());
+			                        preparedStatement = connection.prepareStatement(query);
 			                        preparedStatement.setString(1, playerStat.getId());
 			                        preparedStatement.setString(2, playerStat.getPlayerName());
 			                        preparedStatement.setString(3, perm);

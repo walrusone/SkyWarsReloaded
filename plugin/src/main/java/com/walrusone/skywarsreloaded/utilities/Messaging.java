@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
 
 public final class Messaging {
 
-    private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)(&|" + String.valueOf(ChatColor.COLOR_CHAR) + ")[0-9A-FK-OR]");
+    private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)([&§])[0-9A-FK-OR]");
+
     private final FileConfiguration storage;
 
     public Messaging(Plugin plugin) {
@@ -40,11 +41,11 @@ public final class Messaging {
         return COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
-    public String getPrefix() {
+    private String getPrefix() {
         return storage.getString("prefix", "");
     }
 
-    public String getMessage(String format) {
+    private String getMessage(String format) {
         if (storage.contains(format)) {
             return storage.getString(format);
         }

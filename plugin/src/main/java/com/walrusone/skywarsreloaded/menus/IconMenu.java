@@ -79,7 +79,7 @@ public class IconMenu {
         }     
 
         if (!name.equalsIgnoreCase("uselessName")) {
-            if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("prevPageItem"))) && index + 1 >= 0) {
+            if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("prevPageItem")))) {
             	openInventory((Player) event.getWhoClicked(), index - 1);
             	return;
             }
@@ -128,7 +128,7 @@ public class IconMenu {
             return this.name;
         }
         
-        public ClickType getClick() {
+        ClickType getClick() {
             return this.clickType;
         }
         

@@ -59,7 +59,7 @@ public abstract class GameOption {
                 return;
             }
             final GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());
-            if (gameMap == null || !gMap.equals(gameMap)) {
+            if (!gMap.equals(gameMap)) {
                 return;
             }
             if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
@@ -153,7 +153,7 @@ public abstract class GameOption {
 		iconMenu.getInventory(0).setItem(slot, item);
 	}
 	
-	public Vote getVoted() {
+	Vote getVoted() {
 	   	HashMap <Vote, Integer> votes = getVotes(true);	
 		int highest = 0;
 		Vote voted = null;

@@ -23,6 +23,11 @@ public class SWRMVdWPlaceholder {
 		
 		PlaceholderAPI.registerPlaceholder(p, "swr_losses", e -> {
             Player player = e.getPlayer();
+            return "" + ((SkyWarsReloaded) p).getPlayerStat(player).getLosses();
+        });
+
+        PlaceholderAPI.registerPlaceholder(p, "swr_kills", e -> {
+            Player player = e.getPlayer();
             return "" + ((SkyWarsReloaded) p).getPlayerStat(player).getKills();
         });
 		

@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.walrusone.skywarsreloaded</groupId>
         <artifactId>skywarsreloaded-nms</artifactId>
-        <version>3.5-SNAPSHOT</version>
+        <version>4.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>skywarsreloaded-nms-aggregated</artifactId>
@@ -54,6 +54,11 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>skywarsreloaded-nms-v1_12_r1</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>skywarsreloaded-nms-v1_13_r2</artifactId>
 			<version>${project.version}</version>
 		</dependency>
     </dependencies>

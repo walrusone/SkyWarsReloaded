@@ -2,7 +2,6 @@ package com.walrusone.skywarsreloaded.game;
 
 import java.util.UUID;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -59,15 +58,15 @@ public class PlayerCard {
 		return Bukkit.getPlayer(uuid);
 	}
 	
-	public void setPreElo(int x) {
+	void setPreElo(int x) {
 		this.preElo = x;
 	}
 	
-	public int getPreElo() {
+	int getPreElo() {
 		return this.preElo;
 	}
 	
-	public void setKitVote(GameKit kitVote) {
+	void setKitVote(GameKit kitVote) {
 		this.kitVote = kitVote;
 	}
 	

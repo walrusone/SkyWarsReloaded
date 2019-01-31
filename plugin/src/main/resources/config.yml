@@ -70,18 +70,18 @@ fireworks:
   per5Ticks: 1
 sounds:
   enabled: true
-  countdown: BLOCK_NOTE_BASS
+  countdown: BLOCK_NOTE_BLOCK_BASS
   join: BLOCK_WOODEN_DOOR_OPEN
   leave: BLOCK_WOODEN_DOOR_CLOSE
   openJoinMenu: BLOCK_FENCE_GATE_OPEN
   openSpectateMenu: BLOCK_FENCE_GATE_OPEN
   openOptionsMenu: ENTITY_ZOMBIE_VILLAGER_CURE
   openGlassMenu: BLOCK_GLASS_BREAK
-  openWinSoundMenu: ENTITY_FIREWORK_BLAST
+  openWinSoundMenu: ENTITY_FIREWORK_ROCKET_BLAST
   openKillSoundMenu: ENTITY_PIG_DEATH
   openParticleMenu: BLOCK_GRAVEL_STEP
   openProjectileMenu: ENTITY_ARROW_SHOOT
-  openTauntMenu: ENTITY_ENDERDRAGON_FLAP
+  openTauntMenu: ENTITY_ENDER_DRAGON_FLAP
   openKitMenu: ENTITY_PLAYER_ATTACK_SWEEP
   openChestMenu: BLOCK_CHEST_OPEN
   openHealthMenu: ENTITY_SPLASH_POTION_BREAK
@@ -97,13 +97,13 @@ signs:
   blockplaying: REDSTONE_BLOCK
   blockending: LAPIS_BLOCK
   almostfull: DIAMOND_HELMET
-  threefull: GOLD_HELMET
+  threefull: GOLDEN_HELMET
   halffull: IRON_HELMET
   almostempty: LEATHER_HELMET
 items:
   kitsEnabled: true
   kitVotePosition: 0
-  kitvote: EYE_OF_ENDER
+  kitvote: ENDER_EYE
   voteEnabled: true
   votingPosition: 4
   votingItem: COMPASS
@@ -119,10 +119,10 @@ items:
   chestbasic: STONE_SWORD
   chestnormal: IRON_SWORD
   chestop: DIAMOND_SWORD
-  chestscavenger: WOOD_HOE
+  chestscavenger: WOODED_HOE
   healthVoteEnabled: true
   healthVotePosition: 11
-  healthvote: EXP_BOTTLE
+  healthvote: EXPERIENCE_BOTTLE
   healthrandom: NETHER_STAR
   healthfive: REDSTONE
   healthten: REDSTONE
@@ -131,12 +131,12 @@ items:
   nopermission: BARRIER
   timeVoteEnabled: true
   timeVotePosition: 13
-  timevote: WATCH
+  timevote: CLOCK
   timerandom: NETHER_STAR
-  timedawn: WATCH
-  timenoon: WATCH
-  timedusk: WATCH
-  timemidnight: WATCH
+  timedawn: CLOCK
+  timenoon: CLOCK
+  timedusk: CLOCK
+  timemidnight: CLOCK
   weatherVoteEnabled: true
   weatherVotePosition: 15
   weathervote: BLAZE_POWDER
@@ -147,7 +147,7 @@ items:
   weathersnow: PRISMARINE_SHARD
   modifierVoteEnabled: true
   modifierVotePosition: 17
-  modifiervote: DRAGONS_BREATH
+  modifiervote: DRAGON_BREATH
   modifierspeed: BOOK
   modifierjump: BOOK
   modifierstrength: BOOK
@@ -155,11 +155,11 @@ items:
   modifierrandom: NETHER_STAR
   joinselect: DIAMOND_HELMET
   singleSlot: 11
-  singlemenu: REDSTONE_TORCH_ON
+  singlemenu: REDSTONE_TORCH
   teamSlot: 15
-  teammenu: REDSTONE_COMPARATOR
+  teammenu: COMPARATOR
   spectateselect: LEATHER_HELMET
-  optionselect: EYE_OF_ENDER
+  optionselect: ENDER_EYE
   particleselect: BLAZE_POWDER
   particleselectslot: 11
   projectileselect: ARROW
@@ -169,7 +169,7 @@ items:
   killsounditem: NOTE_BLOCK
   winsoundselect: DRAGON_EGG
   winsoundselectslot: 15
-  glassselect: STAINED_GLASS
+  glassselect: GLASS
   glassselectslot: 9 
   tauntselect: SHIELD
   tauntselectslot: 17

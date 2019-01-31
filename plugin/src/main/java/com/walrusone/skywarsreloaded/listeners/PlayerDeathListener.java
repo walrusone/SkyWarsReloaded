@@ -50,24 +50,28 @@ public class PlayerDeathListener implements Listener
         if (pData != null) {
         	if (SkyWarsReloaded.getCfg().spectateEnable()) {
             	final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
-            	World world = gMap.getCurrentWorld();
-    	        Location respawn = new Location(world, 0, 95, 0);
-                a1.setRespawnLocation(respawn);
-                new BukkitRunnable() {
-                    public void run() {
-                      	MatchManager.get().addSpectator(gMap, a1.getPlayer());
-                    }
-                }.runTaskLater(SkyWarsReloaded.get(), 15L);
+            	if (gMap != null) {
+                    World world = gMap.getCurrentWorld();
+                    Location respawn = new Location(world, 0, 95, 0);
+                    a1.setRespawnLocation(respawn);
+                    new BukkitRunnable() {
+                        public void run() {
+                            MatchManager.get().addSpectator(gMap, a1.getPlayer());
+                        }
+                    }.runTaskLater(SkyWarsReloaded.get(), 15L);
+                }
         	} else {
         		final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
-            	World world = gMap.getCurrentWorld();
-    	        Location respawn = new Location(world, 0, 200, 0);
-                a1.setRespawnLocation(respawn);
-                new BukkitRunnable() {
-                    public void run() {
-                      	pData.restore();
-                    }
-                }.runTaskLater(SkyWarsReloaded.get(), 15L);
+                if (gMap != null) {
+                    World world = gMap.getCurrentWorld();
+                    Location respawn = new Location(world, 0, 200, 0);
+                    a1.setRespawnLocation(respawn);
+                    new BukkitRunnable() {
+                        public void run() {
+                            pData.restore();
+                        }
+                    }.runTaskLater(SkyWarsReloaded.get(), 15L);
+                }
         	}
         }
         if (Util.get().isSpawnWorld(a1.getPlayer().getWorld())) {

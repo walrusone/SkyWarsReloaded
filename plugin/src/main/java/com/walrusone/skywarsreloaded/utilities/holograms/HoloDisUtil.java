@@ -51,6 +51,7 @@ public class HoloDisUtil extends HologramsUtil {
 		updateLeaderHolograms(type);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void updateLeaderHolograms(LeaderType type) {
 		if (SkyWarsReloaded.get().serverLoaded()) {
@@ -74,7 +75,11 @@ public class HoloDisUtil extends HologramsUtil {
 										if (Util.get().isInteger(num)  && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(num)-1) {
 											Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(num)-1).getUUID());
 											if (player != null) {
-												item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+												if (SkyWarsReloaded.getNMS().getVersion() < 13) {
+													item = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+												} else {
+													item = new ItemStack(Material.PLAYER_HEAD, 1);
+												}
 									    		SkullMeta meta1 = (SkullMeta)item.getItemMeta();
 									    		SkyWarsReloaded.getNMS().updateSkull(meta1, player);
 									    		meta1.setDisplayName(ChatColor.YELLOW + player.getName());

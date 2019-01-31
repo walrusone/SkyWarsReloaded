@@ -1,6 +1,6 @@
 sounds:
   thunder:
-    sound: ENTITY_LIGHTNING_THUNDER
+    sound: ENTITY_LIGHTNING_BOLT_THUNDER
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -55,7 +55,7 @@ sounds:
     position: 9
     page: 1
   '11':
-    sound: RECORD_11
+    sound: MUSIC_DISC_11
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -88,7 +88,7 @@ sounds:
     position: 15
     page: 1
   '13':
-    sound: RECORD_13
+    sound: MUSIC_DISC_13
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -99,7 +99,7 @@ sounds:
     position: 17
     page: 1
   enderdragondeath:
-    sound: ENTITY_ENDERDRAGON_DEATH
+    sound: ENTITY_ENDER_DRAGON_DEATH
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -110,7 +110,7 @@ sounds:
     position: 18
     page: 1
   mall:
-    sound: RECORD_MALL
+    sound: MUSIC_DISC_MALL
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -121,7 +121,7 @@ sounds:
     position: 20
     page: 1
   mellohi:
-    sound: RECORD_MELLOHI
+    sound: MUSIC_DISC_MELLOHI
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -132,7 +132,7 @@ sounds:
     position: 22
     page: 1
   cat:
-    sound: RECORD_CAT
+    sound: MUSIC_DISC_CAT
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -143,7 +143,7 @@ sounds:
     position: 24
     page: 1
   stal:
-    sound: RECORD_STAL
+    sound: MUSIC_DISC_STAL
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -154,7 +154,7 @@ sounds:
     position: 26
     page: 1
   far:
-    sound: RECORD_FAR
+    sound: MUSIC_DISC_FAR
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -165,7 +165,7 @@ sounds:
     position: 27
     page: 1
   blocks:
-    sound: RECORD_BLOCKS
+    sound: MUSIC_DISC_BLOCKS
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -176,7 +176,7 @@ sounds:
     position: 29
     page: 1
   wait:
-    sound: RECORD_WAIT
+    sound: MUSIC_DISC_WAIT
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -187,7 +187,7 @@ sounds:
     position: 31
     page: 1
   chirp:
-    sound: RECORD_CHIRP
+    sound: MUSIC_DISC_CHIRP
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -198,7 +198,7 @@ sounds:
     position: 33
     page: 1
   ward:
-    sound: RECORD_WARD
+    sound: MUSIC_DISC_WARD
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -209,7 +209,7 @@ sounds:
     position: 35
     page: 1
   strad:
-    sound: RECORD_STRAD
+    sound: MUSIC_DISC_STRAD
     isCustomSound: false
     volume: 10
     pitch: 1

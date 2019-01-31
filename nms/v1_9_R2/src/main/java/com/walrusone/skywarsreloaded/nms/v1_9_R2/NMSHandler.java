@@ -1,40 +1,20 @@
 package com.walrusone.skywarsreloaded.nms.v1_9_R2;
 
-import net.minecraft.server.v1_9_R2.EntityFallingBlock;
-import net.minecraft.server.v1_9_R2.EntityCreature;
-import net.minecraft.server.v1_9_R2.EntityLiving;
-import net.minecraft.server.v1_9_R2.BlockPosition;
-import net.minecraft.server.v1_9_R2.TileEntityEnderChest;
-import net.minecraft.server.v1_9_R2.DragonControllerPhase;
-import net.minecraft.server.v1_9_R2.EntityEnderDragon;
-import net.minecraft.server.v1_9_R2.EntityPlayer;
-import net.minecraft.server.v1_9_R2.EnumParticle;
-import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.*;
 import net.minecraft.server.v1_9_R2.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_9_R2.PacketPlayOutChat;
-import net.minecraft.server.v1_9_R2.PacketPlayOutTitle;
-import net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_9_R2.PlayerConnection;
-import net.minecraft.server.v1_9_R2.WorldServer;
 
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftFallingSand;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
@@ -51,6 +31,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.walrusone.skywarsreloaded.api.NMS;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class NMSHandler implements NMS {
 	
@@ -103,11 +85,7 @@ public class NMSHandler implements NMS {
 	public String getItemName(ItemStack item){
         return CraftItemStack.asNMSCopy(item).getName();
     }
-	
-	public boolean isOnePointEight() {
-		return false;
-	} 
-	
+
 	public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
 		if (customSound) {
 			loc.getWorld().playSound(loc, sound, volume, pitch);
@@ -165,12 +143,13 @@ public class NMSHandler implements NMS {
 		}
 		return true;
 	}
-	
-	@Override 
+
+	@Override
 	public void updateSkull(Skull skull, UUID uuid) {
-		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+		skull.setSkullType(SkullType.PLAYER);
+		skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
 	}
-	
+
 	public void setMaxHealth(Player player, int health) {
 		player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 	}
@@ -228,5 +207,71 @@ public class NMSHandler implements NMS {
 				return chunkData;
 			}
 		};
+	}
+
+	@Override
+	public boolean checkMaterial(FallingBlock fb, Material mat) {
+		if (fb.getMaterial().equals(mat)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Objective getNewObjective(Scoreboard scoreboard) {
+		return scoreboard.registerNewObjective("info", "dummy");
+	}
+
+	@Override
+	public void setGameRule(World world, String rule, String bool) {
+		world.setGameRuleValue(rule, bool);
+	}
+
+	@Override
+	public boolean headCheck(Block h1) {
+		return h1.getType() == Material.SKULL;
+	}
+
+	@Override
+	public ItemStack getBlankPlayerHead() {
+		return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+	}
+
+	@Override
+	public int getVersion() {
+		return 9;
+	}
+
+	@Override
+	public ItemStack getMaterial(String item) {
+		if (item.equalsIgnoreCase("SKULL_ITEM")) {
+			return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+		} else {
+			return new ItemStack(Material.valueOf(item), 1);
+		}
+	}
+
+	@Override
+	public ItemStack getColorItem(String mat, byte color) {
+		if (mat.equalsIgnoreCase("wool")) {
+			return new ItemStack(Material.WOOL, 1, (short) color);
+		} else if (mat.equalsIgnoreCase("glass")) {
+			return new ItemStack(Material.STAINED_GLASS, 1, (short) color);
+		} else if (mat.equalsIgnoreCase("banner")) {
+			return new ItemStack(Material.BANNER, 1, (short) color);
+		} else {
+			return new ItemStack(Material.STAINED_GLASS, 1, (short) color);
+		}
+	}
+
+	@Override
+	public void setBlockWithColor(World world, int x, int y, int z, Material mat, byte cByte) {
+		world.getBlockAt(x, y, z).setType(mat);
+		world.getBlockAt(x, y, z).setData(cByte);
+	}
+
+	@Override
+	public void deleteCache() {
+		RegionFileCache.a();
 	}
 }

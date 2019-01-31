@@ -39,10 +39,10 @@ public class GameKit {
         FileConfiguration storage = YamlConfiguration.loadConfiguration(kitFile);
 
         List<ItemStack> inventoryItems = (List<ItemStack>) storage.getList("inventory");
-        inventory = inventoryItems.toArray(new ItemStack[inventoryItems.size()]);
+        inventory = inventoryItems.toArray(new ItemStack[0]);
         
         List<ItemStack> armorItems = (List<ItemStack>) storage.getList("armor");
-        armor = armorItems.toArray(new ItemStack[armorItems.size()]);
+        armor = armorItems.toArray(new ItemStack[0]);
         
         icon = storage.getItemStack("icon");
         

@@ -1,7 +1,6 @@
 package com.walrusone.skywarsreloaded.menus;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
@@ -13,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,7 +25,7 @@ public class TeamSelectionMenu {
 
     public TeamSelectionMenu(GameMap gMap) {
         String menuName = new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("menu.teamselection-menu-title");
-        if (SkyWarsReloaded.getNMS().isOnePointEight()) {
+        if (SkyWarsReloaded.getNMS().getVersion() < 9) {
             if (menuName.length() > 32) {
                 menuName = menuName.substring(0, 31);
             }
@@ -44,12 +42,12 @@ public class TeamSelectionMenu {
                         inv.setItem(i, new ItemStack(Material.AIR, 1));
                     }
                 }
-                Material mat = SkyWarsReloaded.getCfg().getTeamMaterial();
+                String mat = SkyWarsReloaded.getCfg().getTeamMaterial();
                 List<String> lores = new ArrayList<>();
                 for (TeamCard tCard: gMap.getTeamCards()) {
                     String name = tCard.getTeamName();
                     byte color = tCard.getByte();
-                    ItemStack item = new ItemStack(mat, 1, (short) color);
+                    ItemStack item = SkyWarsReloaded.getNMS().getColorItem(mat, color);
                     lores.clear();
                     lores.add((new Messaging.MessageFormatter().setVariable("playercount", "" + tCard.getPlayersSize())
                             .setVariable("maxplayers", "" + tCard.getSize()).format("signs.line4")));

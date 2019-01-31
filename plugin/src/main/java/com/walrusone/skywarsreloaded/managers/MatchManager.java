@@ -831,7 +831,7 @@ public class MatchManager
 		int slot = 9;
         for (Player player1: gameMap.getAlivePlayers()) {
             if (player1 != null) {
-	            ItemStack playerhead1 = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+	            ItemStack playerhead1 = SkyWarsReloaded.getNMS().getBlankPlayerHead();
 	    		SkullMeta meta1 = (SkullMeta)playerhead1.getItemMeta();
 	    		SkyWarsReloaded.getNMS().updateSkull(meta1, player1);
 	    		meta1.setDisplayName(ChatColor.YELLOW + player1.getName());
@@ -839,7 +839,11 @@ public class MatchManager
 	    		lore.add(new Messaging.MessageFormatter().setVariable("player", player1.getName()).format("spectate.playeritemlore"));
 	    		meta1.setLore(lore);
 	    		playerhead1.setItemMeta(meta1);
-	    		player.getInventory().setItem(slot, playerhead1);
+	    		if (player != null) {
+					player.getInventory().setItem(slot, playerhead1);
+				} else {
+	    			break;
+				}
 	    		slot++;
             }
         }

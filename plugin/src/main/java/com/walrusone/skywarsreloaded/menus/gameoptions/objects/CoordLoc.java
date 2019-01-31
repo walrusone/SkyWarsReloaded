@@ -32,7 +32,7 @@ public class CoordLoc {
 	@Override
 	public boolean equals(Object object) {
 		boolean result = false;
-		if (object != null && object instanceof CoordLoc) {
+		if (object instanceof CoordLoc) {
 			CoordLoc loc = (CoordLoc) object;
 			result = (loc.getX() == x && loc.getY() == y && loc.getZ() == z);
 		}

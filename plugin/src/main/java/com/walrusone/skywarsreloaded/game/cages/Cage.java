@@ -52,8 +52,7 @@ public abstract class Cage {
             }.runTaskLater(SkyWarsReloaded.get(), 14L);
     	}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public boolean setGlassColor(GameMap gMap, TeamCard tCard) {
 		if (gMap.getMatchState() == MatchState.WAITINGSTART) {			
 			if (tCard != null) {
@@ -66,7 +65,7 @@ public abstract class Cage {
 				ArrayList<MaterialWithByte> colors = new ArrayList<>();
 
 				if (gMap.getTeamSize() > 1 && !SkyWarsReloaded.getCfg().usePlayerGlassColors()) {
-                    colors.add(new MaterialWithByte(SkyWarsReloaded.getCfg().getTeamMaterial(), tCard.getByte()));
+                    colors.add(new MaterialWithByte(SkyWarsReloaded.getNMS().getColorItem(SkyWarsReloaded.getCfg().getTeamMaterial(), tCard.getByte()).getType(), tCard.getByte()));
                 } else {
                     for (PlayerCard p: tCard.getPlayerCards()) {
                         Player player = p.getPlayer();
@@ -82,7 +81,7 @@ public abstract class Cage {
                                     if (cByte <= -1) {
                                         colors.add(new MaterialWithByte(Material.GLASS, cByte));
                                     } else {
-                                        colors.add(new MaterialWithByte(Material.STAINED_GLASS, cByte));
+                                        colors.add(new MaterialWithByte(SkyWarsReloaded.getNMS().getColorItem("STAINED_GLASS", cByte).getType(), cByte));
                                     }
                                 }
                             }
@@ -105,16 +104,14 @@ public abstract class Cage {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
     private void setBlockColor(CoordLoc loc, int x, int y, int z, World world, MaterialWithByte materialWithByte) {
         if (materialWithByte.cByte <= -1) {
             world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(materialWithByte.mat);
         } else {
-            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(materialWithByte.mat);
-            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setData(materialWithByte.cByte);
+            SkyWarsReloaded.getNMS().setBlockWithColor(world, x + loc.getX(), y + loc.getY(), z + loc.getZ(), materialWithByte.mat, materialWithByte.cByte);
         }
     }
-	
+
 	public void removeSpawnHousing(GameMap gMap) {
         World world = gMap.getCurrentWorld();
         gMap.setAllowFallDamage(false);

@@ -54,7 +54,7 @@ public class MobSpawnEvent extends MatchEvent {
 	    if (mapFile.exists()) {
 	    	eventName = "MobSpawnEvent";
 	    	slot = 22;
-	    	material = new ItemStack(Material.MOB_SPAWNER, 1);
+	    	material = SkyWarsReloaded.getNMS().getMaterial("MOB_SPAWNER");
 	        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
 	        this.min = fc.getInt("events." + eventName + ".minStart");
 	        this.max = fc.getInt("events." + eventName + ".maxStart");

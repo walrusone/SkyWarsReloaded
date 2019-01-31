@@ -120,7 +120,11 @@ public class WeatherOption extends GameOption {
 			World world = gameMap.getAlivePlayers().get(0).getWorld();
 			for (int x = -200; x < 200; x++) {
 				for (int z = -200; z < 200; z++) {
-					world.setBiome(x, z, Biome.ICE_MOUNTAINS);
+					if (SkyWarsReloaded.getNMS().getVersion() < 13) {
+						world.setBiome(x, z, Biome.valueOf("ICE_MOUNTAINS"));
+					} else {
+						world.setBiome(x, z, Biome.SNOWY_TUNDRA);
+					}
 				}
 			}
 			List<Chunk> chunks = Util.get().getChunks(world);

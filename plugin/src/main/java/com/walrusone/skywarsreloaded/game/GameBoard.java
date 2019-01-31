@@ -47,7 +47,7 @@ public class GameBoard {
                 String variable = matcher.group();
                 variable = variable.substring(1, variable.length() - 1);
                 ScoreVar toAdd = ScoreVar.matchType(variable);
-                if (toAdd != null && ((toAdd == ScoreVar.PLAYERS || toAdd == ScoreVar.TIME || toAdd == ScoreVar.RESTARTTIME
+                if (((toAdd == ScoreVar.PLAYERS || toAdd == ScoreVar.TIME || toAdd == ScoreVar.RESTARTTIME
                         || toAdd == ScoreVar.CHESTVOTE || toAdd == ScoreVar.HEALTHVOTE || toAdd == ScoreVar.TIMEVOTE
                         || toAdd == ScoreVar.WEATHERVOTE || toAdd == ScoreVar.MODIFIERVOTE))) {
                     if (board.equalsIgnoreCase("waitboard")) {
@@ -68,7 +68,7 @@ public class GameBoard {
         }
         ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
         scoreboard = manager.getNewScoreboard();
-        objective = scoreboard.registerNewObjective("info", "dummy");
+        objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
         for (int i = 2; i < 17; i++) {
             scoreboard.registerNewTeam("line" + i);
         }
@@ -87,7 +87,7 @@ public class GameBoard {
             objective.unregister();
         }
         if (scoreboard != null) {
-            objective = scoreboard.registerNewObjective("info", "dummy");
+            objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             String sb = "";
             if (gMap.getMatchState() == MatchState.WAITINGSTART) {

@@ -118,7 +118,6 @@ public class Util {
 	
 	public boolean isInteger(String s) {
 		try {
-			//noinspection ResultOfMethodCallIgnored
 			Integer.parseInt(s);
 			return true;
 		} catch (NumberFormatException | NullPointerException e) {
@@ -128,7 +127,6 @@ public class Util {
 	
 	public boolean isFloat(String s) {
 		try {
-			//noinspection ResultOfMethodCallIgnored
 			Float.parseFloat(s);
 			return true;
 		} catch (NumberFormatException | NullPointerException e) {

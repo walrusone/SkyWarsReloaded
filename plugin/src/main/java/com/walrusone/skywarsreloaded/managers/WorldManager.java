@@ -17,15 +17,8 @@ public class WorldManager {
 
 	public World createEmptyWorld(String name, World.Environment environment) {
 		if (Bukkit.getWorld(name) == null) {
-			World world = null;
-			boolean loaded = loadWorld(name, environment);
-	        if (loaded) {
-	        	world = Bukkit.getWorld(name);
-	        }
-	        if (world != null) {
-				world.getBlockAt(0, 75, 0).setType(Material.STONE);
-				return world;
-			}
+			loadWorld(name, environment);
+			return Bukkit.getWorld(name);
 		}
 		return null;
     }
@@ -46,12 +39,13 @@ public class WorldManager {
 	    world.setTicksPerAnimalSpawns(1);
 	    world.setTicksPerMonsterSpawns(1);
 	    world.setAutoSave(false);
-        
-        world.setGameRuleValue("doMobSpawning", "false");
-        world.setGameRuleValue("mobGriefing", "false");
-        world.setGameRuleValue("doFireTick", "false");
-        world.setGameRuleValue("showDeathMessages", "false");
-        
+
+		SkyWarsReloaded.getNMS().setGameRule(world,"doMobSpawning", "false");
+		SkyWarsReloaded.getNMS().setGameRule(world,"mobGriefing", "false");
+		SkyWarsReloaded.getNMS().setGameRule(world,"doFireTick", "false");
+		SkyWarsReloaded.getNMS().setGameRule(world,"showDeathMessages", "false");
+		SkyWarsReloaded.getNMS().setGameRule(world,"announceAdvancements", "false");
+
         boolean loaded = false;
         for(World w: SkyWarsReloaded.get().getServer().getWorlds()) {
           if(w.getName().equals(world.getName())) {
@@ -101,14 +95,14 @@ public class WorldManager {
 	    }
 	}
 	
-	public boolean deleteWorld(String name) {
+	public void deleteWorld(String name) {
 		unloadWorld(name);
 		File target = new File (SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), name);
-		return deleteWorld(target);
+		deleteWorld(target);
 	}
-	
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean deleteWorld(File path) {
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+	public void deleteWorld(File path) {
 	      if(path.exists()) {
 	          File[] files = path.listFiles();
 	          if (files != null) {
@@ -121,7 +115,7 @@ public class WorldManager {
                   }
               }
 	      }
-	      return(path.delete());
+	      path.delete();
 	}
 	
 }

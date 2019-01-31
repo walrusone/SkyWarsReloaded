@@ -33,7 +33,7 @@ sounds:
     position: 6
     page: 1
   lightning:
-    sound: ENTITY_LIGHTNING_IMPACT
+    sound: ENTITY_LIGHTNING_BOLT_IMPACT
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -154,7 +154,7 @@ sounds:
     position: 26
     page: 1
   endermandeath:
-    sound: ENTITY_ENDERMEN_DEATH
+    sound: ENTITY_ENDERMAN_DEATH
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -176,7 +176,7 @@ sounds:
     position: 29
     page: 1
   golemdeath:
-    sound: ENTITY_IRONGOLEM_DEATH
+    sound: ENTITY_IRON_GOLEM_DEATH
     isCustomSound: false
     volume: 10
     pitch: 1
@@ -209,7 +209,7 @@ sounds:
     position: 35
     page: 1
   dragongrowl:
-    sound: ENTITY_ENDERDRAGON_GROWL
+    sound: ENTITY_ENDER_DRAGON_GROWL
     isCustomSound: false
     volume: 10
     pitch: 1

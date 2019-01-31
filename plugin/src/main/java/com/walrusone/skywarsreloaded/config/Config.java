@@ -85,7 +85,7 @@ public class Config {
 
 	private boolean usePlayerNames;
 	private boolean usePlayerGlassColors;
-	private Material teamMaterial;
+	private String teamMaterial;
 
 	private int timeAfterMatch;
 	private boolean fireworksEnabled;
@@ -189,7 +189,26 @@ public class Config {
 			"killsoundselect", "killsounditem",
 			"winsoundselect",
 			"glassselect", "tauntselect");
-		private final List<String> defItems = Arrays.asList("EYE_OF_ENDER", "COMPASS", 
+		private final List<String> defItems13 = Arrays.asList("ENDER_EYE", "COMPASS",
+			"BARRIER", "FEATHER", "FEATHER",
+			"IRON_DOOR",
+			"SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOODEN_HOE",
+			"EXPERIENCE_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
+			"BARRIER",
+			"CLOCK", "NETHER_STAR", "CLOCK", "CLOCK", "CLOCK", "CLOCK",
+			"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD",
+			"DRAGON_BREATH", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
+			"DIAMOND_HELMET",
+			"REDSTONE_TORCH",
+			"COMPARATOR",
+			"LEATHER_HELMET",
+				"ENDER_EYE",
+			"BLAZE_POWDER",
+			"ARROW",
+			"DIAMOND_SWORD", "NOTE_BLOCK",
+			"DRAGON_EGG",
+			"GLASS", "SHIELD");
+		private final List<String> defItems12 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
 			"BARRIER", "FEATHER", "FEATHER", 
 			"IRON_DOOR",
 			"SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE", 
@@ -208,29 +227,30 @@ public class Config {
 			"DIAMOND_SWORD", "NOTE_BLOCK", 
 			"DRAGON_EGG", 
 			"STAINED_GLASS", "SHIELD");
-		private final List<String> defItems18 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
-				"BARRIER",  "FEATHER", "FEATHER", 
+		private final List<String> defItems8 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
+				"BARRIER",  "FEATHER", "FEATHER",
 				"IRON_DOOR",
 				"DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE",
 				"EXP_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
-				"BARRIER", 
+				"BARRIER",
 				"WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
-				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", 
+				"BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD",
 				"DRAGON_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
 				"DIAMOND_HELMET",
 				"REDSTONE_TORCH_OFF",
 				"REDSTONE_COMPARATOR",
-				"LEATHER_HELMET",			
+				"LEATHER_HELMET",
 				"EYE_OF_ENDER",
 				"BLAZE_POWDER",
 				"ARROW",
-				"DIAMOND_SWORD", "NOTE_BLOCK", 
-				"DRAGON_EGG", 
+				"DIAMOND_SWORD", "NOTE_BLOCK",
+				"DRAGON_EGG",
 				"STAINED_GLASS", "DRAGON_EGG");
 	
 	private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
-	private final List<String> signDef = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
-	
+	private final List<String> signDef8 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
+	private final List<String> signDef13 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET");
+
 	private boolean loading = false;
 	
 	public Config() {
@@ -296,10 +316,9 @@ public class Config {
 
 			usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
 			usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
-			String mat = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
-			teamMaterial = Material.matchMaterial(mat);
-			if (teamMaterial == null) {
-				teamMaterial = Material.WOOL;
+			teamMaterial= SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
+			if (teamMaterial == null || (!teamMaterial.equalsIgnoreCase("wool") && !teamMaterial.equalsIgnoreCase("stained_glass") && !teamMaterial.equalsIgnoreCase("banner"))) {
+				teamMaterial = "STAINED_GLASS";
 			}
 
 			maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
@@ -409,17 +428,25 @@ public class Config {
 			for (int i = 0; i < itemNames.size(); i++) {
 				String name = itemNames.get(i);
 				String def;
-				if (SkyWarsReloaded.getNMS().isOnePointEight()) {
-					def = defItems18.get(i);
+				if (SkyWarsReloaded.getNMS().getVersion() < 9) {
+					def = defItems8.get(i);
+				} else if (SkyWarsReloaded.getNMS().getVersion() > 8 && SkyWarsReloaded.getNMS().getVersion() < 13) {
+					def = defItems12.get(i);
 				} else {
-					def = defItems.get(i);
+					def = defItems13.get(i);
 				}
 				addMaterial(name, SkyWarsReloaded.get().getConfig().getString("items." + name), def);
 			}
 			
 			for (int i = 0; i < signItems.size(); i++) {
 				String name = signItems.get(i);
-				String def = signDef.get(i);
+				String def;
+				if (SkyWarsReloaded.getNMS().getVersion() < 13) {
+					def = signDef8.get(i);
+				} else {
+					def = signDef13.get(i);
+				}
+
 				addMaterial(name, SkyWarsReloaded.get().getConfig().getString("signs." + name), def);
 			}
 			
@@ -509,7 +536,7 @@ public class Config {
 
 		SkyWarsReloaded.get().getConfig().set("teams.usePlayerNames", usePlayerNames);
 		SkyWarsReloaded.get().getConfig().set("teams.usePlayerGlassColors", usePlayerGlassColors);
-		SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toString());
+		SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toUpperCase());
 		
 		SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
 		SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
@@ -1129,7 +1156,7 @@ public class Config {
 
 	public boolean usePlayerNames() { return usePlayerNames; }
 
-	public Material getTeamMaterial() {	return teamMaterial; }
+	public String getTeamMaterial() {	return teamMaterial; }
 
 	public boolean usePlayerGlassColors() { return usePlayerGlassColors; }
 }

@@ -73,7 +73,7 @@ public class LobbyListener implements Listener  {
             			Location signLocation = event.getBlock().getLocation();
                         World w = signLocation.getWorld();
                     	Block b = w.getBlockAt(signLocation);
-                    	if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+                    	if(b.getType() == Material.WALL_SIGN || b.getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()) {
                    			event.setCancelled(true);
                    			String arenaName = lines[1];
                    			GameMap gMap = GameMap.getMap(arenaName);
@@ -93,7 +93,7 @@ public class LobbyListener implements Listener  {
        				Location signLocation = event.getBlock().getLocation();
        				World w = signLocation.getWorld();
                    	Block b = w.getBlockAt(signLocation);
-               		if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST) {
+               		if(b.getType() == Material.WALL_SIGN || b.getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()) {
               			event.setCancelled(true);
               			if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
               				LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
@@ -125,7 +125,7 @@ public class LobbyListener implements Listener  {
     		 Location blockLocation = event.getBlock().getLocation();
     	        World w = blockLocation.getWorld();
     	    	Block b = w.getBlockAt(blockLocation);
-    			if(b.getType() == Material.WALL_SIGN || b.getType() == Material.SIGN_POST){
+    			if(b.getType() == Material.WALL_SIGN || b.getType() == SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType()){
     		    	Sign sign = (Sign) b.getState();
     		    	Location loc = sign.getLocation();
     		    	boolean removed = false;
@@ -150,8 +150,8 @@ public class LobbyListener implements Listener  {
     		Player player = e.getPlayer();
         	GameMap gMap = MatchManager.get().getPlayerMap(player);
         	if (gMap == null) {
-        		if (e.getAction() == Action.PHYSICAL && (e.getClickedBlock().getType() == Material.STONE_PLATE ||
-						e.getClickedBlock().getType() == Material.IRON_PLATE || e.getClickedBlock().getType() == Material.GOLD_PLATE)) {
+        		if (e.getAction() == Action.PHYSICAL && (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("STONE_PLATE").getType() ||
+						e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("IRON_PLATE").getType() || e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("GOLD_PLATE").getType())) {
             		if (SkyWarsReloaded.getCfg().pressurePlateJoin()) {
             			Location spawn = SkyWarsReloaded.getCfg().getSpawn();
             			if (spawn != null) {
@@ -169,9 +169,9 @@ public class LobbyListener implements Listener  {
                 							}
             							}
             							if (tryJoin) {
-            								if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+            								if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("STONE_PLATE").getType()) {
 												joined = MatchManager.get().joinGame(party, GameType.ALL);
-											} else if (e.getClickedBlock().getType() == Material.IRON_PLATE) {
+											} else if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("IRON_PLATE").getType()) {
 												joined = MatchManager.get().joinGame(party, GameType.SINGLE);
 											} else {
 												joined = MatchManager.get().joinGame(party, GameType.TEAM);
@@ -185,9 +185,9 @@ public class LobbyListener implements Listener  {
             							break;
                     				}
             					} else {
-									if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+									if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("STONE_PLATE").getType()) {
 										joined = MatchManager.get().joinGame(player, GameType.ALL);
-									} else if (e.getClickedBlock().getType() == Material.IRON_PLATE) {
+									} else if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("IRON_PLATE").getType()) {
 										joined = MatchManager.get().joinGame(player, GameType.SINGLE);
 									} else {
 										joined = MatchManager.get().joinGame(player, GameType.TEAM);
