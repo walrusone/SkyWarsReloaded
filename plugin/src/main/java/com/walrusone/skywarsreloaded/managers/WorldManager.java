@@ -65,7 +65,7 @@ public class WorldManager {
 
 	public void copyWorld(File source, File target){
 	    try {
-	        ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.dat"));
+	        ArrayList<String> ignore = new ArrayList<>(Arrays.asList("uid.dat", "session.dat", "session.lock"));
 	        if(!ignore.contains(source.getName())) {
 	            if(source.isDirectory()) {
 	                if(!target.exists())

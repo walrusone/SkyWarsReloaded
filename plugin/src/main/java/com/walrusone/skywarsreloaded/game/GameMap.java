@@ -825,17 +825,7 @@ public class GameMap {
 			
 			if (loaded) {
 				World world = SkyWarsReloaded.get().getServer().getWorld(mapName);
-			    world.setAutoSave(false);
-			    world.setThundering(false);
-			    world.setStorm(false);
-			    world.setDifficulty(Difficulty.NORMAL);
 			    world.setSpawnLocation(2000, 0, 2000);
-			    world.setTicksPerAnimalSpawns(1);
-			    world.setTicksPerMonsterSpawns(1);
-			    SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-				SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
-				SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
-				SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
 		        cage.createSpawnPlatforms(this);
 			}
 	}
@@ -960,24 +950,32 @@ public class GameMap {
 			event.reset();
 		}
 		healthOption.restore();
-        chestOption.restore();
-        timeOption.restore();
-        weatherOption.restore();
-        modifierOption.restore();
-        SkyWarsReloaded.getWM().deleteWorld(name);
-        this.loadMap();
-        final GameMap gMap = this;
-        if (SkyWarsReloaded.get().isEnabled()) {
-            new BukkitRunnable() {
+		chestOption.restore();
+		timeOption.restore();
+		weatherOption.restore();
+		modifierOption.restore();
+		gameboard.setRestartTimer(-1);
+		SkyWarsReloaded.getWM().deleteWorld(name);
+		final GameMap gMap = this;
+		if (SkyWarsReloaded.get().isEnabled()) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					gMap.loadMap();
+				}
+			}.runTaskLater(SkyWarsReloaded.get(), 10);
+		}
+		if (SkyWarsReloaded.get().isEnabled()) {
+			new BukkitRunnable() {
 				@Override
 				public void run() {
 					matchState = MatchState.WAITINGSTART;
-			        gameboard.updateScoreboard();
-			        MatchManager.get().start(gMap);
-			        update();
+					gameboard.updateScoreboard();
+					MatchManager.get().start(gMap);
+					update();
 				}
-            }.runTaskLater(SkyWarsReloaded.get(), 40);
-        }  
+			}.runTaskLater(SkyWarsReloaded.get(), 50);
+		}
 	}
 	
 	/*Inventories*/

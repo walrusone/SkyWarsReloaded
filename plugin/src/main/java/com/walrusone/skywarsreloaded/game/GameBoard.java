@@ -243,4 +243,8 @@ public class GameBoard {
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
+
+    public void setRestartTimer(int i) {
+        restartTimer = i;
+    }
 }

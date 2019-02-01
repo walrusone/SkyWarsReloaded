@@ -70,8 +70,8 @@ public abstract class MatchEvent {
                 Util.get().sendTitle(player, 2, 20, 2, ChatColor.translateAlternateColorCodes('&', title), 
                 		ChatColor.translateAlternateColorCodes('&', subtitle));
     		}
-    		MatchManager.get().message(gMap, ChatColor.translateAlternateColorCodes('&', startMessage));
 		}
+		MatchManager.get().message(gMap, ChatColor.translateAlternateColorCodes('&', startMessage));
 	}
 	
 	public void announceTimer() {

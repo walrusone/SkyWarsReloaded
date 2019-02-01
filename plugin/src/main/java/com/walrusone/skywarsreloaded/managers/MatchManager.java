@@ -538,10 +538,14 @@ public class MatchManager
                                 MatchManager.this.playerLeave(player, DamageCause.CUSTOM, true, true);
                         	}
                     }
-                    gameMap.refreshMap();
-                    if (debug) {
-                    	Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
-                	}
+					new BukkitRunnable() {
+						public void run() {
+							gameMap.refreshMap();
+							if (debug) {
+								Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
+							}
+						}
+					}.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20));
                 }
             }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20));
         }
