@@ -139,8 +139,14 @@ public class NMSHandler implements NMS {
 
 	@Override
 	public void updateSkull(Skull skull, UUID uuid) {
-		skull.setType(Material.PLAYER_WALL_HEAD);
-		skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+		if (skull.getType().equals(Material.SKELETON_SKULL)) {
+			Block block = skull.getBlock();
+			block.setType(Material.PLAYER_HEAD);
+			Skull s = (Skull) block.getState();
+			s.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+		} else {
+			skull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+		}
 	}
 
 	public void setMaxHealth(Player player, int health) {
@@ -226,7 +232,7 @@ public class NMSHandler implements NMS {
 
 	@Override
 	public boolean headCheck(Block h1) {
-		return (h1.getType() == Material.PLAYER_WALL_HEAD || h1.getType() == Material.SKELETON_SKULL);
+		return (h1.getType() == Material.PLAYER_WALL_HEAD || h1.getType() == Material.PLAYER_HEAD || h1.getType() == Material.SKELETON_SKULL);
 	}
 
 	@Override
