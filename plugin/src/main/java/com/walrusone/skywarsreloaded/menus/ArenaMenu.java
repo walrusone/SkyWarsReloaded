@@ -183,7 +183,7 @@ public class ArenaMenu {
 				if(event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 0) {
 					if (gMap.isRegistered()) {
 						gMap.setRegistered(false);
-						gMap.unregister();
+						gMap.unregister(true);
 					} else {
 						gMap.setRegistered(true);
 						gMap.registerMap();

@@ -12,15 +12,36 @@ public class RefreshData extends BaseCmd {
 		forcePlayer = false;
 		cmdName = "refresh";
 		alias = new String[]{"ref"};
-		argLength = 1; //counting cmdName
+		argLength = 2; //counting cmdName
 	}
 
 	@Override
 	public boolean run() {
-		for (GameMap gMap: GameMap.getMaps()) {
-			gMap.loadArenaData();
+		String name = args[1];
+		if (args[1].equalsIgnoreCase("all")) {
+			for (GameMap gMap: GameMap.getMaps()) {
+				refreshMap(gMap);
+			}
+		} else {
+			GameMap gMap = GameMap.getMap(name);
+			refreshMap(gMap);
 		}
-		sender.sendMessage(new Messaging.MessageFormatter().format("maps.refreshed"));
 		return true;
+	}
+
+	private void refreshMap(GameMap gMap) {
+		if (gMap != null) {
+			boolean reregister = gMap.isRegistered();
+			if (reregister) {
+				gMap.unregister(false);
+				gMap.loadArenaData();
+				gMap.registerMap();
+			} else {
+				gMap.loadArenaData();
+			}
+			sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.refreshed"));
+		} else {
+			sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));
+		}
 	}
 }

@@ -19,8 +19,8 @@ public class UnregisterCmd extends BaseCmd {
 			String worldName = args[1].toLowerCase();
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
-				map.unregister();
-				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.unregistered"));
+				map.unregister(true);
+				sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.unregistered"));
 				return true;
 			} else {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));

@@ -166,7 +166,6 @@ public class GameMap {
       			saveArenaData();
              }
         }
-        loadEvents();
         if (registered) {
         	registerMap();
         }
@@ -180,6 +179,7 @@ public class GameMap {
     }
 
 	private void loadEvents() {
+    	events.clear();
 		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
         File mapDataDirectory = new File(dataDirectory, "mapsData");
 
@@ -472,7 +472,7 @@ public class GameMap {
 	}
 	
 	public boolean removeMap() {
-		unregister();
+		unregister(false);
 		File dataDirectory = new File (SkyWarsReloaded.get().getDataFolder(), "maps");
 		File target = new File (dataDirectory, name);
 		SkyWarsReloaded.getWM().deleteWorld(target);
@@ -642,7 +642,8 @@ public class GameMap {
         List<String> dSpawns = fc.getStringList("deathMatchSpawns");
         List<String> stringSigns = fc.getStringList("signs");
         List<String> stringChests = fc.getStringList("chests");
-       
+
+        teamCards.clear();
         for (String spawn: spawns) {
         	addTeamCard(Util.get().getCoordLocFromString(spawn));
         }
@@ -652,18 +653,23 @@ public class GameMap {
         	def = teamCards.size()/2;
         }
         minPlayers = fc.getInt("minplayers", def);
-        
+
+        deathMatchSpawns.clear();
         for (String dSpawn: dSpawns) {
         	deathMatchSpawns.add(Util.get().getCoordLocFromString(dSpawn));
         }
-        
+
+        signs.clear();
    	 	for (String s: stringSigns) {
    	 		signs.add(new SWRSign(name, Util.get().stringToLocation(s)));
    	 	}
 
+   	 	chests.clear();
    	 	for (String chest: stringChests) {
    	 		addChest(Util.get().getCoordLocFromString(chest));
    	 	}
+
+		loadEvents();
    	 	try {
 			fc.save(mapFile);
 		} catch (IOException e) {
@@ -701,10 +707,15 @@ public class GameMap {
     	return registered;
 	}
 	
-	public void unregister() {
-		this.registered = false;
-		saveArenaData();
-		stopGameInProgress();
+	public void unregister(boolean save) {
+    	if (save) {
+			this.registered = false;
+			stopGameInProgress();
+			saveArenaData();
+		} else  {
+			this.registered = false;
+			stopGameInProgress();
+		}
 	}
 	
 	public void stopGameInProgress() {
@@ -868,7 +879,7 @@ public class GameMap {
 	
 	public static void editMap(GameMap gMap, Player player) {
     	if (gMap.isRegistered()) {
-			gMap.unregister();
+			gMap.unregister(true);
 		}
 		String worldName = gMap.getName();
 		if (gMap.isEditing()) {
@@ -1423,6 +1434,7 @@ public class GameMap {
 		}
 		if (toRemove != null) {
 			teamCards.remove(toRemove);
+			saveArenaData();
 			return true;
 		}
 		return false;
@@ -1435,11 +1447,14 @@ public class GameMap {
 	
 	private void addDeathMatchSpawn(CoordLoc loc) {
 		deathMatchSpawns.add(loc);
+		saveArenaData();
 	}
 	
 	public boolean removeDeathMatchSpawn(Location loc) {
 		CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		return deathMatchSpawns.remove(remove);
+		boolean result =  deathMatchSpawns.remove(remove);
+		saveArenaData();
+		return result;
 	}
 	
 	public void addChest(Chest chest) {
@@ -1463,6 +1478,7 @@ public class GameMap {
 	
 	private void addChest(CoordLoc loc) {
 		chests.add(loc);
+		saveArenaData();
 	}
 	
 	public void removeChest(Chest chest) {
@@ -1475,9 +1491,11 @@ public class GameMap {
 			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
 			chests.remove(locLeft);
 			chests.remove(locRight);
+			saveArenaData();
 		} else {
 			CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
 			chests.remove(loc);
+			saveArenaData();
 		}
 
 	}

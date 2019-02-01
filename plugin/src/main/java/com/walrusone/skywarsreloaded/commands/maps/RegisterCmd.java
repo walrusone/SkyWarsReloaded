@@ -22,7 +22,7 @@ public class RegisterCmd extends BaseCmd {
 				gMap.setRegistered(true);
 				boolean registered = gMap.registerMap();
 				if (registered) {
-					sender.sendMessage(new Messaging.MessageFormatter().format("maps.registered"));
+					sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.registered"));
 				} else {
 					sender.sendMessage(new Messaging.MessageFormatter().format("error.map-failed-to-register"));
 				}
