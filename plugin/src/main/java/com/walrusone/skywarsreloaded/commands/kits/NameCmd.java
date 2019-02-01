@@ -23,7 +23,7 @@ public class NameCmd extends BaseCmd {
 		}
 
 		StringBuilder message = new StringBuilder();
-		for (int i = 3; i < args.length; i++) {
+		for (int i = 2; i < args.length; i++) {
 			message.append(args[i]);
 			message.append(" ");
 		}

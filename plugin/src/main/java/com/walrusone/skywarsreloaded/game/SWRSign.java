@@ -82,6 +82,8 @@ public class SWRSign {
 			updateBlock(attachedBlock, "blockplaying");
 		} else if (gMap.getMatchState().equals(MatchState.ENDING)) {
 			updateBlock(attachedBlock, "blockending");
+		} else if (gMap.getMatchState().equals(MatchState.OFFLINE)) {
+			updateBlock(attachedBlock, "blockoffline");
 		}
 	}
 	
