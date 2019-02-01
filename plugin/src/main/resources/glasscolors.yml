@@ -65,7 +65,7 @@ colors:
     material: GRAY_STAINED_GLASS
     datavalue: -1
     position: 15
-    page: 3
+    page: 1
   lightgray:
     displayname: '&bLight Gray'
     level: 41
@@ -129,7 +129,7 @@ colors:
     material: BLACK_STAINED_GLASS
     datavalue: -1
     position: 29
-    page: 2
+    page: 1
   lapis:
     displayname: '&bLapis'
     level: 81
@@ -153,7 +153,7 @@ colors:
     material: EMERALD_BLOCK
     datavalue: -1
     position: 35
-    page: 4
+    page: 1
   diamond:
     displayname: '&bDiamond'
     level: 96

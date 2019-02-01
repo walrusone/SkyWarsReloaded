@@ -12,6 +12,7 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  showHealth: true
   snowballDamage: 1
   eggDamage: 1
   ecoForWin: 5

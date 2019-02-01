@@ -313,7 +313,7 @@ public class PlayerStat
         }
 		ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
 		scoreboard = manager.getNewScoreboard();
-        Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
+        Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         scoreboards.put(player, scoreboard);
 		updateScoreboard(player);
@@ -331,7 +331,7 @@ public class PlayerStat
             }
     	}
 
-		Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
+		Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         String sb = "scoreboards.lobbyboard.line";
         ArrayList<String> scores = new ArrayList<>();

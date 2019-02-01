@@ -68,7 +68,11 @@ public class GameBoard {
         }
         ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
         scoreboard = manager.getNewScoreboard();
-        objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
+        objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
+        if (SkyWarsReloaded.getCfg().showHealth()) {
+            Objective objective2 = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "health", ChatColor.DARK_RED + "❤");
+            objective2.setDisplaySlot(DisplaySlot.BELOW_NAME);
+        }
         for (int i = 2; i < 17; i++) {
             scoreboard.registerNewTeam("line" + i);
         }
@@ -87,7 +91,7 @@ public class GameBoard {
             objective.unregister();
         }
         if (scoreboard != null) {
-            objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard);
+            objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             String sb = "";
             if (gMap.getMatchState() == MatchState.WAITINGSTART) {

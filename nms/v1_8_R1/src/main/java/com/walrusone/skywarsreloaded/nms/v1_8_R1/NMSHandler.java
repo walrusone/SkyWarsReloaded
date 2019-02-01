@@ -220,8 +220,8 @@ public class NMSHandler implements NMS {
 	}
 
 	@Override
-	public Objective getNewObjective(Scoreboard scoreboard) {
-		return scoreboard.registerNewObjective("info", "dummy");
+	public Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName) {
+		return scoreboard.registerNewObjective(DisplayName, criteria);
 	}
 
 	@Override

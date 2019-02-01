@@ -100,7 +100,17 @@ public class PlayerData {
 		        }
 		        
 		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
-		        player.teleport(respawn, TeleportCause.END_PORTAL);	
+		        if (SkyWarsReloaded.get().isEnabled()) {
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							player.teleport(respawn, TeleportCause.END_PORTAL);
+						}
+					}.runTaskLater(SkyWarsReloaded.get(), 2);
+				} else {
+					player.teleport(respawn, TeleportCause.END_PORTAL);
+				}
+
 		        
 		    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
 		        	Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");

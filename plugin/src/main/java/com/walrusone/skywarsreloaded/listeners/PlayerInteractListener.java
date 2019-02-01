@@ -45,7 +45,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 
 public class PlayerInteractListener implements Listener {
 	
-    @SuppressWarnings("deprecation")
+
 	@EventHandler(priority = EventPriority.HIGHEST)
     public void onClick(final PlayerInteractEvent a1) {
     	final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
@@ -96,6 +96,7 @@ public class PlayerInteractListener implements Listener {
 							}
 						} else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
 							a1.setCancelled(true);
+							Util.get().playSound(a1.getPlayer(), a1.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
 							if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
 								if (!SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu")) {
 									new BukkitRunnable() {
@@ -126,7 +127,7 @@ public class PlayerInteractListener implements Listener {
             		}
             	}
     			Player player = a1.getPlayer();
-            	if (a1.getAction() == Action.RIGHT_CLICK_BLOCK && (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)) {
+            	if (a1.getAction() == Action.RIGHT_CLICK_BLOCK && (SkyWarsReloaded.getNMS().getMainHandItem(player) == null || SkyWarsReloaded.getNMS().getMainHandItem(player).getType() == Material.AIR)) {
             		Material signPost = SkyWarsReloaded.getNMS().getMaterial("SIGN_POST").getType();
             		 if (a1.getClickedBlock().getType() == Material.WALL_SIGN || a1.getClickedBlock().getType() == signPost) {
             				Sign s = (Sign) a1.getClickedBlock().getState();
@@ -156,59 +157,60 @@ public class PlayerInteractListener implements Listener {
             	}
     		}
     		return;
-    	}
-    	if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
-        	a1.setCancelled(true);
-        	if (a1.getAction() == Action.RIGHT_CLICK_AIR || a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
-        		if (a1.hasItem()) {
-        			Player player = a1.getPlayer();
-                    if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("kitvote"))) {
-                    	if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-                    		SkyWarsReloaded.getIC().show(player, gameMap.getKitVoteOption().getKey());
-                    	} else {
-                    		new KitSelectionMenu(a1.getPlayer());
-                    	}
-                    	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKitMenuSound(), 1, 1);
-                    	return;
-                    } else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("votingItem"))) {
-                    	if (a1.getPlayer().hasPermission("sw.votemenu")) {
-                        	new VotingMenu(a1.getPlayer());
-                        	Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenChestMenuSound(), 1, 1);
-                    	} else {
-                    		player.sendMessage(new Messaging.MessageFormatter().format("error.nopermission"));
-                    	}
-                    	return;
-                    }  else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
-                    	MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true);
-                    } 
-        		}
-        	}
-        	return;
-        }
-    	if (gameMap.getMatchState() == MatchState.PLAYING) {
-    		if (a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
-    			Block block = a1.getClickedBlock();
-    			if (block.getType().equals(Material.ENDER_CHEST)) {
-    				for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
-    					for (Crate crate: gMap.getCrates()) {
-    						if (crate.getLocation().equals(block.getLocation())) {
-    							a1.setCancelled(true);
-    							if (SkyWarsReloaded.getNMS().getVersion() < 9) {
-    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
-    							} else {
-    								a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
-    							}
-    							a1.getPlayer().openInventory(crate.getInventory());
-    							SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
-    							return;
-    						}
-    					}
-    				}
-    			}
-    		}
-    	}
-		if (gameMap.getMatchState() == MatchState.ENDING) {
-			a1.setCancelled(true);
+    	} else {
+			if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
+				a1.setCancelled(true);
+				if (a1.getAction() == Action.RIGHT_CLICK_AIR || a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					if (a1.hasItem()) {
+						Player player = a1.getPlayer();
+						if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("kitvote"))) {
+							if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+								SkyWarsReloaded.getIC().show(player, gameMap.getKitVoteOption().getKey());
+							} else {
+								new KitSelectionMenu(a1.getPlayer());
+							}
+							Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKitMenuSound(), 1, 1);
+							return;
+						} else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("votingItem"))) {
+							if (a1.getPlayer().hasPermission("sw.votemenu")) {
+								new VotingMenu(a1.getPlayer());
+								Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenChestMenuSound(), 1, 1);
+							} else {
+								player.sendMessage(new Messaging.MessageFormatter().format("error.nopermission"));
+							}
+							return;
+						}  else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
+							MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true);
+						}
+					}
+				}
+				return;
+			}
+			if (gameMap.getMatchState() == MatchState.PLAYING) {
+				if (a1.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					Block block = a1.getClickedBlock();
+					if (block.getType().equals(Material.ENDER_CHEST)) {
+						for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
+							for (Crate crate: gMap.getCrates()) {
+								if (crate.getLocation().equals(block.getLocation())) {
+									a1.setCancelled(true);
+									if (SkyWarsReloaded.getNMS().getVersion() < 9) {
+										a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
+									} else {
+										a1.getPlayer().getWorld().playSound(a1.getPlayer().getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
+									}
+									a1.getPlayer().openInventory(crate.getInventory());
+									SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+			if (gameMap.getMatchState() == MatchState.ENDING) {
+				a1.setCancelled(true);
+			}
 		}
     }
     

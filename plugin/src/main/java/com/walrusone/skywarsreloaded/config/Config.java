@@ -61,6 +61,7 @@ public class Config {
 	private boolean protectlobby;
 	private boolean displayPlayerExeperience;
 	
+	private boolean showHealth;
 	private int winnerEco;
 	private int killerEco;
 	private int snowballDamage;
@@ -282,7 +283,8 @@ public class Config {
 			deathsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.deathsLeaderboardEnabled");
 			xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
 			leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
-			
+
+			showHealth = SkyWarsReloaded.get().getConfig().getBoolean("game.showHealth");
 			winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
 			killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
 			winnerXP = SkyWarsReloaded.get().getConfig().getInt("game.xpForWin");
@@ -503,7 +505,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("leaderboards.deathsLeaderboardEnabled", deathsEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
-		
+
+		SkyWarsReloaded.get().getConfig().set("game.showHealth", showHealth);
 		SkyWarsReloaded.get().getConfig().set("game.ecoForWin", winnerEco);
 		SkyWarsReloaded.get().getConfig().set("game.ecoForKill", killerEco);
 		SkyWarsReloaded.get().getConfig().set("game.snowballDamage", snowballDamage);
@@ -1159,6 +1162,10 @@ public class Config {
 	public String getTeamMaterial() {	return teamMaterial; }
 
 	public boolean usePlayerGlassColors() { return usePlayerGlassColors; }
+
+    public boolean showHealth() {
+		return showHealth;
+    }
 }
 
 

@@ -43,7 +43,7 @@ public interface NMS {
 	public void updateSkull(SkullMeta meta1, Player player);
 	public ChunkGenerator getChunkGenerator();
     public boolean checkMaterial(FallingBlock fb, Material mat);
-    public Objective getNewObjective(Scoreboard scoreboard);
+    public Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName);
     public void setGameRule(World world, String rule, String bool);
     public boolean headCheck(Block h1);
 	public ItemStack getBlankPlayerHead();
