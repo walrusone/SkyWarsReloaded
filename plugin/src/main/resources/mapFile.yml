@@ -6,6 +6,7 @@ cage: standard
 teamSize: 1
 allowFriendlyFire: false
 environment: NORMAL
+allowScanvenger: true
 events:
   DisableRegenEvent:
     enabled: false

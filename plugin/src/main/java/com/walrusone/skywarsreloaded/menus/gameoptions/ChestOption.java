@@ -24,10 +24,10 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class ChestOption extends GameOption {
 	
 	public ChestOption(GameMap gameMap, String key) {
+		this.gameMap = gameMap;
 		itemList = new ArrayList<>(Arrays.asList("chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger"));
 		voteList = new ArrayList<>(Arrays.asList(Vote.CHESTRANDOM, Vote.CHESTBASIC, Vote.CHESTNORMAL, Vote.CHESTOP, Vote.CHESTSCAVENGER));
 		createMenu(key, new Messaging.MessageFormatter().format("menu.chest-voting-menu"));
-		this.gameMap = gameMap;
 	}
 	
 	@Override

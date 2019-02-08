@@ -4,12 +4,10 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.collect.Iterables;
@@ -66,7 +64,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -95,6 +92,7 @@ public class GameMap {
 	private boolean allowRegen;
     private boolean thunder;
     private boolean allowFriendlyFire;
+	private boolean allowScanvenger;
     private List<String> winners = new ArrayList<>();
     private int strikeCounter;
     private int nextStrike;
@@ -581,6 +579,7 @@ public class GameMap {
         fc.set("teamSize", teamSize);
         fc.set("environment", environment);
         fc.set("allowFriendlyFire", allowFriendlyFire);
+		fc.set("allowScanvenger", allowScanvenger);
        
         List<String> spawns = new ArrayList<>();
         for (TeamCard tCard: teamCards) {
@@ -632,7 +631,8 @@ public class GameMap {
         legacy = fc.getBoolean("legacy");
         teamSize = fc.getInt("teamSize", 1);
         environment = fc.getString("environment", "NORMAL");
-        allowFriendlyFire = fc.getBoolean("allowFriendlyFire", false); 
+        allowFriendlyFire = fc.getBoolean("allowFriendlyFire", false);
+        allowScanvenger = fc.getBoolean("allowScanvenger", false);
      
         String cage = fc.getString("cage");
         CageType ct = CageType.matchType(cage.toUpperCase());
@@ -1692,6 +1692,10 @@ public class GameMap {
 			}
 		}
 		return null;
+    }
+
+    public boolean allowScanvenger() {
+		return allowScanvenger;
     }
 
     public class TeamCardComparator implements Comparator<TeamCard> {
