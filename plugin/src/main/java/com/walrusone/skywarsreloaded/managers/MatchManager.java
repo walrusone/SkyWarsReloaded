@@ -788,7 +788,7 @@ public class MatchManager
     }
     
 	public void addSpectator(final GameMap gameMap, final Player player) {
-        if (player != null) {
+        if (player != null && gameMap.getMatchState() != MatchState.ENDING && gameMap.getMatchState() != MatchState.OFFLINE) {
         	World world = gameMap.getCurrentWorld();
         	CoordLoc ss = gameMap.getSpectateSpawn();
 			Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
