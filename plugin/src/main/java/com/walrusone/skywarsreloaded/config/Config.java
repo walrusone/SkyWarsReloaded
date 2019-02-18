@@ -1122,11 +1122,11 @@ public class Config {
 	}
 
 	public int getMaxDoubleChest() {
-		return maxChest;
+		return maxDoubleChest;
 	}
 
 	public int getMaxChest() {
-		return maxDoubleChest;
+		return maxChest;
 	}
 	
 	public boolean useExternalChat() {

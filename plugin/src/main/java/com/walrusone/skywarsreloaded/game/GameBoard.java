@@ -158,17 +158,25 @@ public class GameBoard {
             }
         }
         if (position != 0) {
-            String newLine = getScoreboardLine(sb + position);
-            if (newLine.length() > 40) {
-                newLine = newLine.substring(0, 39);
+            if (position == 1) {
+                String title = getScoreboardLine(sb + position);
+                if (title.length() > 32) {
+                    title = title.substring(0, 31);
+                }
+                objective.setDisplayName(title);
+            } else {
+                String newLine = getScoreboardLine(sb + position);
+                if (newLine.length() > 40) {
+                    newLine = newLine.substring(0, 39);
+                }
+                if (currentLineText.containsKey(position)) {
+                    scoreboard.resetScores(currentLineText.get(position));
+                    scoreboard.getTeam("line" + position).removeEntry(currentLineText.get(position));
+                }
+                scoreboard.getTeam("line" + position).addEntry(newLine);
+                objective.getScore(newLine).setScore(17-position);
+                currentLineText.put(position, newLine);
             }
-            if (currentLineText.containsKey(position)) {
-                scoreboard.resetScores(currentLineText.get(position));
-                scoreboard.getTeam("line" + position).removeEntry(currentLineText.get(position));
-            }
-            scoreboard.getTeam("line" + position).addEntry(newLine);
-            objective.getScore(newLine).setScore(17-position);
-            currentLineText.put(position, newLine);
         }
     }
 
