@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.menus;
 
 import java.util.ArrayList;
 
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -41,7 +42,9 @@ public class SpectateSingleMenu {
 
             if (player.hasPermission("sw.spectate")) {
                 player.closeInventory();
-                MatchManager.get().addSpectator(gMap, player);
+                if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
+                    MatchManager.get().addSpectator(gMap, player);
+                }
             }
         });
     }

@@ -255,7 +255,9 @@ public class ArenaMenu {
 				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 10) {
 					if (gMap.isRegistered()) {
 						player.closeInventory();
-						MatchManager.get().addSpectator(gMap, player);
+						if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
+							MatchManager.get().addSpectator(gMap, player);
+						}
 					}
 				} else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 12) {
 					if (gMap.isRegistered() && !gMap.getMatchState().equals(MatchState.OFFLINE) && !gMap.getMatchState().equals(MatchState.ENDING)) {

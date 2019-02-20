@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.menus;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -39,7 +40,9 @@ public class TeamSpectateMenu {
 
             if (player.hasPermission("sw.spectate")) {
                 player.closeInventory();
-                MatchManager.get().addSpectator(gMap, player);
+                if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
+                    MatchManager.get().addSpectator(gMap, player);
+                }
             }
 		});
     }

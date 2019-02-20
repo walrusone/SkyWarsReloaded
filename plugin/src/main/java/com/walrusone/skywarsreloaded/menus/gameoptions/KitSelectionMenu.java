@@ -20,7 +20,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 public class KitSelectionMenu {
 
     private static int menuSize = SkyWarsReloaded.getCfg().getKitMenuSize();
-    private static final String menuName = new Messaging.MessageFormatter().format("menu.kit-section-mnenu");
+    private static final String menuName = new Messaging.MessageFormatter().format("menu.kit-section-menu");
     
     public KitSelectionMenu(final Player player) {
     	GameMap gMap = MatchManager.get().getPlayerMap(player);

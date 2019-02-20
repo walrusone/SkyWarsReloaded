@@ -28,6 +28,7 @@ public class PlayerData {
 		private double health;
 		private int food;
 		private float sat;
+		private float xp;
 		private boolean beingRestored;
 	    
 	    public PlayerData(final Player p) {
@@ -40,6 +41,9 @@ public class PlayerData {
 	        this.health = p.getHealth();
 	        this.food = p.getFoodLevel();
 	        this.sat = p.getSaturation();
+			if (!SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+				xp = p.getExp();
+			}
 	        inv = Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
 	        inv.setContents(p.getInventory().getContents());
 	    	if (SkyWarsReloaded.getCfg().debugEnabled()) {
@@ -92,6 +96,9 @@ public class PlayerData {
 		        player.resetPlayerWeather();
 		        player.setAllowFlight(false);
 		        player.setFlying(false);
+				if (!SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+					player.setExp(xp);
+				}
 		        
 		        player.setFireTicks(0);
 		        player.setScoreboard(sb);
