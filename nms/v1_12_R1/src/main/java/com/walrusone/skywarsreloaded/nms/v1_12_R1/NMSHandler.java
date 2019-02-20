@@ -61,7 +61,7 @@ public class NMSHandler implements NMS {
 	
 	public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
 		PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
-		PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, (IChatBaseComponent) null, (int) fadein, (int) stay, (int) fadeout);
+		PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadein, stay, fadeout);
 		pConn.sendPacket(pTitleInfo);
 		if (subtitle != null) {
 			subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
@@ -175,14 +175,17 @@ public class NMSHandler implements NMS {
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
         BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
         TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
-        world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
-    }
+		if (ec != null) {
+			world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
+		}
+	}
 	
 	public void setEntityTarget(Entity ent, Player player) {
 		EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
-		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
+		entity.setGoalTarget(((CraftPlayer) player).getHandle());
 	}
 
+	@SuppressWarnings("deprecation")
 	public void updateSkull(SkullMeta meta1, Player player) {meta1.setOwner(player.getName());
 	}
 
@@ -204,10 +207,7 @@ public class NMSHandler implements NMS {
 
 	@Override
 	public boolean checkMaterial(FallingBlock fb, Material mat) {
-		if (fb.getMaterial().equals(mat)) {
-			return true;
-		}
-		return false;
+		return fb.getMaterial().equals(mat);
 	}
 
 	@Override
@@ -256,6 +256,7 @@ public class NMSHandler implements NMS {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setBlockWithColor(World world, int x, int y, int z, Material mat, byte cByte) {
 		world.getBlockAt(x, y, z).setType(mat);

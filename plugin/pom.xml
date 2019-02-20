@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.walrusone.skywarsreloaded</groupId>
         <artifactId>skywarsreloaded-parent</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>4.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>skywarsreloaded-plugin</artifactId>
@@ -16,20 +16,12 @@
 
     <repositories>
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
-        </repository>
-        <repository>
             <id>placeholderapi-repo</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
            <id>mvdw-repo</id>
            <url>http://repo.mvdw-software.be/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>rayzr-repo</id>
@@ -42,6 +34,10 @@
         <repository>
             <id>filoghost-repo</id>
             <url>https://ci.filoghost.me/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>essx-repo</id>
+            <url>https://ci.ender.zone/plugin/repository/everything/</url>
         </repository>
     </repositories>
 
@@ -62,7 +58,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -107,7 +103,7 @@
         <dependency>
             <groupId>com.walrusone.skywarsreloaded</groupId>
             <artifactId>skywarsreloaded-nms-interfaces</artifactId>
-            <version>4.0.2-SNAPSHOT</version>
+            <version>4.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
