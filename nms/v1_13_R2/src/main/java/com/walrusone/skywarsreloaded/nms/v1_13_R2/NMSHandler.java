@@ -19,7 +19,6 @@ import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.generator.ChunkGenerator;
@@ -52,7 +51,7 @@ public class NMSHandler implements NMS {
 	
 	public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
 		PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
-		PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, (IChatBaseComponent) null, (int) fadein, (int) stay, (int) fadeout);
+		PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadein, stay, fadeout);
 		pConn.sendPacket(pTitleInfo);
 		if (subtitle != null) {
 			subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
@@ -161,6 +160,7 @@ public class NMSHandler implements NMS {
 		w.addEntity(dragon);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
 		FallingBlock block = loc.getWorld().spawnFallingBlock(loc, new MaterialData(mat));
 		block.setDropItem(false);
@@ -174,12 +174,13 @@ public class NMSHandler implements NMS {
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
         BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
         TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
-        world.playBlockAction(position, ec.getBlock().getBlock(), 1, open ? 1 : 0);
+		assert ec != null;
+		world.playBlockAction(position, ec.getBlock().getBlock(), 1, open ? 1 : 0);
     }
 	
 	public void setEntityTarget(Entity ent, Player player) {
 		EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
-		entity.setGoalTarget(((EntityLiving) ((CraftPlayer) player).getHandle()), null, false);
+		entity.setGoalTarget(((CraftPlayer) player).getHandle());
 	}
 
 	public void updateSkull(SkullMeta meta1, Player player) {
@@ -204,10 +205,7 @@ public class NMSHandler implements NMS {
 
 	@Override
 	public boolean checkMaterial(FallingBlock fb, Material mat) {
-		if (fb.getBlockData().getMaterial().equals(mat)) {
-			return true;
-		}
-		return false;
+		return fb.getBlockData().getMaterial().equals(mat);
 	}
 
 	@Override
