@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.menus.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -64,6 +65,8 @@ import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
@@ -82,6 +85,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 	private NMS nmsHandler;
 	private HologramsUtil hu;
 	private boolean loaded;
+	private BukkitTask specObserver;
 
 	
 	public void onEnable() {
@@ -299,6 +303,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (config.partyEnabled()) {
             getCommand("swparty").setExecutor(new PartyCmdManager());
         }
+        if (getCfg().borderEnabled()) {
+        	if (specObserver != null) {
+				specObserver.cancel();
+			}
+			specObserver = new BukkitRunnable() {
+				@Override
+				public void run() {
+					for (GameMap gMap : GameMap.getMaps()) {
+						gMap.checkSpectators();
+					}
+				}
+			}.runTaskTimer(SkyWarsReloaded.get(), 0, 40);
+		}
         loaded = true;
 	}
 	

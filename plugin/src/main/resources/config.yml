@@ -13,6 +13,9 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  worldBorder:
+    enabled: false
+    borderSize: 400
   showHealth: true
   snowballDamage: 1
   eggDamage: 1

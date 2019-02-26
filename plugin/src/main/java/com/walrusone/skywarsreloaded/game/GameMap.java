@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -62,13 +63,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -180,6 +174,29 @@ public class GameMap {
         	new TeamSpectateMenu(this);
 		}
     }
+
+    public void checkSpectators() {
+    	if (!spectators.isEmpty()) {
+    		for (UUID uuid: spectators) {
+    			Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
+    			if (isOutsideBorder(spec)) {
+					CoordLoc ss = getSpectateSpawn();
+					Location spectateSpawn = new Location(getCurrentWorld(), ss.getX(), ss.getY(), ss.getZ());
+					spec.teleport(spectateSpawn, TeleportCause.END_PORTAL);
+				}
+			}
+		}
+	}
+
+	private boolean isOutsideBorder(Player p){
+			Location loc = p.getLocation();
+			WorldBorder border = p.getWorld().getWorldBorder();
+			double size = border.getSize()/2;
+			Location center = border.getCenter();
+			double x = loc.getX() - center.getX(), z = loc.getZ() - center.getZ();
+			return ((x > size || (-x) > size) || (z > size || (-z) > size));
+	}
+
 
 	private void loadEvents() {
     	events.clear();
@@ -844,6 +861,11 @@ public class GameMap {
 			if (loaded) {
 				World world = SkyWarsReloaded.get().getServer().getWorld(mapName);
 			    world.setSpawnLocation(2000, 0, 2000);
+			    if (SkyWarsReloaded.getCfg().borderEnabled()) {
+					WorldBorder wb = world.getWorldBorder();
+					wb.setCenter(teamCards.get(0).getSpawn().getX(), teamCards.get(0).getSpawn().getZ());
+					wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
+				}
 		        cage.createSpawnPlatforms(this);
 			}
 	}
@@ -888,7 +910,18 @@ public class GameMap {
 	public static void editMap(GameMap gMap, Player player) {
     	if (gMap.isRegistered()) {
 			gMap.unregister(true);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					startEdit(gMap, player);
+				}
+			}.runTaskLater(SkyWarsReloaded.get(), 20);
+		} else {
+			startEdit(gMap, player);
 		}
+	}
+
+	private static void startEdit(GameMap gMap, Player player) {
 		String worldName = gMap.getName();
 		if (gMap.isEditing()) {
 			boolean loaded = false;

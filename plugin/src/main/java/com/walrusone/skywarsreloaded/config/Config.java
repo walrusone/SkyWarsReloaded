@@ -60,7 +60,9 @@ public class Config {
 	private boolean lobbyBoardEnabled;
 	private boolean protectlobby;
 	private boolean displayPlayerExeperience;
-	
+
+	private boolean borderEnabled;
+	private int borderSize;
 	private boolean showHealth;
 	private int winnerEco;
 	private int killerEco;
@@ -284,6 +286,8 @@ public class Config {
 			xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
 			leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 
+			borderEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.worldBorder.enabled");
+			borderSize = SkyWarsReloaded.get().getConfig().getInt("game.worldBorder.borderSize");
 			showHealth = SkyWarsReloaded.get().getConfig().getBoolean("game.showHealth");
 			winnerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForWin");
 			killerEco = SkyWarsReloaded.get().getConfig().getInt("game.ecoForKill");
@@ -506,6 +510,8 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
 		SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 
+		SkyWarsReloaded.get().getConfig().set("game.worldBorder.enabled", borderEnabled);
+		SkyWarsReloaded.get().getConfig().set("game.worldBorder.borderSize", borderSize);
 		SkyWarsReloaded.get().getConfig().set("game.showHealth", showHealth);
 		SkyWarsReloaded.get().getConfig().set("game.ecoForWin", winnerEco);
 		SkyWarsReloaded.get().getConfig().set("game.ecoForKill", killerEco);
@@ -1166,6 +1172,13 @@ public class Config {
     public boolean showHealth() {
 		return showHealth;
     }
+
+    public double getBorderSize() {
+		return borderSize;
+    }
+
+	public boolean borderEnabled() { return borderEnabled; }
+
 }
 
 
