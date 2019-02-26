@@ -1,35 +1,35 @@
 package com.walrusone.skywarsreloaded.managers;
 
-import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.ChestItem;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ChestManager {
 
-    private final List<ChestItem> chestItemList = Lists.newArrayList();
-    private final List<ChestItem> opChestItemList = Lists.newArrayList();
-    private final List<ChestItem> basicChestItemList = Lists.newArrayList();
-	private final List<ChestItem> centerChestItemList = Lists.newArrayList();
-	private final List<ChestItem> opCenterChestItemList = Lists.newArrayList();
-	private final List<ChestItem> basicCenterChestItemList = Lists.newArrayList();
-    private final List<ChestItem> crateItemList = Lists.newArrayList();
+	private final Map<Integer, Inventory> chestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> opChestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> basicChestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> centerChestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> basicCenterChestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> opCenterChestItemList = new HashMap<>();
+	private final Map<Integer, Inventory> crateItemList = new HashMap<>();
+
     private final Random random = new Random();
    
     private List<Integer> randomLoc = new ArrayList<>();
@@ -53,116 +53,81 @@ public class ChestManager {
     }
     
     public void addItems(List<ItemStack> items, ChestType ct, int percent) {
-    	List<ChestItem> toAddTo;
-    	if (ct == ChestType.BASIC) {
-    		toAddTo = basicChestItemList;
-    	} else if (ct == ChestType.OP) {
-    		toAddTo = opChestItemList;
-    	} else if (ct == ChestType.NORMAL) {
-    		toAddTo = chestItemList;
-    	} else if (ct == ChestType.BASICCENTER) {
-			toAddTo = basicCenterChestItemList;
-		} else if (ct == ChestType.OPCENTER) {
-			toAddTo = opCenterChestItemList;
-		} else if (ct == ChestType.NORMALCENTER) {
-			toAddTo = centerChestItemList;
-		} else {
-    		toAddTo = crateItemList;
-    	}
-    	for (ItemStack item: items) {
-    	    toAddTo.add(new ChestItem(item, percent));
-    	}
-    	Collections.shuffle(toAddTo);
+    	Map<Integer, Inventory> toAddTo = getItemMap(ct);
+		String fileName = getFileName(ct);
+		if (!toAddTo.containsKey(percent)) {
+			toAddTo.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
+		}
+		
+		for (ItemStack iStack: items) {
+			toAddTo.get(percent).addItem(iStack);
+		}
     	save(toAddTo, ct);
     }
 
 	@SuppressWarnings("unchecked")
-	public void load(List<ChestItem> itemList, String fileName) {
-        itemList.clear();
-        File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);
+	public void load(Map<Integer, Inventory> itemList, String fileName) {
+		itemList.clear();
+		File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);
 
-        if (!chestFile.exists()) {
-        	SkyWarsReloaded.get().saveResource(fileName, false);
-        }
+		if (!chestFile.exists()) {
+			SkyWarsReloaded.get().saveResource(fileName, false);
+		}
 
-        if (chestFile.exists()) {
-            FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
+		if (chestFile.exists()) {
+			FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
 
-            if (storage.getConfigurationSection("chestItems") != null) {
-            	for (String key: storage.getConfigurationSection("chestItems").getKeys(false)) {
-            		if (Util.get().isInteger(key)) {
-                		int percent = Integer.valueOf(key);
-                    	List<ItemStack> items = (List<ItemStack>) storage.getList("chestItems." + key + ".items");
-                    	for (ItemStack iStack: items) {
-                    		itemList.add(new ChestItem(iStack, percent));
-                    	}
-            		}
-                }
-            }
-            Collections.shuffle(itemList);
-        }
+			if (storage.getConfigurationSection("chestItems") != null) {
+				for (String key: storage.getConfigurationSection("chestItems").getKeys(false)) {
+					if (Util.get().isInteger(key)) {
+						int percent = Integer.valueOf(key);
+						List<ItemStack> items = (List<ItemStack>) storage.getList("chestItems." + key + ".items");
+						if (!itemList.containsKey(percent)) {
+							itemList.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
+						}
+						for (ItemStack iStack: items) {
+							itemList.get(percent).addItem(iStack);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void save(String title) {
+		String parts[] = title.split(" ", 2);
+		ChestType ct = getChestType(ChatColor.stripColor(parts[0]));
+		if (ct != null) {
+			Map<Integer, Inventory> toSave = getItemMap(ct);
+			save(toSave, ct);
+		}
     }
-	
-    private void save(List<ChestItem> chestList, ChestType ct) {
-		String fileName;
-    	if (ct == ChestType.BASIC) {
-    		fileName = "basicchest.yml";
-    	} else 	if (ct == ChestType.BASICCENTER) {
-			fileName = "basiccenterchest.yml";
-		} else if (ct == ChestType.OP) {
-    		fileName =  "opchest.yml";
-    	} else if (ct == ChestType.OPCENTER) {
-			fileName =  "opcenterchest.yml";
-		} else if (ct == ChestType.NORMALCENTER) {
-			fileName =  "centerchest.yml";
-		} else {
-    		fileName =  "chest.yml";
-    	}
-    	
-    	List<ChestItem> toSave = new ArrayList<>(chestList);
 
-    	File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);
+	private void save(Map<Integer, Inventory> chestList, ChestType ct) {
+		String fileName = getFileName(ct);
+		File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);
 
-        if (!chestFile.exists()) {
-        	SkyWarsReloaded.get().saveResource(fileName, false);
-        }
+		if (!chestFile.exists()) {
+			SkyWarsReloaded.get().saveResource(fileName, false);
+		}
 
-        if (chestFile.exists()) {
-        	try {
-        		FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
-                Collections.sort(toSave);
-                int percent = 0;
-                List<ItemStack> items = new ArrayList<>();
-                for (int j = 0; j <= toSave.size(); j++) {
-                	ChestItem cItem = null;
-                	if (j < toSave.size()) {
-                		cItem = toSave.get(j);
-                	}
-                	if (percent == 0 && cItem != null) {
-                		percent = cItem.getChance();
-                		items.add(cItem.getItem());
-                	} else {
-                		if (cItem != null && percent == cItem.getChance()) {
-                			items.add(cItem.getItem());
-                		} else {
-                			ItemStack[] itemsToAdd = new ItemStack[items.size()];
-                			for (int i = 0; i < items.size(); i++) {
-                				itemsToAdd[i] = items.get(i);
-                			}
-                			storage.set("chestItems." + percent + ".items", itemsToAdd);
-                			items.clear();
-                			if (cItem != null) {
-                    			percent = cItem.getChance();
-                    			items.add(cItem.getItem());
-                			}
-                		}
-                	}
-                }
-                storage.save(chestFile);
-        	} catch (IOException ioException) {
-	            System.out.println("Failed to save chestfile " + fileName + ": " + ioException.getMessage());
-	        }
-        }	
+		if (chestFile.exists()) {
+			try {
+				FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
+				for (int percent: chestList.keySet()) {
+					List<ItemStack> items = new ArrayList<>();
+					for (ItemStack item: chestList.get(percent).getContents()) {
+						if (item != null && !item.getType().equals(Material.AIR)) {
+							items.add(item);
+						}
+					}
+					storage.set("chestItems." + percent + ".items", items);
+				}
+				storage.save(chestFile);
+			} catch (IOException ioException) {
+				System.out.println("Failed to save chestfile " + fileName + ": " + ioException.getMessage());
+			}
+		}
 	}
 	
     public void populateChest(Object chest, Vote cVote, boolean center) {
@@ -196,42 +161,45 @@ public class ChestManager {
     		}
     	}
     }
-    
-    private void fillChest(Object chest, List<ChestItem> fill) {
-    	Inventory inventory = null;
-    	if (chest instanceof Chest) {
-    		inventory = ((Chest) chest).getInventory();
-    	} else if (chest instanceof DoubleChest) {
-    		inventory = ((DoubleChest) chest).getInventory();
-    	}
-    	if (inventory != null) {
-    		inventory.clear();
-            int added = 0;
-            Collections.shuffle(randomLoc);
-            Collections.shuffle(randomDLoc);
 
-            for (ChestItem chestItem : fill) {
-            	if (chest instanceof Chest) {
-                    if (random.nextInt(100) + 1 <= chestItem.getChance()) {
-                        inventory.setItem(randomLoc.get(added), chestItem.getItem());
-                        added++;
-                        if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxChest()) {
-                            break;
-                        }
-                    }
-            	}
-                if (chest instanceof DoubleChest) {
-                    if (random.nextInt(100) + 1 <= chestItem.getChance()) {
-                        inventory.setItem(randomDLoc.get(added), chestItem.getItem());
-                        added++;
-                        if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxDoubleChest()) {
-                            break;
-                        }
-                    }
-                }
-            }	
-    	}
-    }
+	private void fillChest(Object chest, Map<Integer, Inventory> fill) {
+		Inventory inventory = null;
+		if (chest instanceof Chest) {
+			inventory = ((Chest) chest).getInventory();
+		} else if (chest instanceof DoubleChest) {
+			inventory = ((DoubleChest) chest).getInventory();
+		}
+		if (inventory != null) {
+			inventory.clear();
+			int added = 0;
+			Collections.shuffle(randomLoc);
+			Collections.shuffle(randomDLoc);
+			for (int chance: fill.keySet()) {
+				for (ItemStack item: fill.get(chance)) {
+					if (item != null && !item.getType().equals(Material.AIR)) {
+						if (chest instanceof Chest) {
+							if (random.nextInt(100) + 1 <= chance) {
+								inventory.setItem(randomLoc.get(added), item);
+								added++;
+								if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxChest()) {
+									break;
+								}
+							}
+						}
+						if (chest instanceof DoubleChest) {
+							if (random.nextInt(100) + 1 <= chance) {
+								inventory.setItem(randomDLoc.get(added), item);
+								added++;
+								if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxDoubleChest()) {
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
     
     public void fillCrate(Inventory inventory, int max) {
     	if (inventory != null) {
@@ -239,15 +207,81 @@ public class ChestManager {
             int added = 0;
             Collections.shuffle(randomLoc);
 
-            for (ChestItem chestItem : crateItemList) {
-                if (random.nextInt(100) + 1 <= chestItem.getChance()) {
-                    inventory.setItem(randomLoc.get(added), chestItem.getItem());
-                    added++;
-                    if (added >= inventory.getSize() - 1 || added >= max) {
-                        break;
-                    }
-                }
-            }	
+			for (int chance: crateItemList.keySet()) {
+				for (ItemStack item : crateItemList.get(chance)) {
+					if (item != null && !item.getType().equals(Material.AIR)) {
+						if (random.nextInt(100) + 1 <= chance) {
+							inventory.setItem(randomLoc.get(added), item);
+							added++;
+							if (added >= inventory.getSize() - 1 || added >= max) {
+								break;
+							}
+						}
+					}
+				}
+			}
     	}
     }
+
+	public void editChest(ChestType ct, int percent, Player player) {
+		Map<Integer, Inventory> toEdit = getItemMap(ct);
+		String fileName = getFileName(ct);
+		if (!toEdit.containsKey(percent)) {
+			toEdit.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
+		}
+    	player.openInventory(toEdit.get(percent));
+	}
+	
+	private String getFileName(ChestType ct) {
+		if (ct == ChestType.BASIC) {
+			return "basicchest.yml";
+		} else 	if (ct == ChestType.BASICCENTER) {
+			return "basiccenterchest.yml";
+		} else if (ct == ChestType.OP) {
+			return "opchest.yml";
+		} else if (ct == ChestType.OPCENTER) {
+			return "opcenterchest.yml";
+		} else if (ct == ChestType.NORMALCENTER) {
+			return "centerchest.yml";
+		} else {
+			return "chest.yml";
+		}
+	}
+
+	private ChestType getChestType(String fileName) {
+    	if (fileName.equalsIgnoreCase("basicchest.yml")) {
+    		return ChestType.BASIC;
+		} else if (fileName.equalsIgnoreCase("basiccenterchest.yml")) {
+			return ChestType.BASICCENTER;
+		} else if (fileName.equalsIgnoreCase("opchest.yml")) {
+			return ChestType.OP;
+		} else if (fileName.equalsIgnoreCase("opcenterchest.yml")) {
+			return ChestType.OPCENTER;
+		} else if (fileName.equalsIgnoreCase("centerchest.yml")) {
+			return ChestType.NORMALCENTER;
+		} else if (fileName.equalsIgnoreCase("chest.yml")){
+    		return ChestType.NORMAL;
+		}
+    	return null;
+	}
+	
+	private Map<Integer, Inventory> getItemMap(ChestType ct) {
+		if (ct == ChestType.BASIC) {
+			return basicChestItemList;
+		} else if (ct == ChestType.OP) {
+			return opChestItemList;
+		} else if (ct == ChestType.NORMAL) {
+			return chestItemList;
+		} else if (ct == ChestType.BASICCENTER) {
+			return basicCenterChestItemList;
+		} else if (ct == ChestType.OPCENTER) {
+			return opCenterChestItemList;
+		} else if (ct == ChestType.NORMALCENTER) {
+			return centerChestItemList;
+		} else {
+			return crateItemList;
+		}
+	}
+
+
 }

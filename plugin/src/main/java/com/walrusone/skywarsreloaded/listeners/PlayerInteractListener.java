@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
+import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -233,9 +234,13 @@ public class PlayerInteractListener implements Listener {
     				}
     			}
     		}
-    	}
+    	} else if (inView.getTitle().contains("chest.yml")) {
+    		SkyWarsReloaded.getCM().save(inView.getTitle());
+		}
     	
     }
+
+
     
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent event) {
@@ -387,5 +392,7 @@ public class PlayerInteractListener implements Listener {
              }
         } 
     }
+
+
     
 }

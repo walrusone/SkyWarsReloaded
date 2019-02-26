@@ -435,6 +435,7 @@ helpList:
     header2: '&7----------------[&aPlayer Commands&7]----------------'
     updatetop: '&a/sw updatetop &e - &2Forces a leaderboard update'
     chestadd: '&a/sw chestadd &e[chesttype] [method] [percentage] &e- &2Adds item(s) in hand/inventory to the chesttype with the assigned percentage'
+    chestedit: '&a/sw chestedit &e[chesttype] [percentage] &e- &2Opens an editable inventory for the items in the chestype with that percentage'
     start: '&a/sw start &e- &2Force starts a skywars match'
     stat: '&a/sw stat &e[playername] [stat] [set/add/remove] [value] &e- &2Set a players stat value'
     setspawn: '&a/sw setspawn &e- &2Sets the spawn at your current location'

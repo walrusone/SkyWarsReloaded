@@ -3,21 +3,13 @@ package com.walrusone.skywarsreloaded.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.walrusone.skywarsreloaded.commands.admin.*;
 import com.walrusone.skywarsreloaded.commands.player.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.commands.admin.ChestAddCmd;
-import com.walrusone.skywarsreloaded.commands.admin.ClearStatsCmd;
-import com.walrusone.skywarsreloaded.commands.admin.HoloAddCmd;
-import com.walrusone.skywarsreloaded.commands.admin.HoloRemoveCmd;
-import com.walrusone.skywarsreloaded.commands.admin.ReloadCmd;
-import com.walrusone.skywarsreloaded.commands.admin.UpdateTopCmd;
-import com.walrusone.skywarsreloaded.commands.admin.SetSpawnCmd;
-import com.walrusone.skywarsreloaded.commands.admin.SetStatsCmd;
-import com.walrusone.skywarsreloaded.commands.admin.StartCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -28,6 +20,7 @@ public class CmdManager implements CommandExecutor {
 	public CmdManager() {
 		admincmds.add(new ReloadCmd("sw"));
 		admincmds.add(new ChestAddCmd("sw"));
+		admincmds.add(new ChestEditCmd("sw"));
 		admincmds.add(new SetStatsCmd("sw"));
 		admincmds.add(new ClearStatsCmd("sw"));
 		admincmds.add(new SetSpawnCmd("sw"));
