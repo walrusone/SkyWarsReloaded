@@ -29,11 +29,17 @@ public class ChestAddCmd extends BaseCmd {
 		ChestType ct;
 		if (type.equalsIgnoreCase("basic")) {
 			ct = ChestType.BASIC;
+		} else if (type.equalsIgnoreCase("basiccenter")) {
+			ct = ChestType.BASICCENTER;
 		} else if (type.equalsIgnoreCase("normal")) {
 			ct = ChestType.NORMAL;
+		} else if (type.equalsIgnoreCase("normalcenter")) {
+				ct = ChestType.NORMALCENTER;
 		} else if (type.equalsIgnoreCase("op")) {
 			ct = ChestType.OP;
-		} else if (type.equalsIgnoreCase("crate")) {
+		} else if (type.equalsIgnoreCase("opcenter")) {
+			ct = ChestType.OPCENTER;
+		}  else if (type.equalsIgnoreCase("crate")) {
 			ct = ChestType.CRATE;
 		} else {
 			player.sendMessage(new Messaging.MessageFormatter().format("error.chesttype"));

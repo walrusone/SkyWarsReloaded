@@ -96,7 +96,6 @@ public class NMSHandler implements NMS {
 	
 	public ItemStack getMainHandItem(Player player) {
         return player.getInventory().getItemInMainHand();
-
 	}
 	
 	public ItemStack getOffHandItem(Player player) {

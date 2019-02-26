@@ -107,9 +107,15 @@ public class ChestOption extends GameOption {
 
 	@Override
 	public void completeOption() {
-		World mapWorld = gameMap.getCurrentWorld();
+
         Vote cVote = gameMap.getChestOption().getVoted();
-        for (CoordLoc eChest: gameMap.getChests()) {
+        populateChests(gameMap.getChests(), cVote, false);
+		populateChests(gameMap.getCenterChests(), cVote, true);
+	}
+
+	private void populateChests(ArrayList<CoordLoc> chests, Vote cVote, boolean center) {
+		World mapWorld = gameMap.getCurrentWorld();
+		for (CoordLoc eChest: chests) {
 			Location loc;
 			int x = eChest.getX();
 			int y = eChest.getY();
@@ -119,9 +125,9 @@ public class ChestOption extends GameOption {
 			InventoryHolder ih = chest.getInventory().getHolder();
 			if (ih instanceof DoubleChest) {
 				DoubleChest dc = (DoubleChest) ih;
-				SkyWarsReloaded.getCM().populateChest(dc, cVote);
+				SkyWarsReloaded.getCM().populateChest(dc, cVote, center);
 			} else {
-				SkyWarsReloaded.getCM().populateChest(chest, cVote);
+				SkyWarsReloaded.getCM().populateChest(chest, cVote, center);
 			}
 		}
 	}

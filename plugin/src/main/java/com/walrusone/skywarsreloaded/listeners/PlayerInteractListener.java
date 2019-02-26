@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -362,8 +363,12 @@ public class PlayerInteractListener implements Listener {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							map.addChest((Chest) loc.getBlock().getState());
-							player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addChest"));
+							map.addChest((Chest) loc.getBlock().getState(), map.getChestPlacementType());
+							if (map.getChestPlacementType() == ChestPlacementType.NORMAL) {
+								player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addChest"));
+							} else if (map.getChestPlacementType() == ChestPlacementType.CENTER) {
+								player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addCenterChest"));
+							}
 						}
 					}.runTaskLater(SkyWarsReloaded.get(), 2L);
 				}

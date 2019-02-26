@@ -40,7 +40,7 @@ permissions:
       sw.player: true
       sw.setspawn: true
       sw.reload: true
-      sw.setstat: true
+      sw.stat: true
       sw.clearstats: true
       sw.chestadd: true
       sw.start: true
@@ -54,6 +54,7 @@ permissions:
       sw.map.arenas: true
       sw.map.create: true
       sw.map.creator: true
+      sw.map.chesttype: true
       sw.map.delete: true
       sw.map.edit: true
       sw.map.list: true
@@ -141,7 +142,7 @@ permissions:
   sw.start:
     description: Allows a player to use the start command.
     default: op
-  sw.setstat:
+  sw.stat:
     description: Allows a player to set a players stats.
     default: op
   sw.clearstats:
@@ -155,6 +156,9 @@ permissions:
     default: op
   sw.chestadd:
     description: Allows a player to use the chestadd command.
+    default: op
+  sw.chesttype:
+    description: Allows a player to use the chesttype command.
     default: op
   sw.map.arenas:
     description: Allows a player to use the Arenas GUI.

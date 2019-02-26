@@ -5,23 +5,11 @@ package com.walrusone.skywarsreloaded.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.walrusone.skywarsreloaded.commands.maps.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.walrusone.skywarsreloaded.commands.maps.AddSpawnCmd;
-import com.walrusone.skywarsreloaded.commands.maps.ArenaCmd;
-import com.walrusone.skywarsreloaded.commands.maps.CreateCmd;
-import com.walrusone.skywarsreloaded.commands.maps.CreatorCmd;
-import com.walrusone.skywarsreloaded.commands.maps.DeleteCmd;
-import com.walrusone.skywarsreloaded.commands.maps.EditCmd;
-import com.walrusone.skywarsreloaded.commands.maps.ListCmd;
-import com.walrusone.skywarsreloaded.commands.maps.MinimumCmd;
-import com.walrusone.skywarsreloaded.commands.maps.NameCmd;
-import com.walrusone.skywarsreloaded.commands.maps.RefreshData;
-import com.walrusone.skywarsreloaded.commands.maps.RegisterCmd;
-import com.walrusone.skywarsreloaded.commands.maps.SaveCmd;
-import com.walrusone.skywarsreloaded.commands.maps.UnregisterCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 
@@ -43,6 +31,7 @@ public class MapCmdManager implements CommandExecutor {
 		mapcmds.add(new CreatorCmd("map"));
 		mapcmds.add(new ArenaCmd("map"));
 		mapcmds.add(new AddSpawnCmd("map"));
+		mapcmds.add(new ChestTypeCmd("map"));
 	}
 
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 

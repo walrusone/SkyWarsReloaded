@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.game;
 
+import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
@@ -100,6 +101,7 @@ public class GameMap {
     private ArrayList<TeamCard> teamCards;
     private int teamSize;
 
+    private ChestPlacementType chestPlacementType;
     private ArrayList<UUID> spectators = new ArrayList<>();
     private String name;
     private int timer;
@@ -118,6 +120,7 @@ public class GameMap {
     private WeatherOption weatherOption;
     private ModifierOption modifierOption;
 	private ArrayList<CoordLoc> chests;
+	private ArrayList<CoordLoc> centerChests;
 	private String environment;
 	private String displayName;
 	private String designedBy;
@@ -141,6 +144,8 @@ public class GameMap {
     	deathMatchSpawns = new ArrayList<>();
     	signs = new ArrayList<>();
     	chests = new ArrayList<>();
+		centerChests = new ArrayList<>();
+		chestPlacementType = ChestPlacementType.NORMAL;
     	loadArenaData();
         this.thunder = false;
         allowRegen = true;
@@ -603,7 +608,14 @@ public class GameMap {
    	 	for (CoordLoc chest: chests) {
    	 		stringChests.add(chest.getLocation());
    	 	}
-   	 	fc.set("chests", stringChests);
+		fc.set("chests", stringChests);
+
+		List<String> stringCenterChests = new ArrayList<>();
+		for (CoordLoc chest: centerChests) {
+			stringCenterChests.add(chest.getLocation());
+		}
+   	 	fc.set("centerChests", stringCenterChests);
+
    	 	fc.set("legacy", null);
    	 	try {
 			fc.save(mapFile);
@@ -642,6 +654,7 @@ public class GameMap {
         List<String> dSpawns = fc.getStringList("deathMatchSpawns");
         List<String> stringSigns = fc.getStringList("signs");
         List<String> stringChests = fc.getStringList("chests");
+		List<String> stringCenterChests = fc.getStringList("centerChests");
 
         teamCards.clear();
         for (String spawn: spawns) {
@@ -666,8 +679,13 @@ public class GameMap {
 
    	 	chests.clear();
    	 	for (String chest: stringChests) {
-   	 		addChest(Util.get().getCoordLocFromString(chest));
+   	 		addChest(Util.get().getCoordLocFromString(chest), ChestPlacementType.NORMAL, false);
    	 	}
+
+		centerChests.clear();
+		for (String chest: stringCenterChests) {
+			addChest(Util.get().getCoordLocFromString(chest), ChestPlacementType.CENTER, false);
+		}
 
 		loadEvents();
    	 	try {
@@ -859,7 +877,7 @@ public class GameMap {
 			                  }
 			            } else if (te instanceof Chest) {
 				                  Chest chest = (Chest) te;
-				                  addChest(chest);
+				                  addChest(chest, ChestPlacementType.NORMAL);
 			            } 
 		           }
 		        }
@@ -1100,6 +1118,10 @@ public class GameMap {
     
     public ArrayList<CoordLoc> getChests(){
 		return chests;
+	}
+
+	public ArrayList<CoordLoc> getCenterChests(){
+		return centerChests;
 	}
     
     public MatchState getMatchState() {
@@ -1455,7 +1477,13 @@ public class GameMap {
 		return result;
 	}
 	
-	public void addChest(Chest chest) {
+	public void addChest(Chest chest, ChestPlacementType cpt) {
+		ArrayList<CoordLoc> list;
+		if (cpt == ChestPlacementType.NORMAL) {
+			list = chests;
+		} else {
+			list = centerChests;
+		}
 		InventoryHolder ih = chest.getInventory().getHolder();
         if (ih instanceof DoubleChest) {
         	DoubleChest dc = (DoubleChest) ih;
@@ -1463,22 +1491,28 @@ public class GameMap {
 			Chest right = (Chest) dc.getRightSide();
 			CoordLoc locLeft = new CoordLoc(left.getX(), left.getY(), left.getZ());
 			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
-			if (!(chests.contains(locLeft) || chests.contains(locRight))) {
-				addChest(locLeft);
+			if (!(list.contains(locLeft) || list.contains(locRight))) {
+				addChest(locLeft, cpt, true);
 			}
         } else {
         	CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
-            if (!chests.contains(loc)){
-      	  		addChest(loc);
+            if (!list.contains(loc)){
+				addChest(loc, cpt, true);
             }
         }
 	}
-	
-	private void addChest(CoordLoc loc) {
-		chests.add(loc);
-		saveArenaData();
+
+	private void addChest(CoordLoc loc, ChestPlacementType cpt, boolean save) {
+		ArrayList<CoordLoc> list;
+		if (cpt == ChestPlacementType.NORMAL) {
+			list = chests;
+		} else {
+			list = centerChests;
+		}
+		list.add(loc);
+		if (save) {saveArenaData();}
 	}
-	
+
 	public void removeChest(Chest chest) {
 		InventoryHolder ih = chest.getInventory().getHolder();
 		if (ih instanceof DoubleChest) {
@@ -1488,11 +1522,14 @@ public class GameMap {
 			CoordLoc locLeft = new CoordLoc(left.getX(), left.getY(), left.getZ());
 			CoordLoc locRight = new CoordLoc(right.getX(), right.getY(), right.getZ());
 			chests.remove(locLeft);
+			centerChests.remove(locLeft);
 			chests.remove(locRight);
+			centerChests.remove(locLeft);
 			saveArenaData();
 		} else {
 			CoordLoc loc = new CoordLoc(chest.getX(), chest.getY(), chest.getZ());
 			chests.remove(loc);
+			centerChests.remove(loc);
 			saveArenaData();
 		}
 
@@ -1707,6 +1744,14 @@ public class GameMap {
 
 	public boolean allowFriendlyFire() {
     	return allowFriendlyFire;
+	}
+
+	public ChestPlacementType getChestPlacementType() {
+		return chestPlacementType;
+	}
+
+	public void setChestPlacementType(ChestPlacementType chestPlacementType) {
+		this.chestPlacementType = chestPlacementType;
 	}
 }
 

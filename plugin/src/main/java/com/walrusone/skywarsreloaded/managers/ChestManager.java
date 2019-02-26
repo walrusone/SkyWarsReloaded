@@ -26,6 +26,9 @@ public class ChestManager {
     private final List<ChestItem> chestItemList = Lists.newArrayList();
     private final List<ChestItem> opChestItemList = Lists.newArrayList();
     private final List<ChestItem> basicChestItemList = Lists.newArrayList();
+	private final List<ChestItem> centerChestItemList = Lists.newArrayList();
+	private final List<ChestItem> opCenterChestItemList = Lists.newArrayList();
+	private final List<ChestItem> basicCenterChestItemList = Lists.newArrayList();
     private final List<ChestItem> crateItemList = Lists.newArrayList();
     private final Random random = new Random();
    
@@ -37,6 +40,9 @@ public class ChestManager {
         load(chestItemList, "chest.yml");
         load(opChestItemList, "opchest.yml");
         load(basicChestItemList, "basicchest.yml");
+		load(centerChestItemList, "centerchest.yml");
+		load(opCenterChestItemList, "opcenterchest.yml");
+		load(basicCenterChestItemList, "basiccenterchest.yml");
         load(crateItemList, "crates.yml");
         for (int i = 0; i < 27; i++) {
         	randomLoc.add(i);
@@ -54,7 +60,13 @@ public class ChestManager {
     		toAddTo = opChestItemList;
     	} else if (ct == ChestType.NORMAL) {
     		toAddTo = chestItemList;
-    	} else {
+    	} else if (ct == ChestType.BASICCENTER) {
+			toAddTo = basicCenterChestItemList;
+		} else if (ct == ChestType.OPCENTER) {
+			toAddTo = opCenterChestItemList;
+		} else if (ct == ChestType.NORMALCENTER) {
+			toAddTo = centerChestItemList;
+		} else {
     		toAddTo = crateItemList;
     	}
     	for (ItemStack item: items) {
@@ -95,9 +107,15 @@ public class ChestManager {
 		String fileName;
     	if (ct == ChestType.BASIC) {
     		fileName = "basicchest.yml";
-    	} else if (ct == ChestType.OP) {
+    	} else 	if (ct == ChestType.BASICCENTER) {
+			fileName = "basiccenterchest.yml";
+		} else if (ct == ChestType.OP) {
     		fileName =  "opchest.yml";
-    	} else {
+    	} else if (ct == ChestType.OPCENTER) {
+			fileName =  "opcenterchest.yml";
+		} else if (ct == ChestType.NORMALCENTER) {
+			fileName =  "centerchest.yml";
+		} else {
     		fileName =  "chest.yml";
     	}
     	
@@ -144,17 +162,28 @@ public class ChestManager {
         	} catch (IOException ioException) {
 	            System.out.println("Failed to save chestfile " + fileName + ": " + ioException.getMessage());
 	        }
-            
         }	
 	}
 	
-    public void populateChest(Object chest, Vote cVote) {
+    public void populateChest(Object chest, Vote cVote, boolean center) {
     	if (cVote == Vote.CHESTOP) {
-    		fillChest(chest, opChestItemList);
+    		if (center) {
+    			fillChest(chest, opCenterChestItemList);
+			} else {
+				fillChest(chest, opChestItemList);
+			}
     	} else if (cVote == Vote.CHESTBASIC) {
-    		fillChest(chest, basicChestItemList);
+			if (center) {
+				fillChest(chest, basicCenterChestItemList);
+			} else {
+				fillChest(chest, basicChestItemList);
+			}
     	} else if (cVote == Vote.CHESTNORMAL) {
-    		fillChest(chest, chestItemList);
+    		if (center) {
+				fillChest(chest, centerChestItemList);
+			} else {
+				fillChest(chest, chestItemList);
+			}
     	} else {
     		Inventory inventory = null;
     		if (chest instanceof DoubleChest) {
