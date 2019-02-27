@@ -139,6 +139,20 @@ events:
     announceTimer: false
     repeatable: true
     spawnPer5Tick: 2
+  ShrinkingBorderEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cShrinking Border"
+    subtitle: "&1The walls are closing around you!"
+    startMessage: "&cShrinking Border &bevent has begun!"
+    endMessage: "&cShrinking Border &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+    startingBorderSize: 300
+    shrinkRepeatDelay: 1
 spectateSpawn:
 spawns:
 signs:

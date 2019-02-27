@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
+import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.menus.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -35,21 +36,6 @@ import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
-import com.walrusone.skywarsreloaded.listeners.ArenaDamageListener;
-import com.walrusone.skywarsreloaded.listeners.ChatListener;
-import com.walrusone.skywarsreloaded.listeners.IconMenuController;
-import com.walrusone.skywarsreloaded.listeners.LobbyListener;
-import com.walrusone.skywarsreloaded.listeners.ParticleEffectListener;
-import com.walrusone.skywarsreloaded.listeners.PingListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerCommandPrepocessListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerDeathListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerInteractListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerJoinListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerQuitListener;
-import com.walrusone.skywarsreloaded.listeners.PlayerTeleportListener;
-import com.walrusone.skywarsreloaded.listeners.SpectateListener;
-import com.walrusone.skywarsreloaded.listeners.SwapHandListener;
-import com.walrusone.skywarsreloaded.listeners.TauntListener;
 import com.walrusone.skywarsreloaded.managers.ChestManager;
 import com.walrusone.skywarsreloaded.managers.PlayerOptionsManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -167,8 +153,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this);
         this.getServer().getPluginManager().registerEvents(new LobbyListener(), this);
         this.getServer().getPluginManager().registerEvents(new SpectateListener(), this);
-        this.getServer().getPluginManager().registerEvents(new ChatListener(), this);        
-        if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
+        this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
+		this.getServer().getPluginManager().registerEvents(new ProjectileSpleefListener(), this);
+		if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
 			hu = null;
         	if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
         		hu = new HoloDisUtil();

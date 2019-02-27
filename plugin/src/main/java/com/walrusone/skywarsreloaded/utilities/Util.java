@@ -111,7 +111,10 @@ public class Util {
 	
 	public void doCommands(List<String> commandList, Player player) {
 		for (String com: commandList) {
-			String command = com.replace("<player>", player.getName());
+			String command = com;
+			if (player != null) {
+				command = com.replace("<player>", player.getName());
+			}
 			SkyWarsReloaded.get().getServer().dispatchCommand(SkyWarsReloaded.get().getServer().getConsoleSender(), command);
 		}
 	}

@@ -265,6 +265,8 @@ public class NMSHandler implements NMS {
 			return new ItemStack(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
 		} else if (item.equalsIgnoreCase("MOB_SPAWNER")) {
 			return new ItemStack(Material.SPAWNER);
+		} else if (item.equalsIgnoreCase("SNOW_BALL")) {
+			return new ItemStack(Material.SNOWBALL);
 		} else {
 			return new ItemStack(Material.AIR, 1);
 		}

@@ -2,6 +2,7 @@ debugMode: false
 spawn: null
 bungeeMode: false
 bungeeLobby: lobby
+gameEndCommands:
 tauntCooldown: 10
 enablePressurePlateJoin: true
 teleportToSpawnOnJoin: false

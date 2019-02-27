@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.game;
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
+import com.walrusone.skywarsreloaded.matchevents.*;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
 import org.bukkit.*;
@@ -16,17 +17,6 @@ import com.google.common.collect.Iterables;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.managers.WorldManager;
-import com.walrusone.skywarsreloaded.matchevents.AnvilRainEvent;
-import com.walrusone.skywarsreloaded.matchevents.ArrowRainEvent;
-import com.walrusone.skywarsreloaded.matchevents.ChestRefillEvent;
-import com.walrusone.skywarsreloaded.matchevents.CrateDropEvent;
-import com.walrusone.skywarsreloaded.matchevents.DeathMatchEvent;
-import com.walrusone.skywarsreloaded.matchevents.DisableRegenEvent;
-import com.walrusone.skywarsreloaded.matchevents.EnderDragonEvent;
-import com.walrusone.skywarsreloaded.matchevents.HealthDecayEvent;
-import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
-import com.walrusone.skywarsreloaded.matchevents.MobSpawnEvent;
-import com.walrusone.skywarsreloaded.matchevents.WitherEvent;
 import com.walrusone.skywarsreloaded.menus.ArenaMenu;
 import com.walrusone.skywarsreloaded.menus.ArenasMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.ChestOption;
@@ -85,6 +75,8 @@ public class GameMap {
 	private boolean forceStart;
 	private boolean allowFallDamage;
 	private boolean allowRegen;
+	private boolean projectilesOnly;
+	private boolean projectileSpleefEnabled;
     private boolean thunder;
     private boolean allowFriendlyFire;
 	private boolean allowScanvenger;
@@ -143,6 +135,8 @@ public class GameMap {
     	loadArenaData();
         this.thunder = false;
         allowRegen = true;
+        projectilesOnly = false;
+        projectileSpleefEnabled = true;
         timer = SkyWarsReloaded.getCfg().getWaitTimer();
         joinQueue = new GameQueue(this);
         arenakey = name + "menu";
@@ -191,7 +185,7 @@ public class GameMap {
 	private boolean isOutsideBorder(Player p){
 			Location loc = p.getLocation();
 			WorldBorder border = p.getWorld().getWorldBorder();
-			double size = border.getSize()/2;
+			double size = SkyWarsReloaded.getCfg().getBorderSize()/2;
 			Location center = border.getCenter();
 			double x = loc.getX() - center.getX(), z = loc.getZ() - center.getZ();
 			return ((x > size || (-x) > size) || (z > size || (-z) > size));
@@ -219,6 +213,9 @@ public class GameMap {
        	events.add(new ArrowRainEvent(this, fc.getBoolean("events.ArrowRainEvent.enabled")));
         events.add(new AnvilRainEvent(this, fc.getBoolean("events.AnvilRainEvent.enabled")));
        	events.add(new CrateDropEvent(this, fc.getBoolean("events.CrateDropEvent.enabled")));
+		events.add(new ShrinkingBorderEvent(this, fc.getBoolean("events.ShrinkingBorderEvent.enabled")));
+		events.add(new ProjectilesOnlyEvent(this, fc.getBoolean("events.ProjectilesOnlyEvent.enabled")));
+		events.add(new ProjectileSpleefEvent(this, fc.getBoolean("events.ProjectileSpleefEvent.enabled")));
 	}
 
 	public void update() {
@@ -1768,7 +1765,23 @@ public class GameMap {
 		return allowScanvenger;
     }
 
-    public class TeamCardComparator implements Comparator<TeamCard> {
+	public void setProjectilesOnly(boolean b) {
+		projectilesOnly = b;
+	}
+
+	public boolean getProjectilesOnly() {
+		return projectilesOnly;
+	}
+
+	public boolean isProjectileSpleefEnabled() {
+		return projectileSpleefEnabled;
+	}
+
+	public void setProjectileSpleefEnabled(boolean b) {
+		projectileSpleefEnabled = b;
+	}
+
+	public class TeamCardComparator implements Comparator<TeamCard> {
 		@Override
 	    public int compare(TeamCard f1, TeamCard f2) {
 			return Integer.compare(f1.getFullCount(), f2.getFullCount());

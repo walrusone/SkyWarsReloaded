@@ -21,7 +21,6 @@ public class ArenaDamageListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerDamagedByAlly(EntityDamageByEntityEvent event) {
 		Player target;
-		Player hitter;
 		Entity damager = event.getDamager();
 		if (event.getEntity() instanceof Player) {
 			target = (Player) event.getEntity();
@@ -32,34 +31,49 @@ public class ArenaDamageListener implements Listener {
 						event.setCancelled(true);
 					} else {
 						event.setCancelled(false);
-						if (damager instanceof Projectile) {
-							Projectile proj = (Projectile) damager;
-							if (damager instanceof Snowball) {
-								event.setDamage(SkyWarsReloaded.getCfg().getSnowDamage());
+						if (gameMap.getProjectilesOnly()) {
+							if (damager instanceof Projectile) {
+								doProjectile(damager, event, target);
+							} else if (damager instanceof Player) {
+								event.setCancelled(true);
 							}
-							if (damager instanceof Egg) {
-								event.setDamage(SkyWarsReloaded.getCfg().getEggDamage());
-							}
-							if (proj.getShooter() instanceof Player) {
-								hitter = (Player) proj.getShooter();
-								if (hitter != null && hitter != target) {
-									PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
-									if (pd != null) {
-										pd.setTaggedBy(hitter);
-									}
-								}
-							}
-						} else if (damager instanceof Player) {
-							hitter = (Player) damager;
-							PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
-							if (pd != null) {
-								pd.setTaggedBy(hitter);
+						} else {
+							if (damager instanceof Projectile) {
+								doProjectile(damager, event, target);
+							} else if (damager instanceof Player) {
+								doPVP(damager, target);
 							}
 						}
 					}
-
 				}
 			}
+		}
+	}
+
+	private void doProjectile(Entity damager, EntityDamageByEntityEvent event, Player target) {
+		Projectile proj = (Projectile) damager;
+		if (damager instanceof Snowball) {
+			event.setDamage(SkyWarsReloaded.getCfg().getSnowDamage());
+		}
+		if (damager instanceof Egg) {
+			event.setDamage(SkyWarsReloaded.getCfg().getEggDamage());
+		}
+		if (proj.getShooter() instanceof Player) {
+			Player hitter = (Player) proj.getShooter();
+			if (hitter != null && hitter != target) {
+				PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+				if (pd != null) {
+					pd.setTaggedBy(hitter);
+				}
+			}
+		}
+	}
+
+	private void doPVP(Entity damager, Player target) {
+		Player hitter = (Player) damager;
+		PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+		if (pd != null) {
+			pd.setTaggedBy(hitter);
 		}
 	}
 	

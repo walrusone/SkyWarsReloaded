@@ -493,3 +493,5 @@ helpList:
     leave: '&a/swparty leave &e- &2Leave your current party'
     name: '&a/swparty name &e[partyname] &e- &2Renames your party to &e[partyname]'
     info: '&a/swparty info &e- Displays your current parties info'
+bungee:
+  motd: '{matchstate}:{playercount}:{maxplayers}:{displayname}' 

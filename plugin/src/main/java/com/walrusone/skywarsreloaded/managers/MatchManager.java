@@ -540,6 +540,9 @@ public class MatchManager
                     }
 					new BukkitRunnable() {
 						public void run() {
+							if(SkyWarsReloaded.getCfg().bungeeMode()) {
+								Util.get().doCommands(SkyWarsReloaded.getCfg().getGameEndCommands(), null);
+							}
 							gameMap.refreshMap();
 							if (debug) {
 								Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");

@@ -20,6 +20,7 @@ public class Config {
 	private boolean bungeeMode;
 	private boolean economyEnabled;
 	private String bungeeLobby;
+	private List<String> gameEndCommands;
 
 	
 	private String resourcePack;
@@ -268,7 +269,7 @@ public class Config {
 			bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
 			economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
 			bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
-			
+			gameEndCommands = SkyWarsReloaded.get().getConfig().getStringList("gameEndCommands");
 			resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
 			promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
 			
@@ -492,6 +493,7 @@ public class Config {
 		SkyWarsReloaded.get().getConfig().set("economyEnabled", economyEnabled);
 		SkyWarsReloaded.get().getConfig().set("bungeeMode", bungeeMode);
 		SkyWarsReloaded.get().getConfig().set("bungeeLobby", bungeeLobby);
+		SkyWarsReloaded.get().getConfig().set("gameEndCommands", gameEndCommands);
 		
 		SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
 		SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
@@ -1179,6 +1181,9 @@ public class Config {
 
 	public boolean borderEnabled() { return borderEnabled; }
 
+	public List<String> getGameEndCommands() {
+		return gameEndCommands;
+	}
 }
 
 
