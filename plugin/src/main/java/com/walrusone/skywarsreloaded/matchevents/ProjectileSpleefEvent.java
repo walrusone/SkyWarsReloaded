@@ -8,16 +8,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ProjectileSpleefEvent extends MatchEvent {
 
 	private BukkitTask br;
+	private int eggsToAdd;
 
 	public ProjectileSpleefEvent(GameMap map, boolean b) {
 		this.gMap = map;
@@ -45,6 +48,7 @@ public class ProjectileSpleefEvent extends MatchEvent {
 	        this.endMessage = fc.getString("events." + eventName + ".endMessage");
 	        this.announceEvent = fc.getBoolean("events." + eventName + ".announceTimer");
 	        this.repeatable = fc.getBoolean("events." + eventName + ".repeatable");
+			this.eggsToAdd = fc.getInt("events." + eventName + ".eggsAddedToInventory");
 	    }
 	}
 	
@@ -54,6 +58,16 @@ public class ProjectileSpleefEvent extends MatchEvent {
 			this.fired = true;
 			sendTitle();
 			gMap.setProjectileSpleefEnabled(true);
+			if (eggsToAdd > 0) {
+				for (Player player: gMap.getAlivePlayers()) {
+					HashMap<Integer,ItemStack> leftOvers = player.getInventory().addItem(new ItemStack(Material.EGG, eggsToAdd));
+					if (!leftOvers.isEmpty()) {
+						for (ItemStack stack: leftOvers.values()) {
+							player.getWorld().dropItemNaturally(player.getLocation(), stack);
+						}
+					}
+				}
+			}
 			if (length != -1) {
 				br = new BukkitRunnable() {
 					@Override

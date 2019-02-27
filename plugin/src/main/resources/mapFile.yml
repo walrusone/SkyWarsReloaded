@@ -153,6 +153,31 @@ events:
     repeatable: false
     startingBorderSize: 300
     shrinkRepeatDelay: 1
+  ProjectilesOnlyEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cProjectiles Only"
+    subtitle: "&1No PVP - Projectiles Only!"
+    startMessage: "&cProjectiles Only &bevent has begun!"
+    endMessage: "&cProjectiles Only &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  ProjectileSpleefEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cProjectile Spleef"
+    subtitle: "&1Projectiles Instantly Break Blocks!"
+    startMessage: "&cProjectile Spleef &bevent has begun!"
+    endMessage: "&cProjectile Spleef &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+    eggsAddedToInventory: 64
 spectateSpawn:
 spawns:
 signs:
