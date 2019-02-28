@@ -17,7 +17,7 @@ public class ChestTypeCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-			String worldName = args[1].toLowerCase();
+			String worldName = args[1];
 			GameMap map = GameMap.getMap(worldName);
 			if (map != null) {
 				if(map.getChestPlacementType() == ChestPlacementType.NORMAL) {

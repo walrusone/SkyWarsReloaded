@@ -16,7 +16,7 @@ public class CreatorCmd extends BaseCmd {
 
 	@Override
 	public boolean run() {
-			String worldName = args[1].toLowerCase();
+			String worldName = args[1];
 			StringBuilder creator = new StringBuilder();
 			for (int i = 2; i < args.length; i++) {
 				creator.append(args[i]);

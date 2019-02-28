@@ -8,7 +8,7 @@ public class LegacyLoadCmd extends BaseCmd {
 
 	public LegacyLoadCmd(String t) {
 		type = t;
-		forcePlayer = false;
+		forcePlayer = true;
 		cmdName = "legacyload";
 		alias = new String[]{"ll"};
 		argLength = 2; //counting cmdName
@@ -19,7 +19,7 @@ public class LegacyLoadCmd extends BaseCmd {
 			String worldName = args[1];
 			GameMap gMap = GameMap.getMap(worldName);
 			if (gMap != null) {
-				gMap.scanWorld(true, sender);
+				gMap.scanWorld(true, player);
 			} else {
 				sender.sendMessage(new Messaging.MessageFormatter().format("error.map-register-not-exist"));
 			}

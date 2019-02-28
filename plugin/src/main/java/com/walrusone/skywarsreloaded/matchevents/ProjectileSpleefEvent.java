@@ -34,7 +34,7 @@ public class ProjectileSpleefEvent extends MatchEvent {
         
         File mapFile = new File(mapDataDirectory, gMap.getName() + ".yml");
 	    if (mapFile.exists()) {
-	    	eventName = "ProjectilesSpleefEvent";
+	    	eventName = "ProjectileSpleefEvent";
 	    	slot = 13;
 	    	material = new ItemStack(Material.EGG, 1);
 	        FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);

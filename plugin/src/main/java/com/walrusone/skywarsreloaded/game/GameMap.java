@@ -7,7 +7,6 @@ import com.walrusone.skywarsreloaded.matchevents.*;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
 import org.bukkit.*;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -138,7 +137,7 @@ public class GameMap {
         this.thunder = false;
         allowRegen = true;
         projectilesOnly = false;
-        projectileSpleefEnabled = true;
+        projectileSpleefEnabled = false;
 		doubleDamageEnabled = false;
 		timer = SkyWarsReloaded.getCfg().getWaitTimer();
         joinQueue = new GameQueue(this);
@@ -153,7 +152,12 @@ public class GameMap {
         modifierOption = new ModifierOption(this, name + "modifier");
         gameboard = new GameBoard(this);
         if (legacy) {
-			scanWorld(false, null);
+			boolean loaded = loadWorldForScanning(name);
+			if (loaded) {
+				ChunkIterator(false, null);
+				saveArenaData();
+				SkyWarsReloaded.getWM().deleteWorld(name);
+			}
         }
         if (registered) {
         	registerMap();
@@ -167,11 +171,13 @@ public class GameMap {
 		}
     }
 
-	public void scanWorld(boolean b, CommandSender sender) {
-		boolean loaded = loadWorldForScanning(name);
-		if (loaded) {
-			ChunkIterator(b, sender);
-			SkyWarsReloaded.getWM().deleteWorld(name);
+	public void scanWorld(boolean b, Player player) {
+    	if (inEditing) {
+			ChunkIterator(b, player);
+			saveArenaData();
+		} else {
+			GameMap.editMap(this, player);
+			ChunkIterator(b, player);
 			saveArenaData();
 		}
 	}
@@ -485,7 +491,7 @@ public class GameMap {
 	public static GameMap getMap(final String mapName) {
     	shuffle();
     	for (final GameMap map : GameMap.arenas) {
-            if (map.name.equals(ChatColor.stripColor(mapName))) {
+            if (map.name.equalsIgnoreCase(ChatColor.stripColor(mapName))) {
                 return map;
             }
         }
@@ -776,33 +782,33 @@ public class GameMap {
 	}
 
     private static boolean loadWorldForScanning(String name) {
-        	File dataDirectory = SkyWarsReloaded.get().getDataFolder();
-    		File maps = new File (dataDirectory, "maps");
-    		
-    			String root = SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath();
-    			File rootDirectory = new File(root);
-    			WorldManager wm = SkyWarsReloaded.getWM();
-    			File source = new File(maps, name);
-    			File target = new File(rootDirectory, name);
-    			wm.copyWorld(source, target);
-    			boolean mapExists = false;
-    			if(target.isDirectory()) {
-    			    String[] list = target.list();
-    				if(list != null && list.length > 0) {
-    		 			mapExists = true;
-    				}	 
-    			}
-    			if (mapExists) {
-    				SkyWarsReloaded.getWM().deleteWorld(name);
-    			}
-    			
-    			wm.copyWorld(source, target);
-    			
-    			boolean loaded = SkyWarsReloaded.getWM().loadWorld(name, World.Environment.NORMAL);
-    			if(!loaded) {
-    				SkyWarsReloaded.get().getLogger().info("Could Not Load Map: " + name);
-    			}
-    			return loaded;
+		File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+		File maps = new File (dataDirectory, "maps");
+
+		String root = SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath();
+		File rootDirectory = new File(root);
+		WorldManager wm = SkyWarsReloaded.getWM();
+		File source = new File(maps, name);
+		File target = new File(rootDirectory, name);
+		wm.copyWorld(source, target);
+		boolean mapExists = false;
+		if(target.isDirectory()) {
+			String[] list = target.list();
+			if(list != null && list.length > 0) {
+				mapExists = true;
+			}
+		}
+		if (mapExists) {
+			SkyWarsReloaded.getWM().deleteWorld(name);
+		}
+
+		wm.copyWorld(source, target);
+
+		boolean loaded = SkyWarsReloaded.getWM().loadWorld(name, World.Environment.NORMAL);
+		if(!loaded) {
+			SkyWarsReloaded.get().getLogger().info("Could Not Load Map: " + name);
+		}
+		return loaded;
 	}
 
 	public static ArrayList<GameMap> getMaps() {
@@ -876,7 +882,7 @@ public class GameMap {
 			}
 	}
 	
-	private void ChunkIterator(boolean message, CommandSender sender) {
+	private void ChunkIterator(boolean message, Player sender) {
 		World chunkWorld;
 		chunkWorld = SkyWarsReloaded.get().getServer().getWorld(name);
 		int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
@@ -1002,6 +1008,9 @@ public class GameMap {
 		thunder = false;
 		forceStart = false;
 		allowRegen = true;
+		projectilesOnly = false;
+		projectileSpleefEnabled = false;
+		doubleDamageEnabled = false;
         kit = null;
         winners.clear();
         deathMatchWaiters.clear();

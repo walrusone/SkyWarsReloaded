@@ -121,13 +121,15 @@ public class ChestOption extends GameOption {
 			int y = eChest.getY();
 			int z = eChest.getZ();
 			loc = new Location (mapWorld, x, y, z);
-			Chest chest = (Chest) loc.getBlock().getState();
-			InventoryHolder ih = chest.getInventory().getHolder();
-			if (ih instanceof DoubleChest) {
-				DoubleChest dc = (DoubleChest) ih;
-				SkyWarsReloaded.getCM().populateChest(dc, cVote, center);
-			} else {
-				SkyWarsReloaded.getCM().populateChest(chest, cVote, center);
+			if (loc.getBlock() instanceof Chest) {
+				Chest chest = (Chest) loc.getBlock().getState();
+				InventoryHolder ih = chest.getInventory().getHolder();
+				if (ih instanceof DoubleChest) {
+					DoubleChest dc = (DoubleChest) ih;
+					SkyWarsReloaded.getCM().populateChest(dc, cVote, center);
+				} else {
+					SkyWarsReloaded.getCM().populateChest(chest, cVote, center);
+				}
 			}
 		}
 	}

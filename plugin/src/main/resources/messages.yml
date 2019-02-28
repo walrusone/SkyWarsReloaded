@@ -470,6 +470,7 @@ helpList:
     arenas: '&a/swmap arenas &e- &2Opens the Arenas GUI'
     spawn: '&a/swmap spawn [type] &e- &2Sets a spawn point for a arena. Type can be player, spec, or deathmatch'
     chesttype: '&a/swmap chesttype &e- &2Toggles between the type of chest being placed (Normal or Center)'
+    legacyload: '&a/swmap legacyload [mapname] &e- &2Loads the chests and player spawns of a map using the SWR Legacy Map Loader. Should only be used when pasting schematics. Do not run more than once per map!!'
   swkit:
     header1: '&7-----------------[&aKit Commands&7]-----------------'
     create: '&a/swkit create &e[kitname] &e- &2Create a kit using the items in your inventory'
