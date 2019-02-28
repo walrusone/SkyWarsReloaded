@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.matchevents.*;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -77,7 +78,8 @@ public class GameMap {
 	private boolean allowRegen;
 	private boolean projectilesOnly;
 	private boolean projectileSpleefEnabled;
-    private boolean thunder;
+	private boolean doubleDamageEnabled;
+	private boolean thunder;
     private boolean allowFriendlyFire;
 	private boolean allowScanvenger;
     private List<String> winners = new ArrayList<>();
@@ -137,7 +139,8 @@ public class GameMap {
         allowRegen = true;
         projectilesOnly = false;
         projectileSpleefEnabled = true;
-        timer = SkyWarsReloaded.getCfg().getWaitTimer();
+		doubleDamageEnabled = false;
+		timer = SkyWarsReloaded.getCfg().getWaitTimer();
         joinQueue = new GameQueue(this);
         arenakey = name + "menu";
         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -150,12 +153,7 @@ public class GameMap {
         modifierOption = new ModifierOption(this, name + "modifier");
         gameboard = new GameBoard(this);
         if (legacy) {
-        	 boolean loaded = loadWorldForScanning(name);
-             if (loaded) {
-             	ChunkIterator();
-      			SkyWarsReloaded.getWM().deleteWorld(name);
-      			saveArenaData();
-             }
+			scanWorld(false, null);
         }
         if (registered) {
         	registerMap();
@@ -169,7 +167,16 @@ public class GameMap {
 		}
     }
 
-    public void checkSpectators() {
+	public void scanWorld(boolean b, CommandSender sender) {
+		boolean loaded = loadWorldForScanning(name);
+		if (loaded) {
+			ChunkIterator(b, sender);
+			SkyWarsReloaded.getWM().deleteWorld(name);
+			saveArenaData();
+		}
+	}
+
+	public void checkSpectators() {
     	if (!spectators.isEmpty()) {
     		for (UUID uuid: spectators) {
     			Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
@@ -216,7 +223,9 @@ public class GameMap {
 		events.add(new ShrinkingBorderEvent(this, fc.getBoolean("events.ShrinkingBorderEvent.enabled")));
 		events.add(new ProjectilesOnlyEvent(this, fc.getBoolean("events.ProjectilesOnlyEvent.enabled")));
 		events.add(new ProjectileSpleefEvent(this, fc.getBoolean("events.ProjectileSpleefEvent.enabled")));
-	}
+		events.add(new DoubleDamageEvent(this, fc.getBoolean("events.DoubleDamageEvent.enabled")));
+		events.add(new GhastEvent(this, fc.getBoolean("events.GhastEvent.enabled")));
+    }
 
 	public void update() {
 		updateArenasManager();
@@ -867,7 +876,7 @@ public class GameMap {
 			}
 	}
 	
-	private void ChunkIterator() {
+	private void ChunkIterator(boolean message, CommandSender sender) {
 		World chunkWorld;
 		chunkWorld = SkyWarsReloaded.get().getServer().getWorld(name);
 		int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
@@ -893,15 +902,20 @@ public class GameMap {
 			                		  && !block.getType().equals(Material.DIAMOND_BLOCK)&& !block.getType().equals(Material.EMERALD_BLOCK)) {
 				                  Location loc = beacon.getLocation();
 				                  addTeamCard(loc);
+				                  if (message) {
+				                  	sender.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + getMaxPlayers()).setVariable("mapname", getDisplayName()).format("maps.addSpawn"));
+								  }
 			                  }
 			            } else if (te instanceof Chest) {
-				                  Chest chest = (Chest) te;
-				                  addChest(chest, ChestPlacementType.NORMAL);
+							Chest chest = (Chest) te;
+							addChest(chest, ChestPlacementType.NORMAL);
+							if (message) {
+								sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", getDisplayName()).format("maps.addChest"));
+							}
 			            } 
 		           }
 		        }
 	     }
-		
 	}
 	
 	public static void editMap(GameMap gMap, Player player) {
@@ -1779,6 +1793,14 @@ public class GameMap {
 
 	public void setProjectileSpleefEnabled(boolean b) {
 		projectileSpleefEnabled = b;
+	}
+
+	public void setDoubleDamageEnabled(boolean b) {
+		doubleDamageEnabled = b;
+	}
+
+	public boolean isDoubleDamageEnabled() {
+		return doubleDamageEnabled;
 	}
 
 	public class TeamCardComparator implements Comparator<TeamCard> {

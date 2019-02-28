@@ -32,6 +32,7 @@ public class MapCmdManager implements CommandExecutor {
 		mapcmds.add(new ArenaCmd("map"));
 		mapcmds.add(new AddSpawnCmd("map"));
 		mapcmds.add(new ChestTypeCmd("map"));
+		mapcmds.add(new LegacyLoadCmd("map"));
 	}
 
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args) { 

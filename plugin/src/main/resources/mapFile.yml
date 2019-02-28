@@ -178,6 +178,30 @@ events:
     announceTimer: false
     repeatable: false
     eggsAddedToInventory: 64
+  DoubleDamageEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cDouble Damage"
+    subtitle: "&1All attacks do Double Damage"
+    startMessage: "&cDouble Damage &bevent has begun!"
+    endMessage: "&cDouble Damage &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  GhastEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cGhasts Everywhere"
+    subtitle: "&1A Ghasts have Spawned"
+    startMessage: "&cGhasts Everywhere &bevent has begun!"
+    endMessage: "&cGhasts Everywhere &bevent has ended!"
+    announceTimer: false
+    repeatable: false
 spectateSpawn:
 spawns:
 signs:

@@ -2,7 +2,7 @@ name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
 version: ${project.version}
 api-version: 1.13
-softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays, Multiverse-Core]
+softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays, Multiverse-Core, PerWorldInventory]
 
 commands:
    skywars:

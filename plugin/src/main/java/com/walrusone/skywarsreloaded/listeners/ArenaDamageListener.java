@@ -33,15 +33,15 @@ public class ArenaDamageListener implements Listener {
 						event.setCancelled(false);
 						if (gameMap.getProjectilesOnly()) {
 							if (damager instanceof Projectile) {
-								doProjectile(damager, event, target);
+								doProjectile(gameMap, damager, event, target);
 							} else if (damager instanceof Player) {
 								event.setCancelled(true);
 							}
 						} else {
 							if (damager instanceof Projectile) {
-								doProjectile(damager, event, target);
+								doProjectile(gameMap, damager, event, target);
 							} else if (damager instanceof Player) {
-								doPVP(damager, target);
+								doPVP(damager, target, event, gameMap);
 							}
 						}
 					}
@@ -50,13 +50,16 @@ public class ArenaDamageListener implements Listener {
 		}
 	}
 
-	private void doProjectile(Entity damager, EntityDamageByEntityEvent event, Player target) {
+	private void doProjectile(GameMap gMap, Entity damager, EntityDamageByEntityEvent event, Player target) {
 		Projectile proj = (Projectile) damager;
 		if (damager instanceof Snowball) {
 			event.setDamage(SkyWarsReloaded.getCfg().getSnowDamage());
 		}
 		if (damager instanceof Egg) {
 			event.setDamage(SkyWarsReloaded.getCfg().getEggDamage());
+		}
+		if (gMap.isDoubleDamageEnabled()) {
+			event.setDamage(event.getDamage()*2);
 		}
 		if (proj.getShooter() instanceof Player) {
 			Player hitter = (Player) proj.getShooter();
@@ -69,9 +72,12 @@ public class ArenaDamageListener implements Listener {
 		}
 	}
 
-	private void doPVP(Entity damager, Player target) {
+	private void doPVP(Entity damager, Player target, EntityDamageByEntityEvent event, GameMap gMap) {
 		Player hitter = (Player) damager;
 		PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+		if (gMap.isDoubleDamageEnabled()) {
+			event.setDamage(event.getDamage()*2);
+		}
 		if (pd != null) {
 			pd.setTaggedBy(hitter);
 		}

@@ -138,6 +138,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         	new SWRMVdWPlaceholder(this);
         }
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
+			this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
+		}
+
         ic = new IconMenuController();
         wm = new WorldManager();
         
