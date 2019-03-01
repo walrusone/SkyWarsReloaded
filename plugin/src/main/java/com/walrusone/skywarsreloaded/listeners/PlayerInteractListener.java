@@ -1,7 +1,6 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
-import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -182,7 +181,7 @@ public class PlayerInteractListener implements Listener {
 							}
 							return;
 						}  else if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
-							MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true);
+							MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true, true);
 						}
 					}
 				}

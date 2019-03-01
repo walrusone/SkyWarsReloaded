@@ -53,12 +53,12 @@ public class PlayerStat
         if (SkyWarsReloaded.getCfg().economyEnabled()) {
             DataStorage.get().loadperms(this);
         }
+		if (SkyWarsReloaded.getCfg().getSpawn() != null) {
+			if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
+				updatePlayer(uuid);
+			}
+		}
         saveStats(uuid);
-        if (SkyWarsReloaded.getCfg().getSpawn() != null) {
-            if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-                updatePlayer(uuid);
-            }
-        }
     }
     
     private void saveStats(final String uuid) {

@@ -64,7 +64,7 @@ public class PlayerData {
 	        return null;
 	    }
 	    
-		public void restore() {
+		public void restore(boolean playerQuit) {
 			if (!beingRestored) {
 				beingRestored = true;
 		        final Player player = this.getPlayer();
@@ -108,12 +108,16 @@ public class PlayerData {
 		        
 		        final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
 		        if (SkyWarsReloaded.get().isEnabled()) {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							player.teleport(respawn, TeleportCause.END_PORTAL);
-						}
-					}.runTaskLater(SkyWarsReloaded.get(), 2);
+		            if (playerQuit) {
+                        player.teleport(respawn, TeleportCause.END_PORTAL);
+                    } else {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                player.teleport(respawn, TeleportCause.END_PORTAL);
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 2);
+                    }
 				} else {
 					player.teleport(respawn, TeleportCause.END_PORTAL);
 				}

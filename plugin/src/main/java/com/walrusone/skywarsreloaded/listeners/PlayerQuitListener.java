@@ -33,7 +33,7 @@ public class PlayerQuitListener implements Listener
 			return;
 		}
 
-		MatchManager.get().playerLeave(a1.getPlayer(), DamageCause.CUSTOM, true, true);
+		MatchManager.get().playerLeave(a1.getPlayer(), DamageCause.CUSTOM, true, true, true);
 
 		if (PlayerStat.getPlayerStats(id) != null) {
 			new BukkitRunnable() {

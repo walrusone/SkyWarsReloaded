@@ -41,7 +41,7 @@ public class PlayerDeathListener implements Listener
 		final DamageCause dCause = damageCause;
 		v2.setDeathMessage("");
 		
-        MatchManager.get().playerLeave(player, dCause, false, true);
+        MatchManager.get().playerLeave(player, dCause, false, true, true);
     }
     
     @EventHandler
@@ -68,7 +68,7 @@ public class PlayerDeathListener implements Listener
                     a1.setRespawnLocation(respawn);
                     new BukkitRunnable() {
                         public void run() {
-                            pData.restore();
+                            pData.restore(false);
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 15L);
                 }

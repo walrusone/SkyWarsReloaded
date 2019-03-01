@@ -22,7 +22,7 @@ public class SWQuitCmd extends BaseCmd {
 		if (map == null) {
 			return false;
 		}
-		MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true);
+		MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true, true);
 		return true;
 	}
 

@@ -775,7 +775,7 @@ public class GameMap {
     	}
         for (final Player player : this.getAlivePlayers()) {
         	if (player != null) {
-                MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false);
+                MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false, true);
         	}
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName());

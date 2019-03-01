@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.menus.*;
 import org.bukkit.Bukkit;
@@ -51,7 +50,6 @@ import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -218,13 +216,13 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         	}
             for (final Player player : gameMap.getAlivePlayers()) {
             	if (player != null) {
-                    MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false);
+                    MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false, true);
             	}
             }
             getWM().deleteWorld(gameMap.getName());
         }
         for (final PlayerData playerData : PlayerData.getPlayerData()) {
-            playerData.restore();
+            playerData.restore(false);
         }
         PlayerData.getPlayerData().clear();
         for (final PlayerStat fData : PlayerStat.getPlayers()) {

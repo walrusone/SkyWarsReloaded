@@ -535,7 +535,7 @@ public class MatchManager
                             	        pd.setTaggedBy(null);
                                     }
                             	}
-                                MatchManager.this.playerLeave(player, DamageCause.CUSTOM, true, true);
+                                MatchManager.this.playerLeave(player, DamageCause.CUSTOM, true, true, true);
                         	}
                     }
 					new BukkitRunnable() {
@@ -560,12 +560,12 @@ public class MatchManager
     	}
     	PlayerData pData = PlayerData.getPlayerData(player.getUniqueId());
     	if (pData != null) {
-        	pData.restore();
+        	pData.restore(false);
         	PlayerData.getPlayerData().remove(pData);
     	}
     }
     
-    public void playerLeave(final Player player, DamageCause dCause, final boolean leftGame, boolean sendMessages) {
+    public void playerLeave(final Player player, DamageCause dCause, final boolean leftGame, boolean sendMessages, boolean playerQuit) {
     	SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
     	UUID playerUuid = player.getUniqueId();
     	
@@ -608,7 +608,7 @@ public class MatchManager
 							}
 						}
 					}
-                    playerData.restore();
+                    playerData.restore(playerQuit);
                     PlayerData.getPlayerData().remove(playerData);
                 } else {
 					if (debug) {
@@ -695,7 +695,7 @@ public class MatchManager
 			
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
-                playerData.restore();
+                playerData.restore(playerQuit);
                 PlayerData.getPlayerData().remove(playerData);
             }
         }
