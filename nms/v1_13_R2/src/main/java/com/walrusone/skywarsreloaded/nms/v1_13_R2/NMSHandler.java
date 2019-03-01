@@ -21,6 +21,7 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -316,5 +317,10 @@ public class NMSHandler implements NMS {
 	@Override
 	public void deleteCache() {
 		RegionFileCache.a();
+	}
+
+	@Override
+	public Block getHitBlock(ProjectileHitEvent event) {
+		return event.getHitBlock();
 	}
 }

@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -52,4 +53,5 @@ public interface NMS {
     public ItemStack getColorItem(String mat, byte color);
 	public void setBlockWithColor(World world, int x, int y, int z, Material mat, byte cByte);
 	public void deleteCache();
+	public Block getHitBlock(ProjectileHitEvent e);
 }

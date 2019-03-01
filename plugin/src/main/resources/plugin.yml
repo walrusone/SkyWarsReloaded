@@ -104,7 +104,7 @@ permissions:
     description: Allows a player to use sw join command.
     default: true
   sw.spectate: 
-    description: Allows a player to use spectate using the spectate menu.
+    description: Allows a player to use spectate using the spectate menu and the spectate command.
     default: op
   sw.stats: 
     description: Allows a player to view player stats.

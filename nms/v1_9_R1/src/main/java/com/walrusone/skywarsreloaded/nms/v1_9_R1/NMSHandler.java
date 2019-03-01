@@ -26,6 +26,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
@@ -38,6 +39,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import com.walrusone.skywarsreloaded.api.NMS;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.BlockIterator;
 
 public class NMSHandler implements NMS {
 	
@@ -278,5 +280,18 @@ public class NMSHandler implements NMS {
 	@Override
 	public void deleteCache() {
 		RegionFileCache.a();
+	}
+
+	@Override
+	public Block getHitBlock(ProjectileHitEvent event) {
+		BlockIterator iterator = new BlockIterator(event.getEntity().getWorld(), event.getEntity().getLocation().toVector(), event.getEntity().getVelocity().normalize(), 0.0D, 4);
+		Block hitBlock = null;
+		while (iterator.hasNext()) {
+			hitBlock = iterator.next();
+			if (hitBlock.getType() != Material.AIR) {
+				break;
+			}
+		}
+		return hitBlock;
 	}
 }

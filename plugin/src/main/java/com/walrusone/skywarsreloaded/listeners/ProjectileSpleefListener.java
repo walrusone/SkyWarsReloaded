@@ -1,7 +1,9 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,10 +22,11 @@ public class ProjectileSpleefListener implements Listener {
 			if(projectile instanceof EnderPearl){
 				return;
 			}
-			if(e.getHitBlock() == null) {
+			Block block = SkyWarsReloaded.getNMS().getHitBlock(e);
+			if(block == null) {
 				return;
 			}
-			e.getHitBlock().breakNaturally();
+			block.breakNaturally();
 		}
 	}
 

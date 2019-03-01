@@ -176,7 +176,11 @@ public class TeamCard {
 				name.append(", ");
 			}
 		}
-		return name.substring(0, name.length() -2);
+		if (name.length() > 2) {
+			return name.substring(0, name.length() -2);
+		} else {
+			return name.toString();
+		}
 	}
 
 	public String getTeamName() {

@@ -244,8 +244,10 @@ menu:
 titles:
   warmup-title: '&a{time}'
   warmup-subtitle: '&aPrepare for SkyWars'
-  start-title: '&a{map}'
-  start-subtitle: '&bCreated by {designer}'
+  join-title: '&a{map}'
+  join-subtitle: '&bCreated by {designer}'
+  start-title: '&aSkyWars Starting'
+  start-subtitle: '&bFight'
   endgame-title-won: '&aVICTORY'
   endgame-subtitle-won: '&bBow to your Spectators!'
 items:
@@ -443,6 +445,7 @@ helpList:
     clearstats: '&a/sw clearstats &e[playername] &e- &2Clears a SkyWars players stats'
     join: '&a/sw join &e- &2Join a SkyWars match'
     quit: '&a/sw quit &e- &2Quits from the current game'
+    spectate: '&a/sw spectate [playername/mapname] &e- &2Spectates a match' 
     stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'
     top: '&a/sw top [stat] &e- &2Displays SkyWars leaderboard'
     options: '&a/sw options &e- &2Opens options selection menu'

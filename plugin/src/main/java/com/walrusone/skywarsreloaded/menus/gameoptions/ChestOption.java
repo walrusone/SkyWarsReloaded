@@ -121,7 +121,7 @@ public class ChestOption extends GameOption {
 			int y = eChest.getY();
 			int z = eChest.getZ();
 			loc = new Location (mapWorld, x, y, z);
-			if (loc.getBlock() instanceof Chest) {
+			if (loc.getBlock().getState() instanceof Chest) {
 				Chest chest = (Chest) loc.getBlock().getState();
 				InventoryHolder ih = chest.getInventory().getHolder();
 				if (ih instanceof DoubleChest) {

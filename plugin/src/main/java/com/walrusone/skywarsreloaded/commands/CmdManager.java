@@ -34,6 +34,7 @@ public class CmdManager implements CommandExecutor {
 		pcmds.add(new SWStatsCmd("sw"));
 		pcmds.add(new SWTopCmd("sw"));
 		pcmds.add(new SWOptionsCmd("sw"));
+		pcmds.add(new SWSpectateCmd("sw"));
 
 		if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
 			pcmds.add(new SWWinsoundCmd("sw"));

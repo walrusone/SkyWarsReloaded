@@ -205,14 +205,14 @@ public class MatchManager
         		}
         	}
         	gameMap.setMatchState(MatchState.WAITINGSTART);
-        	String designer; 
+        	String designer;
         	if (SkyWarsReloaded.getCfg().titlesEnabled()) {
             	if (gameMap.getDesigner() != null && gameMap.getDesigner().length() > 0) {
             		designer = new Messaging.MessageFormatter().setVariable("designer", gameMap.getDesigner()).format("titles.start-subtitle");
             	} else {
             		designer = "";
             	}
-                Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-title"), 
+                Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-title"),
                 		designer);
         	}
     	} else {
@@ -317,6 +317,10 @@ public class MatchManager
     	for (Player player: gameMap.getAlivePlayers()) {
     		player.closeInventory();
     		player.setGameMode(GameMode.SURVIVAL);
+			if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+				Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-title"),
+						new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-subtitle"));
+			}
     	}
         if (gameMap.getMatchState() != MatchState.ENDING) {
         	this.matchCountdown(gameMap);
@@ -854,7 +858,9 @@ public class MatchManager
 	    		slot++;
             }
         }
-        player.updateInventory();
+		if (player != null) {
+			player.updateInventory();
+		}
 	}
 	
 	private void announceTimer(final GameMap gameMap) {
